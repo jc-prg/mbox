@@ -1,4 +1,4 @@
-#jc://music-box/
+# jc://music-box/
 
 This software is built to run mp3-music on a Raspberry Pi 3B+ in a wooden box with speakers. It consists of:
 

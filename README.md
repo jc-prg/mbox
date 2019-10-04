@@ -1,0 +1,2 @@
+# mbox
+jc://music-box/

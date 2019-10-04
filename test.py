@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 def start():
-  if test:
+  if test = "test":
     return
   else:
     return

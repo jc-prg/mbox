@@ -6,3 +6,7 @@ This software is built to run mp3-music - files and web-streams - on a _Raspberr
 - *Main Server* to import and manage content and control playback (Python)
 - *LED Server* to show volume and status via LED (Python)
 - *Button Server* to read commands via push buttons and send to main server (Python)
+
+## Disclaimer
+
+I'm just starting to publish my code and to work with GitHub. So the projects are not complete at the moment but will grow.

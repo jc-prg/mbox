@@ -122,7 +122,7 @@ def loop():
                 light_error = "0"
                 data        = call_api("status")
 
-                if "ctrl" in data: logging.debug(str(data["ctrl"]))
+                if "API" in data: logging.debug(str(data["API"]))
 
                 if i == 0:
                     i = 1
@@ -134,13 +134,15 @@ def loop():
                     else:                    light_stage = "1"
 
                 # if card is detected ...
-                if "RFID" in data:
+                if "RFID" in data["LOAD"]:
                     light_rfid = "0"
-                    if "cardUID" in data["LOAD"]["RFID"]:
-                        if   data["LOAD"]["RFID"]["cardUID"] == mbox.demo_card: #"125,232,21,163":
-                            first_run = 1
-                        elif data["LOAD"]["RFID"]["cardUID"] != "":
-                            light_rfid = "1"
+                    if   data["LOAD"]["RFID"] == mbox.demo_card:
+                        first_run = 1
+
+                    elif data["LOAD"]["RFID"] != "":
+                        light_rfid = "1"
+
+                    print(data["LOAD"]["RFID"])
 
                 # if not mute show volume level
                 if "STATUS" in data:

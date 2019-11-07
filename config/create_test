@@ -1,0 +1,14 @@
+#!/bin/bash
+#--------------------------
+
+source config_test
+
+rm -rf ../docker-compose.yml
+envsubst < "temp.docker-compose.yml" > "../docker-compose.yml"
+
+rm -rf ../app/config_stage.js
+envsubst < "temp.config_stage.js" > "../app/config_stage.js"
+
+rm -rf ../server/modules/config_stage.py
+envsubst < "temp.config_stage.py" > "../server/modules/config_stage.py"
+

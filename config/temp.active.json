@@ -1,0 +1,6 @@
+{
+        "information"      : "Set value for active_stage to configure which stage shall use buttons, LED and RFID reader.",
+        "active_stage"     : "test",
+        "available_stages" : ["prod","test"]
+}
+

@@ -1,5 +1,11 @@
 # jc://mbox/
 
+A friend has built a similar box based on an existing free software. As my children where faszinated from this box I decided to build such a box for my children, but to write the software on my own from the scratch to try out different development practices. So it's not my idea but my individual implementation of this idea.
+
+![mbox image](https://raw.githubusercontent.com/jc-prg/mbox/master/docs/mbox.jpg)
+
+## Whats inside
+
 This software is built to play music (MP3 / M4A files and web-streams) on a _Raspberry Pi 3B+_ in a wooden box with speakers. It consists of:
 
 - *Client* to show and manage content and control playback (JavaScript/HTML5/CSS)
@@ -9,10 +15,6 @@ This software is built to play music (MP3 / M4A files and web-streams) on a _Ras
 - *RFID Server* to detect RFID cards (Python2)
 
 The jc://mbox/ uses VLC (https://www.videolan.org/) and several other sources and is written in PYTHON (server) and JAVASCRIPT (client).
-
-## Idea behind the box
-
-A friend has built a similar box based on an existing free software. As my children where faszinated from this box I decided to build such a box for my children, but to write the software on my own from the scratch to try out different development practices. So it's not my idea but my individual implementation of this idea.
 
 ## Prerequisites
 

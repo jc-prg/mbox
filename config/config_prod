@@ -1,0 +1,46 @@
+#!/bin/bash 
+#---------------------------------------------
+
+export MBOX_CURRENT_STAGE="prod"
+export MBOX_ACTIVE_STAGE="prod"
+export MBOX_IS_TEST="False"
+
+# Ports
+export MBOX_CLIENT_PORT=85
+export MBOX_SERVER_PORT=5005
+export MBOX_DATABASE_PORT=5105
+
+# Docker container names
+export MBOX_DOCKER_DATABASE="mbox_db_prod"
+export MBOX_DOCKER_CLIENT="mbox_client_prod"
+export MBOX_DOCKER_SERVER="mbox_server_prod"
+
+# Docker container names
+export MBOX_DB_USER="mbox"
+export MBOX_DB_PASSWORD="UmL078M1D"
+
+# activate rfid / button module
+export MBOX_RFID_ACTIVE="true"
+export MBOX_BUTTON_ACTIVE="true"
+
+# Directories
+export MBOX_DIR_DATA="/projects_data/prod"
+export MBOX_DIR_CLIENT="/projects/docker/mbox/app"
+export MBOX_DIR_SERVER="/projects/docker/mbox/server"
+export MBOX_DIR_JCMODULES="/projects/docker/modules"
+
+# Mount points (if no extra device for data, use the same as for system)
+export MBOX_MOUNT_SYSTEM="/"
+export MBOX_MOUNT_DATA="/mnt/usb"
+
+# Images
+export MBOX_DOCKERIMAGE_CLIENT="php:7.1-apache"
+#export MBOX_DOCKERIMAGE_COUCHDB="apache/couchdb:latest"          # use for regular x86
+export MBOX_DOCKERIMAGE_COUCHDB="matthiasg/rpi-couchdb:latest"   # usr for raspberry
+
+
+#---------------------------------------------
+export THIS_IS_THE_PROJECT_TEMPLATE="Please edit not here, but the orginial configuration file. This files is created using a template."
+
+
+

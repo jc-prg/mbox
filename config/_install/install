@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# install required PYTHON modules
+pip3 install --no-cache-dir -r ../container/requirements.txt
+pip3 install netaddr, spi, MFRC522
+apt-get install -y python3-rpi.gpio
+apt-get install -y python3-pygame
+apt-get install mpd mpc alsa-utils

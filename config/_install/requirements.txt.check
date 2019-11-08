@@ -1,0 +1,11 @@
+netaddr
+configparser
+eyed3
+uuid
+wave
+pycrypto
+flask
+flask-restful
+flask-httpauth
+flask-cors
+RPi.GPIO

@@ -1,0 +1,11 @@
+INFO zum Docker-Image:
+--------------------
+
+  https://hub.docker.com/_/python/
+
+
+Build and Run
+--------------------
+
+  $ docker build -t my-python-app .
+  $ docker run -it --rm --name my-running-app my-python-app

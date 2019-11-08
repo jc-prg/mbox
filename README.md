@@ -40,7 +40,7 @@ $ git clone https://github.com/jc-prg/mbox.git
 $ git clone https://github.com/jc-prg/modules.git
 ```
 
-2. Install python modules (CouchDB, VLC, eye3D, Mutagen, Connexion/swagger-ui,...)
+2. Install python modules (CouchDB, VLC, eye3D, Mutagen, Connexion/swagger-ui,...) - please note, that this part isn't fully tested at the moment.
 
 ```bash
 $ ./mbox/config/install/install-server
@@ -54,14 +54,14 @@ $ rasp-config
 
 4. Edit configuration files
 
-Customize your configuration depending on your directory structure and needs:
+   Customize your configuration depending on your directory structure and needs:
 
 ```bash
 $ nano ./mbox/config/config_prod  # configure prod environment
 $ nano ./mbox/config/config_test  # configure test environment
 ```
 
-The tested directory structure is:
+   The tested directory structure is:
 
 ```bash
 # project directories

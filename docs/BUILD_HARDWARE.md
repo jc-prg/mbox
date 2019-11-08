@@ -15,3 +15,8 @@ An instruction how to build the box will follow. Until then here a few impressio
 
 ## The Inner Box
 ![inner box with covered battery pack and speakers](mbox_detail_2.jpg)
+
+## The Software (on an iPhone)
+![the software](mbox_client_detail_1.jpg)
+![the software](mbox_client_detail_2.jpg)
+

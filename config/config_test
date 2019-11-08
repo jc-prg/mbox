@@ -24,19 +24,21 @@ export MBOX_RFID_ACTIVE="true"
 export MBOX_BUTTON_ACTIVE="true"
 
 # Directories
+export MBOX_DIR_DATA_ROOT="/projects_data"
 export MBOX_DIR_DATA="/projects_data/test"
-export MBOX_DIR_CLIENT="/projects/docker/mbox_test/app"
-export MBOX_DIR_SERVER="/projects/docker/mbox_test/server"
-export MBOX_DIR_JCMODULES="/projects/docker/modules"
+export MBOX_DIR_CLIENT="/projects/git/mbox_test/app"
+export MBOX_DIR_SERVER="/projects/git/mbox_test/server"
+export MBOX_DIR_JCMODULES="/projects/git/modules"
 
 # Mount points (if no extra device for data, use the same as for system)
 export MBOX_MOUNT_SYSTEM="/"
-export MBOX_MOUNT_DATA="/mnt/usb"
+export MBOX_MOUNT_DATA="/"
+#export MBOX_MOUNT_DATA="/mnt/usb"
 
 # Images
 export MBOX_DOCKERIMAGE_CLIENT="php:7.1-apache"
-#export MBOX_DOCKERIMAGE_COUCHDB="apache/couchdb:latest"          # use for regular x86
-export MBOX_DOCKERIMAGE_COUCHDB="matthiasg/rpi-couchdb:latest"   # usr for raspberry
+export MBOX_DOCKERIMAGE_COUCHDB="apache/couchdb:latest"          # use for regular x86
+#export MBOX_DOCKERIMAGE_COUCHDB="matthiasg/rpi-couchdb:latest"   # usr for raspberry
 
 
 #---------------------------------------------

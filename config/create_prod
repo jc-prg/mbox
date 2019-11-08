@@ -12,3 +12,6 @@ envsubst < "temp.config_stage.js" > "../app/config_stage.js"
 rm -rf ../server/modules/config_stage.py
 envsubst < "temp.config_stage.py" > "../server/modules/config_stage.py"
 
+rm -rf install/install-datadir
+envsubst < "temp.install-datadir" > "./install/install-datadir"
+chmod 755 ./install/install-datadir

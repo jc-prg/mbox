@@ -1,8 +1,3 @@
-#!/usr/bin/python2
-# -*- coding: utf8 -*-
-#---------------------------
-# STAGE is defined in module rm3/rm3stage.py
-
 import time
 import logging
 

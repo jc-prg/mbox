@@ -34,27 +34,95 @@ The software has been tested on a Raspberry Pi 3B+ with Raspbian (2018-11-13-ras
 1. Clone this repository and the modules
 
 ```bash
-git clone https://github.com/jc-prg/mbox.git
-git clone https://github.com/jc-prg/modules.git
+$ git clone https://github.com/jc-prg/mbox.git
+$ git clone https://github.com/jc-prg/modules.git
 ```
 
 2. Install python modules (CouchDB, VLC, eye3D, Mutagen, Connexion/swagger-ui,...)
 
 ```bash
-cd mbox/config/install
-./install-server
-./install-rfid
+$ ./mbox/config/install/install-server
+$ ./mbox/config/install/install-rfid
 ```
 3. Activate SPI on your Raspberry via rasp-config to use RFID reader
 
 ```bash
-rasp-config
+$ rasp-config
 ```
 
 4. Edit configuration files
+
+Customize your configuration depending on your directory structure and needs:
+
+```bash
+$ nano ./mbox/config/config_prod  # configure prod environment
+$ nano ./mbox/config/config_test  # configure test environment
+```
+
+The tested directory structure is:
+
+```bash
+# project directories
+/projects/git/
+/projects/git/mbox/
+/projects/git/modules/
+
+# data directories (e.g. on mounted USB drive)
+/projects_data/
+/projects_data/test/
+/projects_data/prod/
+
+# structure inside the data directories
+./couchdb/
+./cover/
+./cover_upload/
+./data/
+./music/
+
+# default structure of music directories
+./music/<category>/<artist>/<album>/*.*
+```
+
 5. Create working configuration (test or prod)
-6. Run server and client
-7. optional: enable auto-start
+
+```bash
+$ ./mbox/config/create_test               # create test environment
+$ ./mbox/config/install/install-datadir   # create required sub-directories in data-dir
+```
+
+6. Copy music files to directory *./music/*
+
+7. Start server and client
+
+```bash
+# start client in docker container
+$ cd mbox
+$ sudo docker-compose up -d
+
+# start server
+$ ./server/server.py         &
+$ ./server/server_rfid.py    &
+$ ./server/server_led.py     &
+$ ./server/server_button.py  &
+```
+
+8. Open client and start "Reload Data" in the settings (e.g. http://localhost:85/ for PROD environment)
+
+9. optional: enable auto-start - add the following to */etc/rc.local*
+
+```bash
+# jc://mbox/ Server (if Raspberry Pi)
+/usr/bin/python3 /projects/git/mbox/server/server_led.py     > /dev/null &
+/usr/bin/python3 /projects/git/mbox/server/server_buttons.py > /dev/null &
+/usr/bin/python2 /projects/git/mbox/server/server_rfid.py    > /dev/null &
+
+# jc://mbox/ Server
+/usr/bin/python3 /projects/git/mbox/server/server.py         > /dev/null &
+
+# jc://mbox/ Client
+/usr/bin/docker-compose -f /projects/git/mbox/docker-compose.yml up -d &
+
+```
 
 ## Disclaimer
 

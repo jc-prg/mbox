@@ -13,7 +13,7 @@ services:
       - ${MBOX_CLIENT_PORT}:5006
     volumes:
       - ${MBOX_DIR_CLIENT}:/var/www/html/app
-      - ./config/apache2/php:/usr/local/etc/php/conf.d
+      - ./config/apache2/php.ini:/usr/local/etc/php/conf.d/php.ini
       - ./config/apache2/www-app.conf:/etc/apache2/sites-enabled/www-app.conf
 
       - ${MBOX_DIR_DATA}/data:/var/www/html/app/server/data

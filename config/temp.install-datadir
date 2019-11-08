@@ -1,0 +1,26 @@
+#!/bin/bash
+
+dir="${MBOX_DIR_DATA_ROOT}"
+
+mkdir $dir
+
+cd $dir
+mkdir prod
+cd prod
+mkdir data
+mkdir couchdb
+mkdir music
+mkdir cover
+mkdir cover_upload
+chmod 777 cover_upload
+
+cd $dir
+mkdir test
+cd prod
+mkdir data
+mkdir couchdb
+mkdir music
+mkdir cover
+mkdir cover_upload
+chmod 777 cover_upload
+

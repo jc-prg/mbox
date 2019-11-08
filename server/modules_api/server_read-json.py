@@ -1,7 +1,7 @@
 #!/usr/bin/python2
 # -*- coding: utf8 -*-
 #---------------------------
-# STAGE is defined in module rm3/rm3stage.py
+# -> NOT IN USE AT THE MOMENT
 
 import configparser
 import sys, getopt

@@ -13,7 +13,7 @@ data_backup  = "/projects_data/prod/couchdb_backup/"
 data_db      = "http://mbox:UmL078M1D@localhost:5105/"
 
 mount_system = "/"
-mount_data   = "/mnt/usb"
+mount_data   = "/"
 
 server_port = 5005
 

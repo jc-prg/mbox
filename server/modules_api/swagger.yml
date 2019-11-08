@@ -12,38 +12,7 @@ produces:
 basePath: /api
 
 
-#------------------------ TESTING ------------------------
-
 paths:
-  /test:
-    post:
-      operationId: modules_api.test.api_test_01
-      tags:
-        - test
-      summary: ein neuer Test
-      description: Test, ob ich eine neue funktion verknuepft bekomme
-      parameters:
-        - name: cmd
-          in: query
-          type: string
-          required: false
-        - in: body
-          name: test
-          description: parameter in body
-          schema:
-            type: object
-            required:
-              - name
-            properties:
-              name:
-                type: string
-              street:
-                type: string
-      responses:
-        200:
-          description: Successfully read people list operation
-
-
 #------------------------ MICROSERVICE INTERFACES ------------------------
 
   /set-card/{cardUID}/:

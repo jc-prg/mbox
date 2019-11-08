@@ -1,6 +1,6 @@
 {
         "information"      : "Set value for active_stage to configure which stage shall use buttons, LED and RFID reader.",
-        "active_stage"     : "test",
+        "active_stage"     : "${MBOX_CURRENT_STAGE}",
         "available_stages" : ["prod","test"]
 }
 

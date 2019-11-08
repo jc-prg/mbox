@@ -2,9 +2,9 @@
 
 dir="/projects_data"
 
-mkdir $dir
+mkdir 
 
-cd $dir
+cd 
 mkdir prod
 cd prod
 mkdir data
@@ -14,7 +14,7 @@ mkdir cover
 mkdir cover_upload
 chmod 777 cover_upload
 
-cd $dir
+cd 
 mkdir test
 cd prod
 mkdir data

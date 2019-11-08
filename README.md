@@ -4,7 +4,7 @@ A friend has built a similar box based on an existing free software. As my child
 
 ![mbox image](https://raw.githubusercontent.com/jc-prg/mbox/master/docs/mbox.jpg)
 
-## Whats inside
+## What's inside
 
 This software is built to play music (MP3 / M4A files and web-streams) on a _Raspberry Pi 3B+_ in a wooden box with speakers. It consists of:
 
@@ -18,16 +18,14 @@ The jc://mbox/ uses VLC (https://www.videolan.org/) and several other sources an
 
 ## Prerequisites
 
-In order to use mbox as it is you must have installed:
+In order to use jc://mbox/ as it is you must have installed:
 
 1. docker, docker-compose
 2. python3, pip3, python2, pip
 
 ## How to build the hardware
 
-An instruction will follow soon ...
-
-... in the meanwhile here are some [pictures](docs/BUILD_HARDWARE.md).
+An instruction will follow soon ... in the meanwhile here are some [pictures](docs/BUILD_HARDWARE.md).
 
 ## How to install, configure and run the software
 

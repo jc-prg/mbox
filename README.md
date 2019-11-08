@@ -29,7 +29,9 @@ An instruction will follow soon ...
 
 ## How to install, configure and run the software
 
-The software has been tested on a Raspberry Pi 3B+ with Raspbian (2018-11-13-raspbian-stretch-lite) and on an Ubuntu Desktop. RFID reader, LED and Buttons only tested on the Raspberry Pi.
+The *server software* has been tested on a Raspberry Pi 3B+ with Raspbian (2018-11-13-raspbian-stretch-lite) and on an Ubuntu Desktop. RFID reader, LED and Buttons only tested on the Raspberry Pi.
+
+The *client software* has been tested with Chrome 70.0, Firefox 68.0 and Safari on iOS 13 (iPhone XS, iPhone SE).
 
 1. Clone this repository and the modules
 
@@ -86,8 +88,11 @@ The tested directory structure is:
 5. Create working configuration (test or prod)
 
 ```bash
-$ ./mbox/config/create_test               # create test environment
-$ ./mbox/config/install/install-datadir   # create required sub-directories in data-dir
+$ cd mbox/config
+$ ./create_test               # create test environment
+
+$ cd install
+$ ./install-datadir           # create required sub-directories in data-dir
 ```
 
 6. Copy music files to directory *./music/*

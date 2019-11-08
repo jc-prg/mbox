@@ -12,8 +12,8 @@ services:
     ports:
       - 85:5006
     volumes:
-      - /projects/docker/mbox/app:/var/www/html/app
-      - ./config/apache2/php:/usr/local/etc/php/conf.d
+      - /projects/git/mbox/app:/var/www/html/app
+      - ./config/apache2/php.ini:/usr/local/etc/php/conf.d/php.ini
       - ./config/apache2/www-app.conf:/etc/apache2/sites-enabled/www-app.conf
 
       - /projects_data/prod/data:/var/www/html/app/server/data
@@ -21,18 +21,18 @@ services:
       - /projects_data/prod/cover:/var/www/html/app/cover
       - /projects_data/prod/cover_upload:/var/www/html/app/cover_upload
 
-      - /projects/docker/modules:/var/www/html/app/apps
+      - /projects/git/modules:/var/www/html/app/apps
  
 #--------------------
 
   mbox_db_prod:
-    image: matthiasg/rpi-couchdb:latest
+    image: apache/couchdb:latest
     ports:
       - 5105:5984
     volumes:
       - /projects_data/prod/couchdb:/opt/couchdb/data
     environment:
       - 'COUCHDB_USER=mbox'
-      - 'COUCHDB_PASSWORD=UmL078M1D'
+      - 'COUCHDB_PASSWORD=mbox'
 
 #----------------------------------------

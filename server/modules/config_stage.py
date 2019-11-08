@@ -10,7 +10,7 @@ rollout      = "prod"
 
 data_dir     = "/projects_data/prod"
 data_backup  = "/projects_data/prod/couchdb_backup/"
-data_db      = "http://mbox:UmL078M1D@localhost:5105/"
+data_db      = "http://mbox:mbox@localhost:5105/"
 
 mount_system = "/"
 mount_data   = "/"

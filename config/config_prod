@@ -17,7 +17,7 @@ export MBOX_DOCKER_SERVER="mbox_server_prod"
 
 # Docker container names
 export MBOX_DB_USER="mbox"
-export MBOX_DB_PASSWORD="UmL078M1D"
+export MBOX_DB_PASSWORD="mbox"
 
 # activate rfid / button module
 export MBOX_RFID_ACTIVE="true"

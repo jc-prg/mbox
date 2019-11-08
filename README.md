@@ -26,6 +26,7 @@ In order to use mbox as it is you must have installed:
 ## How to build the hardware
 
 An instruction will follow soon ...
+
 ... in the meanwhile here are some [pictures](docs/BUILD_HARDWARE.md).
 
 ## How to install, configure and run the software

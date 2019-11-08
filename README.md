@@ -20,9 +20,8 @@ The jc://mbox/ uses VLC (https://www.videolan.org/) and several other sources an
 
 In order to use mbox as it is you must have installed:
 
-1. docker (https://docs.docker.com/engine/installation/)
-2. docker-compoye (https://docs.docker.com/compose/install/)
-3. python3, python2, pip, pip3
+1. docker, docker-compose
+2. python3, pip3, python2, pip
 
 ## How to build the hardware
 

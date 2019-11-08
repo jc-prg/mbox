@@ -26,6 +26,7 @@ In order to use mbox as it is you must have installed:
 ## How to build the hardware
 
 An instruction will follow soon ...
+... in the meanwhile here are some [pictures](docs/BUILD_HARDWARE.md).
 
 ## How to install, configure and run the software
 
@@ -95,13 +96,13 @@ $ cd install
 $ ./install-datadir           # create required sub-directories in data-dir
 ```
 
-6. Copy music files to directory *./music/*
+6. Copy music files to directory *./music/* (see suggested structure above)
 
 7. Start server and client
 
 ```bash
 # start client in docker container
-$ cd mbox
+$ cd ..
 $ sudo docker-compose up -d
 
 # start server
@@ -113,7 +114,7 @@ $ ./server/server_button.py  &
 
 8. Open client and start "Reload Data" in the settings (e.g. http://localhost:85/ for PROD environment)
 
-9. optional: enable auto-start - add the following to */etc/rc.local*
+9. Optional: enable auto-start - add the following to */etc/rc.local*
 
 ```bash
 # jc://mbox/ Server (if Raspberry Pi)

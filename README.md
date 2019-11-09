@@ -71,21 +71,17 @@ $ rasp-config
 $ cd mbox/config/
 $ cp sample.config_prod config_prod     # create local configuration
 $ nano config_prod                      # configure prod environment
-$ cp sample.config_test config_test     # create local configuration
-$ nano config_test                      # configure test environment
 ```
 
    The tested directory structure is:
 
 ```bash
 # project directories
-/projects/git/
-/projects/git/mbox/
-/projects/git/modules/
+/projects/prod/
+/projects/prod/mbox/
+/projects/prod/modules/
 
 # data directories (e.g. on mounted USB drive)
-/projects_data/
-/projects_data/test/
 /projects_data/prod/
 
 # structure inside the data directories
@@ -102,7 +98,7 @@ $ nano config_test                      # configure test environment
 5. Create working configuration (test or prod)
 
 ```bash
-$ ./create_test               # create test environment
+$ ./create_prod               # create prod environment
 
 $ cd install
 $ ./install-datadir           # create required sub-directories in data-dir

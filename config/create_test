@@ -16,3 +16,5 @@ rm -rf install/install-datadir
 envsubst < "temp.install-datadir" > "./install/install-datadir"
 chmod 755 ./install/install-datadir
 
+rm -rf $MBOX_DIR_DATA_ROOT/active.json
+envsubst < "temp.active.json" > "$MBOX_DIR_DATA_ROOT/active.json"

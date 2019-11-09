@@ -17,6 +17,7 @@ import RPi.GPIO             as GPIO
 
 import modules.jcJson       as jcJSON
 import modules.config_stage as stage
+import modules.config_mbox  as mbox
 
 import modules_gpio.MFRC522 as MFRC522
 import modules_gpio.config  as gpio

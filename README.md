@@ -68,8 +68,11 @@ $ rasp-config
    Customize your configuration depending on your directory structure and needs:
 
 ```bash
-$ nano ./mbox/config/config_prod  # configure prod environment
-$ nano ./mbox/config/config_test  # configure test environment
+$ cd mbox/config/
+$ cp sample.config_prod config_prod     # create local configuration
+$ nano config_prod                      # configure prod environment
+$ cp sample.config_test config_test     # create local configuration
+$ nano config_test                      # configure test environment
 ```
 
    The tested directory structure is:
@@ -99,7 +102,6 @@ $ nano ./mbox/config/config_test  # configure test environment
 5. Create working configuration (test or prod)
 
 ```bash
-$ cd mbox/config
 $ ./create_test               # create test environment
 
 $ cd install

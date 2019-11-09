@@ -161,8 +161,7 @@ def loop():
 
                     elif data["LOAD"]["RFID"] != "":
                         light_rfid = "1"
-
-                    print(data["LOAD"]["RFID"])
+                        logging.info(data["LOAD"]["RFID"])
 
                 # if not mute show volume level
                 if "STATUS" in data:

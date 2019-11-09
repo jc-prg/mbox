@@ -8,3 +8,11 @@ docker-compose.yml
 config/config_prod
 
 config/config_test
+
+app/icon_backup/Thumbs.db
+
+app/icon_backup/Thumbs.db:encryptable
+
+app/icon/material/
+
+app/icon_backup/

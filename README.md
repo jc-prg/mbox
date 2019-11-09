@@ -6,11 +6,11 @@ A friend has built a similar box based on an existing free software (which I've 
 
 ## Table of Contents
 
-- [What's inside](#What-s-inside)
+- [What's inside](#Whats-inside)
 - [How to build the hardware](#How-to-build-the-hardware)
 - [How to setup the software](#How-to-setup-the-software)
   - [Prerequisites](#Prerequisites)
-  - [How to install, configure and run the software](#How-to-install--configure-and-run-the-software)
+  - [How to install, configure and run the software](#How-to-install-configure-and-run-the-software)
 - [Disclaimer](#Disclaimer)
 
 ## What's inside

@@ -4,3 +4,7 @@ server/modules/__pycache__/
 server/modules_api/__pycache__/
 
 docker-compose.yml
+
+config/config_prod
+
+config/config_test

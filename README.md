@@ -1,8 +1,17 @@
 # jc://mbox/
 
-A friend has built a similar box based on an existing free software. As my children where faszinated by this box I decided to build such a box for my children, but to write the software on my own from the scratch. My intentions is to try out different development practices. So it's not my idea but my individual implementation of this idea ...
+A friend has built a similar box based on an existing free software (which I've never seen myself). As my children where faszinated by this box I decided to build such a box for my children, but to write the software on my own from the scratch. My intentions is to try out different development practices. So it's not my idea but my individual implementation of this idea ...
 
 ![mbox image](https://raw.githubusercontent.com/jc-prg/mbox/master/docs/mbox.jpg)
+
+## Table of Contents
+
+- [What's inside](#What-s-inside)
+- [How to build the hardware](#How-to-build-the-hardware)
+- [How to setup the software](#How-to-setup-the-software)
+  - [Prerequisites](#Prerequisites)
+  - [How to install, configure and run the software](#How-to-install--configure-and-run-the-software)
+- [Disclaimer](#Disclaimer)
 
 ## What's inside
 

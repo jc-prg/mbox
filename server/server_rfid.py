@@ -21,15 +21,30 @@ import modules.config_stage as stage
 import modules_gpio.MFRC522 as MFRC522
 import modules_gpio.config  as gpio
 
+# set start time and write title/version/stage
+#----------------------------------------------
+mbox.start_time = time.time()
+print("--------------------------------")
+print(mbox.APIname_RFID + mbox.APIversion + "   (" + str(stage.rollout) + ")")
+print("--------------------------------")
+
+# start and configure logging
+#----------------------------------------------
+import logging
+if stage.test:
+    if mbox.DEBUG:
+       logging.basicConfig(level=logging.DEBUG)  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+       logging.info("Start - Log-Level DEBUG ...")
+    else:
+       logging.basicConfig(level=logging.INFO)   # DEBUG, INFO, WARNING, ERROR, CRITICAL
+       logging.info("Start - Log-Level INFO ...")
+else:
+   logging.basicConfig(level=logging.WARN)    # DEBUG, INFO, WARNING, ERROR, CRITICAL
+   logging.info("Start - Log-Level WARN ...")
+   
 #-----------------------------------
 # init
 #-----------------------------------
-
-
-# set logging
-logging.basicConfig(level=logging.INFO)
-logging.info("Start RFID control ...")
-
 
 # read from file, which stage should be use ... to switch between stages during runtime
 def get_active_stage():

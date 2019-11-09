@@ -17,9 +17,6 @@ print("--------------------------------")
 # start and configure logging
 #----------------------------------------------
 import logging
-
-#logging.basicConfig(level=logging.INFO)
-
 if stage.test:
     if mbox.DEBUG:
        logging.basicConfig(level=logging.DEBUG)  # DEBUG, INFO, WARNING, ERROR, CRITICAL

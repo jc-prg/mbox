@@ -9,10 +9,13 @@ import modules.config_stage as stage
 RASPI = True   # True if Raspberry Pi and RFID reader connected
 DEBUG = False  # True if output logging in DEBUG level
 
-APIname    = "jc://mbox/server/"
-APIversion = "v0.3.4"
-APPversion = "v0.3.5"
-APPsupport = [APPversion, "v0.3.4", "v0.3.3"]  # other supported versions
+APIname       = "jc://mbox/server/"
+APIname_LED   = "jc://mbox/LED/"
+APIname_BTN   = "jc://mbox/button/"
+APIname_RFID  = "jc://mbox/RFID/"
+APIversion    = "v0.3.4"
+APPversion    = "v0.3.5"
+APPsupport    = [APPversion, "v0.3.4", "v0.3.3"]  # other supported versions
 
 # ---------------------------------
 

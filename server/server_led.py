@@ -20,11 +20,30 @@ import modules.config_mbox  as mbox
 import modules_gpio.light   as led
 import modules_gpio.config  as gpio
 
+# set start time and write title/version/stage
+#----------------------------------------------
+mbox.start_time = time.time()
+print("--------------------------------")
+print(mbox.APIname_LED + mbox.APIversion + "   (" + str(stage.rollout) + ")")
+print("--------------------------------")
+
+# start and configure logging
+#----------------------------------------------
+import logging
+if stage.test:
+    if mbox.DEBUG:
+       logging.basicConfig(level=logging.DEBUG)  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+       logging.info("Start - Log-Level DEBUG ...")
+    else:
+       logging.basicConfig(level=logging.INFO)   # DEBUG, INFO, WARNING, ERROR, CRITICAL
+       logging.info("Start - Log-Level INFO ...")
+else:
+   logging.basicConfig(level=logging.WARN)    # DEBUG, INFO, WARNING, ERROR, CRITICAL
+   logging.info("Start - Log-Level WARN ...")
+
 #-----------------------------------
 # init
 #-----------------------------------
-
-logging.basicConfig(level=logging.INFO)
 
 # read from file, which stage should be use ... to switch between stages during runtime
 def get_active_stage():

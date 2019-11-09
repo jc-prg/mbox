@@ -134,7 +134,8 @@ def loop():
                     else:                    light_stage = "1"
 
                 # if card is detected ...
-                if "RFID" in data["LOAD"]:
+                if "LOAD" in data:
+                  if "RFID" in data["LOAD"]:
                     light_rfid = "0"
                     if   data["LOAD"]["RFID"] == mbox.demo_card:
                         first_run = 1

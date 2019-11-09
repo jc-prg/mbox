@@ -126,15 +126,15 @@ $ ./server/server_button.py  &
 
 ```bash
 # jc://mbox/ Server (if Raspberry Pi)
-/usr/bin/python3 /projects/git/mbox/server/server_led.py     > /dev/null &
-/usr/bin/python3 /projects/git/mbox/server/server_buttons.py > /dev/null &
-/usr/bin/python2 /projects/git/mbox/server/server_rfid.py    > /dev/null &
+/usr/bin/python3 /projects/prod/mbox/server/server_led.py     > /dev/null &
+/usr/bin/python3 /projects/prod/mbox/server/server_buttons.py > /dev/null &
+/usr/bin/python2 /projects/prod/mbox/server/server_rfid.py    > /dev/null &
 
 # jc://mbox/ Server
-/usr/bin/python3 /projects/git/mbox/server/server.py         > /dev/null &
+/usr/bin/python3 /projects/prod/mbox/server/server.py         > /dev/null &
 
 # jc://mbox/ Client
-/usr/bin/docker-compose -f /projects/git/mbox/docker-compose.yml up -d &
+/usr/bin/docker-compose -f /projects/prod/mbox/docker-compose.yml up -d &
 
 ```
 

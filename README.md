@@ -16,22 +16,24 @@ This software is built to play music (MP3 / M4A files and web-streams) on a _Ras
 
 The jc://mbox/ uses VLC (https://www.videolan.org/) and several other sources and is written in PYTHON (server) and JAVASCRIPT (client).
 
-## Prerequisites
+## How to build the hardware
+
+An instruction will follow soon ... in the meanwhile here are some [pictures](docs/BUILD_HARDWARE.md).
+
+## How to setup the software
+
+### Prerequisites
 
 In order to use jc://mbox/ as it is you must have installed:
 
 1. docker, docker-compose
 2. python3, pip3, python2, pip
 
-## How to build the hardware
-
-An instruction will follow soon ... in the meanwhile here are some [pictures](docs/BUILD_HARDWARE.md).
-
-## How to install, configure and run the software
-
 The *server software* has been tested on a Raspberry Pi 3B+ with Raspbian (2018-11-13-raspbian-stretch-lite) and on an Ubuntu Desktop. RFID reader, LED and Buttons only tested on the Raspberry Pi.
 
 The *client software* has been tested with Chrome 70.0, Firefox 68.0 and Safari on iOS 13 (iPhone XS, iPhone SE).
+
+### How to install, configure and run the software
 
 1. Clone this repository and the modules
 

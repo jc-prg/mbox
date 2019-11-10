@@ -10,14 +10,14 @@ var mbox_lastshow      = "";
 var mbox_lastshow_song = "";
 var mbox_cover_list    = [];
 var mbox_icons     = {
-	"album"       : "img/cd2.png",
-	"playlist"    : "img/playlist.png",
-	"stream"      : "img/stream.png",
-        "playing"     : "img/playing.gif",
-        "radio"       : "img/radio.jpg",
-        "album_bw"    : "img/cd_bw.png",
-        "radio_bw"    : "img/radio_bw.png",
-        "playlist_bw" : "img/playlist_bw.png",
+	"album"       : "icon/cd.png",
+	"playlist"    : "icon/list.png",
+	"stream"      : "icon/stream.png",
+        "playing"     : "icon/playing_25x25.gif",
+        "radio"       : "icon/radio.jpg",
+        "album_bw"    : "icon/album.png",
+        "radio_bw"    : "icon/stream.png",
+        "playlist_bw" : "icon/list.png",
 	}
 
 var mbox_playlist       = {};

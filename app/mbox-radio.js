@@ -68,7 +68,8 @@ function mboxRadio(data) {
              }
 
         var onclick = "mboxAddListDialog_Radio("+(a+1)+");";
-	text += mboxCoverSeparator( "+", onclick );
+//	text += mboxCoverSeparator( "+", onclick );
+        text += mboxCoverSeparator( "<img src=\"icon/stream_add.png\" style=\"height:50px;width:50px;margin-top:10px;\">", onclick );
 	text += mboxAlbumDetail( a+1 );
 
         mbox_list_amount = sorted_r.length+1;
@@ -123,11 +124,11 @@ function mboxRadioChannel(data) {
         text += "<div class=\"album_infos new\">";
         text +=   "<b>" + radio_data["title"] + "</b><br/><i>" + radio_data["description"] + "</i><br/>";
         text += "</div>";
-        text += mboxButton("exit",  "mboxEmptyBelow();", "opac",   "small small2");
+        text += mboxButton("delete",  "mboxEmptyBelow();", "opac",   "small small2");
 
         // player control (in box)
         text += "<div class=\"album_control new\">";
-        text += "<div class=\"player_active big\" id=\"playing_"+uuid+"\" style=\"display:none;\"><img src=\""+mbox_icons["playing"]+"\" style=\"height:20px;width:24px\"></div>";
+        text += "<div class=\"player_active big\" id=\"playing_"+uuid+"\" style=\"display:none;\"><img src=\""+mbox_icons["playing"]+"\" style=\"height:20px;width:20px;margin:2px;\"></div>";
 	if (mbox_device != "local") {
       		text += mboxButton("play",  "mboxApp.requestAPI('GET',['play', '" + uuid + "'],'',mboxControl);", "blue");
         	text += mboxButton("stop",  "mboxApp.requestAPI('GET',['stop'],'',mboxControl);", "blue");
@@ -211,9 +212,9 @@ function mboxRadioInfo(data) {
                 }
 
 	var edit = "";
-        edit += mboxButton("cover", "mboxUploadImage('"+uuid+"','radio','"+album["title"]+"');",                     "red");
+        edit += mboxButton("image_add", "mboxUploadImage('"+uuid+"','radio','"+album["title"]+"');",                     "red");
         edit += mboxButton("edit",  "mboxRadioEditLoad('"+uuid+"');",                                                "red");
-        edit += mboxButton("exit",  "mboxAlbumDelete('"+album["title"]+": "+album["description"]+"','"+uuid+"');",   "red");
+        edit += mboxButton("delete",  "mboxAlbumDelete('"+album["title"]+": "+album["description"]+"','"+uuid+"');",   "red");
 
         text += "<b>Stream Informationen</b><br/><br/>";
         text += mboxTableNew("start");

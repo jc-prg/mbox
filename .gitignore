@@ -9,10 +9,11 @@ config/config_prod
 
 config/config_test
 
+*.swp
+app/icon/material/
+app/icon_backup/
+app/icon_backup/Thumbs.db:encryptable
 app/icon_backup/Thumbs.db
 
-app/icon_backup/Thumbs.db:encryptable
 
-app/icon/material/
 
-app/icon_backup/

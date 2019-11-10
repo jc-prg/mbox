@@ -324,13 +324,13 @@ function mboxListAlbum(data) {
 	text +=   "<b>" + artist + "</b><br/><i>" + album + "</i><br/>";
 	text +=   length;
         text += "</div>";
-        text += mboxButton("exit",  "mboxEmptyBelow();hide_triangle(mbox_list_last);", "opac",   "small small2");
+        text += mboxButton("delete",  "mboxEmptyBelow();hide_triangle(mbox_list_last);", "opac",   "small small2");
 
         // player control (in box)
 	text += "<div class=\"album_control new\">";
 
 	if (mbox_device != "local") {
-		text += "<div class=\"player_active big\" id=\"playing_"+uuid+"\" style=\"display:none;\"><img src=\""+mbox_icons["playing"]+"\" style=\"height:20px;width:24px\"></div>";
+		text += "<div class=\"player_active big\" id=\"playing_"+uuid+"\" style=\"display:none;\"><img src=\""+mbox_icons["playing"]+"\" style=\"height:20px;width:20px;margin:2px;\"></div>";
         	text += mboxButton("play",  "mboxApp.requestAPI('GET',['play', '" + uuid + "'],'',mboxControl);", "blue");
 	        text += mboxButton("pause", "mboxApp.requestAPI('GET',['pause'],'',mboxControl);",                     "blue");
         	text += mboxButton("stop",  "mboxApp.requestAPI('GET',['stop'],'',mboxControl);",                      "blue");
@@ -494,8 +494,8 @@ function mboxAlbumInfo(data) {
 		}
 
 	var edit = "";
-        edit += mboxButton("cover", "mboxUploadImage('"+uuid+"','album','"+album["album"]+"');",                "red");
-        edit += mboxButton("exit",  "mboxAlbumDelete('"+album["artist"]+": "+album["album"]+"','"+uuid+"');", 	"red");
+        edit += mboxButton("image_add",  "mboxUploadImage('"+uuid+"','album','"+album["album"]+"');",                "red");
+        edit += mboxButton("delete", "mboxAlbumDelete('"+album["artist"]+": "+album["album"]+"','"+uuid+"');", 	"red");
 
 
 	text += "<b>Album Informationen</b><br/>";

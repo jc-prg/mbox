@@ -47,11 +47,17 @@ function printAppMenu() {
 	// initial menu ...
 	appMenu.empty();     // load data to class
 
+	var mbox_filter_show = "";
+	if (mbox_filter == true) { mbox_filter_show = "hide"; }
+	else			 { mbox_filter_show = "show"; }
+
 	appMenu.add_script( "mboxToggleMode();printAppStatusLoad();if(mbox_settings){settingsToggle();}", "Modus: " + mbox_mode );
 	appMenu.add_script( "mboxToggleDevice();printAppStatusLoad();if(mbox_settings){settingsToggle();}", "Device: " + mbox_device );
-	appMenu.add_script( "mboxToggleFilter();printAppStatusLoad();if(mbox_settings){settingsToggle();}", "Filter: " + mbox_filter );
+	if (mbox_mode == "Album") {
+		appMenu.add_script( "mboxToggleFilter();printAppStatusLoad();if(mbox_settings){settingsToggle();}", "Filter: " + mbox_filter_show );
+		}
 	appMenu.add_line();
-	appMenu.add_script( "mboxListCardsLoad();if(mbox_settings){settingsToggle();printAllStatusLoad();};", "RFID Verwalten" );
+	appMenu.add_script( "mboxListCardsLoad();if(mbox_settings){settingsToggle();printAllStatusLoad();};", "RFID Cards" );
 	appMenu.add_script( "settingsToggle();settingsStatusLoad();printAppStatusLoad();", "Settings" );
 	appMenu.add_line();
         appMenu.add_script( "toggleCoverPrint();", "Cover Images" )

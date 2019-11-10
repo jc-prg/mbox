@@ -36,7 +36,7 @@ function mboxCoverList( uuid, cover="", description="", cmd_open="", cmd_play=""
 	var icon_playing  = mbox_icons["playing"];
 
         if (mbox_device == "remote") {
-		button_play = "<div class=\"player_button small white\" onclick=\"" + cmd_play + "\"><img src=\"icon/mbox_play.png\" style=\"width:9px;height:9px;margin:2px;\"></div>";
+		button_play = "<div class=\"player_button small white\" onclick=\"" + cmd_play + "\"><img src=\"icon/play.png\" style=\"width:9px;height:9px;margin:2px;\"></div>";
 		}
 
 	if (cover == "") {
@@ -67,7 +67,7 @@ function mboxButton( button, cmd="", color="blue", small="", display="block" ) {
 
         if (button != "empty") {
                 text +=   "<div class=\"player_button "+color+" "+small+"\" onclick=\"javascript:"+cmd+"\" style=\"display:"+display+";\">";
-                text +=   "<img src=\"icon/mbox_"+button+".png\" class=\"player_image "+small+"\"></div>";
+                text +=   "<img src=\"icon/"+button+".png\" class=\"player_image "+small+"\"></div>";
                 }
         else {
                 text +=   "<div class=\"player_button empty "+small+"\"></div>";

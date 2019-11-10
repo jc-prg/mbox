@@ -123,7 +123,7 @@ function mboxControl (data) {
 		text += "</div>";
 
 		text += "<div class='mbox_ctrl_open' id='ctrl_close' style='display:"+display_close+";'>";
-		text += mboxButton("exit", "mboxControl_open();",   "red", "right");
+		text += mboxButton("close", "mboxControl_open();",   "red", "right");
 		text += "</div>";
 		}
 

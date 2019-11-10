@@ -7,7 +7,7 @@ var mboxPlayer;
 function localPlayer(position=0, play=true) {
 	//appMsg.confirm("<div id='localPlayer' style='width:100%;height:200px;'></div>","",280);
 
-	if (!mboxPlayer) { mboxPlayer = new jcPlayer("mboxPlayer","audioPlayer", mbox_music_dir, mbox_cover_dir); }
+	if (!mboxPlayer) { mboxPlayer = new jcPlayer("mboxPlayer","audioPlayer", mbox_music_dir, mbox_cover_dir, "apps/"); }
 
 	mboxPlayer.activeTrack              	  = position;
 	//mboxPlayer.activeCtrl["buttons"]    	  = false;

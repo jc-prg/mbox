@@ -135,15 +135,16 @@ Here you'll find a history of features implemented into hardware and software as
 * OK - show space left on ssd card / USB stick; space left on system disk
 * OK - measure durations during start process
 
+* BUG - current version doesn't read "Reisemaus/Ostsee" ...?
 * BUG - Start radio channel by card doesn't work for all channels (starting via UI works) -> reread mp3-url when ever loaded
 * BUG - if playing and press play in a playlist, start with first song instead of actuall running song (PlaySong -> start file, not list without loading list again)
 
-- show space used und system dis
+- API command to re-read data to cache, periodic re-read (not only on specific data changes - or ensure, no data change is forgotten)
 - reconnect tracks / albums when reloading based on path/file or albumpath (mbox_load)
 - save presets in database and e.g. prefered device, start with last song played before switched off
-- check and show voltage ... "vcgencmd measure_volts core" ... sdram_i, sdram_p, sdram_c
+- check and show voltage ... "vcgencmd measure_volts core" ... sdram_i, sdram_p, sdram_c (problem, when recharging the battery)
 
-* DECLINED - BUG - Play the whole song, not only parts // not seen any more
+* DECLINED - Play the whole song, not only parts // not seen any more
 * DECLINED - dont delete playlist when stop: don't unload playlist/title if stop - just rewind to first position, but display now reflects situation
 
 
@@ -256,6 +257,7 @@ Here you'll find a history of features implemented into hardware and software as
 * OK - filter for/group by artists
 * OK - edit metadata for playlists and web-streams
 * OK - show initial load time and running time in settings
+* OK - new icon set, due to license reasons
 
 - filter for genres (or other metadata ...)
 - use enhanced local player also for playlists (tracks & albums to be loaded)

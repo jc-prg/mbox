@@ -122,6 +122,14 @@ $ ./server/server_button.py  &
 
 8. Open client and start "Reload Data" in the settings (e.g. http://localhost:85/ for PROD environment)
 
+```bash
+# Default URL:
+# - http://localhost:85/          - Client
+# - http://localhost:5005/api/ui  - Swagger UI API description
+# - http://localhost:5105/_utils  - Fauxton CouchDB access (default user:mbox; pwd:mbox)
+
+```
+
 9. Optional: enable auto-start - add the following to */etc/rc.local*
 
 ```bash
@@ -135,8 +143,8 @@ $ ./server/server_button.py  &
 
 # jc://mbox/ Client
 /usr/bin/docker-compose -f /projects/prod/mbox/docker-compose.yml up -d &
-
 ```
+
 
 ## Disclaimer
 

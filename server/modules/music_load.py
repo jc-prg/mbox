@@ -145,10 +145,17 @@ def readMutagen(file,type="mp4"):
 	}
       # img = "covr"
       if os.path.getsize(file) > 0:
+        try:
           tags = MP4(file).tags
-      else:
+        except Exception as e:
           logging.warn("Not an MP4 file"+file)
-          tags = {}
+          logging.warn(str(e))
+          tags          = {}
+          data["error"] = str(e)
+      else:
+        logging.warn("File is empty: "+file)
+        tags          = {}
+        data["error"] = "File is empty"
 
     elif type == "mp3":
       relevant_tags = {                  # https://mutagen.readthedocs.io/en/latest/api/id3.html
@@ -161,11 +168,18 @@ def readMutagen(file,type="mp4"):
 	"track_no"       : "TRCK"
 	}
       # img = "APIC"
-      try:
+      if os.path.getsize(file) > 0:
+        try:
           tags = ID3(file) #.tags
-      except:
+        except Exception as e:
           logging.warn("Not an MP3 file"+file)
-          tags = {}
+          logging.warn(str(e))
+          tags          = {}
+          data["error"] = str(e)
+      else:
+        logging.warn("File is empty: "+file)
+        tags          = {}
+        data["error"] = "File is empty"
 
     for r_tag in relevant_tags:
       for f_tag in tags:
@@ -293,6 +307,9 @@ def readID3(file):
       tags["compliation"]  = 0
       tags["filesize"]     = filesize
       tags["length"]       = filelength
+
+    if filesize == 0:
+      tags["error"] = "File is empty (ID3)."
 
     return tags
 
@@ -626,7 +643,7 @@ def reloadMusic(data,all=True,thread=""):
           data_a[tag1][tag2]["tracks"].append(tags["uuid"])
 
 
-    # create list of albums by UUID based on track infos
+    # create list of albums by UUID based on track infos -> album_info
     for key in data_i:
        a_uuid = "a_"+str(uuid.uuid1())
        if key+"_tags" in data_i:
@@ -642,23 +659,31 @@ def reloadMusic(data,all=True,thread=""):
          data_e[a_uuid]["albumsize"]     = 0
          data_e[a_uuid]["albumlength"]   = 0
          data_e[a_uuid]["genres"]        = []
+         data_e[a_uuid]["error"]         = []
 
          data_e[a_uuid]["cover_images"]          = {}
          data_e[a_uuid]["cover_images"]["dir"]   = []
          data_e[a_uuid]["cover_images"]["track"] = []
 
-         # calculate album size in bytes
+         # consolidate data from tracks
          for t_key in data_e[a_uuid]["tracks"]:
+
+           # calculate album size in bytes
            data_e[a_uuid]["albumsize"]     = data_e[a_uuid]["albumsize"]   + data_t[t_key]["filesize"]
            if "length" in data_t[t_key]:
               data_e[a_uuid]["albumlength"]   = data_e[a_uuid]["albumlength"] + data_t[t_key]["length"]
 
-         # collect genre information from tracks
-         for t_key in data_e[a_uuid]["tracks"]:
+           # collect genre information from tracks
            if "genre" in data_t[t_key]:
              if data_t[t_key]["genre"] and not data_t[t_key]["genre"] in data_e[a_uuid]["genres"]:
                data_e[a_uuid]["genres"].append(data_t[t_key]["genre"])
            data_t[t_key]["uuid_album"] = a_uuid
+
+           # error message from tracks
+           if "error" in data_t[t_key]:
+             data_e[a_uuid]["error"].append(data_t[t_key]["error"] + " ("+data_t[t_key]["file"]+")")
+           data_t[t_key]["uuid_album"] = a_uuid
+
 
          # check if already a rfid card is connected
          data["cards"], data_e[a_uuid]["card_id"] = checkIfCardExists(data["cards"],data_e[a_uuid]["album"],data_e[a_uuid]["artist"],a_uuid)
@@ -684,6 +709,7 @@ def reloadMusic(data,all=True,thread=""):
 
     if all:
       data["album_info"]  = data_e        # replace all albums
+
       #data["cards"]       = {}            # remove all linked cards, as linked to uuids
       #data["playlists"]   = {}           # remove all playlists, as linked to uuids
     else:

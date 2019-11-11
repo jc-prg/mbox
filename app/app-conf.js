@@ -4,7 +4,7 @@
 
 // REST API configuration
 
-var appVersion     = "v0.3.6";
+var appVersion     = "v0.3.7";
 var appTitle       = "jc://mbox/";
 
 var RESTip         = location.host;

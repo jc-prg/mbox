@@ -112,6 +112,7 @@ function mboxAlbumAll(data) {
 	// list albums
 	var i = 1;
 	for (var a=0;a<sorted_entries.length;a++) {
+
 		var keys    = sorted_entries[a].split("||");
 		var uuid    = keys[3];
 		var album   = keys[2];
@@ -441,8 +442,8 @@ function mboxTrackInfo(data) {
 	var size   = Math.round(track["filesize"]/1024/1024*100)/100;
 	var length = convert_second2time(Math.round(track["length"]));
 	var path   = track["file"];
-	var url    = RESTurl + "mbox/read/tracks/"+track["uuid"]+"/";
-	var url1   = RESTurl + "mbox/read/album_info/"+track["uuid_album"]+"/";
+	var url    = RESTurl + "api/data/"+track["uuid"]+"/-/";
+	var url1   = RESTurl + "api/data/"+track["uuid_album"]+"/-/";
 	var url2   = "/mbox_music/";
 
 
@@ -458,8 +459,11 @@ function mboxTrackInfo(data) {
 	text += mboxTableNew(["<i>Interpret:", 		track["artist"] ] );
 	text += mboxTableNew(["<i>Gr&ouml;&szlig;e:", 	size + " MByte / " + length + " min" ] );
 	text += mboxTableNew(["<i>Track Dir:", 		"<a href='" + url2 + path + "' target='_blank'>" + path + "</a>" ] );
-	text += mboxTableNew(["<i>UUID:",	 		"<a href='" + url + "' target='_blank'>" + uuid + "</a>" ] );
-	text += mboxTableNew(["<i>UUID Album:", 		"<a href='" + url1 + "' target='_blank'>"    + track["uuid_album"] + "</a>" ] );
+	text += mboxTableNew(["<i>UUID:",	 	"<a href='" + url + "' target='_blank'>" + uuid + "</a>" ] );
+	text += mboxTableNew(["<i>UUID Album:", 	"<a href='" + url1 + "' target='_blank'>"    + track["uuid_album"] + "</a>" ] );
+	if ("error" in track) {
+		text += mboxTableNew(["<i><font color='red'>Error:</font><i>", "<i><font color='red'>"+track["error"]+"</font></i>" ] );
+		}
 	text += mboxTableNew(["<i>Verf&uuml;gbare Cover:",	cover ] );
 	text += "<tr><td colspan='2'><hr></td></tr>";
 	text += mboxTableNew("end");
@@ -477,8 +481,8 @@ function mboxAlbumInfo(data) {
 	var album  = data["DATA"]["_selected"];
 	var uuid   = data["DATA"]["_selected_uuid"];
 
-	var url    = RESTurl + "mbox/read/album_info/";
-	var url2   = RESTurl + "mbox/read/cards/";
+	var url    = RESTurl + "api/data/";
+	var url2   = RESTurl + "api/data/";
 	var size   = Math.round(album["albumsize"]/1024/1024*100)/100;
 	var length = convert_second2time(Math.round(album["albumlength"]));
 	var cardid = album["card_id"]; if (!cardid) { cardid = "Keine Karte verkn&uuml;pft."; } else { cardid =  "<a href='" + url2 + cardid + "/' target='_blank'>" + cardid + "</a>" ; }
@@ -507,8 +511,11 @@ function mboxAlbumInfo(data) {
 	text += mboxTableNew(["<i>Genres:", 		album["genres"] ] );
 	text += mboxTableNew(["<i>Gr&ouml;&szlig;e:", 	size + " MByte / " + length + " min" ] );
 	text += mboxTableNew(["<i>Album Dir:", 		path ] );
-	text += mboxTableNew(["<i>UUID:",	 		"<a href='" + url + uuid + "/' target='_blank'>" + uuid + "</a>" ] );
+	text += mboxTableNew(["<i>UUID:",	 		"<a href='" + url + uuid + "/-/' target='_blank'>" + uuid + "</a>" ] );
 	text += mboxTableNew(["<i>Card ID:",		cardid ] );
+	if ("error" in album) {
+		text += mboxTableNew(["<i><font color='red'>Error:</font><i>", "<i><font color='red'>"+album["error"].length + " Errors - first: " + album["error"][0]+"</font></i>" ] );
+		}
 	text += mboxTableNew(["<i>Verf&uuml;gbare Cover:",	cover ] );
 	text += "<tr><td colspan='2'><hr></td></tr>";
 	text += mboxTableNew(["<i>Bearbeiten:",		edit ] );

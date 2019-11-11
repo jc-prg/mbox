@@ -10,9 +10,15 @@ config/config_prod
 config/config_test
 
 *.swp
+
+*.pyc
+
 app/icon/material/
+
 app/icon_backup/
+
 app/icon_backup/Thumbs.db:encryptable
+
 app/icon_backup/Thumbs.db
 
 

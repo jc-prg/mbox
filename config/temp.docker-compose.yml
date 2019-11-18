@@ -36,3 +36,11 @@ services:
       - 'COUCHDB_PASSWORD=${MBOX_DB_PASSWORD}'
 
 #----------------------------------------
+
+  ${MBOX_DOCKER_SERVER}:
+    build: ./config/container
+    volumes:
+      - ${MBOX_DIR_SERVER}:/usr/src/app/server
+    ports:
+      - ${MBOX_SERVER_PORT}:${MBOX_SERVER_PORT}
+

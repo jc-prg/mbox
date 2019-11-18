@@ -1,0 +1,18 @@
+#!/bin/bash
+
+../../../docker-clean
+#docker build -t jean-test .
+docker run \
+	-v /home/jean/Musik:/home/vlc/Documents:rw \
+	-v /projects/git/mbox/server:/usr/src/app/server:rw \
+	-v /dev/snd:/dev/snd \
+	-v /projects_data/test/music/:/projects_data/test/music/ \
+        --privileged \
+        -v /tmp/.X11-unix:/tmp/.X11-unix \
+        -e uid=$(id -u) -e gid=$(id -g) \
+        -e DISPLAY=unix$DISPLAY \
+ 	-p 5006:5006/tcp \
+	--name vlc-test-2 jean-test \
+
+# docker run -v /home/jean/Musik:/home/vlc/Documents:rw -v /dev/snd:/dev/snd --privileged -v /tmp/.X11-unix:/tmp/.X11-unix -e uid=$(id -u) -e gid=$(id -g) -e DISPLAY=unix$DISPLAY --name vlc-test jean-test
+

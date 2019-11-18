@@ -1,0 +1,15 @@
+requests
+netaddr
+configparser
+flask
+flask-restful
+flask-httpauth
+flask-cors
+flask-restplus
+connexion[swagger-ui]
+python-vlc
+mutagen
+couchdb
+uuid
+eyed3
+

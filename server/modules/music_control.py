@@ -58,7 +58,9 @@ class musicThread (threading.Thread):
       self.relevant_db  = self.music_database.databases["music"] # ["albums","album_info","tracks","files","cards"]
       self.vol_factor   = 0.8 # factor to limit audio level (max = 1.0)
 
-      self.instance     = vlc.Instance("--quiet")
+      if stage.rollout == "prod":     self.instance     = vlc.Instance("--quiet")
+      else:                           self.instance     = vlc.Instance()
+      
       self.player       = self.instance.media_player_new()
       self.player.audio_set_volume(int(self.music_ctrl["volume"]*100))
       self.player.audio_set_mute(False)

@@ -1,4 +1,4 @@
-# jc://mbox/
+# jc://music-box/
 
 A friend has built a similar box based on an existing free software (which I've never seen myself). As my children where faszinated by this box I decided to build such a box for my children, but to write the software on my own from the scratch. My intentions is to try out different development practices. So it's not my idea but my individual implementation of this idea ...
 
@@ -27,18 +27,23 @@ The jc://mbox/ uses VLC (https://www.videolan.org/) and several other sources an
 
 ## How to build the hardware
 
-An instruction will follow soon ... in the meanwhile here are some [pictures](docs/BUILD_HARDWARE.md).
+An instruction will follow soon ... in the meanwhile here are some [pictures](docs/INSTRUCTION_BUILD_HARDWARE.md).
 
 ## How to setup the software
 
+### Initial Raspberry Pi setup
+
+If you want to use a fresh Raspberry Pi image, additional guidance can be found [here](docs/INSTRUCTION_PREPARE_RPI.md).
+
 ### Prerequisites
 
-In order to use jc://mbox/ as it is you must have installed:
+In order to use jc://music-box/ as it is you must have installed:
 
-1. docker, docker-compose
-2. python3, pip3, python2, pip
+1. git
+2. docker, docker-compose
+3. python3, pip3, python2, pip
 
-The *server software* has been tested on a Raspberry Pi 3B+ with Raspbian (2018-11-13-raspbian-stretch-lite) and on an Ubuntu Desktop. RFID reader, LED and Buttons only tested on the Raspberry Pi.
+The *server software* has been tested on a Raspberry Pi 3B+ with [Raspbian](docs/INSTRUCTION_PREPARE_RPI.md and on an Ubuntu Desktop. RFID reader, LED and Buttons only tested on the Raspberry Pi.
 
 The *client software* has been tested with Chrome 70.0, Firefox 68.0 and Safari on iOS 13 (iPhone XS, iPhone SE).
 

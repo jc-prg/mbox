@@ -140,9 +140,9 @@ function mboxAlbumAll(data) {
 
 			if (uuid == album_active) { album_active_no = i; }
 			if (uuid) {
-				cover           = mboxAlbumCover2(uuid,album_info);  // Check if Cover exists
+				cover           = mboxAlbumCover2(uuid,album_info);         // Check if Cover exists
 				[text1, print1] = mboxAlbumAll_album(i,uuid,album,artist,cover,onclick_open,onclick_play);
-				if (text1 != "") { i++; text += text1; print += print1; }
+				if (text1 != "") { i++; text += text1; print += print1; }   // text = album list; print is cover for print out
 				}
 			}
 		mbox_list_amount = i;

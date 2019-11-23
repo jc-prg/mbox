@@ -76,7 +76,8 @@ class radioThread (threading.Thread):
    def load(self,playlist,pl_data,pl_uuid):
       if "m3u" in playlist:
         logging.info("Load playlist URL from m3u ("+playlist+")")
-        streams = self.get_url(playlist).split("\n")
+        streams = self.get_url(playlist).replace("\r","")
+        streams = streams.split("\n")
       else:
         streams = [playlist]
 

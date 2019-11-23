@@ -120,8 +120,11 @@ function mboxAlbumAll(data) {
 		var chapter = keys[0];
 		var text1   = "";
 		var print1  = "";
+		var isvalidfilter = false;
+		
+		if (the_filter[0] in album_info[uuid] && album_info[uuid][the_filter[0]].indexOf(the_filter[1]) > -1) { isvalidfilter = true; }
 
-		if (filters == "" || album_info[uuid][the_filter[0]].indexOf(the_filter[1]) > -1) {
+		if (filters == "" || isvalidfilter) {
 
 			// print cover with charakter ...
 			if (mbox_show_char) {
@@ -152,7 +155,7 @@ function mboxAlbumAll(data) {
 	setTextById("remote2",text);
 	setTextById("ontop",print);
 
-	if (album_active != "") {
+	if (album_active && album_active != "") {
 		mboxAlbumLoad(album_active_no,album_active);
 		document.getElementById('scrollto_'+album_active.replace(/-/g,"")).scrollIntoView();
 		}

@@ -264,3 +264,4 @@ Here you'll find a history of features implemented into hardware and software as
 - appMsg.confirm -> place dialog in the middle (bit more above ...)
 - reload control panel whenever pressed button (show new title and new buttons immedatley)
 
+

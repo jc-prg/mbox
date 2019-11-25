@@ -2,7 +2,7 @@
 
 dir="${MBOX_DIR_DATA_ROOT}"
 
-mkdir ${DOLLAR}
+mkdir ${DOLLAR}dir
 
 cd ${DOLLAR}dir
 mkdir prod

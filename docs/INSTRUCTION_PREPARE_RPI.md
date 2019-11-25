@@ -4,7 +4,7 @@
 
 - [Prepare your Raspberry Pi](#prepare-your-raspberry-pi)
   - [Download Image](#download-image)
-  - [Write image to SD-card](#write-image-to-sd-card]
+  - [Write image to SD-card](#write-image-to-sd-card)
   - [Configure the Raspberry](#configure-the-raspberry)
 - [Update Software and Prepare Project Directories](#update-software-and-prepare-project-directories)
   - [Update Software](#update-software)
@@ -111,7 +111,6 @@ $ echo "deb [arch=armhf] https://download.docker.com/linux/debian \
          sudo tee /etc/apt/sources.list.d/docker.list
          
 # install docker
-$ sudo apt-get update
 $ sudo apt-get install docker-ce
 $ systemctl enable --now docker
 ```

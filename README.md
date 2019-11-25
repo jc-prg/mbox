@@ -44,7 +44,7 @@ In order to use jc://music-box/ as it is you must have installed:
 2. docker, docker-compose
 3. python3, pip3, python2, pip
 
-The *server software* has been tested on a Raspberry Pi 3B+ with [Raspbian](docs/INSTRUCTION_PREPARE_RPI.md and on an Ubuntu Desktop. RFID reader, LED and Buttons only tested on the Raspberry Pi.
+The *server software* has been tested on a Raspberry Pi 3B+ with [Raspbian](docs/INSTRUCTION_PREPARE_RPI.md) and on an Ubuntu Desktop. RFID reader, LED and Buttons only tested on the Raspberry Pi.
 
 The *client software* has been tested with Chrome 70.0, Firefox 68.0 and Safari on iOS 13 (iPhone XS, iPhone SE).
 

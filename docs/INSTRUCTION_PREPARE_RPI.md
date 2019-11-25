@@ -4,7 +4,7 @@
 
 - [Prepare your Raspberry Pi](#prepare-your-raspberry-pi)
   - [Download Image](#download-image)
-  - [Write image to SD-card](#write-image-to-sd-card]
+  - [Write image to SD-card](#write-image-to-sd-card)
   - [Configure the Raspberry](#configure-the-raspberry)
 - [Update Software and Prepare Project Directories](#update-software-and-prepare-project-directories)
   - [Update Software](#update-software)

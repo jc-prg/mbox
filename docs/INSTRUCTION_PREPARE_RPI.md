@@ -111,7 +111,6 @@ $ echo "deb [arch=armhf] https://download.docker.com/linux/debian \
          sudo tee /etc/apt/sources.list.d/docker.list
          
 # install docker
-$ sudo apt-get update
 $ sudo apt-get install docker-ce
 $ systemctl enable --now docker
 ```

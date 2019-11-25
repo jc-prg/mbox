@@ -139,15 +139,12 @@ $ ./server/server_button.py  &
 9. Optional: enable auto-start - add the following to */etc/rc.local*
 
 ```bash
-# jc://mbox/ Server (if Raspberry Pi)
+# jc://mbox/ server modules (if Raspberry Pi)
 /usr/bin/python3 /projects/prod/mbox/server/server_led.py     > /dev/null &
 /usr/bin/python3 /projects/prod/mbox/server/server_buttons.py > /dev/null &
 /usr/bin/python2 /projects/prod/mbox/server/server_rfid.py    > /dev/null &
 
-# jc://mbox/ Server
-/usr/bin/python3 /projects/prod/mbox/server/server.py         > /dev/null &
-
-# jc://mbox/ Client
+# jc://mbox/ main server, client and database
 /usr/bin/docker-compose -f /projects/prod/mbox/docker-compose.yml up -d &
 ```
 

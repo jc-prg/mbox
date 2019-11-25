@@ -111,6 +111,9 @@ function mboxAlbumAll(data) {
 
 	// list albums
 	var i = 1;
+	if (sorted_entries.length == 0) {
+		text += "No entries in the database yet.";
+		}
 	for (var a=0;a<sorted_entries.length;a++) {
 
 		var keys    = sorted_entries[a].split("||");

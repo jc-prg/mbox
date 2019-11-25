@@ -1,5 +1,17 @@
 # jc://music-box/image
 
+## Table of Contents
+
+- [Prepare your Raspberry Pi](#prepare-your-raspberry-pi)
+  - [Download Image](#download-image)
+  - [Write image to SD-card](#write-image-to-sd-card]
+  - [Configure the Raspberry](#configure-the-raspberry)
+- [Update Software and Prepare Project Directories](#update-software-and-prepare-project-directories)
+  - [Update Software](#update-software)
+  - [Create Directories](#create-directories)
+  - [Install Docker and Docker-Compose](#install-docker-and-docker-Compose)
+- [Install Additional Tools (optional)](#install-additional-tools-optional)
+
 ## Prepare your Raspberry Pi
 
 ### Download Image
@@ -21,7 +33,7 @@ Or just use "dd":
 # sudo dd bs=4M if=<input-file> of=<output-file/device> conv=fsync
 $ sudo dd bs=4M if=2019-09-26-raspbian-buster-lite.img of=/dev/mmcblk0 conv=fsync
 ```
-### Configure the raspberry
+### Configure the Raspberry
 
 Connect a keyboard and a screen and start the raspberry, to do the initial configuration (default login: pi / raspberry).
 
@@ -44,22 +56,22 @@ $ ipconfig
 
 From now on you can work remote via ssh. Maybe you have to configure your router, that the raspberry will get the same IP4 address all the time.
 
-### Update software and prepare projects
+## Update Software and Prepare Project Directories
 
-#### Update Software:
+### Update Software:
 
 ```bash
 $ sudo apt-get update
 $ sudo apt-get upgrade
 ```
 
-#### Install Git:
+### Install Git:
 
 ```bash
 $ sudo apt-get install git
 ```
 
-#### Create directories:
+### Create directories:
 
 ```bash
 $ sudo cd /
@@ -78,10 +90,45 @@ $ mkdir test
 $ mkdir prod
 ```
 
-#### Additional tools
+### Install Docker and Docker-Compose:
+
+To install docker the following instructions worked for me: [https://www.marksei.com/docker-on-raspberry-pi-raspbian/](https://www.marksei.com/docker-on-raspberry-pi-raspbian/). To make it short:
+
+```bash
+# install required software and aquire GPG key
+$ sudo apt-get install \
+         apt-transport-https \
+         ca-certificates \
+         curl \
+         gnupg2 \
+         software-properties-common \
+         python3-pip
+$ curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -
+             
+# add repository
+$ echo "deb [arch=armhf] https://download.docker.com/linux/debian \
+         $(lsb_release -cs) stable" | \
+         sudo tee /etc/apt/sources.list.d/docker.list
+         
+# install docker
+$ sudo apt-get update
+$ sudo apt-get install docker-ce
+$ systemctl enable --now docker
+```
+
+To install docker-compose use PIP:
+
+```bash
+$ sudo pip3 install docker-compose
+```
+
+
+## Install Additional Tools (optional)
 
 Usually I install the Midnight Commander to navigate on the system ...
 
 ```bash
 $ sudo apt-get install mc
 ```
+
+

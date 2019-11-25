@@ -4,7 +4,7 @@
 # ${THIS_IS_THE_PROJECT_TEMPLATE}
 #----------------------------------------
 
-version: "2"
+version: "3"
 services:
 
   ${MBOX_DOCKER_CLIENT}:
@@ -22,7 +22,9 @@ services:
       - ${MBOX_DIR_DATA}/cover_upload:/var/www/html/app/cover_upload
 
       - ${MBOX_DIR_JCMODULES}:/var/www/html/app/apps
- 
+
+
+# CouchDB 
 #--------------------
 
   ${MBOX_DOCKER_DATABASE}:
@@ -35,4 +37,18 @@ services:
       - 'COUCHDB_USER=${MBOX_DB_USER}'
       - 'COUCHDB_PASSWORD=${MBOX_DB_PASSWORD}'
 
+
+# main server component (tested with docker-compose under Ubuntu)
 #----------------------------------------
+
+  ${MBOX_DOCKER_SERVER}:
+    build: ./config/container
+    privileged: true
+    volumes:
+      - ${MBOX_DIR_SERVER}:/usr/src/app/server
+      - ${MBOX_DIR_DATA}/music:${MBOX_DIR_DATA}/music
+    ports:
+      - ${MBOX_SERVER_PORT}:${MBOX_SERVER_PORT}
+      
+      
+

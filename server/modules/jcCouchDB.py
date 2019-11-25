@@ -38,10 +38,11 @@ class jcCouchDB ():
           except requests.exceptions.RequestException as e:
               connects2db += 1
               logging.warn("Waiting 5s for connect to CouchDB: " + str(connects2db) + "/" + str(max_connects))
+              logging.info("                      ... to CouchDB: " + stage.data_db)
               time.sleep(5)
 
           if connects2db == max_connects:
-              logging.warn("Error connecting to CouchDB, give up: " + str(e))
+              logging.warn("Error connecting to CouchDB, give up.")
               sys.exit(1)
 
 

@@ -9,6 +9,7 @@
   - [The Inner Box](#the-inner-box)
   - [The Client (on an iPhone)](#the-client-on-an-iphone)
 - [Required Components](#required-components)
+- [Building the Hardware](#building-the-hardware)
 
 ## Impressions
 
@@ -54,4 +55,47 @@ An instruction how to build the box will follow. Until then here a few impressio
 * 8x double screw terminal blocks (wire to board connector)
 * 1x RFID Reader: RFID Kit RC522
 * Several RFID key cards 13,56 Mhz
+
+## Building the Hardware
+## Integrate IT Components
+
+The IT components are connected via GPIO with the Raspberry Pi. A documentation can be found here: [https://www.raspberrypi.org/documentation/usage/gpio/](https://www.raspberrypi.org/documentation/usage/gpio/).
+The GPIO pins are define in the file: [./server/modules_gpio/config.py](../server/modules_gpio/config.py).
+
+### Integrate Raspberry Pi and PowerBank
+### Integrate Power-Switch
+### Integrate RFID Kit RC533
+
+The integration of the RFID Kit RC533 is relatively easy. The cabling is described here: [https://tutorial.cytron.io/2018/08/15/reading-rfid-tag-using-mifare-rc522-raspberry-pi/](https://tutorial.cytron.io/2018/08/15/reading-rfid-tag-using-mifare-rc522-raspberry-pi/).
+Additionally the cabeling is documented (not configured) in the file [./server/modules_gpio/config.py](../server/modules_gpio/config.py).
+To run the module software have to be installed:
+
+```bash
+# activate SPI for your Raspberry Pi: "Advanced Options" > "SPI"
+
+$ sudo raspi-config
+
+# tbc. if required ....
+
+$ sudo apt-get install git python-dev --yes
+
+# Python SPI Modul
+
+$ git clone https://github.com/lthiery/SPI-Py.git
+$ cd SPI-Py
+$ sudo python setup.py install
+$ cd ..
+```
+
+To test if it's working you can download and use the following repository:
+
+```bash
+# Raspberry Pi RFID RC522 Modules
+
+$ git clone https://github.com/mxgxw/MFRC522-python.git
+$ cd MFRC522-python
+$ sudo python Read.py
+```
+
+### Integrate Buttons
 

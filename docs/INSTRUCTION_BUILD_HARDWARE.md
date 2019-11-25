@@ -67,6 +67,7 @@ The GPIO pins are define in the file: [./server/modules_gpio/config.py](../serve
 ### Integrate RFID Kit RC533
 
 The integration of the RFID Kit RC533 is relatively easy. The cabling is described here: [https://tutorial.cytron.io/2018/08/15/reading-rfid-tag-using-mifare-rc522-raspberry-pi/](https://tutorial.cytron.io/2018/08/15/reading-rfid-tag-using-mifare-rc522-raspberry-pi/).
+Additionally the cabeling is documented (not configured) in the file [./server/modules_gpio/config.py](../server/modules_gpio/config.py).
 To run the module software have to be installed:
 
 ```bash
@@ -97,3 +98,4 @@ $ sudo python Read.py
 ```
 
 ### Integrate Buttons
+

@@ -2,9 +2,9 @@
 
 dir="${MBOX_DIR_DATA_ROOT}"
 
-mkdir $dir
+mkdir ${DOLLAR}
 
-cd $dir
+cd ${DOLLAR}dir
 mkdir prod
 cd prod
 mkdir data
@@ -14,7 +14,7 @@ mkdir cover
 mkdir cover_upload
 chmod 777 cover_upload
 
-cd $dir
+cd ${DOLLAR}dir
 mkdir test
 cd prod
 mkdir data

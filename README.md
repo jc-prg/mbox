@@ -9,6 +9,7 @@ A friend has built a similar box based on an existing free software (which I've 
 - [What's inside](#whats-inside)
 - [How to build the hardware](#how-to-build-the-hardware)
 - [How to setup the software](#how-to-setup-the-software)
+  - [Initial Raspberry Pi setup](#initial-raspberry-pi-setup)
   - [Prerequisites](#prerequisites)
   - [How to install, configure and run the software](#how-to-install-configure-and-run-the-software)
 - [Disclaimer](#disclaimer)

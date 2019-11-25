@@ -22,7 +22,7 @@ function settingsToggle() {
 // write status information to settings page ...
 // -----------------------------------------------------
 
-function settingsStatusLoad()  { mboxApp.requestAPI("GET",["db","all","-"],"",settingsStatus); }
+function settingsStatusLoad()  { mboxApp.requestAPI("GET",["db","all","-"],"",settingsStatus, "wait"); }
 function settingsStatus (data) {
 
 	var text  = "";

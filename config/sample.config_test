@@ -12,6 +12,7 @@ export MBOX_IS_TEST="True"
 export MBOX_CLIENT_PORT=86
 export MBOX_SERVER_PORT=5006
 export MBOX_DATABASE_PORT=5106
+export MBOX_DATABASE_SERVER="192.168.1.10"
 
 # Docker container names
 export MBOX_DOCKER_DATABASE="mbox_db_test"
@@ -29,9 +30,9 @@ export MBOX_BUTTON_ACTIVE="true"
 # Directories
 export MBOX_DIR_DATA_ROOT="/projects_data"
 export MBOX_DIR_DATA="/projects_data/test"
-export MBOX_DIR_CLIENT="/projects/git/mbox_test/app"
-export MBOX_DIR_SERVER="/projects/git/mbox_test/server"
-export MBOX_DIR_JCMODULES="/projects/git/modules"
+export MBOX_DIR_CLIENT="/projects/test/mbox/app"
+export MBOX_DIR_SERVER="/projects/test/mbox/server"
+export MBOX_DIR_JCMODULES="/projects/test/modules"
 
 # Mount points (if no extra device for data, use the same as for system)
 export MBOX_MOUNT_SYSTEM="/"
@@ -46,6 +47,6 @@ export MBOX_DOCKERIMAGE_COUCHDB="matthiasg/rpi-couchdb:latest"   # usr for raspb
 
 #---------------------------------------------
 export THIS_IS_THE_PROJECT_TEMPLATE="Please edit not here, but the orginial configuration file. This files is created using a template."
-
+export DOLLAR="$"
 
 

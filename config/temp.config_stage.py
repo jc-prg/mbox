@@ -10,7 +10,7 @@ rollout      = "${MBOX_CURRENT_STAGE}"
 
 data_dir     = "${MBOX_DIR_DATA}"
 data_backup  = "${MBOX_DIR_DATA}/couchdb_backup/"
-data_db      = "http://${MBOX_DB_USER}:${MBOX_DB_PASSWORD}@localhost:${MBOX_DATABASE_PORT}/"
+data_db      = "http://${MBOX_DB_USER}:${MBOX_DB_PASSWORD}@${MBOX_DATABASE_SERVER}:${MBOX_DATABASE_PORT}/"
 
 mount_system = "${MBOX_MOUNT_SYSTEM}"
 mount_data   = "${MBOX_MOUNT_DATA}"

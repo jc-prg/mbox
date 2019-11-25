@@ -76,7 +76,8 @@ class radioThread (threading.Thread):
    def load(self,playlist,pl_data,pl_uuid):
       if "m3u" in playlist:
         logging.info("Load playlist URL from m3u ("+playlist+")")
-        streams = self.get_url(playlist).split("\n")
+        streams = self.get_url(playlist).replace("\r","")
+        streams = streams.split("\n")
       else:
         streams = [playlist]
 
@@ -165,7 +166,7 @@ class radioThread (threading.Thread):
           if (mbox.rfid_ctrl["cardUID"] in cardDB and "r_" in cardDB[mbox.rfid_ctrl["cardUID"]][0]):
             channelID = cardDB[mbox.rfid_ctrl["cardUID"]][0]
             if ("LastCard" not in self.music_ctrl or self.music_ctrl["LastCard"] != channelID or str(self.music_ctrl["playing"]) == 0):
-              logging.info("Start Radio: "+channelID.encode('utf-8'))
+              logging.info("Start Radio: "+channelID)#.encode('utf-8'))
               self.load( radioDB[channelID]["stream_url"], radioDB[channelID], channelID)
               self.play()
               self.music_ctrl["LastCard"]       = channelID

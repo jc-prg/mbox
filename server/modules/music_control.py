@@ -429,7 +429,7 @@ def sortAlbumTracks(tracks,track_info):
         track_i = track_info[x]
         track_o = track_i["track_num"][0]
         
-        if "/" in track_o:
+        if "/" in str(track_o):
           track_o = track_o.split("/")[0]
         
         try:  

@@ -107,12 +107,18 @@ $ nano config_prod                      # configure prod environment
 $ ./create_prod               # create prod environment
 
 $ cd install
-$ ./install-datadir           # create required sub-directories in data-dir
+$ ./install-datadir           # create required sub-directories in data-dir, chmod 777 for cover_upload
 ```
 
-6. Copy music files to directory *./music/* (see suggested structure above)
+6. Copy music files to directory *./music/* (see suggested structure above) or see 10. to connect an USB device with the music files to your Raspberry. Using an USB device makes it easier to add or change the music files ...
 
-7. Start server and client
+7. Set the maximum loudness of the Raspberry to 100% (per default it's to low):
+
+```bash
+$ amixer set PCM -- 100%
+```
+
+8. Start server and client
 
 ```bash
 # start client in docker container
@@ -126,7 +132,7 @@ $ ./server/server_led.py     &
 $ ./server/server_button.py  &
 ```
 
-8. Open client and start "Reload Data" in the settings (e.g. http://localhost:85/ for PROD environment)
+9. Open client and start "Reload Data" in the settings (e.g. http://localhost:85/ for PROD environment)
 
 ```bash
 # Default URL:
@@ -136,7 +142,7 @@ $ ./server/server_button.py  &
 
 ```
 
-9. Optional: enable auto-start - add the following to */etc/rc.local*
+10. Optional: enable auto-start - add the following to */etc/rc.local*
 
 ```bash
 # jc://mbox/ server modules (if Raspberry Pi)
@@ -148,8 +154,23 @@ $ ./server/server_button.py  &
 /usr/bin/docker-compose -f /projects/prod/mbox/docker-compose.yml up -d &
 ```
 
+11. Optional: mount USB device for music data
+
+```bash
+# to mount a USB device once:
+$ cd /media
+$ mkdir usb
+$ mount /dev/sda1 /media/usb/
+
+# to mount a USB on start up add this line to the /etc/rc.local (alternatively you can add a line to /etc/fstab)
+/dev/sda1 /media/usb auto nosuid,nodev,nofail 0 0
+
+# create a symlink to the right directory on you USB stick
+$ ln -s /media/usb/Music /projects_data/prod/music
+```
 
 ## Disclaimer
 
 I'm just starting to publish my code and to work with GitHub. So the projects are not complete at the moment but will grow.
 The software can be used "as is". I'll give no warranty that it works for you and is free of bugs. Ideas and suggestions what and how to improve are welcome.
+

@@ -112,7 +112,7 @@ function mboxAlbumAll(data) {
 	// list albums
 	var i = 1;
 	if (sorted_entries.length == 0) {
-		text += "No entries in the database yet.";
+		text += "<div>No entries in the database yet. Reload data in the settings.</div>";
 		}
 	for (var a=0;a<sorted_entries.length;a++) {
 

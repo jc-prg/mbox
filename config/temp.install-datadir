@@ -16,7 +16,7 @@ chmod 777 cover_upload
 
 cd ${DOLLAR}dir
 mkdir test
-cd prod
+cd test
 mkdir data
 mkdir couchdb
 mkdir music

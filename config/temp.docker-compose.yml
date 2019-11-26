@@ -46,7 +46,7 @@ services:
     privileged: true
     volumes:
       - ${MBOX_DIR_SERVER}:/usr/src/app/server
-      - ${MBOX_DIR_DATA}/music:${MBOX_DIR_DATA}/music
+      - ${MBOX_DIR_DATA}:${MBOX_DIR_DATA}
     ports:
       - ${MBOX_SERVER_PORT}:${MBOX_SERVER_PORT}
       

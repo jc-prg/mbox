@@ -428,7 +428,14 @@ def sortAlbumTracks(tracks,track_info):
      for x in tracks:
         track_i = track_info[x]
         track_o = track_i["track_num"][0]
-        track_order[x] = int(track_o)
+        
+        if "/" in track_o:
+          track_o = track_o.split("/")[0]
+        
+        try:  
+          track_order[x] = int(track_o)
+        except:
+          return tracks
 
      track_order = sorted(track_order.items(), key=operator.itemgetter(1))
 

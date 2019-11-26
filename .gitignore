@@ -27,3 +27,5 @@ app/icon_backup/Thumbs.db
 config/container/_sicher/
 
 config/container/test
+
+config/container_rpi/_sicher/

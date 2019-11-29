@@ -43,7 +43,7 @@ export MBOX_DIR_JCMODULES="/projects/test/modules"
 # Mount points (if no extra device for data, use the same as for system)
 export MBOX_MOUNT_SYSTEM="/"
 #export MBOX_MOUNT_DATA="/"
-export MBOX_MOUNT_DATA="/mnt/usb"
+export MBOX_MOUNT_DATA="/media/usb"
 
 # Images
 export MBOX_DOCKERIMAGE_CLIENT="php:7.1-apache"

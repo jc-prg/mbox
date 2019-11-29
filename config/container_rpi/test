@@ -2,7 +2,7 @@
 
 ../../../docker-clean
 #docker build -t jean-test .
-docker run -d \
+sudo docker run -d \
 	-v /projects/git/mbox/server:/usr/src/app/server:rw \
         --privileged \
  	-p 5006:5006/tcp \

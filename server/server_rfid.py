@@ -5,22 +5,20 @@
 # by jc://design/
 #------------------------------------
 
+print("TEST")
+
 from socket import *
 import time
-import requests, math
-import os
+import requests
+#import math
+#import os
 import logging
 import signal
-import subprocess
-
-import RPi.GPIO             as GPIO
+#import subprocess
 
 import modules.jcJson       as jcJSON
 import modules.config_stage as stage
 import modules.config_mbox  as mbox
-
-import modules_gpio.MFRC522 as MFRC522
-import modules_gpio.config  as gpio
 
 # set start time and write title/version/stage
 #----------------------------------------------
@@ -28,6 +26,12 @@ mbox.start_time = time.time()
 print("--------------------------------")
 print(mbox.APIname_RFID + mbox.APIversion + "   (" + str(stage.rollout) + ")")
 print("--------------------------------")
+
+#---------------------------------------------
+
+import RPi.GPIO             as GPIO
+#import modules_gpio.config  as gpio
+import modules_gpio.MFRC522 as MFRC522
 
 # start and configure logging
 #----------------------------------------------
@@ -175,6 +179,8 @@ signal.signal(signal.SIGINT, end_all)
 #-----------------------------------
 
 if __name__ == '__main__':
+
+   print("test")
 
    # Create an object of the class MFRC522
    MIFAREReader = MFRC522.MFRC522()

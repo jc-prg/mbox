@@ -183,6 +183,13 @@ def mboxAPI_setButton(buttonID):
        if param == "no_button": mbox.rfid_ctrl["buttonID"] = ""
        else:                    mbox.rfid_ctrl["buttonID"] = param
 
+       if mbox.active_device == "music_box" and param == "next":
+            thread_music_ctrl.playlist_next(1)
+       elif mbox.active_device == "music_box" and param == "back":
+            thread_music_ctrl.playlist_next(-1)
+       elif mbox.active_device == "music_box" and param == "pause":
+            thread_music_ctrl.pause_playback()
+
        data = mboxAPI_end(data)
        return(data)
 

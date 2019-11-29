@@ -16,6 +16,7 @@ mount_system = "${MBOX_MOUNT_SYSTEM}"
 mount_data   = "${MBOX_MOUNT_DATA}"
 
 server_port = ${MBOX_SERVER_PORT}
+server_ip   = "${MBOX_DATABASE_SERVER}"
 
 if rollout == "test": test  = True
 else:                 test  = False

@@ -121,15 +121,15 @@ $ amixer set PCM -- 100%
 8. Start server and client
 
 ```bash
-# start client in docker container
+# start client and server components in docker container
 $ cd ..
 $ sudo docker-compose up -d
 
-# start server
-$ ./server/server.py         &
+# start remaing server components (will be moved to containers also)
 $ ./server/server_rfid.py    &
 $ ./server/server_led.py     &
-$ ./server/server_button.py  &
+# $ ./server/server.py         & ## moved to docker-compose
+# $ ./server/server_button.py  & ## moved to docker-compose
 ```
 
 9. Open client and start "Reload Data" in the settings (e.g. http://localhost:85/ for PROD environment)
@@ -142,19 +142,7 @@ $ ./server/server_button.py  &
 
 ```
 
-10. Optional: enable auto-start - add the following to */etc/rc.local*
-
-```bash
-# jc://mbox/ server modules (if Raspberry Pi)
-/usr/bin/python3 /projects/prod/mbox/server/server_led.py     > /dev/null &
-/usr/bin/python3 /projects/prod/mbox/server/server_buttons.py > /dev/null &
-/usr/bin/python2 /projects/prod/mbox/server/server_rfid.py    > /dev/null &
-
-# jc://mbox/ main server, client and database
-/usr/bin/docker-compose -f /projects/prod/mbox/docker-compose.yml up -d &
-```
-
-11. Optional: mount USB device for music data
+10. Optional: mount USB device for music data
 
 ```bash
 # to mount a USB device once:
@@ -168,6 +156,18 @@ $ mount /dev/sda1 /media/usb/
 # create a symlink to the right directory on you USB stick
 $ ln -s /media/usb/Music /projects_data/prod/music
 ```
+
+11. Optional: enable auto-start - add the following to */etc/rc.local* before the "exit 0"
+
+```bash
+# jc://mbox/ server modules (if Raspberry Pi)
+/usr/bin/python3 /projects/prod/mbox/server/server_led.py     > /dev/null &
+/usr/bin/python2 /projects/prod/mbox/server/server_rfid.py    > /dev/null &
+
+# jc://mbox/ client, database and server components (except the 2 above)
+/usr/local/bin/docker-compose -f /projects/prod/mbox/docker-compose.yml up -d &
+```
+
 
 ## Disclaimer
 

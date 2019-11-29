@@ -1,31 +1,38 @@
-FROM python:2
-#FROM ubuntu:18.04
+FROM python:3
+#FROM armv7/armhf-ubuntu
 
-ENV DEBIAN_FRONTEND noninteractive
-ENV uid 1000
-ENV gid 1000
+RUN apt-get update && apt-get install -y \
+    python3-pip
+    #python-dev \
+    #python-virtualenv \
+    #python-setuptools \
+    #--no-install-recommends \
+    #&& pip install --upgrade pip \
+    #&& pip install wheel
 
-RUN apt-get update
 
 # install required PYTHON modules
 # ---------------------------
 COPY ./requirements.txt ./requirements.txt
 
-RUN apt-get install -y python-pip
-RUN pip install -r requirements.txt
+#RUN apt-get update
+#RUN apt-get install -y python-pip
+RUN pip3 install -r requirements.txt
 
 WORKDIR /tmp
 
 # SPI- / MFRC522-Modules
 # ---------------------------
-RUN git clone https://github.com/lthiery/SPI-Py.git
-RUN git clone https://github.com/mxgxw/MFRC522-python.git
+#RUN git clone https://github.com/mxgxw/MFRC522-python.git
 
-WORKDIR /tmp/SPI-Py
-RUN python setup.py install
+#RUN git clone https://github.com/lthiery/SPI-Py.git
+#WORKDIR /tmp/SPI-Py
+#RUN git checkout 8cce26b9ee6e69eb041e9d5665944b88688fca68
+#RUN python setup.py install
 
-WORKDIR /tmp/MFRC522-python
-RUN python Read.py
+#WORKDIR /tmp/MFRC522-python
+#CMD [ "python", "Read.py" ]
 
-WORKDIR /usr/src/app
-CMD [ "python", "./server/server_buttons.py" ]
+WORKDIR /usr/src/app/server
+CMD [ "python", "server_buttons.py" ]
+#CMD [ "python", "test.py" ]

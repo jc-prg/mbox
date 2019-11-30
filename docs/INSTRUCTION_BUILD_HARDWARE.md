@@ -25,11 +25,11 @@ An instruction how to build the box will follow. Until then here a few impressio
 ![lid of the box - inside](mbox_detail_1.jpg)
 
 ### The Inner Box
-![inner box with covered battery pack and speakers](mbox_detail_2.jpg)
+![inner box with covered battery pack and speakers](images/mbox_detail_2.jpg)
 
 ### The Client (on an iPhone)
-![the software 1](mbox_client_detail_1.png)
-![the software 2](mbox_client_detail_2.png)
+![the software 1](images/mbox_client_detail_1.png)
+![the software 2](images/mbox_client_detail_2.png)
 
 ## Required Components
 

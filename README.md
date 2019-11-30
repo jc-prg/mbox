@@ -2,7 +2,7 @@
 
 A friend has built a similar box based on an existing free software (which I've never seen myself). As my children where faszinated by this box I decided to build such a box for my children, but to write the software on my own from the scratch. My intentions is to try out different development practices. So it's not my idea but my individual implementation of this idea ...
 
-![mbox image](https://raw.githubusercontent.com/jc-prg/mbox/master/docs/mbox.jpg)
+![mbox image](https://raw.githubusercontent.com/jc-prg/mbox/master/docs/images/mbox.jpg)
 
 ## Table of Contents
 
@@ -12,6 +12,7 @@ A friend has built a similar box based on an existing free software (which I've 
   - [Initial Raspberry Pi setup](#initial-raspberry-pi-setup)
   - [Prerequisites](#prerequisites)
   - [How to install, configure and run the software](#how-to-install-configure-and-run-the-software)
+- [Sources](#sources)
 - [Disclaimer](#disclaimer)
 
 ## What's inside
@@ -168,6 +169,11 @@ $ ln -s /media/usb/Music /projects_data/prod/music
 /usr/local/bin/docker-compose -f /projects/prod/mbox/docker-compose.yml up -d &
 ```
 
+## Sources
+
+The following packages are used within this software (thanks to the authors):
+
+* https://github.com/mxgxw/MFRC522-python (Mario Gómez)
 
 ## Disclaimer
 

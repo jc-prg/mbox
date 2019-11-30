@@ -1,0 +1,32 @@
+#--------------------------------------------
+# MBOX Server modules for Raspberry Pi
+#----------------------------------------
+# Please edit not here, but the orginial configuration file. This files is created using a template.
+#----------------------------------------
+
+version: "3"
+services:
+
+  mbox_server_prod_button:
+    build: ./config/container-button
+    privileged: true
+    volumes:
+      - /projects/prod/mbox/server:/usr/src/app/server
+      - /projects_data:/projects_data
+
+  mbox_server_prod_rfid:
+    build: ./config/container-rfid
+    privileged: true
+    volumes:
+      - /projects/prod/mbox/server:/usr/src/app/server
+      - /projects_data:/projects_data
+
+  mbox_server_prod_led:
+    build: ./config/container-led
+    privileged: true
+    volumes:
+      - /projects/prod/mbox/server:/usr/src/app/server
+      - /projects_data:/projects_data
+      
+      
+

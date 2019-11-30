@@ -30,8 +30,8 @@ print("--------------------------------")
 #---------------------------------------------
 
 import RPi.GPIO             as GPIO
-#import modules_gpio.config  as gpio
-import modules_gpio.MFRC522 as MFRC522
+import modules_gpio.config  as gpio
+import modules_rfid.MFRC522 as MFRC522
 
 # start and configure logging
 #----------------------------------------------
@@ -58,11 +58,11 @@ def get_active_stage():
 
 if stage.test == True:
   logging.info("Start RFID module: TEST STAGE ("+get_active_stage()+")")
-  url  = "http://127.0.0.1:"+str(stage.server_port)+"/api/"
+  url  = "http://"+stage.server_ip+":"+str(stage.server_port)+"/api/"
   this_stage = "test"
 else:
   logging.info("Start RFID module: PROD STAGE ("+get_active_stage()+")")
-  url  = "http://127.0.0.1:"+str(stage.server_port)+"/api/"
+  url  = "http://"+stage.server_ip+":"+str(stage.server_port)+"/api/"
   this_stage = "prod"
 
 

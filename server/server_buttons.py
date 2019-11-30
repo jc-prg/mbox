@@ -5,17 +5,14 @@
 # by jc://design/
 #------------------------------------
 
-#from socket import *
 import RPi.GPIO as GPIO
 import time
 import requests
-#, math
-#import os
 
 import modules.config_stage as stage
 import modules.config_mbox  as mbox
-import modules.config_gpio  as gpio
-#import modules.jcJson       as jcJSON
+import modules_gpio.config  as gpio
+import modules.jcJson       as jcJSON
 
 # set start time and write title/version/stage
 #----------------------------------------------
@@ -44,8 +41,8 @@ else:
 
 # read from file, which stage should be use ... to switch between stages during runtime
 def get_active_stage():
-#  settings = jcJSON.read("../../active")
-#  return settings["active_stage"]
+  settings = jcJSON.read("../../active")
+  return settings["active_stage"]
   return "prod"
 
 if stage.test == True:

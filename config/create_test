@@ -6,6 +6,9 @@ source config_test
 rm -rf ../docker-compose.yml
 envsubst < "temp.docker-compose.yml" > "../docker-compose.yml"
 
+rm -rf ../docker-compose-rpi.yml
+envsubst < "temp.docker-compose-rpi.yml" > "../docker-compose-rpi.yml"
+
 rm -rf ../app/config_stage.js
 envsubst < "temp.config_stage.js" > "../app/config_stage.js"
 

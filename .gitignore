@@ -3,7 +3,7 @@ server/modules/__pycache__/
 
 server/modules_api/__pycache__/
 
-docker-compose.yml
+docker-compose*
 
 config/config_prod
 
@@ -20,4 +20,5 @@ app/icon_backup/
 app/icon_backup/Thumbs.db:encryptable
 
 app/icon_backup/Thumbs.db
+
 

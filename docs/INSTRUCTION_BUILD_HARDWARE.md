@@ -66,36 +66,14 @@ The GPIO pins are define in the file: [./server/modules_gpio/config.py](../serve
 ### Integrate Power-Switch
 ### Integrate RFID Kit RC533
 
-The integration of the RFID Kit RC533 is relatively easy. The cabling is described here: [https://tutorial.cytron.io/2018/08/15/reading-rfid-tag-using-mifare-rc522-raspberry-pi/](https://tutorial.cytron.io/2018/08/15/reading-rfid-tag-using-mifare-rc522-raspberry-pi/).
+The integration of the RFID Kit RC522 is relatively easy. The cabling is described here: [https://tutorial.cytron.io/2018/08/15/reading-rfid-tag-using-mifare-rc522-raspberry-pi/](https://tutorial.cytron.io/2018/08/15/reading-rfid-tag-using-mifare-rc522-raspberry-pi/).
 Additionally the cabeling is documented (not configured) in the file [./server/modules_gpio/config.py](../server/modules_gpio/config.py).
-To run the module software have to be installed:
+The required software modules SPI and MRFC522 are installed within the docker containers, you only have to active SPI on your Raspberry PI:
 
 ```bash
 # activate SPI for your Raspberry Pi: "Advanced Options" > "SPI"
 
 $ sudo raspi-config
-
-# tbc. if required ....
-
-$ sudo apt-get install git python-dev --yes
-
-# Python SPI Modul
-
-$ git clone https://github.com/lthiery/SPI-Py.git
-$ cd SPI-Py
-$ sudo python setup.py install
-$ cd ..
-```
-
-To test if it's working you can download and use the following repository:
-
-```bash
-# Raspberry Pi RFID RC522 Modules
-
-$ git clone https://github.com/mxgxw/MFRC522-python.git
-$ cd MFRC522-python
-$ sudo python Read.py
-```
 
 ### Integrate Buttons
 

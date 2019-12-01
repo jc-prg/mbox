@@ -81,7 +81,12 @@ class radioThread (threading.Thread):
       else:
         streams = [playlist]
 
-      self.playlist_url                 = streams[0]
+      i=0
+      for stream in streams:
+         if "#" in stream: logging.debug("comment: "+stream)
+         elif i==0: 
+           i=1
+           self.playlist_url = streams
       self.music_ctrl["file"]           = playlist
       self.music_ctrl["stream"]         = pl_data
       self.music_ctrl["stream"]["uuid"] = pl_uuid

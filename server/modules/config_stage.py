@@ -6,16 +6,16 @@
 # this script will be replace by
 # the rollout script for PROD stage
 
-rollout      = "prod"
+rollout      = "test"
 
-data_dir     = "/projects_data/prod"
-data_backup  = "/projects_data/prod/couchdb_backup/"
-data_db      = "http://mbox:mbox@192.168.1.10:5105/"
+data_dir     = "/projects_data/test"
+data_backup  = "/projects_data/test/couchdb_backup/"
+data_db      = "http://mbox:mbox@192.168.1.10:5106/"
 
 mount_system = "/"
 mount_data   = "/"
 
-server_port = 5005
+server_port = 5006
 server_ip   = "192.168.1.10"
 
 if rollout == "test": test  = True

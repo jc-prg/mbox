@@ -83,10 +83,12 @@ class radioThread (threading.Thread):
 
       i=0
       for stream in streams:
-         if "#" in stream: logging.debug("comment: "+stream)
-         elif i==0: 
+         if "#" in stream: 
+           logging.info("comment: "+stream)
+         elif i==0 and "http" in stream: 
+           logging.info("url: "+stream)
            i=1
-           self.playlist_url = streams
+           self.playlist_url = stream
       self.music_ctrl["file"]           = playlist
       self.music_ctrl["stream"]         = pl_data
       self.music_ctrl["stream"]["uuid"] = pl_uuid

@@ -118,5 +118,7 @@ The push buttons are easy to integrate also. Connect ground of all buttons and t
 
 This part is (at least for me) the most difficult part as you've to solder a lot. For this step you need 4 grid boards, 13 LEDs und 13 electrical resistors (e.g. 1 kOhm), 2 shift registers, several connector bridges and several jumper wires.
 
+![led bar for volume visualization](images/mbox_led-bar.JPG)
+
 *a wiring diagram will follow*
 

@@ -2,7 +2,7 @@
 
 A friend has built a similar box based on an existing free software (which I've never seen myself). As my children where faszinated by this box I decided to build such a box for my children, but to write the software on my own from the scratch. My intentions is to try out different development practices. So it's not my idea but my individual implementation of this idea ...
 
-![mbox image](https://raw.githubusercontent.com/jc-prg/mbox/master/docs/images/mbox.jpg)
+![mbox image](docs/images/mbox.jpg)
 
 ## Table of Contents
 
@@ -25,7 +25,7 @@ This software is built to play music (MP3 / M4A files and web-streams) on a _Ras
 - *Button Server* to read commands via push buttons and send to main server (Python3)
 - *RFID Server* to detect RFID cards (Python2)
 
-The jc://mbox/ uses VLC (https://www.videolan.org/) and several other sources and is written in PYTHON (server) and JAVASCRIPT (client).
+The jc://mbox/ uses VLC and several other sources and is written in PYTHON (server) and JAVASCRIPT (client).
 
 ## How to build the hardware
 
@@ -58,19 +58,13 @@ $ git clone https://github.com/jc-prg/mbox.git
 $ git clone https://github.com/jc-prg/modules.git
 ```
 
-2. Install python modules (CouchDB, VLC, eye3D, Mutagen, Connexion/swagger-ui,...) - please note, that this part isn't fully tested at the moment.
-
-```bash
-$ ./mbox/config/install/install-server
-$ ./mbox/config/install/install-rfid
-```
-3. Activate SPI on your Raspberry via rasp-config to use RFID reader
+2. Activate SPI on your Raspberry via rasp-config to use RFID reader
 
 ```bash
 $ rasp-config
 ```
 
-4. Edit configuration files
+3. Edit configuration files
 
    Customize your configuration depending on your directory structure and needs:
 
@@ -78,72 +72,58 @@ $ rasp-config
 $ cd mbox/config/
 $ cp sample.config_prod config_prod     # create local configuration
 $ nano config_prod                      # configure prod environment
+$ ./create_prod
 ```
 
-   The tested directory structure is:
+4. Create the directory structure. The tested directory structure is:
 
 ```bash
-# project directories
-/projects/prod/
-/projects/prod/mbox/
-/projects/prod/modules/
-
-# data directories (e.g. on mounted USB drive)
-/projects_data/prod/
-
-# structure inside the data directories
-./couchdb/
-./cover/
-./cover_upload/
-./data/
-./music/
-
-# default structure of music directories
-./music/<category>/<artist>/<album>/*.*
-```
-
-5. Create working configuration (test or prod)
-
-```bash
-$ ./create_prod               # create prod environment
-
 $ cd install
 $ ./install-datadir           # create required sub-directories in data-dir, chmod 777 for cover_upload
 ```
 
-6. Copy music files to directory *./music/* (see suggested structure above) or see 10. to connect an USB device with the music files to your Raspberry. Using an USB device makes it easier to add or change the music files ...
+  * *project directories:*
+    * /projects/prod/
+    * /projects/prod/mbox/
+    * /projects/prod/modules/
 
-7. Set the maximum loudness of the Raspberry to 100% (per default it's to low):
+  * *data directories (e.g. on mounted USB drive):*
+    * /projects_data/prod/
+
+  * *structure inside the data directories:*
+    * ./couchdb/
+    * ./cover/
+    * ./cover_upload/
+    * ./data/
+    * ./music/
+
+  * *default structure of music directories:*
+    * ./music/<category>/<artist>/<album>/*.*
+
+
+5. Set the maximum loudness of the Raspberry to 100% (per default it's to low):
 
 ```bash
 $ amixer set PCM -- 100%
 ```
 
-8. Start server and client
+6. Copy music files to directory *./music/* (see suggested structure above) or see 10. to connect an USB device with the music files to your Raspberry. Using an USB device makes it easier to add or change the music files ...
+
+7. Start server and client
 
 ```bash
-# start client and server components in docker container
-$ cd ..
-$ sudo docker-compose up -d
-
-# start remaing server components (will be moved to containers also)
-$ ./server/server_rfid.py    &
-$ ./server/server_led.py     &
-# $ ./server/server.py         & ## moved to docker-compose
-# $ ./server/server_button.py  & ## moved to docker-compose
+# start client and server components
+$ sudo docker-compose -f docker-compose.yml up -d
+$ sudo docker-compose -f docker-compose-rpi.yml up -d
 ```
 
-9. Open client and start "Reload Data" in the settings (e.g. http://localhost:85/ for PROD environment)
+8. Open client and start "Reload Data" in the settings (e.g. http://localhost:85/ for PROD environment)
 
-```bash
-# Default URL:
-# - http://localhost:85/          - Client
-# - http://localhost:5005/api/ui  - Swagger UI API description
-# - http://localhost:5105/_utils  - Fauxton CouchDB access (default user:mbox; pwd:mbox)
+  * http://localhost:85/          - Client
+  * http://localhost:5005/api/ui  - Swagger UI API description
+  * http://localhost:5105/_utils  - Fauxton CouchDB access (default user:mbox; pwd:mbox)
 
-```
-
-10. Optional: mount USB device for music data
+9. Optional: mount USB device for music data
 
 ```bash
 # to mount a USB device once:
@@ -158,22 +138,21 @@ $ mount /dev/sda1 /media/usb/
 $ ln -s /media/usb/Music /projects_data/prod/music
 ```
 
-11. Optional: enable auto-start - add the following to */etc/rc.local* before the "exit 0"
+10. Optional: enable auto-start - add the following to */etc/rc.local* before the "exit 0" or use the script *./config/install-rclocal*:
 
 ```bash
-# jc://mbox/ server modules (if Raspberry Pi)
-/usr/bin/python3 /projects/prod/mbox/server/server_led.py     > /dev/null &
-/usr/bin/python2 /projects/prod/mbox/server/server_rfid.py    > /dev/null &
-
 # jc://mbox/ client, database and server components (except the 2 above)
 /usr/local/bin/docker-compose -f /projects/prod/mbox/docker-compose.yml up -d &
+/usr/local/bin/docker-compose -f /projects/prod/mbox/docker-compose-rpi.yml up -d &
 ```
 
 ## Sources
 
 The following packages are used within this software (thanks to the authors):
 
-* https://github.com/mxgxw/MFRC522-python (Mario Gómez)
+* VLC: https://www.videolan.org/
+* MFRC522: https://github.com/mxgxw/MFRC522-python
+* ...
 
 ## Disclaimer
 

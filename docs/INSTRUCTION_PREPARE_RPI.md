@@ -58,7 +58,7 @@ From now on you can work remote via ssh. Maybe you have to configure your router
 
 ## Update Software and Prepare Project Directories
 
-### Update Software:
+### Update Repositories and Software:
 
 ```bash
 $ sudo apt-get update
@@ -114,14 +114,10 @@ $ echo "deb [arch=armhf] https://download.docker.com/linux/debian \
 # install docker
 $ sudo apt-get install docker-ce
 $ systemctl enable --now docker
-```
 
-To install docker-compose use PIP:
-
-```bash
+# install docker-compose use PIP:
 $ sudo pip3 install docker-compose
 ```
-
 
 ## Install Additional Tools (optional)
 

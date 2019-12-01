@@ -9,6 +9,8 @@
   - [The Inner Box](#the-inner-box)
   - [The Client (on an iPhone)](#the-client-on-an-iphone)
 - [Required Components](#required-components)
+  - [Prepare the Front for the Speakers](#prepare-the-front-for-the-speakers)
+  - [Prepare the Lid and Add Buttons](#prepare-the-lid-and-add-buttons)
 - [Building the Hardware](#building-the-hardware)
 
 ## Impressions
@@ -17,6 +19,7 @@ An instruction how to build the box will follow. Until then here a few impressio
 
 ### The Wooden Box
 ![the wooden box](images/mbox.jpg)
+![the wooden box](images/mbox_screen.jpg)
 
 ### The Lid from Outside
 ![lid of the box - outside](images/mbox_detail_0.jpg)
@@ -28,13 +31,15 @@ An instruction how to build the box will follow. Until then here a few impressio
 ![inner box with covered battery pack and speakers](images/mbox_detail_2.jpg)
 
 ### The Client (on an iPhone)
-![the software 1](images/mbox_client_detail_1.png)
-![the software 2](images/mbox_client_detail_2.png)
+![the software 1](images/mbox_client_01.jpg)
+![the software 2](images/mbox_client_02.jpg)
 
 ## Required Components
 
 *Box:*
 * 1x Wooden box (30cm x 20cm x 14cm)
+* Wire mesh
+* Plastic plates (~5mm thick)
 
 *Computer:*
 * 1x Raspberry Pi 3B+
@@ -59,22 +64,40 @@ An instruction how to build the box will follow. Until then here a few impressio
 
 ## Building the Hardware
 
-*images will follow*
+![parts](images/mbox_parts.JPG)
+![tools](images/mbox_tools.JPG)
+
+### Prepare the Front for the Speakers
+
+![prepare the front 01](images/mbox_front01.JPG)
+![prepare the front 02](images/mbox_front02.JPG)
+![prepare the front 03](images/mbox_front03.JPG)
+
+### Prepare the Lid and Add Buttons
+
+![prepare the lid 01](images/mbox_lid01.JPG)
+![prepare the lid 01](images/mbox_lid02.JPG)
+![prepare the lid 01](images/mbox_lid03.JPG)
+![prepare the lid 01](images/mbox_lid04.JPG)
+
+*further images will follow ...*
 
 ## Integrate IT Components
 
 The IT components are connected via GPIO with the Raspberry Pi. A documentation can be found here: [https://www.raspberrypi.org/documentation/usage/gpio/](https://www.raspberrypi.org/documentation/usage/gpio/).
 The GPIO pins are define in the file: [./server/modules_gpio/config.py](../server/modules_gpio/config.py).
 
-### Integrate Raspberry Pi and PowerBank
+### Integrate Raspberry Pi, Speakers and PowerBank
 
-For the integration of the Raspberry Pi I've used a transparent case which I glued into the box with a small sheet of plastic between the case and the wooden box. The PowerBank can be fixed using velcro tape.
+For the integration of the Raspberry Pi I've used a transparent case which I glued into the box with a small sheet of plastic between the case and the wooden box. The PowerBank can be fixed using velcro tape. The speakers I also fixed using velcro tape.
+
+![Raspberry, Speaker and Powerbank](images/mbox_inside01.JPG)
 
 ### Integrate Power-Switch
 
 To integrate a power switch I used a LED Power Switch. Additionally you need a grid board, the screw terminal blocks, several jumper cables and a USB extension cable. How to connect this depends on the switch you've choosen. In the end it could look like this:
 
-*image will follow*
+![integrate the power-sitch](images/mbox_power-switch.JPG)
 
 ### Integrate RFID Kit RC533
 
@@ -84,7 +107,6 @@ The required software modules SPI and MRFC522 are installed within the docker co
 
 ```bash
 # activate SPI for your Raspberry Pi: "Advanced Options" > "SPI"
-
 $ sudo raspi-config
 ```
 

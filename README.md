@@ -53,12 +53,12 @@ The *client software* has been tested with Chrome 70.0, Firefox 68.0 and Safari 
 
 **0. Recommended directory structure**
 
-  *project directories:*
+  * *project directories:*
     * /projects/prod/
     * /projects/prod/mbox/
     * /projects/prod/modules/
 
-  *data directory:*
+  * *data directory:*
     * /projects_data/prod/
 
 
@@ -71,14 +71,14 @@ $ git clone https://github.com/jc-prg/modules.git
 ```
 
 
-2. **Activate SPI on your Raspberry via rasp-config to use RFID reader**
+**2. Activate SPI on your Raspberry via rasp-config to use RFID reader**
 
 ```bash
 $ rasp-config
 ```
 
 
-3. **Edit configuration files**
+**3. Edit configuration files**
 
   Customize your configuration depending on your directory structure and needs:
 
@@ -90,7 +90,7 @@ $ ./create_prod
 ```
 
 
-4. **Create the directory structure**
+**4. Create the directory structure**
 
   The tested directory structure is:
 
@@ -114,14 +114,14 @@ $ ./install-datadir           # create required sub-directories in data-dir, chm
     * ./music/&lt;category&gt;/&lt;artist&gt;/&lt;album&gt;/
 
 
-5. **Set the maximum loudness of the Raspberry to 100% (per default it's too low):**
+**5. Set the maximum loudness of the Raspberry to 100% (per default it's too low):**
 
 ```bash
 $ amixer set PCM -- 100%
 ```
 
 
-6. **Optional - mount USB device for music data**
+**6. Optional - mount USB device for music data**
 
 ```bash
 $ cd /media
@@ -130,19 +130,19 @@ $ mount /dev/sda1 /media/usb/
 ```
 
 
-7. **Optional - Create a symlink to the right directory on you USB stick**
+**7. Optional - Create a symlink to the right directory on you USB stick**
 
 ```bash
 $ ln -s /media/usb/music /projects_data/prod/music
 ```
 
 
-8. **Copy music files** 
+**8. Copy music files** 
 
    to the directory *./music/* (see suggested structure above) or to the USB device. Using an USB device makes it easier to add or change the music files ...
 
 
-9. **Start server and client**
+**9. Start server and client**
 
 ```bash
 $ cd /projects/prod/mbox
@@ -151,7 +151,7 @@ $ sudo docker-compose -f docker-compose-rpi.yml up -d
 ```
 
 
-8. **Open client and start "Reload Data" in the settings**
+**8. Open client and start "Reload Data" in the settings**
 
    Relevant default URLs are (the ports can be changed in the config file):
 
@@ -160,7 +160,7 @@ $ sudo docker-compose -f docker-compose-rpi.yml up -d
   * http://localhost:5105/_utils  - Fauxton CouchDB access (default user:mbox; pwd:mbox)
 
 
-10. **Optional - mount USB device during start up**
+**10. Optional - mount USB device during start up**
 
     To mount the device during start up add the line above to the /etc/rc.local - or alternatively add the following line to /etc/fstab:
 
@@ -170,7 +170,7 @@ $ sudo docker-compose -f docker-compose-rpi.yml up -d
 ```
 
 
-11. **Optional - enable auto-start**
+**11. Optional - enable auto-start**
 
     Add the following to */etc/rc.local* before the "exit 0" or use the script [./config/install-rclocal](../config/install-rclocal):
 

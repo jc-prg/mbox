@@ -92,7 +92,8 @@ $ mkdir prod
 
 ### Install Docker and Docker-Compose:
 
-To install docker the following instructions worked for me: [https://www.marksei.com/docker-on-raspberry-pi-raspbian/](https://www.marksei.com/docker-on-raspberry-pi-raspbian/). To make it short:
+To install docker the following instructions worked for me: [https://www.marksei.com/docker-on-raspberry-pi-raspbian/](https://www.marksei.com/docker-on-raspberry-pi-raspbian/). 
+To make it short, you can use *./config/install-docker* or follow the following instructions:
 
 ```bash
 # install required software and aquire GPG key

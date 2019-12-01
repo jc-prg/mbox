@@ -10,11 +10,8 @@ print("TEST")
 from socket import *
 import time
 import requests
-#import math
-#import os
 import logging
 import signal
-#import subprocess
 
 import modules.jcJson       as jcJSON
 import modules.config_stage as stage

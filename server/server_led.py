@@ -9,8 +9,6 @@
 import RPi.GPIO as GPIO
 import time
 import requests
-#, math
-#import os
 import logging
 import signal
 import subprocess
@@ -157,7 +155,7 @@ def loop():
                 if "LOAD" in data:
                   if "RFID" in data["LOAD"]:
                     light_rfid = "0"
-                    if   data["LOAD"]["RFID"] == mbox.demo_card:
+                    if   data["LOAD"]["RFID"] == stage.demo_card:
                         first_run = 1
 
                     elif data["LOAD"]["RFID"] != "":

@@ -30,6 +30,7 @@ export MBOX_DB_PASSWORD="mbox"
 
 # activate rfid / button module
 export MBOX_RFID_ACTIVE="true"
+export MBOX_RFID_DEMOCARD="125,232,21,163"
 export MBOX_BUTTON_ACTIVE="true"
 
 # Directories

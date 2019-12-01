@@ -15,6 +15,8 @@ data_db      = "http://${MBOX_DB_USER}:${MBOX_DB_PASSWORD}@${MBOX_DATABASE_SERVE
 mount_system = "${MBOX_MOUNT_SYSTEM}"
 mount_data   = "${MBOX_MOUNT_DATA}"
 
+demo_card    = "${MBOX_RFID_DEMOCARD}"
+
 server_port = ${MBOX_SERVER_PORT}
 server_ip   = "${MBOX_DATABASE_SERVER}"
 

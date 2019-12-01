@@ -15,6 +15,8 @@ data_db      = "http://mbox:mbox@192.168.1.10:5106/"
 mount_system = "/"
 mount_data   = "/"
 
+demo_card    = "125,232,21,163"
+
 server_port = 5006
 server_ip   = "192.168.1.10"
 

@@ -23,13 +23,13 @@ This software is built to play music (MP3 / M4A files and web-streams) on a _Ras
 - *Server* to import and manage content and control playback (Python3)
 - *LED Server* to show volume and status via LED (Python3)
 - *Button Server* to read commands via push buttons and send to main server (Python3)
-- *RFID Server* to detect RFID cards (Python2)
+- *RFID Server* to detect RFID cards (Python3)
 
-The jc://mbox/ uses VLC and several other sources and is written in PYTHON (server) and JAVASCRIPT (client).
+The jc://mbox/ uses VLC and several other [sources](#sources). It's written in PYTHON (server) and JAVASCRIPT (client).
 
 ## How to build the hardware
 
-An instruction will follow soon ... in the meanwhile here are some [pictures](docs/INSTRUCTION_BUILD_HARDWARE.md).
+Find here some [instructions and pictures](docs/INSTRUCTION_BUILD_HARDWARE.md).
 
 ## How to setup the software
 
@@ -51,18 +51,32 @@ The *client software* has been tested with Chrome 70.0, Firefox 68.0 and Safari 
 
 ### How to install, configure and run the software
 
+0. Recommended directory structure:
+
+  * *project directories:*
+    * /projects/prod/
+    * /projects/prod/mbox/
+    * /projects/prod/modules/
+
+  * *data directory:*
+    * /projects_data/prod/
+
+
 1. Clone this repository and the modules
 
 ```bash
+$ cd /projects/prod
 $ git clone https://github.com/jc-prg/mbox.git
 $ git clone https://github.com/jc-prg/modules.git
 ```
+
 
 2. Activate SPI on your Raspberry via rasp-config to use RFID reader
 
 ```bash
 $ rasp-config
 ```
+
 
 3. Edit configuration files
 
@@ -75,6 +89,7 @@ $ nano config_prod                      # configure prod environment
 $ ./create_prod
 ```
 
+
 4. Create the directory structure. The tested directory structure is:
 
 ```bash
@@ -82,12 +97,8 @@ $ cd install
 $ ./install-datadir           # create required sub-directories in data-dir, chmod 777 for cover_upload
 ```
 
-  * *project directories:*
-    * /projects/prod/
-    * /projects/prod/mbox/
-    * /projects/prod/modules/
-
-  * *data directories (e.g. on mounted USB drive):*
+  * *data directories:*
+    * /projects_data/test/
     * /projects_data/prod/
 
   * *structure inside the data directories:*
@@ -98,53 +109,69 @@ $ ./install-datadir           # create required sub-directories in data-dir, chm
     * ./music/
 
   * *default structure of music directories:*
-    * ./music/<category>/<artist>/<album>/*.*
+    * ./music/&lt;category&gt;/&lt;artist&gt;/&lt;album&gt;/
 
 
-5. Set the maximum loudness of the Raspberry to 100% (per default it's to low):
+5. Set the maximum loudness of the Raspberry to 100% (per default it's too low):
 
 ```bash
 $ amixer set PCM -- 100%
 ```
 
-6. Copy music files to directory *./music/* (see suggested structure above) or see 10. to connect an USB device with the music files to your Raspberry. Using an USB device makes it easier to add or change the music files ...
 
-7. Start server and client
+6. Optional - mount USB device for music data
 
 ```bash
-# start client and server components
+$ cd /media
+$ mkdir usb
+$ mount /dev/sda1 /media/usb/
+```
+
+
+7. Optional - Create a symlink to the right directory on you USB stick
+
+```bash
+$ ln -s /media/usb/music /projects_data/prod/music
+```
+
+
+8. Copy music files to the directory *./music/* (see suggested structure above) or to the USB device. Using an USB device makes it easier to add or change the music files ...
+
+
+9. Start server and client
+
+```bash
+$ cd /projects/prod/mbox
 $ sudo docker-compose -f docker-compose.yml up -d
 $ sudo docker-compose -f docker-compose-rpi.yml up -d
 ```
 
-8. Open client and start "Reload Data" in the settings (e.g. http://localhost:85/ for PROD environment)
+
+8. Open client and start "Reload Data" in the settings. Relevant default URLs are (the ports can be changed in the config file):
 
   * http://localhost:85/          - Client
   * http://localhost:5005/api/ui  - Swagger UI API description
   * http://localhost:5105/_utils  - Fauxton CouchDB access (default user:mbox; pwd:mbox)
 
-9. Optional: mount USB device for music data
+
+10. Optional - mount USB device during start up:
+    To mount the device during start up add the line above to the /etc/rc.local - or alternatively add the following line to /etc/fstab:
 
 ```bash
-# to mount a USB device once:
-$ cd /media
-$ mkdir usb
-$ mount /dev/sda1 /media/usb/
-
-# to mount a USB on start up add this line to the /etc/rc.local (alternatively you can add a line to /etc/fstab)
 /dev/sda1 /media/usb auto nosuid,nodev,nofail 0 0
 
-# create a symlink to the right directory on you USB stick
-$ ln -s /media/usb/Music /projects_data/prod/music
 ```
 
-10. Optional: enable auto-start - add the following to */etc/rc.local* before the "exit 0" or use the script *./config/install-rclocal*:
+
+11. Optional - enable auto-start:
+    Add the following to */etc/rc.local* before the "exit 0" or use the script [./config/install-rclocal](../config/install-rclocal):
 
 ```bash
 # jc://mbox/ client, database and server components (except the 2 above)
 /usr/local/bin/docker-compose -f /projects/prod/mbox/docker-compose.yml up -d &
 /usr/local/bin/docker-compose -f /projects/prod/mbox/docker-compose-rpi.yml up -d &
 ```
+
 
 ## Sources
 
@@ -157,5 +184,5 @@ The following packages are used within this software (thanks to the authors):
 ## Disclaimer
 
 I'm just starting to publish my code and to work with GitHub. So the projects are not complete at the moment but will grow.
-The software can be used "as is". I'll give no warranty that it works for you and is free of bugs. Ideas and suggestions what and how to improve are welcome.
+The software can be used "as is" or feel to modify. I'll give no warranty that it works for you and is free of bugs. Ideas and suggestions what and how to improve are welcome.
 

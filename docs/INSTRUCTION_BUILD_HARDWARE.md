@@ -1,4 +1,4 @@
-# jc://mbox/hardware
+# jc://music-box/hardware
 
 ## Table of Contents
 
@@ -15,11 +15,9 @@
 
 ## Impressions
 
-An instruction how to build the box will follow. Until then here a few impressions of my first jc://mbox/ ...
-
-### The Wooden Box
+### The Wooden Box v1.0
 ![the wooden box](images/mbox.jpg)
-![the wooden box](images/mbox_screen.jpg)
+![the wooden box](images/mbox_screen.JPG)
 
 ### The Lid from Outside
 ![lid of the box - outside](images/mbox_detail_0.jpg)
@@ -46,7 +44,7 @@ An instruction how to build the box will follow. Until then here a few impressio
 * 1x 16GB microSDHC Card
 * 1x 32GB USB Stick (e.g. Intenseo Micro Line)* 1x Transparent case for the Raspberry Pi
 * 1x USB Speaker (e.g. Hama PC Speaker Sonic Mobil 181)
-* 1x USB Power bank (recommend with 20.000 mAh)
+* 1x USB Power bank (recommended with 20.000 mAh)
 * 2x USB Power extension cable (Type A Male / Micro USB Male)
 
 *Peripheral equipment:*
@@ -76,9 +74,8 @@ An instruction how to build the box will follow. Until then here a few impressio
 ### Prepare the Lid and Add Buttons
 
 ![prepare the lid 01](images/mbox_lid01.JPG)
-![prepare the lid 01](images/mbox_lid02.JPG)
-![prepare the lid 01](images/mbox_lid03.JPG)
-![prepare the lid 01](images/mbox_lid04.JPG)
+![prepare the lid 02](images/mbox_lid02.JPG)
+![prepare the lid 03](images/mbox_lid03.JPG)
 
 *further images will follow ...*
 
@@ -110,15 +107,22 @@ The required software modules SPI and MRFC522 are installed within the docker co
 $ sudo raspi-config
 ```
 
+![connect rfid](images/mbox_rfid.JPG)
+
 ### Integrate Buttons
 
 The push buttons are easy to integrate also. Connect ground of all buttons and the other connect to an GPIO per button. For the default configuration see [./server/modules_gpio/config.py](../server/modules_gpio/config.py).
 
-### Create and integrad LED bars
+![prepare the lid 04](images/mbox_lid04.JPG)
+![prepare the lid 05](images/mbox_lid05.JPG)
+
+### Create and integrate LED bars
 
 This part is (at least for me) the most difficult part as you've to solder a lot. For this step you need 4 grid boards, 13 LEDs und 13 electrical resistors (e.g. 1 kOhm), 2 shift registers, several connector bridges and several jumper wires.
 
 ![led bar for volume visualization](images/mbox_led-bar.JPG)
+![led shift register](images/mbox_register.JPG)
+![prepare the lid 06](images/mbox_lid06.JPG)
 
 *a wiring diagram will follow*
 

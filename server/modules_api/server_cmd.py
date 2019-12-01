@@ -749,13 +749,7 @@ def mboxAPI_play(uuid):
            mbox.active_device = "radio"
            database  = couch.read_cache("radio")
            if uuid in database:
-               try:
-                   url2 = thread_radio_ctrl.get_url(database[uuid]["stream_url"])
-                   database[uuid]["stream_url2"] = re.split("[\r\n]",url2)[0]
-               except:
-                   data = mboxAPI_error(data, "Problem with connection to stream url: "+uuid+"/"+database[uuid]["stream_url"])
-                   
-               thread_radio_ctrl.load(database[uuid]["stream_url2"],database[uuid],uuid)
+               thread_radio_ctrl.load(database[uuid]["stream_url"],database[uuid],uuid)
                thread_radio_ctrl.play()
            else:
                data = mboxAPI_error(data, "UUID not found: "+uuid)

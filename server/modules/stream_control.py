@@ -77,18 +77,24 @@ class radioThread (threading.Thread):
       if "m3u" in playlist:
         logging.info("Load playlist URL from m3u ("+playlist+")")
         streams = self.get_url(playlist).replace("\r","")
+        logging.info("PL"+streams)
         streams = streams.split("\n")
+
+        i=0
+        for stream in streams:
+          logging.info("... line: "+stream)
+          if "#" in stream: 
+            logging.info("... comment: "+stream)
+            
+          elif "http" in stream and i==0: 
+            logging.info("... url: "+stream)
+            self.playlist_url = stream
+            i=1
+            
       else:
         streams = [playlist]
-
-      i=0
-      for stream in streams:
-         if "#" in stream: 
-           logging.info("comment: "+stream)
-         elif i==0 and "http" in stream: 
-           logging.info("url: "+stream)
-           i=1
-           self.playlist_url = stream
+        self.playlist_url = streams[0]
+           
       self.music_ctrl["file"]           = playlist
       self.music_ctrl["stream"]         = pl_data
       self.music_ctrl["stream"]["uuid"] = pl_uuid

@@ -51,7 +51,7 @@ The *client software* has been tested with Chrome 70.0, Firefox 68.0 and Safari 
 
 ### How to install, configure and run the software
 
-0. **Recommended directory structure**
+**0. Recommended directory structure**
 
   *project directories:*
     * /projects/prod/
@@ -62,7 +62,7 @@ The *client software* has been tested with Chrome 70.0, Firefox 68.0 and Safari 
     * /projects_data/prod/
 
 
-1. **Clone this repository and the modules**
+**1. Clone this repository and the modules**
 
 ```bash
 $ cd /projects/prod
@@ -99,18 +99,18 @@ $ cd install
 $ ./install-datadir           # create required sub-directories in data-dir, chmod 777 for cover_upload
 ```
 
-  *data directories:*
+  * *data directories:*
     * /projects_data/test/
     * /projects_data/prod/
 
-  *structure inside the data directories:*
+  * *structure inside the data directories:*
     * ./couchdb/
     * ./cover/
     * ./cover_upload/
     * ./data/
     * ./music/
 
-  *default structure of music directories:*
+  * *default structure of music directories:*
     * ./music/&lt;category&gt;/&lt;artist&gt;/&lt;album&gt;/
 
 

@@ -110,8 +110,10 @@ function mboxRadioChannel(data) {
         var default_cover = mbox_icons["radio"];
 
         // log ...
-        console.debug("Show Radio Channel: " + uuid + "/" + radio_data["title"]);
-
+        if (radio_data) {
+	        console.debug("Show Radio Channel: " + uuid + "/" + radio_data["title"]);
+		}
+		
         // Check if Cover exists
         cover = mboxAlbumCover2(uuid,radio_data);
         if (!cover) { cover = default_cover; }
@@ -274,8 +276,8 @@ function add_stream() {
 
 function add_stream_msg(data) {
         var text = "";
-        if (data["StatusMsg"] == "success")     { text += "Webradio / Stream angelegt."; }
-        else                                    { text += "Beim Anlegen des Webradios ist ein Fehler aufgetreten."; }
+        if (data["REQUEST"]["status"] == "success")     { text += "Webradio / Stream angelegt."; }
+        else                         		        { text += "Beim Anlegen des Webradios ist ein Fehler aufgetreten."; }
         appMsg.alert(text);
         mboxRadioLoad()
         }

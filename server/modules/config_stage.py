@@ -8,8 +8,8 @@
 
 rollout      = "test"
 
-data_dir     = "/projects_data/test"
-data_backup  = "/projects_data/test/couchdb_backup/"
+data_dir     = "/projects/git/data/test"
+data_backup  = "/projects/git/data/test/couchdb_backup/"
 data_db      = "http://mbox:mbox@192.168.1.10:5106/"
 
 mount_system = "/"

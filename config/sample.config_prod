@@ -4,9 +4,14 @@
 # make changes for your environment
 #---------------------------------------------
 
+# Language: EN, DE ... see ./app/mbox_language.js
+export MBOX_LANGUAGE="EN"
+export WLAN="wlan0"
+export ETH="eth0"
+
 # Identify device IP addresses
-export WLAN0_IP=`/sbin/ip -o -4 addr list wlan0 | awk '{print $4}' | cut -d/ -f1`
-export ETH0_IP=`/sbin/ip -o -4 addr list eth0 | awk '{print $4}' | cut -d/ -f1`
+export WLAN0_IP=`/sbin/ip -o -4 addr list $WLAN | awk '{print $4}' | cut -d/ -f1`
+export ETH0_IP=`/sbin/ip -o -4 addr list $ETH | awk '{print $4}' | cut -d/ -f1`
 
 # Stage
 export MBOX_CURRENT_STAGE="prod"

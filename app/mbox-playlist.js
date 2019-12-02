@@ -1,4 +1,7 @@
-// list playlists
+//--------------------------------------
+// jc://music-box/, (c) Christoph Kloth
+//--------------------------------------
+// list and edit playlists
 //--------------------------------------
 
 function mboxPlaylistAllLoad(filter="",uuid="") {

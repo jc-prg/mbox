@@ -1,5 +1,7 @@
 //--------------------------------------
-// Edit data ...
+// jc://music-box/, (c) Christoph Kloth
+//--------------------------------------
+// Edit data (playlist and web-stream)
 //--------------------------------------
 
 function mboxDataEdit(data) {

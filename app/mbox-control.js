@@ -1,5 +1,9 @@
-// file mbox control at the bottom of the page (loaded by auto update)
-//-----------------------------------------------------------
+//--------------------------------------
+// jc://music-box/, (c) Christoph Kloth
+//--------------------------------------
+// file mbox control at the bottom 
+// of the page (loaded by auto update)
+//--------------------------------------
 
 mbox_control_open = false;
 

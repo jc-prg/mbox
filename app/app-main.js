@@ -1,15 +1,8 @@
-//--------------------------------
-// jc://remote/
-//--------------------------------
-// WebApp Remote Control for RM3
-// from Broadlink (requires server app)
-//
-// (c) Christoph Kloth
-//--------------------------------
-// Backlog:
-//--------------------------------
-// - get initial data from server ...
-//--------------------------------
+//--------------------------------------
+// jc://music-box/, (c) Christoph Kloth
+//--------------------------------------
+// main functions to load the app
+//--------------------------------------
 
 if (test == true) {
 	appTitle 	+= "test/";

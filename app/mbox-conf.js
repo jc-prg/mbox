@@ -1,4 +1,8 @@
-//----------------------------
+//--------------------------------------
+// jc://music-box/, (c) Christoph Kloth
+//--------------------------------------
+// mbox configurations
+//--------------------------------------
 
 var mbox_music_dir     = "./mbox_music/";
 var mbox_cover_dir     = "./cover/";

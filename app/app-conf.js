@@ -1,6 +1,9 @@
-//--------------------------------
-// jc://remote/
-//--------------------------------
+//--------------------------------------
+// jc://music-box/, (c) Christoph Kloth
+//--------------------------------------
+// app configuration
+//--------------------------------------
+
 
 // REST API configuration
 
@@ -12,6 +15,8 @@ var ip             = RESTip.split(":");
 
 var RESTurl        = "http://"+ip[0]+":"+server_port+"/";
 var RESTurl_noport = "http://"+ip[0];
+
+var LANG           = "EN"; // EN, DE (see mbox_language.js)
 
 // presets
 

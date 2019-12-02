@@ -1,3 +1,9 @@
+//--------------------------------------
+// jc://music-box/, (c) Christoph Kloth
+//--------------------------------------
+// show album list and details
+//--------------------------------------
+
 var mbox_list_count  = 3;
 var mbox_list_pos    = 0;
 var mbox_list_load   = 0;

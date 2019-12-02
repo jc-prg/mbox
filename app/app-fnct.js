@@ -1,6 +1,8 @@
-//--------------------------------
-// jc://remote/
-//--------------------------------
+//--------------------------------------
+// jc://music-box/, (c) Christoph Kloth
+//--------------------------------------
+// several functions ...
+//--------------------------------------
 
 function showReturnMsg(data) {
 	if ("Result" in data)		{ appMsg.alert(data["Result"]["Msg"] + " (" + data["Result"]["Code"] + ")"); }

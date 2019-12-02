@@ -1,3 +1,10 @@
+//--------------------------------------
+// jc://music-box/, (c) Christoph Kloth
+//--------------------------------------
+// multi-language support (not implemented yet)
+//--------------------------------------
+
+
 mbox_language = {
 	"DE" : {
 		"SELECT_MUSIC_ITEM" 	: "Wähle einen Sender, ein Album oder eine Playlist aus ...",

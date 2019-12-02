@@ -1,4 +1,8 @@
-// return cover for info page
+//--------------------------------------
+// jc://music-box/, (c) Christoph Kloth
+//--------------------------------------
+// create cover for list and detail views
+// and return cover for print view
 //--------------------------------------
 
 function mboxAlbumInfoCover(nr,url_list,act,uuid) {

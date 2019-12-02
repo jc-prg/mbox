@@ -1,6 +1,6 @@
 # jc://music-box/
 
-A friend has built a similar box based on an existing free software (which I've never seen myself). As my children where faszinated by this box I decided to build such a box for my children, but to write the software on my own from the scratch. My intentions is to try out different development practices. So it's not my idea but my individual implementation of this idea ...
+A friend has built a similar box based on an existing free software (which I've never seen myself). As my children where faszinated by this box I decided to build such a box for my children, but to write the software on my own from the scratch. My intention is to try out different development practices. So it's not my idea but my individual implementation of this idea ...
 
 ![mbox image](docs/images/mbox.jpg)
 
@@ -138,7 +138,7 @@ $ ln -s /media/usb/music /projects_data/prod/music
 
 **9. Copy music files** 
 
-   to the directory *./music/* (see suggested structure above) or to the USB device. Using an USB device makes it easier to add or change the music files ...
+  Copy files to the directory *./music/* (see suggested structure above) or to the USB device. Using an USB device makes it easier to add or change the music files ...
 
 
 **10. Start server and client**
@@ -161,7 +161,7 @@ $ sudo docker-compose -f docker-compose-rpi.yml up -d
 
 **12. Optional - mount USB device during start up**
 
-    To mount the device during start up add the line above to the /etc/rc.local - or alternatively add the following line to /etc/fstab:
+  To mount the device during start up add the line above to the /etc/rc.local - or alternatively add the following line to /etc/fstab:
 
 ```bash
 /dev/sda1 /media/usb auto nosuid,nodev,nofail 0 0
@@ -171,7 +171,7 @@ $ sudo docker-compose -f docker-compose-rpi.yml up -d
 
 **13. Optional - enable auto-start**
 
-    Add the following to */etc/rc.local* before the "exit 0" or use the script [./config/install-rclocal](../config/install-rclocal):
+  Add the following to */etc/rc.local* before the "exit 0" or use the script [./config/install-rclocal](../config/install-rclocal):
 
 ```bash
 # jc://mbox/ client, database and server components (except the 2 above)

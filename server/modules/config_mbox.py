@@ -13,8 +13,8 @@ APIname       = "jc://mbox/server/"
 APIname_LED   = "jc://mbox/LED/"
 APIname_BTN   = "jc://mbox/button/"
 APIname_RFID  = "jc://mbox/RFID/"
-APIversion    = "v0.4.0"
-APPversion    = "v0.4.1"
+APIversion    = "v0.5.0"
+APPversion    = "v0.5.0"
 APPsupport    = [APPversion, "v0.4.1","v0.4.0"]  # other supported versions
 
 # ---------------------------------

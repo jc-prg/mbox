@@ -11,14 +11,13 @@ led_pins = {
 # For BUTTONS
 #------------------------------
 
-button_pins = {
+button_pins = {               # GND -> 34
                "up"    : 40,
                "mute"  : 38,
                "down"  : 37,
-               "next"  : 7,
-               "pause" : 35,
-               "back"  : 33,
-               "GND"   : "(34) connected to GROUND"
+               "next"  : 36,
+               "pause" : 33,
+               "back"  : 35
                }
 
 # For RFID sensor (documentations only; not configuration)
@@ -55,7 +54,8 @@ rfid_pins = {
 #   GPIO6    31  :  32    GPIO12
 #  GPIO13    33  :  34    GND
 #  GPIO19    35  :  36    GPIO16
-#  GPIO25    27  :  38    GPIO20
+#  GPIO26    37  :  38    GPIO20
+#     GND    39  :  40    GIOP21
 
 # -----------------------------
 # EOF

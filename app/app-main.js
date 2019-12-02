@@ -1,15 +1,8 @@
-//--------------------------------
-// jc://remote/
-//--------------------------------
-// WebApp Remote Control for RM3
-// from Broadlink (requires server app)
-//
-// (c) Christoph Kloth
-//--------------------------------
-// Backlog:
-//--------------------------------
-// - get initial data from server ...
-//--------------------------------
+//--------------------------------------
+// jc://music-box/, (c) Christoph Kloth
+//--------------------------------------
+// main functions to load the app
+//--------------------------------------
 
 if (test == true) {
 	appTitle 	+= "test/";
@@ -52,15 +45,15 @@ function printAppMenu() {
 	else			 { mbox_filter_show = "show"; }
 
 	appMenu.add_script( "mboxToggleMode();printAppStatusLoad();if(mbox_settings){settingsToggle();}", "Modus: " + mbox_mode );
-	appMenu.add_script( "mboxToggleDevice();printAppStatusLoad();if(mbox_settings){settingsToggle();}", "Device: " + mbox_device );
+	appMenu.add_script( "mboxToggleDevice();printAppStatusLoad();if(mbox_settings){settingsToggle();}", language[LANG]["DEVICE"]+": " + mbox_device );
 	if (mbox_mode == "Album") {
 		appMenu.add_script( "mboxToggleFilter();printAppStatusLoad();if(mbox_settings){settingsToggle();}", "Filter: " + mbox_filter_show );
 		}
 	appMenu.add_line();
-	appMenu.add_script( "mboxListCardsLoad();if(mbox_settings){settingsToggle();printAllStatusLoad();};", "RFID Cards" );
-	appMenu.add_script( "settingsToggle();settingsStatusLoad();printAppStatusLoad();", "Settings" );
+	appMenu.add_script( "mboxListCardsLoad();if(mbox_settings){settingsToggle();printAllStatusLoad();};", language[LANG]["RFID_CARDS"] );
+	appMenu.add_script( "settingsToggle();settingsStatusLoad();printAppStatusLoad();", language[LANG]["SETTINGS"] );
 	appMenu.add_line();
-        appMenu.add_script( "toggleCoverPrint();", "Cover Images" )
+        appMenu.add_script( "toggleCoverPrint();", language[LANG]["COVER_IMAGES"] )
         appMenu.set_title( appTitle + mbox_mode );
 	}
 //--------------------------------
@@ -108,7 +101,7 @@ function check_for_update_msg(data) {
         var msg = data["STATUS"]["check-version"];
         message = "<br/></b><i>"+msg["Msg"]+"</i>";
 
-        appMsg.wait("Loading App ..."+message, ""); //"initRemote();" );
+        appMsg.wait(language[LANG]["LOADING_APP"]+" ..."+message, ""); //"initRemote();" );
 
         if (msg["Code"] == "800") { setTimeout(function(){appMsg.hide();},3000); }
         if (msg["Code"] == "801") { setTimeout(function(){appMsg.hide();},3000); }
@@ -118,7 +111,7 @@ function check_for_update_msg(data) {
 
 function check_for_updates() {
 	console.log("Check version: "+appVersion);
-        appMsg.wait("Loading App ...", ""); // "initRemote();" );
+        appMsg.wait(language[LANG]["LOADING_APP"]+" ...", ""); // "initRemote();" );
         mboxApp.requestAPI("GET",["version", appVersion], "", check_for_update_msg, "wait");
         }
 

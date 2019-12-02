@@ -5,17 +5,14 @@
 # by jc://design/
 #------------------------------------
 
-from socket import *
 import RPi.GPIO as GPIO
 import time
-import requests, math
-import os
-import logging
+import requests
 
 import modules.config_stage as stage
 import modules.config_mbox  as mbox
-import modules.jcJson       as jcJSON
 import modules_gpio.config  as gpio
+import modules.jcJson       as jcJSON
 
 # set start time and write title/version/stage
 #----------------------------------------------
@@ -46,15 +43,16 @@ else:
 def get_active_stage():
   settings = jcJSON.read("../../active")
   return settings["active_stage"]
+  return "prod"
 
 if stage.test == True:
   logging.info("Start button module: TEST STAGE ("+get_active_stage()+")")
-  url  = "http://127.0.0.1:"+str(stage.server_port)+"/api/"
+  url  = "http://"+stage.server_ip+":"+str(stage.server_port)+"/api/"
   this_stage = "test"
 
 else:
   logging.info("Start button module: PROD STAGE ("+get_active_stage()+")")
-  url  = "http://127.0.0.1:"+str(stage.server_port)+"/api/"
+  url  = "http://"+stage.server_ip+":"+str(stage.server_port)+"/api/"
   this_stage = "prod"
 
 
@@ -77,7 +75,7 @@ wait         = 0.3
 def setup():
     GPIO.setmode(GPIO.BOARD)       # Numbers GPIOs by physical location
     for key in pins:
-        GPIO.setup(pins[key], GPIO.IN, pull_up_down=GPIO.PUD_UP)    # Set BtnPin's mode is input, and pull up to high level(3.3V)
+        GPIO.setup(int(pins[key]), GPIO.IN, pull_up_down=GPIO.PUD_UP)    # Set BtnPin's mode is input, and pull up to high level(3.3V)
 
 def loop():
     while True:
@@ -105,12 +103,12 @@ def call_api(button):
     try:
        if button != "":
          response  = requests.put(url+"set-button/" + button + "/")
-         response  = requests.get(cmd[button])
+         if "volume" in cmd[button]: response  = requests.get(cmd[button])
        else:
          response  = requests.put(url+"set-button/no_button/")
        if response:
            data = response.json()
-           logging.info("Volume: " + str(round(data["STATUS"]["playback"]["volume"] * 10)))
+           #logging.info("Volume: " + str(round(data["STATUS"]["playback"]["volume"] * 10)))
     except requests.exceptions.RequestException as e:
        logging.debug("Error connecting to API: " + str(e))
        data      = {}

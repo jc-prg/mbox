@@ -6,6 +6,9 @@ source config_prod
 rm -rf ../docker-compose.yml
 envsubst < "temp.docker-compose.yml" > "../docker-compose.yml"
 
+rm -rf ../docker-compose-rpi.yml
+envsubst < "temp.docker-compose-rpi.yml" > "../docker-compose-rpi.yml"
+
 rm -rf ../app/config_stage.js
 envsubst < "temp.config_stage.js" > "../app/config_stage.js"
 
@@ -15,6 +18,10 @@ envsubst < "temp.config_stage.py" > "../server/modules/config_stage.py"
 rm -rf install/install-datadir
 envsubst < "temp.install-datadir" > "./install/install-datadir"
 chmod 755 ./install/install-datadir
+
+rm -rf install/install-rclocal
+envsubst < "temp.install-rclocal" > "./install/install-rclocal"
+chmod 755 ./install/install-rclocal
 
 rm -rf $MBOX_DIR_DATA_ROOT/active.json
 envsubst < "temp.active.json" > "$MBOX_DIR_DATA_ROOT/active.json"

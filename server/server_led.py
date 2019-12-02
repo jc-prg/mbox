@@ -5,11 +5,10 @@
 # by jc://design/
 #------------------------------------
 
-from socket import *
+#from socket import *
 import RPi.GPIO as GPIO
 import time
-import requests, math
-import os
+import requests
 import logging
 import signal
 import subprocess
@@ -52,11 +51,11 @@ def get_active_stage():
 
 if stage.test == True:
   logging.info("Start LED module: TEST STAGE ("+get_active_stage()+")")
-  url  = "http://127.0.0.1:"+str(stage.server_port)+"/api/"
+  url  = "http://"+stage.server_ip+":"+str(stage.server_port)+"/api/"
   this_stage = stage.rollout
 else:
   logging.info("Start LED module: PROD STAGE ("+get_active_stage()+")")
-  url  = "http://127.0.0.1:"+str(stage.server_port)+"/api/"
+  url  = "http://"+stage.server_ip+":"+str(stage.server_port)+"/api/"
   this_stage = stage.rollout
 
 
@@ -156,7 +155,7 @@ def loop():
                 if "LOAD" in data:
                   if "RFID" in data["LOAD"]:
                     light_rfid = "0"
-                    if   data["LOAD"]["RFID"] == mbox.demo_card:
+                    if   data["LOAD"]["RFID"] == stage.demo_card:
                         first_run = 1
 
                     elif data["LOAD"]["RFID"] != "":

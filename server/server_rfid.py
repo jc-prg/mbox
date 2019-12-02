@@ -5,22 +5,17 @@
 # by jc://design/
 #------------------------------------
 
+print("TEST")
+
 from socket import *
 import time
-import requests, math
-import os
+import requests
 import logging
 import signal
-import subprocess
-
-import RPi.GPIO             as GPIO
 
 import modules.jcJson       as jcJSON
 import modules.config_stage as stage
 import modules.config_mbox  as mbox
-
-import modules_gpio.MFRC522 as MFRC522
-import modules_gpio.config  as gpio
 
 # set start time and write title/version/stage
 #----------------------------------------------
@@ -28,6 +23,12 @@ mbox.start_time = time.time()
 print("--------------------------------")
 print(mbox.APIname_RFID + mbox.APIversion + "   (" + str(stage.rollout) + ")")
 print("--------------------------------")
+
+#---------------------------------------------
+
+import RPi.GPIO             as GPIO
+import modules_gpio.config  as gpio
+import modules_rfid.MFRC522 as MFRC522
 
 # start and configure logging
 #----------------------------------------------
@@ -54,11 +55,11 @@ def get_active_stage():
 
 if stage.test == True:
   logging.info("Start RFID module: TEST STAGE ("+get_active_stage()+")")
-  url  = "http://127.0.0.1:"+str(stage.server_port)+"/api/"
+  url  = "http://"+stage.server_ip+":"+str(stage.server_port)+"/api/"
   this_stage = "test"
 else:
   logging.info("Start RFID module: PROD STAGE ("+get_active_stage()+")")
-  url  = "http://127.0.0.1:"+str(stage.server_port)+"/api/"
+  url  = "http://"+stage.server_ip+":"+str(stage.server_port)+"/api/"
   this_stage = "prod"
 
 
@@ -175,6 +176,8 @@ signal.signal(signal.SIGINT, end_all)
 #-----------------------------------
 
 if __name__ == '__main__':
+
+   print("test")
 
    # Create an object of the class MFRC522
    MIFAREReader = MFRC522.MFRC522()

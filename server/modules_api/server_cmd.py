@@ -183,6 +183,13 @@ def mboxAPI_setButton(buttonID):
        if param == "no_button": mbox.rfid_ctrl["buttonID"] = ""
        else:                    mbox.rfid_ctrl["buttonID"] = param
 
+       if mbox.active_device == "music_box" and param == "next":
+            thread_music_ctrl.playlist_next(1)
+       elif mbox.active_device == "music_box" and param == "back":
+            thread_music_ctrl.playlist_next(-1)
+       elif mbox.active_device == "music_box" and param == "pause":
+            thread_music_ctrl.pause_playback()
+
        data = mboxAPI_end(data)
        return(data)
 
@@ -242,7 +249,15 @@ def mboxAPI_checkVersion(APPversion):
 
 def mboxAPI_readDB(databases,db_filter=""):
        global couch
-       param   = databases
+       param     = databases
+       
+       if ">>" in db_filter:  thefilter = db_filter.split(">>")
+       else:                  thefilter = db_filter.split("||")
+       
+       try:
+         uuid = thefilter[1]
+       except:
+         uuid = ""
 
        if databases == "all":   db_list = ["files","tracks","albums","album_info","cards","playlists","radio","artists"]
        elif "--" in databases:  db_list = databases.split("--")
@@ -256,6 +271,11 @@ def mboxAPI_readDB(databases,db_filter=""):
            else:                                  data = mboxAPI_error(data, "Database empty: "+database)
          else:
            data = mboxAPI_error(data, "Database not found: "+database)
+           
+         if uuid != "" and uuid in data["DATA"][database]:
+             data["DATA"]["_selected_uuid"]        = uuid
+             data["DATA"]["_selected_db"]          = database
+             data["DATA"]["_selected"]             = data["DATA"][database][uuid]
 
        data = mboxAPI_filter(data,db_filter)
        data = mboxAPI_end(data)
@@ -289,9 +309,11 @@ def mboxAPI_readEntry(uuid,db_filter=""):
            if "main" in couch.database[database]:
                temp = couch.read_cache(database)
                if uuid in temp:
-                   data["DATA"]["_selected_uuid"] = uuid
-                   data["DATA"]["_selected_db"]   = database
-                   data["DATA"]["_selected"]      = temp[uuid]
+                   data["DATA"]["_selected_uuid"]        = uuid
+                   data["DATA"]["_selected_db"]          = database
+                   data["DATA"]["_selected"]             = temp[uuid]
+                   if not "tracks" in data["DATA"]["_selected"]:
+                      data["DATA"]["_selected"]["tracks"]   = {}
                    if "tracks" in temp[uuid]:
                       if not "tracks"     in data["DATA"]: data["DATA"]["tracks"]     = {}
                       if not "album_info" in data["DATA"]: data["DATA"]["album_info"] = {}
@@ -742,13 +764,7 @@ def mboxAPI_play(uuid):
            mbox.active_device = "radio"
            database  = couch.read_cache("radio")
            if uuid in database:
-               try:
-                   url2 = thread_radio_ctrl.get_url(database[uuid]["stream_url"])
-                   database[uuid]["stream_url2"] = re.split("[\r\n]",url2)[0]
-               except:
-                   data = mboxAPI_error(data, "Problem with connection to stream url: "+uuid+"/"+database[uuid]["stream_url"])
-                   
-               thread_radio_ctrl.load(database[uuid]["stream_url2"],database[uuid],uuid)
+               thread_radio_ctrl.load(database[uuid]["stream_url"],database[uuid],uuid)
                thread_radio_ctrl.play()
            else:
                data = mboxAPI_error(data, "UUID not found: "+uuid)

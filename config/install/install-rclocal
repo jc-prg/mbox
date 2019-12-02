@@ -1,0 +1,22 @@
+#!/bin/bash
+
+
+dir=""
+rclocal="/etc/rc.local"
+rclocal_txt=$(cat rclocal)
+
+IFS='' read -r -d '' String <<"EOF"
+
+# entries for jc://mbox/
+#-----------------------------
+mount /dev/sda1 /media/usb/
+/usr/local/bin/docker-compose -f /docker-compose.yml up -d &
+/usr/local/bin/docker-compose -f /docker-compose-rpi.yml up -d &
+
+exit 0
+EOF
+
+rclocal_txt=(echo "rclocal_txt" | sed -e "s/exit 0//g")
+echo "rclocal_txt"     > rclocal
+echo "String"          >> rclocal
+

@@ -1,3 +1,9 @@
+//--------------------------------------
+// jc://music-box/, (c) Christoph Kloth
+//--------------------------------------
+// create settings pages
+//--------------------------------------
+
 var MusicDir = "/mbox_music/";
 
 // show / hide settings page

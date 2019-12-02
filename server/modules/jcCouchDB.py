@@ -157,6 +157,7 @@ class jcCouchDB ():
 
            logging.info("CouchDB read: " + db_key + " - " + str(int(start_time - time.time())) + "s")
            db = self.database[db_key]
+           self.cache[db_key] = db
 
            if entry_key == "":
               return db["main"]["data"]
@@ -200,8 +201,8 @@ class jcCouchDB ():
            db.save(doc)
        except Exception as e:
            logging.warn("CouchDB ERROR save: " + key + " " + str(e))
-           #logging.warn("..."+stage.data_db)
            return
+       self.cache[key] = self.read(key)
 
        logging.info("CouchDB save: " + key + " " +str(time.time()))
        return

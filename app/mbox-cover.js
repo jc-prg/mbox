@@ -1,4 +1,8 @@
-// return cover for info page
+//--------------------------------------
+// jc://music-box/, (c) Christoph Kloth
+//--------------------------------------
+// create cover for list and detail views
+// and return cover for print view
 //--------------------------------------
 
 function mboxAlbumInfoCover(nr,url_list,act,uuid) {
@@ -67,8 +71,9 @@ function mboxAlbumCover2(id,data) {
 	var i             = 0;
 	var cover	  = "";
 
-	if ("uuid" in data) 	{ albumInfo     = data; }
-	else			{ albumInfo     = data[id]; }
+	if (data && data["uuid"]) 	{ albumInfo     = data; }
+	else if (data)			{ albumInfo     = data[id]; }
+	else				{ return; }
 
 	if (albumInfo["cover_images"]) {
 		var images   = albumInfo["cover_images"];
@@ -94,7 +99,8 @@ function mboxAlbumCover2(id,data) {
 
 function listCoverStart() {
 	var print = "<div class=\"print_album_back\">";
-        print += "<br>&nbsp;&nbsp;<b>Album-Cover für den Ausdruck:</b> Klicke auf ein Cover, um es auszublenden (z.B. wenn schon gedruckt). Klicke <a style=\"cursor:pointer;\" onclick=\"toggleCoverPrint();\"><u>hier</u></a>, um diese Ansicht zu schließen.<br>";
+        print += "<br>&nbsp;&nbsp;<b"+language[LANG]["COVER_PRINT_VIEW_1"]+"</b> "+language[LANG]["COVER_PRINT_VIEW_2"]+" <a style=\"cursor:pointer;\" onclick=\"toggleCoverPrint();\"><u>"+language[LANG]["COVER_PRINT_VIEW_3"]+"</u></a><br>";
+//        print += "<br>&nbsp;&nbsp;<b>Album-Cover für den Ausdruck:</b> Klicke auf ein Cover, um es auszublenden (z.B. wenn schon gedruckt). Klicke <a style=\"cursor:pointer;\" onclick=\"toggleCoverPrint();\"><u>hier</u></a>, um diese Ansicht zu schließen.<br>";
 	return print;
 	}
 

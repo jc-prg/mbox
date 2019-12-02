@@ -1,10 +1,13 @@
-//--------------------------------
-// jc://remote/
-//--------------------------------
+//--------------------------------------
+// jc://music-box/, (c) Christoph Kloth
+//--------------------------------------
+// app configuration
+//--------------------------------------
+
 
 // REST API configuration
 
-var appVersion     = "v0.3.7";
+var appVersion     = "v0.4.1";
 var appTitle       = "jc://mbox/";
 
 var RESTip         = location.host;

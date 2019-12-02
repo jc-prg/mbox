@@ -1,3 +1,9 @@
+//--------------------------------------
+// jc://music-box/, (c) Christoph Kloth
+//--------------------------------------
+// list and edit rfid card infos
+//--------------------------------------
+
 mboxCardUUID = "";
 mboxCardCID = "";
 

@@ -3,7 +3,7 @@ server/modules/__pycache__/
 
 server/modules_api/__pycache__/
 
-docker-compose.yml
+docker-compose*
 
 config/config_prod
 
@@ -21,9 +21,6 @@ app/icon_backup/Thumbs.db:encryptable
 
 app/icon_backup/Thumbs.db
 
+*~
 
-
-
-config/container/_sicher/
-
-config/container/test
+config/install/install-datadir

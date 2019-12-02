@@ -1,5 +1,0 @@
-cd SPI-py
-python setup.py install
-cd ..
-
-echo "activate SPI module via rasp-config"

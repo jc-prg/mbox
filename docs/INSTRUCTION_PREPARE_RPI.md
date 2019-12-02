@@ -58,7 +58,7 @@ From now on you can work remote via ssh. Maybe you have to configure your router
 
 ## Update Software and Prepare Project Directories
 
-### Update Software:
+### Update Repositories and Software:
 
 ```bash
 $ sudo apt-get update
@@ -92,7 +92,8 @@ $ mkdir prod
 
 ### Install Docker and Docker-Compose:
 
-To install docker the following instructions worked for me: [https://www.marksei.com/docker-on-raspberry-pi-raspbian/](https://www.marksei.com/docker-on-raspberry-pi-raspbian/). To make it short:
+To install docker the following instructions worked for me: [https://www.marksei.com/docker-on-raspberry-pi-raspbian/](https://www.marksei.com/docker-on-raspberry-pi-raspbian/). 
+To make it short, you can use the script [./config/install-docker](../config/install-docker) or follow this instructions:
 
 ```bash
 # install required software and aquire GPG key
@@ -113,14 +114,10 @@ $ echo "deb [arch=armhf] https://download.docker.com/linux/debian \
 # install docker
 $ sudo apt-get install docker-ce
 $ systemctl enable --now docker
-```
 
-To install docker-compose use PIP:
-
-```bash
+# install docker-compose use PIP:
 $ sudo pip3 install docker-compose
 ```
-
 
 ## Install Additional Tools (optional)
 

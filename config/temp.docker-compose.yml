@@ -42,7 +42,7 @@ services:
 #----------------------------------------
 
   ${MBOX_DOCKER_SERVER}:
-    build: ./config/container
+    build: ./config/container-srv
     privileged: true
     volumes:
       - ${MBOX_DIR_SERVER}:/usr/src/app/server
@@ -51,6 +51,5 @@ services:
       - ${MBOX_DIR_DATA}/cover:${MBOX_DIR_DATA}/cover
     ports:
       - ${MBOX_SERVER_PORT}:${MBOX_SERVER_PORT}
-      
       
 

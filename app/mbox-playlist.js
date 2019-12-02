@@ -92,12 +92,12 @@ function mboxPlaylistAll(data) {
 
 function mboxAddListDialog(i) {
 	var onclick2 = "document.getElementById('album_"+(i)+"').style.display='none';";
-        var text  = "<b>Playliste hinzufügen:</b><br/><br/><table>";
-        text += "<tr><td>Titel:</td><td><input id=\"playlist_title\" style=\"width:150px\"></input></td></tr>";
-        text += "<tr><td>Beschreibung:</td><td><input id=\"playlist_description\" style=\"width:150px\"></input></td></tr>";
+        var text  =  "<b>"+language[LANG]["ADD_PLAYLIST"]+":</b><br/><br/><table>";
+        text += "<tr><td>"+language[LANG]["TITLE"]+":</td><td><input id=\"playlist_title\" style=\"width:150px\"></input></td></tr>";
+        text += "<tr><td>"+language[LANG]["DESCRIPTION"]+":</td><td><input id=\"playlist_description\" style=\"width:150px\"></input></td></tr>";
         text += "</table><br/>";
-        text += button("add_playlist();","Hinzufügen","add_playlist");
-        text += button(onclick2,"Schließen","close_playlist");
+        text += button("add_playlist();",language[LANG]["ADD"],"add_playlist");
+        text += button(onclick2,language[LANG]["CLOSE"],"close_playlist");
 	setTextById("album_"+i,text);
 	document.getElementById("album_"+i).style.display="block";
 	}
@@ -262,22 +262,22 @@ function mboxPlaylistInfo(data) {
 
         var edit = "";
         edit += mboxButton("image_add", "mboxUploadImage('"+uuid+"','playlist','"+album["title"]+"');", "red");
-        edit += mboxButton("list_edit",  "mboxPlaylistEditLoad('"+album["uuid"]+"');",          "red");
-        edit += mboxButton("edit",  "mboxPlaylistEditEntryLoad('"+album["uuid"]+"');",          "red");
-        edit += mboxButton("delete",  "mboxDeletePlaylist('"+uuid+"','"+album["title"]+"');",         "red");
+        edit += mboxButton("list_edit", "mboxPlaylistEditLoad('"+album["uuid"]+"');",          "red");
+        edit += mboxButton("edit",  	"mboxPlaylistEditEntryLoad('"+album["uuid"]+"');",          "red");
+        edit += mboxButton("delete",  	"mboxDeletePlaylist('"+uuid+"','"+album["title"]+"');",         "red");
 
 
         text += "<b>Playlist Informationen</b><br/>";
         text += mboxTableNew("start");
         text += "<tr><td colspan='2'><hr></td></tr>";
-        text += mboxTableNew(["<i>Title:",              album["title"] ] );
-        text += mboxTableNew(["<i>Description:",        album["description"] ] );
-        text += mboxTableNew(["<i>Tracks:",	        album["tracks"].length ] );
+        text += mboxTableNew(["<i>"+language[LANG]["TITLE"]+":",        album["title"] ] );
+        text += mboxTableNew(["<i>"+language[LANG]["DESCRIPTION"]+":",  album["description"] ] );
+        text += mboxTableNew(["<i>Tracks:",	       			album["tracks"].length ] );
         text += mboxTableNew(["<i>UUID:",               "<a href='" + url + "/' target='_blank'>" + uuid + "</a>" ] );
         text += mboxTableNew(["<i>Card ID:",            "<a style='cursor:pointer;' onclick='mboxListCardsLoad();'>"    + cardid + "</a>" ] );
-        text += mboxTableNew(["<i>Verf&uuml;gbare Cover:",      cover ] );
+        text += mboxTableNew(["<i>"+language[LANG]["COVER_AVAILABLE"]+":",      cover ] );
         text += "<tr><td colspan='2'><hr></td></tr>";
-        text += mboxTableNew(["<i>Bearbeiten:",         edit ] );
+        text += mboxTableNew(["<i>"+language[LANG]["EDIT"]+":",         edit ] );
         text += "<tr><td colspan='2'><hr></td></tr>";
         text += mboxTableNew("end");
 

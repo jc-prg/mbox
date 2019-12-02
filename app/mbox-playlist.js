@@ -551,7 +551,7 @@ function mboxInfoDelete(data) {
 
 	setTextById("playlistEditingInfo","Lösche "+data["LOAD"]["UUID"] + " ...");
 	setTimeout(function(){
-		mboxApp.requestAPI("GET",["db","all",document.getElementById("selectAlbum").value], "", mboxPlaylistEditTracks);
+		mboxApp.requestAPI("GET",["db","all",document.getElementById("selectAlbum").value], "", mboxPlaylistEditTracks,"wait");
 		mboxPlaylistAllLoad('', data["LOAD"]["UUID"]);
 		setTextById("playlistEditingInfo","");
 		}, 1000);

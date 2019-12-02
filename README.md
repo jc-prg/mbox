@@ -19,13 +19,13 @@ A friend has built a similar box based on an existing free software (which I've 
 
 This software is built to play music (MP3 / M4A files and web-streams) on a _Raspberry Pi 3B+_ in a wooden box with speakers. It consists of:
 
-- *Client* to show and manage content and control playback (JavaScript/HTML5/CSS)
-- *Server* to import and manage content and control playback (Python3)
-- *LED Server* to show volume and status via LED (Python3)
-- *Button Server* to read commands via push buttons and send to main server (Python3)
-- *RFID Server* to detect RFID cards (Python3)
+- **Client** to show and manage content and control playback (JavaScript/HTML5/CSS)
+- **Server** to import and manage content and control playback (Python3)
+- **LED Server** to show volume and status via LED (Python3)
+- **Button Server** to read commands via push buttons and send to main server (Python3)
+- **RFID Server** to detect RFID cards (Python3)
 
-The jc://mbox/ uses VLC and several other [sources](#sources). It's written in PYTHON (server) and JAVASCRIPT (client).
+The jc://music-box/ uses VLC and several other [sources](#sources). It's written in PYTHON (server) and JAVASCRIPT (client).
 
 ## How to build the hardware
 
@@ -43,7 +43,6 @@ In order to use jc://music-box/ as it is you must have installed:
 
 1. git
 2. docker, docker-compose
-3. python3, pip3, python2, pip
 
 The *server software* has been tested on a Raspberry Pi 3B+ with [Raspbian](docs/INSTRUCTION_PREPARE_RPI.md) and on an Ubuntu Desktop. RFID reader, LED and Buttons only tested on the Raspberry Pi.
 

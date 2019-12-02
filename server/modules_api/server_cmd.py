@@ -249,7 +249,15 @@ def mboxAPI_checkVersion(APPversion):
 
 def mboxAPI_readDB(databases,db_filter=""):
        global couch
-       param   = databases
+       param     = databases
+       
+       if ">>" in db_filter:  thefilter = db_filter.split(">>")
+       else:                  thefilter = db_filter.split("||")
+       
+       try:
+         uuid = thefilter[1]
+       except:
+         uuid = ""
 
        if databases == "all":   db_list = ["files","tracks","albums","album_info","cards","playlists","radio","artists"]
        elif "--" in databases:  db_list = databases.split("--")
@@ -263,6 +271,11 @@ def mboxAPI_readDB(databases,db_filter=""):
            else:                                  data = mboxAPI_error(data, "Database empty: "+database)
          else:
            data = mboxAPI_error(data, "Database not found: "+database)
+           
+         if uuid != "" and uuid in data["DATA"][database]:
+             data["DATA"]["_selected_uuid"]        = uuid
+             data["DATA"]["_selected_db"]          = database
+             data["DATA"]["_selected"]             = data["DATA"][database][uuid]
 
        data = mboxAPI_filter(data,db_filter)
        data = mboxAPI_end(data)
@@ -296,9 +309,11 @@ def mboxAPI_readEntry(uuid,db_filter=""):
            if "main" in couch.database[database]:
                temp = couch.read_cache(database)
                if uuid in temp:
-                   data["DATA"]["_selected_uuid"] = uuid
-                   data["DATA"]["_selected_db"]   = database
-                   data["DATA"]["_selected"]      = temp[uuid]
+                   data["DATA"]["_selected_uuid"]        = uuid
+                   data["DATA"]["_selected_db"]          = database
+                   data["DATA"]["_selected"]             = temp[uuid]
+                   if not "tracks" in data["DATA"]["_selected"]:
+                      data["DATA"]["_selected"]["tracks"]   = {}
                    if "tracks" in temp[uuid]:
                       if not "tracks"     in data["DATA"]: data["DATA"]["tracks"]     = {}
                       if not "album_info" in data["DATA"]: data["DATA"]["album_info"] = {}

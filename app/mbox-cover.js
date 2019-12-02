@@ -67,8 +67,9 @@ function mboxAlbumCover2(id,data) {
 	var i             = 0;
 	var cover	  = "";
 
-	if ("uuid" in data) 	{ albumInfo     = data; }
-	else			{ albumInfo     = data[id]; }
+	if (data && data["uuid"]) 	{ albumInfo     = data; }
+	else if (data)			{ albumInfo     = data[id]; }
+	else				{ return; }
 
 	if (albumInfo["cover_images"]) {
 		var images   = albumInfo["cover_images"];

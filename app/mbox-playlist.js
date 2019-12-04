@@ -170,7 +170,7 @@ function mboxPlaylistOne(data) {
 	// show and edit rfid card
 	if ("card_id" in albums && albums["card_id"] != "") 	{
 		text += "<div id=\"show_card\">";
-		text += mboxButton("rfid",  "", "green");
+		text += mboxButton("card",  "", "green");
 		text += "</div>";
 		text += CardID(albums["uuid"]);
 		}

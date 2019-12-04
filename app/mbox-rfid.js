@@ -36,7 +36,7 @@ function CardID(uuid) {
 
         // visibility controlled in mbox_rfid.js (if card detected)
         var editCard = "editCardDialogLoad1('"+uuid+"')";	//\""+card_id+"\",\""+uuid+"\",\""+uuid+"\",\"\");";
-        text += "<div id=\"edit_card\" style=\"display:none\">" + mboxButton("rfid_edit", editCard, "red", "") + "</div>";
+        text += "<div id=\"edit_card\" style=\"display:none\">" + mboxButton("card_edit", editCard, "red", "") + "</div>";
 
         return text;
         }
@@ -44,8 +44,8 @@ function CardID(uuid) {
 // edit dialog ... // OFFEN -> RADIO
 //---------------------------------
 
-function editCardDialogLoad1(uuid) 	{ mboxCardUUID = uuid; 					mboxApp.requestAPI("GET",["status"],  "", editCardDialogLoad2); }
-function editCardDialogLoad2(data)	{ mboxCardCID = data["LOAD"]["RFID"]["cardUID"]; 	mboxApp.requestAPI("GET",["db","all","-"],"", editCardDialog); }
+function editCardDialogLoad1(uuid) 	{ mboxCardUUID = uuid; 			mboxApp.requestAPI("GET",["status"],  "", editCardDialogLoad2); }
+function editCardDialogLoad2(data)	{ mboxCardCID = data["LOAD"]["RFID"]; 	mboxApp.requestAPI("GET",["db","all","-"],"", editCardDialog); }
 function editCardDialog(data) {
 
 	var exist1 = "";
@@ -243,7 +243,7 @@ function mboxListCards(data) {
 		else						{ color = "red"; }
 
                 text += div2; // + "<div style=\"margin:px;\">";
-                text += mboxButton("exit","appMsg.confirm('<br/>Zuordnung zwischen Karte &quot;" + card  + "&quot; und Album &quot;" + title + "&quot; löschen?','mbox_delete_card(#" + card + "#,#" + cards[card] + "#)',150)",color);
+                text += mboxButton("delete","appMsg.confirm('<br/>Zuordnung zwischen Karte &quot;" + card  + "&quot; und Album &quot;" + title + "&quot; löschen?','mbox_delete_card(#" + card + "#,#" + cards[card] + "#)',150)",color);
 		text += divE; // + divE;
 
 		text += divE;

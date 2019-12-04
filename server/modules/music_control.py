@@ -202,7 +202,7 @@ def musicLoadRfidList(thread):
 
     if "cardUID" in mbox.rfid_ctrl:
       logging.info("#################### " + mbox.rfid_ctrl["cardUID"])
-      cardDB = thread.music_database.read("cards")
+      cardDB = thread.music_database.read_cache("cards")
 
       # check if card detected ...
       if (mbox.rfid_ctrl["cardUID"] != ""):

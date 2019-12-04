@@ -4,6 +4,10 @@ A friend has built a similar box based on an existing free software (which I've 
 
 ![mbox image](docs/images/mbox.jpg)
 
+## Status
+
+At the moment I'm finishing a new box ... which means optimizing, testing and bug-fixing all the time. Not everything is working stable at the moment... . Stay tuned, I'm nearly finished.
+
 ## Table of Contents
 
 - [What's inside](#whats-inside)

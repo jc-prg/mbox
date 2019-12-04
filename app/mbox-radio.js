@@ -144,7 +144,7 @@ function mboxRadioChannel(data) {
         // show and edit rfid card
         if ("card_id" in radio_data)        {
                 text += "<div id=\"show_card\">";
-                text += mboxButton("rfid",  "", "green");
+                text += mboxButton("card",  "", "green");
                 text += "</div>";
                 text += CardID(uuid);
                 }

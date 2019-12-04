@@ -671,44 +671,45 @@ def mboxAPI_cards(uuid,param):
 
        global couch
        db_entries = {}
-       data       = mboxAPI_start("cards","cards",cmd,uuid,param)
+       data       = mboxAPI_start("cards","cards","",uuid,param)
+       databases  = ["cards","album_info","playlists","radio"]
 
        # read all data from DB
        for name in databases: db_entries[name] = couch.read(name)
 
        # check if card already used for different album
-       if uuid in db_entries["cards"]:                
-           if db_entries["cards"][uuid][0] is not param and db_entries["cards"][uuid][0] != "":
+       if param in db_entries["cards"]:
+           if db_entries["cards"][param][0] is not param and db_entries["cards"][param][0] != "":
                data = mboxAPI_error(data, "Card already in use for other entry: "+uuid+"/"+param)
-               logging.warn("Card alread in use for other entry (old: " + db_entries["cards"][uuid][0] + "/ new: " + param + ")")
+               logging.warn("Card alread in use for other entry (old: " + db_entries["cards"][param][0] + "/ new: " + uuid + ")")
 
        # if uuid of album
-       if "a_" in param:
-           if param in db_entries["album_info"]:
-               db_entries["album_info"][param]["card_id"]   = uuid
-               db_entries["cards"][uuid]                    = [param,db_entries["album_info"][param]["album"],db_entries["album_info"][param]["artist"]]                   
+       if "a_" in uuid:
+           if uuid in db_entries["album_info"]:
+               db_entries["album_info"][uuid]["card_id"]   = param
+               db_entries["cards"][param]                  = [uuid,db_entries["album_info"][uuid]["album"],db_entries["album_info"][uuid]["artist"]]                   
            else:
                data = mboxAPI_error(data, "Album to connect not found: "+uuid+"/"+param)
-               logging.warn("Album to connect not found (" + param + ")")
+               logging.warn("Album to connect not found (" + uuid + ")")
 
        # if uuid of playlist
-       elif "p_" in param:
-           if param in db_entries["playlists"]:
-               db_entries["playlists"][param]["card_id"]    = uuid
-               db_entries["cards"][uuid]                    = [param,db_entries["playlists"][param]["title"]]
+       elif "p_" in uuid:
+           if uuid in db_entries["playlists"]:
+               db_entries["playlists"][uuid]["card_id"]    = param
+               db_entries["cards"][param]                  = [uuid,db_entries["playlists"][uuid]["title"]]
            else:
                data = mboxAPI_error(data, "Playlist to connect not found: "+uuid+"/"+param)
-               logging.warn("Playlist to connect not found (" + param + ")")
+               logging.warn("Playlist to connect not found (" + uuid + ")")
 
        # if uuid of radio channel
-       elif "r_" in param:
-           if param in db_entries["radio"]:
-               db_entries["radio"][param]["card_id"]        = uuid
-               db_entries["cards"][uuid]                    = [param,db_entries["radio"][param]["title"]]
+       elif "r_" in uuid:
+           if uuid in db_entries["radio"]:
+               db_entries["radio"][uuid]["card_id"]        = param
+               db_entries["cards"][param]                    = [uuid,db_entries["radio"][uuid]["title"]]
+               #logging.warn("TEST - "+uuid+"|"+param+" ... ")
            else:
                data = mboxAPI_error(data, "Stream to connect not found: "+uuid+"/"+param)
-               logging.warn("Stream to connect not found (" + param + ")")   
-       
+               logging.warn("Stream to connect not found (" + uuid + ")")
 
        # write change data to DB
        for name in databases: couch.write(name, db_entries[name])

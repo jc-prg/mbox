@@ -108,6 +108,7 @@ $ sudo raspi-config
 ```
 
 ![connect rfid](images/mbox_rfid.JPG)
+![wiring rfid](mbox-wiring-02.png)
 
 ### Integrate Buttons
 
@@ -115,6 +116,7 @@ The push buttons are easy to integrate also. Connect ground of all buttons and t
 
 ![prepare the lid 04](images/mbox_lid04.JPG)
 ![prepare the lid 05](images/mbox_lid05.JPG)
+![wiring buttons](mbox-wiring-04.png)
 
 ### Create and integrate LED bars
 
@@ -123,6 +125,8 @@ This part is (at least for me) the most difficult part as you've to solder a lot
 ![led bar for volume visualization](images/mbox_led-bar.JPG)
 ![led shift register](images/mbox_register.JPG)
 ![prepare the lid 06](images/mbox_lid06.JPG)
+![wiring led](mbox-wiring-03.png)
 
-*a wiring diagram will follow*
+### Overview all wiring diagrams
 
+![wiring overview](mbox-wiring-01.png)

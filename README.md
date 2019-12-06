@@ -33,7 +33,7 @@ The jc://music-box/ uses VLC and several other [sources](#sources). It's written
 
 ## How to build the hardware
 
-Find here some [instructions and pictures](docs/INSTRUCTION_BUILD_HARDWARE.md).
+Find here some [instructions including pictures and wiring diagrams](docs/INSTRUCTION_BUILD_HARDWARE.md).
 
 ## How to setup the software
 

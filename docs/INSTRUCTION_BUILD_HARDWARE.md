@@ -12,6 +12,7 @@
   - [Prepare the Front for the Speakers](#prepare-the-front-for-the-speakers)
   - [Prepare the Lid and Add Buttons](#prepare-the-lid-and-add-buttons)
 - [Building the Hardware](#building-the-hardware)
+- [Integrate IT Components](#integrate-it-components)
 - [Overview Wiring](#overview-wiring)
 
 ## Impressions

@@ -124,9 +124,9 @@ This part is (at least for me) the most difficult part as you've to solder a lot
 
 ![led bar for volume visualization](images/mbox_led-bar.JPG)
 ![led shift register](images/mbox_register.JPG)
-![prepare the lid 06](images/mbox_lid06.JPG)
 ![wiring led](images/mbox-wiring-03.png)
 
-### Overview all wiring diagrams
+### Overview all wiring
 
+![prepare the lid 06](images/mbox_lid06.JPG)
 ![wiring overview](images/mbox-wiring-01.png)

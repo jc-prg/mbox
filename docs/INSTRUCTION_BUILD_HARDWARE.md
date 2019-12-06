@@ -12,6 +12,7 @@
   - [Prepare the Front for the Speakers](#prepare-the-front-for-the-speakers)
   - [Prepare the Lid and Add Buttons](#prepare-the-lid-and-add-buttons)
 - [Building the Hardware](#building-the-hardware)
+- [Overview Wiring](#overview-wiring)
 
 ## Impressions
 
@@ -126,7 +127,7 @@ This part is (at least for me) the most difficult part as you've to solder a lot
 ![led shift register](images/mbox_register.JPG)
 ![wiring led](images/mbox-wiring-03.png)
 
-### Overview all wiring
+## Overview Wiring
 
 ![prepare the lid 06](images/mbox_lid06.JPG)
 ![wiring overview](images/mbox-wiring-01.png)

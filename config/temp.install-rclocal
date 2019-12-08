@@ -7,7 +7,7 @@ rclocal_txt=$(cat ${DOLLAR}rclocal)
 
 IFS='' read -r -d '' String <<"EOF"
 
-# entries for jc://mbox/
+# entries for jc://mbox/${MBOX_ACTIVE_STAGE}/
 #-----------------------------
 mount /dev/sda1 /media/usb/
 /usr/local/bin/docker-compose -f ${MBOX_DIR}/docker-compose.yml up -d &

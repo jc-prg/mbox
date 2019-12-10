@@ -1,0 +1,10 @@
+# /etc/dnsmasq.conf
+
+#AutoHotspot Config
+#stop DNSmasq from using resolv.conf
+no-resolv
+
+#Interface to use
+interface=${WLAN_DEVICE}
+bind-interfaces
+dhcp-range=10.0.0.50,10.0.0.150,12h

@@ -1,0 +1,22 @@
+#!/bin/bash 
+#---------------------------------------------
+# change settings and copy to a file named "config"
+
+# Settings
+export WLAN_COUNTRY="DE"
+export WLAN_DEVICE="wlan0"
+
+# Wifi Data
+export WIFI_SSID="JCwifi"              # default network to connect to ...
+export WIFI_PWD=""                     # pwd for default network
+
+# Hotspot Data
+export HOTSPOT_SSID="JCmbox"
+export HOTSPOT_PWD="0123456789"        # must have at least 8 characters ...
+
+
+#---------------------------------------------
+export THIS_IS_THE_PROJECT_TEMPLATE="Please edit not here, but the orginial configuration file. This files is created using a template."
+export DOLLAR="$"
+
+

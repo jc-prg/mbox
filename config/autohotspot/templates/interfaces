@@ -1,0 +1,8 @@
+# modified for mbox incl. autohotspot
+
+auto eth0
+iface eth0 inet static
+  address 10.1.0.1
+  network 10.1.0.0
+  netmask 255.255.255.0
+#  gateway 192.168.1.1

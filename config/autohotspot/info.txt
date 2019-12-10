@@ -1,0 +1,9 @@
+------------------------------------
+crontab -e
+------------------------------------
+
+At the bottom of the file enter the command
+
+  */5 * * * * sudo /usr/bin/autohotspot >/dev/null 2>&1
+
+------------------------------------

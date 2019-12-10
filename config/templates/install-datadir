@@ -1,0 +1,15 @@
+#!/bin/bash
+
+dir="${MBOX_DIR_DATA_ROOT}"
+
+mkdir ${DOLLAR}dir
+
+cd ${DOLLAR}dir
+mkdir ${MBOX_CURRENT_STAGE}
+cd ${MBOX_CURRENT_STAGE}
+mkdir data
+mkdir couchdb
+mkdir music
+mkdir cover
+mkdir cover_upload
+chmod 777 cover_upload

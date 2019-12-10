@@ -9,6 +9,8 @@ config/config_prod
 
 config/config_test
 
+config/autohotspot/config
+
 *.swp
 
 *.pyc

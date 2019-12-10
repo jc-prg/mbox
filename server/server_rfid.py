@@ -5,6 +5,8 @@
 # by jc://design/
 #------------------------------------
 
+print("TEST")
+
 from socket import *
 import time
 import requests

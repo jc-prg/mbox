@@ -27,7 +27,7 @@ export MBOX_DATABASE_PORT=5105
 export MBOX_DOCKER_DATABASE="mbox_db_prod"
 export MBOX_DOCKER_CLIENT="mbox_client_prod"
 export MBOX_DOCKER_SERVER="mbox_server_prod"
-export MBOX_DATABASE_SERVER="$WLAN0_IP"
+export MBOX_DATABASE_SERVER="$ETH0_IP"
 
 # Docker container names
 export MBOX_DB_USER="mbox"

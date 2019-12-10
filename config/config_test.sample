@@ -22,7 +22,7 @@ export MBOX_IS_TEST="True"
 export MBOX_CLIENT_PORT=86
 export MBOX_SERVER_PORT=5006
 export MBOX_DATABASE_PORT=5106
-export MBOX_DATABASE_SERVER="$WLAN0_IP"
+export MBOX_DATABASE_SERVER="$ETH0_IP"
 
 # Docker container names
 export MBOX_DOCKER_DATABASE="mbox_db_test"

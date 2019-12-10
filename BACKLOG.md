@@ -262,6 +262,10 @@ Here you'll find a history of features implemented into hardware and software as
 * OK - several optimizations
 * OK - enable multi-language support
 
+- BUG jump to album doesnt work
+- BUG loading albums and tracks to edit playlist doesnt work every time
+
+- timeout for API Request and reaction to the timeout (show error message) - required e.g. if parallel processes like a system update is running on the raspberry
 - filter for genres (or other metadata ...)
 - use enhanced local player also for playlists (tracks & albums to be loaded)
 - appMsg.confirm -> place dialog in the middle (bit more above ...)

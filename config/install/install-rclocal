@@ -1,17 +1,17 @@
 #!/bin/bash
 
 
-dir="/projects/prod/mbox"
+dir="/projects/test/mbox"
 rclocal="/etc/rc.local"
 rclocal_txt=$(cat $rclocal)
 
 IFS='' read -r -d '' String <<"EOF"
 
-# entries for jc://mbox/
+# entries for jc://mbox/test/
 #-----------------------------
 mount /dev/sda1 /media/usb/
-/usr/local/bin/docker-compose -f /projects/prod/mbox/docker-compose.yml up -d &
-/usr/local/bin/docker-compose -f /projects/prod/mbox/docker-compose-rpi.yml up -d &
+/usr/local/bin/docker-compose -f /projects/test/mbox/docker-compose.yml up -d &
+/usr/local/bin/docker-compose -f /projects/test/mbox/docker-compose-rpi.yml up -d &
 
 exit 0
 EOF

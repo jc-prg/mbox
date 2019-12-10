@@ -26,3 +26,5 @@ app/icon_backup/Thumbs.db
 *~
 
 config/install/install-datadir
+
+config/install/install-rclocal

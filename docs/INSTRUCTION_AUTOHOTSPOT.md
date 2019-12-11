@@ -1,4 +1,4 @@
-# jc://music-box/hotspot/
+# Autohotspot (by raspberryconnect.com)
 
 ## Install autohotspot
 

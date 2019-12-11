@@ -30,15 +30,15 @@ $ sudo reboot now
 
 7. Search / define the IP of the box in your network. This step depends on your router. It's recommended to define a static IP for your box. 
 
-8. Open your browser: http://<your-ip>/
+8. Open your browser: http://&lt;your-ip&gt;/
 
 9. Add data and configure your box:
 
-   * Copy data to the USB stick
-   * Reload music data
-   * Add web-streams
-   * Create Playlists
-   * Connect RFID cards
-   * Print covers
+   * Copy data to the USB stick ...
+   * Reload music data ...
+   * Add web-streams ...
+   * Create Playlists ...
+   * Connect RFID cards ...
+   * Print covers ...
    
 10. Enjoy

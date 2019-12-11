@@ -3,7 +3,9 @@ server/modules/__pycache__/
 
 server/modules_api/__pycache__/
 
-docker-compose*
+/docker-compose.yml
+
+/docker-compose-rpi.yml
 
 config/config_prod
 

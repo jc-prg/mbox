@@ -1,0 +1,54 @@
+#--------------------------------------------
+# MBOX Client and Database
+#----------------------------------------
+# ${THIS_IS_THE_PROJECT_TEMPLATE}
+#----------------------------------------
+
+version: "3"
+services:
+
+  ${MBOX_DOCKER_CLIENT}:
+    image: ${MBOX_DOCKERIMAGE_CLIENT}
+    ports:
+      - ${MBOX_CLIENT_PORT}:5006
+    volumes:
+      - ${MBOX_DIR_CLIENT}:/var/www/html/app
+      - ./config/apache2/php.ini:/usr/local/etc/php/conf.d/php.ini
+      - ./config/apache2/www-app.conf:/etc/apache2/sites-enabled/www-app.conf
+
+      - ${MBOX_DIR_DATA}/data:/var/www/html/app/server/data
+      - ${MBOX_DIR_DATA}/music:/var/www/html/app/mbox_music
+      - ${MBOX_DIR_DATA}/cover:/var/www/html/app/cover
+      - ${MBOX_DIR_DATA}/cover_upload:/var/www/html/app/cover_upload
+
+      - ${MBOX_DIR_JCMODULES}:/var/www/html/app/apps
+
+
+# CouchDB 
+#--------------------
+
+  ${MBOX_DOCKER_DATABASE}:
+    image: ${MBOX_DOCKERIMAGE_COUCHDB}
+    ports:
+      - ${MBOX_DATABASE_PORT}:5984
+    volumes:
+      - ${MBOX_DIR_DATA}/couchdb:/opt/couchdb/data
+    environment:
+      - 'COUCHDB_USER=${MBOX_DB_USER}'
+      - 'COUCHDB_PASSWORD=${MBOX_DB_PASSWORD}'
+
+
+# main server component (tested with docker-compose under Ubuntu)
+#----------------------------------------
+
+  ${MBOX_DOCKER_SERVER}:
+    build: ./config/container/srv
+    privileged: true
+    volumes:
+      - ${MBOX_DIR_SERVER}:/usr/src/app/server
+      - ${MBOX_DIR_DATA}:${MBOX_DIR_DATA}
+      - ${MBOX_DIR_DATA}/music:${MBOX_DIR_DATA}/music
+      - ${MBOX_DIR_DATA}/cover:${MBOX_DIR_DATA}/cover
+    ports:
+      - ${MBOX_SERVER_PORT}:${MBOX_SERVER_PORT}
+

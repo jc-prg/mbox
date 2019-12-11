@@ -1,8 +1,5 @@
 # jc://music-box/hotspot/
 
-## Purpose
-
-
 ## Install autohotspot
 
 To make configuration easy I wrote a script based on the description and code I found here https://www.raspberryconnect.com/projects/65-raspberrypi-hotspot-accesspoints/158-raspberry-pi-auto-wifi-hotspot-switch-direct-connection:

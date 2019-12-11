@@ -196,7 +196,7 @@ Without remote access to the box it's not possible to use the app or to change s
 To solve this, the script found on https://www.raspberryconnect.com/ automatically creates a wifi-hotspot, 
 when the box cannot connect to the home-wifi. So you it's possible to get access to the app even in the car.
 
-Follow the instructions to install the [Autohotspot](docs/INSTRUCTIONS_AUTOHOTSPOT.md).
+Follow the instructions to install the [Autohotspot](docs/INSTRUCTION_AUTOHOTSPOT.md).
 
 
 ## Sources
@@ -205,6 +205,7 @@ The following packages are used within this software (thanks to the authors):
 
 * VLC: https://www.videolan.org/
 * MFRC522: https://github.com/mxgxw/MFRC522-python
+* Autohotspot: https://www.raspberryconnect.com/
 * ...
 
 ## Disclaimer

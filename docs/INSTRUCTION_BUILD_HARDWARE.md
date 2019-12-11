@@ -132,3 +132,7 @@ This part is (at least for me) the most difficult part as you've to solder a lot
 
 ![prepare the lid 06](images/mbox_lid06.JPG)
 ![wiring overview](images/mbox-wiring-01.png)
+
+## Back to README
+
+[README.md](../README.md)

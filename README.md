@@ -12,10 +12,16 @@ At the moment I'm finishing a new box ... which means optimizing, testing and bu
 
 - [What's inside](#whats-inside)
 - [How to build the hardware](#how-to-build-the-hardware)
+  - [Impressions](docs/INSTRUCTIONS_BUILD_HARDWARE.md#impressions)
+  - [Required Components](docs/INSTRUCTIONS_BUILD_HARDWARE.md#required-components)
+  - [Building the Hardware](docs/INSTRUCTIONS_BUILD_HARDWARE.md#building-the-hardware)
+  - [Integrate IT Components](docs/INSTRUCTIONS_BUILD_HARDWARE.md#integrate-it-components)
+  - [Overview Wiring](docs/INSTRUCTIONS_BUILD_HARDWARE.md#overview-wiring)
 - [How to setup the software](#how-to-setup-the-software)
   - [Initial Raspberry Pi setup](#initial-raspberry-pi-setup)
   - [Prerequisites](#prerequisites)
   - [How to install, configure and run the software](#how-to-install-configure-and-run-the-software)
+- [Autohotspot](#autohotspot)
 - [Sources](#sources)
 - [Disclaimer](#disclaimer)
 
@@ -175,13 +181,22 @@ $ sudo docker-compose -f docker-compose-rpi.yml up -d
 
 **13. Optional - enable auto-start**
 
-  Add the following to */etc/rc.local* before the "exit 0" or use the script [./config/install-rclocal](../config/install-rclocal):
+  Add the following to */etc/rc.local* before the "exit 0" or use the script *config/install-rclocal*. This script will be generated, when you create your configuration.
 
 ```bash
 # jc://mbox/ client, database and server components (except the 2 above)
 /usr/local/bin/docker-compose -f /projects/prod/mbox/docker-compose.yml up -d &
 /usr/local/bin/docker-compose -f /projects/prod/mbox/docker-compose-rpi.yml up -d &
 ```
+
+## Autohotspot
+
+Usually the box is used in our home wifi. But as my kids like the box we take it with us when we travel.
+Without remote access to the box it's not possible to use the app or to change some configurations on the box.
+To solve this, the script found on https://www.raspberryconnect.com/ automatically creates a wifi-hotspot, 
+when the box cannot connect to the home-wifi. So you it's possible to get access to the app even in the car.
+
+Follow the instructions to install the [Autohotspot](docs/INSTRUCTIONS_AUTOHOTSPOT.md).
 
 
 ## Sources

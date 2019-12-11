@@ -127,4 +127,6 @@ Usually I install the Midnight Commander to navigate on the system ...
 $ sudo apt-get install mc
 ```
 
+## Back to README
 
+[README.md](../README.md)

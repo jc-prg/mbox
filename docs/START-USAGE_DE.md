@@ -30,10 +30,9 @@ $ nano /etc/wpa_supplicant/wpa_supplicant.conf
 $ sudo reboot now
 ```
 
-6. Nun gilt es die IP4-Adresse der Musikbox in Deinem Netzwerk ausfindig zu machen. Am einfachsten geht dies in der Regel über den Router. Dort sollte auch die IP-Adresse fix vergeben werden. 
-   Je nach Router ist die App der Musikbox aber auch über den Hostnamen erreichbar:
-     * Variante 1: http://&lt;your-ip&gt;/
-     * Variante 2: http://music-box/
+6. Abhängig vom Router kann die App über die IP-Adresse oder den Hostname erreicht werden:
+     * **Variante 1: http://music-box/**, sofern der verwendete Router diese Variante unterstützt
+     * **Variante 2: http://&lt;your-ip&gt;/**, falls nicht. Dazu gilt es die IP4-Adresse der Musikbox in Deinem Netzwerk ausfindig zu machen. Am einfachsten geht dies in der Regel über den Router. Dort sollte auch die IP-Adresse fix vergeben werden. 
 
 7. Über das Menü und Einstellungen können die **Musik-Dateien neu geladen** werden (RELOAD DATA). In der empfohlenen Konfiguration handelt es sich dabei um die Musik-Dateien auf dem USB-Stick.
    Wurden nur weitere Musik-Dateien hinzugefügt, können die neuen Dateien geladen werden (LOAD NEW DATA).

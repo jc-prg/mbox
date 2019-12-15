@@ -840,6 +840,24 @@ def mboxAPI_next(step):
 
 # ---
 
+def mboxAPI_jump(step):
+
+       global couch
+       db_entries = {}
+       data       = mboxAPI_start("jump","jump","",step,"")
+       
+       if mbox.active_device == "music_box":   
+            thread_music_ctrl.playing_jump(int(step))
+            
+       else:
+            data = mboxAPI_error(data, "Command only for music_box: "+mbox.active_device+"/"+str(step))
+            logging.warn("Command only for music_box: "+mbox.active_device+"/"+str(step))   
+            
+       data = mboxAPI_end(data)
+       return(data)
+
+# ---
+
 def mboxAPI_pause():
 
        global couch

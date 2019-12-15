@@ -8,7 +8,7 @@ var rollout	 	= 'test';
 var couchdb_port 	= '5106';
 var server_port 	= '5006';
 
-LANG                    = 'DE';
+LANG                    = 'EN';
 
 if (rollout === "test")	{ test = true; }
 

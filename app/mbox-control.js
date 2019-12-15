@@ -73,8 +73,8 @@ function mboxControl (data) {
 
 			// calculate position in song
 			var song_length = Math.round(d["length"]);
-			var song_left_s = Math.round(d["length"] - (d["position"]/1000));
-			var song_left   = convert_second2time( Math.round(d["length"] - (d["position"]/1000)) );
+			var song_left_s = Math.round(d["length"] - (d["position"]));
+			var song_left   = convert_second2time( Math.round(d["length"] - (d["position"])) );
 
 			// Show album and titel ...
 			if (song) { if (song["info"] == "Title loaded" && playing != 0) {

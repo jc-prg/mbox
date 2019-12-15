@@ -483,6 +483,32 @@ paths:
               STATUS:
                 $ref: "#/definitions/STATUS"
 
+  /play_jump/{step}/:
+    get:
+      operationId: modules_api.server_cmd.mboxAPI_jump
+      tags:
+        - playback
+      summary: jump in playing song x seconds (-1,1)
+      description: jump in playing song forward or backward
+      parameters:
+        - name: step
+          in: path
+          type: integer
+          required: true
+      responses:
+        200:
+          description: Successfully started playback
+          schema:
+            properties:
+              API:
+                $ref: "#/definitions/API"
+              REQUEST:
+                $ref: "#/definitions/REQUEST"
+              LOAD:
+                $ref: "#/definitions/LOAD"
+              STATUS:
+                $ref: "#/definitions/STATUS"
+
   /pause/:
     get:
       operationId: modules_api.server_cmd.mboxAPI_pause

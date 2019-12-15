@@ -9,9 +9,10 @@ IFS='' read -r -d '' String <<"EOF"
 
 # entries for jc://mbox/
 #-----------------------------
-mount /dev/sda1 /media/usb/
-${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose.yml up -d &
-${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose-rpi.yml up -d &
+#mount /dev/sda1 /media/usb/
+#${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose.yml up -d &
+#${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose-rpi.yml up -d &
+${MBOX_DIR}/start_mbox docker &
 
 exit 0
 EOF

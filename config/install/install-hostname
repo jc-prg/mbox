@@ -1,0 +1,3 @@
+#!/bin/bash
+
+echo "music-box" > /etc/hostname

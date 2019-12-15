@@ -1,1 +1,60 @@
-# not implemented yet
+#!/bin/bash
+# https://github.com/jguillod/couchdb-on-raspberry-pi
+# not yet tested
+
+cd /tmp
+
+apt-get update
+apt-get upgrade
+
+# install dependend packages
+wget http://packages.erlang-solutions.com/debian/erlang_solutions.asc
+apt-key add erlang_solutions.asc
+apt-get update
+
+apt-get --no-install-recommends -y install build-essential \
+	pkg-config erlang libicu-dev \
+	libmozjs185-dev libcurl4-openssl-dev
+	
+# add user
+useradd -d /home/couchdb couchdb
+mkdir /home/couchdb
+chown couchdb:couchdb /home/couchdb
+cd /home/couchdb
+
+# download files
+wget http://mirror.ibcp.fr/pub/apache/couchdb/source/2.1.1/apache-couchdb-2.1.1.tar.gz
+tar zxvf apache-couchdb-2.1.1.tar.gz
+cd apache-couchdb-2.1.1/
+
+# build couchDB
+./configure
+make release
+cd ./rel/couchdb/
+sudo cp -Rp * /home/couchdb
+sudo chown -R couchdb:couchdb /home/couchdb
+
+# remove unnecessary files
+cd /home/couchdb
+rm -R apache-couchdb-2.1.1/
+rm apache-couchdb-2.1.1.tar.gz
+rm erlang_solutions.asc
+
+# edit config file
+echo "---> /home/couchdb/etc/local.ini"
+echo
+echo "change '#bind_address = 127.0.0.1'"
+echo "to 'bind_address = 0.0.0.0'"
+wait 5
+nano /home/couchdb/etc/local.ini
+
+# info
+echo "---> finish configuration via your browser"
+echo "open: http://<your-ip>:5984/_utils/"
+echo "follow instructions from: https://github.com/jguillod/couchdb-on-raspberry-pi"
+wait 5
+
+# start initially
+sudo -i -u couchdb /home/couchdb/bin/couchdb
+
+

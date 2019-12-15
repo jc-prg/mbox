@@ -1,0 +1,20 @@
+#!/bin/bash
+
+apt-get update
+apt-get upgrade
+apt-get install -y python3-pip
+
+pip3 install -r ../container/srv/requirements.txt
+pip3 install -r ../container/led/requirements.txt
+pip3 install -r ../container/rfid/requirements.txt
+pip3 install -r ../container/button/requirements.txt
+
+git clone https://github.com/lthiery/SPI-Py.git
+cd SPI-Py
+git checkout 8cce26b9ee6e69eb041e9d5665944b88688fca68
+/usr/bin/python3 setup.py install
+cd ..
+
+useradd -m vlc
+apt-get install -y vlc
+rm -rf /var/lib/apt/lists/*

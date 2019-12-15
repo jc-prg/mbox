@@ -840,14 +840,14 @@ def mboxAPI_next(step):
 
 # ---
 
-def mboxAPI_jump(step):
+def mboxAPI_jump(percentage):
 
        global couch
        db_entries = {}
-       data       = mboxAPI_start("jump","jump","",step,"")
+       data       = mboxAPI_start("jump","jump","",percentage,"")
        
        if mbox.active_device == "music_box":   
-            thread_music_ctrl.playing_jump(int(step))
+            thread_music_ctrl.playing_jump(int(percentage))
             
        else:
             data = mboxAPI_error(data, "Command only for music_box: "+mbox.active_device+"/"+str(step))

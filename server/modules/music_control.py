@@ -17,11 +17,6 @@ from modules.config_mbox import *
 from decimal             import *
 
 # ------------------------
-
-music_list        = list()
-music_list_active = False
-
-# ------------------------
 # THREADING CLASS
 
 class musicThread (threading.Thread):
@@ -171,14 +166,12 @@ class musicThread (threading.Thread):
    def playlist_next(self,step):
       '''step back (-1) or forward (1)'''
 
-      global music_list_active
       logging.debug("Next song: "+str(step)+"+"+str(self.music_list_p)+" ("+str(len(self.music_list))+")" )
 
       # back // if position > 0
       if step < 0 and self.music_list_p + step > 0:
         self.player.stop()
         self.music_list_p        = self.music_list_p + step       # set new position in playlist
-        music_list_active        = False                          # set var for play next title in playlist
         self.music_load_new      = True
         return "done"
 
@@ -186,7 +179,6 @@ class musicThread (threading.Thread):
       elif step > 0 and self.music_list_p + step <= len(self.music_list):
         self.player.stop()
         self.music_list_p        = self.music_list_p + step       # set new position in playlist
-        music_list_active        = False                          # set var for play next title in playlist
         self.music_load_new      = True
         return "done"
 
@@ -194,18 +186,15 @@ class musicThread (threading.Thread):
       else:
         self.player.stop()
         self.music_list_p        = 0                              # set new position in playlist
-        music_list_active        = True                           # set var for play next title in playlist
         self.music_load_new      = False
 
       return "not found"
       
-   def playing_jump(self,step):
-   
-      position     = float(self.player.get_time())
-      length       = float(self.player.get_length())
-      
-      if position + (step*1000) < length and position + (step*1000) > 0: 
-          self.player.set_time(float(position + (step*1000)))
+   def playing_jump(self,percentage):
+
+      step = float(step)   
+      if percentage >= 0 and percentage <= 100:
+          self.player.set_position(percentage/100)
           return "done"
       
       return "not found"
@@ -214,7 +203,6 @@ class musicThread (threading.Thread):
 
 def musicLoadRfidList(thread):
     '''load list connected to rfid'''
-
 
     if "cardUID" in mbox.rfid_ctrl:
       logging.info("#################### " + mbox.rfid_ctrl["cardUID"])
@@ -231,7 +219,6 @@ def musicLoadRfidList(thread):
             logging.info("Start Playlist: "+cardDB[mbox.rfid_ctrl["cardUID"]][0])
             thread.load_list_uuid(cardDB[mbox.rfid_ctrl["cardUID"]][0])
             thread.music_ctrl["LastCard"]      = cardDB[mbox.rfid_ctrl["cardUID"]][0]
-            music_list_active           = False
             thread.music_load_new       = True
 
           else:
@@ -250,10 +237,6 @@ def musicPlaying(thread):
 
         old_state                     = thread.music_ctrl["state"]
         thread.music_ctrl["state"]    = str(thread.player.get_state())
-        thread.music_ctrl["playing"]  = thread.music_plays
-
-#        if thread.music_ctrl["state"] != old_state and thread.music_ctrl["state"] == "Stated.Ended":
-#           thread.music_load_new = True
 
         if thread.music_ctrl["state"] == "State.Playing" or thread.music_ctrl["state"] == "State.Paused":
             thread.music_plays = 1
@@ -262,13 +245,12 @@ def musicPlaying(thread):
             thread.music_plays = 0
             logging.debug("Playing 02:"+thread.music_ctrl["state"]+"..."+str(thread.music_ctrl["playing"]))
 
+        thread.music_ctrl["playing"]  = thread.music_plays
 
 #------------------
 
 def musicPlayList(thread):
     '''Play list, detect end of file and than play next'''
-
-    global music_list_active
 
     wait_time = 0.5
     running   = True
@@ -276,7 +258,7 @@ def musicPlayList(thread):
 
       # wait a moment ...
       time.sleep(wait_time)
-      logging.debug("List active: " + str(music_list_active) + "; List: " + str(len(thread.music_list)) + "; Position: " + str(thread.music_list_p) )
+      logging.debug("List active: " + str(thread.music_load_new) + "; List: " + str(len(thread.music_list)) + "; Position: " + str(thread.music_list_p) )
 
       # check if RFID card detected -> load playlist, if new
       musicLoadRfidList(thread)
@@ -284,12 +266,12 @@ def musicPlayList(thread):
       # check player state
       musicPlaying(thread)
 
-      # start playing a new song (music_list_active = False):
-      logging.debug("CHECK: " + str(len(thread.music_list)) + "/" + str(music_list_active))
+      # start playing a new song ?
+      logging.debug("CHECK: " + str(len(thread.music_list)) + "/" + str(thread.music_load_new))
 
       file    = ""
       # if additional song in the list and change detected ...
-      if len(thread.music_list) > 0 and thread.music_load_new:  #not music_list_active:
+      if len(thread.music_list) > 0 and thread.music_load_new: 
 
         file = music_dir + thread.music_list[thread.music_list_p-1]
         logging.info("Play: " + file)
@@ -297,6 +279,7 @@ def musicPlayList(thread):
         thread.media = thread.instance.media_new( file ) #str(file.encode('utf-8')) )
         thread.player.set_media(thread.media)
         thread.player.play()
+        time.sleep(2)
 
         musicPlaying(thread)
 
@@ -313,7 +296,6 @@ def musicPlayList(thread):
            thread.music_ctrl["status"]       = "play"
            thread.music_ctrl["length"]       = float(thread.player.get_length()) / 1000
            thread.music_ctrl["position"]     = float(thread.player.get_time()) / 1000
-           music_list_active                 = True
            thread.music_load_new             = False
 
         # if music is not playing
@@ -326,7 +308,7 @@ def musicPlayList(thread):
            thread.music_ctrl["length"]       = -1 #thread.music.mixer.get_length()
 
       # if song is playing ...
-      if thread.music_load_new == False: #music_list_active == True:
+      if thread.music_load_new == False: 
       
           thread.music_ctrl["length"]    = float(thread.player.get_length()) / 1000
           thread.music_ctrl["position"]  = float(thread.player.get_time()) / 1000
@@ -335,13 +317,11 @@ def musicPlayList(thread):
 
             if thread.music_list_p < len(thread.music_list):     # If there are more tracks in the queue...
 
-               music_list_active     = False
                thread.music_load_new = True
                thread.music_list_p = thread.music_list_p+1
                logging.info("Next song in list, position: " + str(thread.music_list_p))
 
             else:
-               music_list_active     = False
                thread.music_load_new = True
                thread.music_list = []
                logging.info("Playlist empty, stop playing.")
@@ -354,7 +334,6 @@ def musicStartList(thread,list):
     for x in list:
       logging.debug("Add 2 Playlist: " + x)
 
-    global music_list_active, music_dir
     logging.debug("Start List: "+str(len(list)) + "/" + str(len(thread.music_list)))
     thread.music_list   = list
     thread.music_list_p = 1
@@ -363,14 +342,12 @@ def musicStartList(thread,list):
     if len(thread.music_list) > 0:
        thread.player.stop()
        thread.music_plays    = 0
-       music_list_active     = False
        thread.music_load_new = True
 
     # set data to show that playlist is empty
     else:
        thread.music_loaded   = 0
        thread.music_plays    = 0
-       music_list_active     = False
        thread.music_load_new = True
 
 

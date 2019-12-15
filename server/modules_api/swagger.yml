@@ -483,7 +483,7 @@ paths:
               STATUS:
                 $ref: "#/definitions/STATUS"
 
-  /play_jump/{step}/:
+  /play_jump/{percentage}/:
     get:
       operationId: modules_api.server_cmd.mboxAPI_jump
       tags:
@@ -491,7 +491,7 @@ paths:
       summary: jump in playing song x seconds (-1,1)
       description: jump in playing song forward or backward
       parameters:
-        - name: step
+        - name: percentage
           in: path
           type: integer
           required: true

@@ -1,0 +1,76 @@
+#!/bin/bash
+
+option=${DOLLAR}1
+is_rpi="${MBOX_WITH_RPI}"
+
+echo
+echo "-------------------------------------"
+echo " Start jc://mbox/${MBOX_ACTIVE_STAGE}/"
+echo " (by Christoph Kloth)"
+echo "-------------------------------------"
+
+
+if [ ! ${DOLLAR}option ]; then
+  echo
+  echo "Press key - your options:"
+  echo " 'q' - exit"
+  echo " 'd' - docker"
+  echo " 's' - server (in progress)"
+  count=0
+  while : ; do
+    read -n 1 k <&1
+    if [[ ${DOLLAR}k = q ]] ; then
+       printf "\n... quitting the program.\n"
+       exit 0
+    elif [[ ${DOLLAR}k = d ]] ; then
+       option="docker"
+       printf "\n... starting via docker.\n"
+       break
+    elif [[ ${DOLLAR}k = s ]] ; then
+       config="server"
+       printf "\n... starting directly from server.\n"
+       break
+    else
+       ((count=${DOLLAR}count+1))
+       printf "\nIterate for ${DOLLAR}count times\n"
+       echo "Press 'q' to exit"
+    fi
+  done
+fi
+
+
+if [ ${DOLLAR}option == "docker" ]; then
+
+  echo "... mount usb if available and not done already."
+  mount /dev/sda1 /media/usb/
+  
+  echo "... start main modules:"
+  ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose.yml up -d
+
+  if [ ${DOLLAR}is_rpi == "yes" ]; then
+    echo "... start rpi components:"
+    ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose-rpi.yml up -d
+  fi
+  echo ""
+  sleep 5s
+  
+elif [ ${DOLLAR}option == "server" ]; then
+
+  echo "... IMPLEMENTATION NOT READY YET!"
+  echo "... mount usb if available and not done already."
+  mount /dev/sda1 /media/usb/
+  
+  echo "... start server"
+  ${MBOX_DIR}/server/server.py &
+  
+  if [ ${DOLLAR}is_rpi == "yes"]; then
+    echo "... start server rpi components"
+    ${MBOX_DIR}/server/server_led.py &
+    ${MBOX_DIR}/server/server_rfid.py &
+    ${MBOX_DIR}/server/server_button.py &
+  fi
+  echo ""
+  
+  sleep 5s
+
+fi

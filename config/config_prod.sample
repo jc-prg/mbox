@@ -5,7 +5,8 @@
 #---------------------------------------------
 
 # Language: EN, DE ... see ./app/mbox_language.js
-export MBOX_LANGUAGE="EN"
+export MBOX_LANGUAGE="EN"  # options: "EN" if English, "DE" if German
+export MBOX_WITH_RPI="yes" # options: "yes" if is Raspberry, "no" if not
 export WLAN="wlan0"
 export ETH="eth0"
 
@@ -45,6 +46,7 @@ export MBOX_DIR="/projects/prod/mbox"
 export MBOX_DIR_CLIENT="$MBOX_DIR/app"
 export MBOX_DIR_SERVER="$MBOX_DIR/server"
 export MBOX_DIR_JCMODULES="/projects/prod/modules"
+export MBOX_DIR_DOCKERCOMPOSE="/usr/local/bin"
 
 # Mount points (if no extra device for data, use the same as for system)
 export MBOX_MOUNT_SYSTEM="/"

@@ -3,10 +3,11 @@
 Ihr habt eine Musikbox geschenkt bekommen ... und nun?
 
 **Startet the Musikbox.** Das Starten dauert in der Regel 1:30 min. Sie ist bereit, sobald nur noch die weiße LED und vier grüne LED leuchten. 
-Nun kann Musik über ggf. vorbelegte RFID-Karten gestartet werden. Um weitere Karten zu belegen, sind ein paar weitere Schritte nötig:
+Nun kann Musik über ggf. vorbelegte RFID-Karten gestartet werden. Um weitere Karten zu belegen und eine Internet-Verbindung für die Nutzung von Web-Streams herzustellen, 
+sind ein paar weitere Schritte nötig:
 
 1. Mit dem WLAN der Box verbinden, die Standard-SSID ist "JCmbox".
-2. Die App ist erreichbar über *http://10.0.0.5/*.
+2. Die App ist anschließend erreichbar über *http://10.0.0.5/*. Sie kann als WebApp auf dem Smartphone verwendet werden.
 3. Für die weitere Konfiguration der Box via ssh verbinden, Standard ist:
 
 ```bash

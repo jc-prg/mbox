@@ -31,4 +31,3 @@ config/install/install-datadir
 
 config/install/install-rclocal
 
-config/templates/install-rclocal

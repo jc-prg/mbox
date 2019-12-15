@@ -850,8 +850,8 @@ def mboxAPI_jump(percentage):
             thread_music_ctrl.playing_jump(int(percentage))
             
        else:
-            data = mboxAPI_error(data, "Command only for music_box: "+mbox.active_device+"/"+str(step))
-            logging.warn("Command only for music_box: "+mbox.active_device+"/"+str(step))   
+            data = mboxAPI_error(data, "Command only for music_box: "+mbox.active_device+"/"+str(percentage))
+            logging.warn("Command only for music_box: "+mbox.active_device+"/"+str(percentage))   
             
        data = mboxAPI_end(data)
        return(data)

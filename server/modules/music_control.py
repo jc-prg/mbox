@@ -192,7 +192,7 @@ class musicThread (threading.Thread):
       
    def playing_jump(self,percentage):
 
-      step = float(step)   
+      percentage = float(percentage)   
       if percentage >= 0 and percentage <= 100:
           self.player.set_position(percentage/100)
           return "done"

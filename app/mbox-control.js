@@ -164,10 +164,33 @@ function mboxControl (data) {
 		setTextById("mbox_progresstime", 	song_left_s );
 		setTextById("mbox_progresspercentage", 	song_length );
 		setTextById("mbox_status",	 	status );
+		
+		progressbar = document.getElementById("mboxPlayer_progressbar");
+		progressbar.addEventListener("click", mboxControlChangePosition, false);
 		}
 	else {	mboxControlProgress(); } // to deactivate "setInterval"
 
 	if (audio == "" && mbox_device == "local") { localPlayer(0,false); }
+	}
+
+//---------------------------------------------
+
+function mboxControlChangePosition(e) {
+        var xPosition   = e.clientX;
+        var yPosition   = e.clientY;
+        var progressbar = document.getElementById("mboxPlayer_progressbar");
+        var width       = progressbar.offsetWidth;
+        
+	var bodyRect   = document.body.getBoundingClientRect(),
+	    elemRect   = progressbar.getBoundingClientRect(),
+	    offset     = elemRect.left - bodyRect.left;
+	    
+	var pos        = xPosition - offset;
+	var percentage = Math.round( pos / width * 100);
+
+	console.log("Position: " + xPosition + "/" + Math.round(pos) + "/" + percentage );
+	mboxApp.requestAPI('GET',['play_jump',percentage], '', mboxControl);
+	mboxControlLoad();
 	}
 
 

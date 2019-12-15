@@ -1,4 +1,4 @@
-# jc://music-box/start/ (in progress)
+# jc://music-box/
 
 Ihr habt eine Musikbox geschenkt bekommen ... und nun?
 

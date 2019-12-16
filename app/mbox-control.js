@@ -85,7 +85,7 @@ function mboxControl (data) {
 
 			// No song loaded ...
 		  	else {
-				text += "<i>"+language[LANG]["SELECT_MUSIC_ITEM"] +"</i><br/>&nbsp;";
+				text += "<i>"+lang("SELECT_MUSIC_ITEM") +"</i><br/>&nbsp;";
 			} } }
 
 		// Info for running music, if web stream / radio
@@ -102,11 +102,11 @@ function mboxControl (data) {
 				else 			{ text += "<b>" + title + "</b>: " + description + " (<a href=\"" + info + "\" target=\"_blank\" style=\"color:white\">www</a>)<br/>"; }
 				text += "<i>" + status + "</i><br/>";  			//text += "<i>" + status + " ("+channel["uuid"]+")</i><br/>";
 				}
-		  	else {	text += "<i>"+language[LANG]["SELECT_MUSIC_ITEM"] +"</i><br/>&nbsp;";
+		  	else {	text += "<i>"+lang("SELECT_MUSIC_ITEM") +"</i><br/>&nbsp;";
 				}
 			}
 		else {
-			text += "<i>"+language[LANG]["DEVICE_UNKNOWN"] +"</i><br/>&nbsp;";
+			text += "<i>"+lang("DEVICE_UNKNOWN") +"</i><br/>&nbsp;";
 			}
 		}
 	text += "</div>";

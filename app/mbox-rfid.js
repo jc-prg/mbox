@@ -80,14 +80,14 @@ function editCardDialog(data) {
 		if (cardID != rfid) {
 			if (cardID.length > 0)  {
 				exist1 += "<u>" + lang("NEW") + "</u> ";
-				exist2 += language[LANG]["ALBUM_CONNECTED_WITH"] + " " + cardID + "<br/>";
+				exist2 += lang("ALBUM_CONNECTED_WITH") + " " + cardID + "<br/>";
 				}
 			if (cards[rfid]) {
-				exist2 += language[LANG]["CARD_CONNECTED_WITH"] + "<br/>"+ cards[rfid][1];
+				exist2 += lang("CARD_CONNECTED_WITH") + "<br/>"+ cards[rfid][1];
 				cmd = "";
 				}
 			}
-		else {	exist2 += language[LANG]["CARD_CONNECTED"];
+		else {	exist2 += lang("CARD_CONNECTED");
 			cmd = "";
 			}
 
@@ -108,14 +108,14 @@ function editCardDialog(data) {
 		// check if already connected
 		if (cardID != rfid) {
 			if (cardID.length > 0)  {
-				exist1 += "<u>" + language[LANG]["NEW"] + "</u> ";
-				exist2 += language[LANG]["LIST_CONNECTED_WITH"] + " " + cardID + "<br/>"; 
+				exist1 += "<u>" + lang("NEW") + "</u> ";
+				exist2 += lang("LIST_CONNECTED_WITH") + " " + cardID + "<br/>"; 
 				}
 			if (cards[rfid]) {
-				exist2 += language[LANG]["CARD_CONNECTED_WITH"] + " "+ cards[rfid][1];
+				exist2 += lang("CARD_CONNECTED_WITH") + " "+ cards[rfid][1];
 				cmd = "";
 			}	}
-		else {	exist2 += language[LANG]["CARD_CONNECTED"];
+		else {	exist2 += lang("CARD_CONNECTED");
 			cmd = "";
 			}
 
@@ -136,7 +136,7 @@ function editCardDialog(data) {
                 // check if already connected
                 if (cardID != rfid) {
                         if (cardID.length > 0)  {
-				exist1 += "<u>" + language[LANG]["NEW"] + "</u> ";
+				exist1 += "<u>" + lang("NEW") + "</u> ";
                                 exist2 += "Channel bereits verknüpft mit: " + cardID + "<br/>"; 
                                 }
                         if (cards[rfid]) {

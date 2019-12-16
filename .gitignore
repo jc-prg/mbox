@@ -31,3 +31,9 @@ config/install/install-datadir
 
 config/install/install-rclocal
 
+
+docs/prv-info/
+
+server/modules/config_stage.py
+
+app/config_stage.js

@@ -92,12 +92,12 @@ function mboxPlaylistAll(data) {
 
 function mboxAddListDialog(i) {
 	var onclick2 = "document.getElementById('album_"+(i)+"').style.display='none';";
-        var text  =  "<b>"+language[LANG]["ADD_PLAYLIST"]+":</b><br/><br/><table>";
-        text += "<tr><td>"+language[LANG]["TITLE"]+":</td><td><input id=\"playlist_title\" style=\"width:150px\"></input></td></tr>";
-        text += "<tr><td>"+language[LANG]["DESCRIPTION"]+":</td><td><input id=\"playlist_description\" style=\"width:150px\"></input></td></tr>";
+        var text  =  "<b>"+lang("ADD_PLAYLIST")+":</b><br/><br/><table>";
+        text += "<tr><td>"+lang("TITLE")+":</td><td><input id=\"playlist_title\" style=\"width:150px\"></input></td></tr>";
+        text += "<tr><td>"+lang("DESCRIPTION")+":</td><td><input id=\"playlist_description\" style=\"width:150px\"></input></td></tr>";
         text += "</table><br/>";
-        text += button("add_playlist();",language[LANG]["ADD"],"add_playlist");
-        text += button(onclick2,language[LANG]["CLOSE"],"close_playlist");
+        text += button("add_playlist();",lang("ADD"),"add_playlist");
+        text += button(onclick2,lang("CLOSE"),"close_playlist");
 	setTextById("album_"+i,text);
 	document.getElementById("album_"+i).style.display="block";
 	}
@@ -270,14 +270,14 @@ function mboxPlaylistInfo(data) {
         text += "<b>Playlist Informationen</b><br/>";
         text += mboxTableNew("start");
         text += "<tr><td colspan='2'><hr></td></tr>";
-        text += mboxTableNew(["<i>"+language[LANG]["TITLE"]+":",        album["title"] ] );
-        text += mboxTableNew(["<i>"+language[LANG]["DESCRIPTION"]+":",  album["description"] ] );
+        text += mboxTableNew(["<i>"+lang("TITLE")+":",        album["title"] ] );
+        text += mboxTableNew(["<i>"+lang("DESCRIPTION")+":",  album["description"] ] );
         text += mboxTableNew(["<i>Tracks:",	       			album["tracks"].length ] );
         text += mboxTableNew(["<i>UUID:",               "<a href='" + url + "/' target='_blank'>" + uuid + "</a>" ] );
         text += mboxTableNew(["<i>Card ID:",            "<a style='cursor:pointer;' onclick='mboxListCardsLoad();'>"    + cardid + "</a>" ] );
-        text += mboxTableNew(["<i>"+language[LANG]["COVER_AVAILABLE"]+":",      cover ] );
+        text += mboxTableNew(["<i>"+lang("COVER_AVAILABLE")+":",      cover ] );
         text += "<tr><td colspan='2'><hr></td></tr>";
-        text += mboxTableNew(["<i>"+language[LANG]["EDIT"]+":",         edit ] );
+        text += mboxTableNew(["<i>"+lang("EDIT")+":",         edit ] );
         text += "<tr><td colspan='2'><hr></td></tr>";
         text += mboxTableNew("end");
 

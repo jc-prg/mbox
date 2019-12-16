@@ -85,15 +85,15 @@ function mboxRadio(data) {
 
 function mboxAddListDialog_Radio(i) {
         var onclick2 = "document.getElementById('album_"+(i)+"').style.display='none';";
-        var text     = "<b>"+language[LANG]["ADD_STREAM"]+":</b><br/><br/><table>";
-        text += "<tr><td>"+language[LANG]["TITLE"]+":</td>           <td><input id=\"stream_title\" style=\"width:150px\"></input></td></tr>";
-        text += "<tr><td>"+language[LANG]["DESCRIPTION"]+":</td>    <td><input id=\"stream_description\" style=\"width:150px\"></input></td></tr>";
+        var text     = "<b>"+lang("ADD_STREAM")+":</b><br/><br/><table>";
+        text += "<tr><td>"+lang("TITLE")+":</td>           <td><input id=\"stream_title\" style=\"width:150px\"></input></td></tr>";
+        text += "<tr><td>"+lang("DESCRIPTION")+":</td>    <td><input id=\"stream_description\" style=\"width:150px\"></input></td></tr>";
         text += "<tr><td>Website URL:</td>       <td><input id=\"stream_radio_url\" style=\"width:150px\"></input></td></tr>";
         text += "<tr><td>Stream URL (m3u):</td><td><input id=\"stream_stream_url\" style=\"width:150px\"></input></td></tr>";
         text += "<tr><td>Logo URL:</td>        <td><input id=\"stream_image_url\" style=\"width:150px\"></input></td></tr>";
         text += "</table><br/>";
-        text += button("add_stream();",language[LANG]["ADD"],"add_stream");
-        text += button(onclick2,language[LANG]["CLOSE"],"close_stream");
+        text += button("add_stream();",lang("ADD"),"add_stream");
+        text += button(onclick2,lang("CLOSE"),"close_stream");
         setTextById("album_"+i,text);
         document.getElementById("album_"+i).style.display="block";
         }
@@ -223,15 +223,15 @@ function mboxRadioInfo(data) {
         text += "<b>Stream Informationen</b><br/><br/>";
         text += mboxTableNew("start");
         text += "<tr><td colspan='2'><hr></td></tr>";
-        text += mboxTableNew(["<i>"+language[LANG]["TITLE"]+":",              	album["title"] ] );
-        text += mboxTableNew(["<i>"+language[LANG]["DESCRIPTION"]+":",        	album["description"] ] );
+        text += mboxTableNew(["<i>"+lang("TITLE")+":",              	album["title"] ] );
+        text += mboxTableNew(["<i>"+lang("DESCRIPTION")+":",        	album["description"] ] );
         text += mboxTableNew(["<i>Info:",	        			"<a href=\"" + album["stream_info"] + "\" target=\"_blank\">" + album["stream_info"] + "</a>" ] );
         text += mboxTableNew(["<i>Stream:",	        			"<a href=\"" + album["stream_url"] + "\" target=\"_blank\">" + album["stream_url"] + "</a>" ] );
         text += mboxTableNew(["<i>UUID:",               			"<a href='" + url + "/' target='_blank'>" + uuid + "</a>" ] );
         text += mboxTableNew(["<i>Card ID:",         				"<a style='cursor:pointer;' onclick='mboxListCardsLoad();'>"    + cardid + "</a>" ] );
-        text += mboxTableNew(["<i>"+language[LANG]["COVER_AVAILABLE"]+":",      cover ] );
+        text += mboxTableNew(["<i>"+lang("COVER_AVAILABLE")+":",      cover ] );
         text += "<tr><td colspan='2'><hr></td></tr>";
-        text += mboxTableNew(["<i>"+language[LANG]["EDIT"]+":",         edit ] );
+        text += mboxTableNew(["<i>"+lang("EDIT")+":",         edit ] );
         text += "<tr><td colspan='2'><hr></td></tr>";
         text += mboxTableNew("end");
 

@@ -15,12 +15,12 @@ function settingsToggle() {
 
 	if (document.getElementById("setting1").style.display == "none") {
 		for (var key in div_settings) { document.getElementById(div_settings[key]).style.display = "block"; }
-		for (var key in div_frames)   { document.getElementById(div_frames[key]).style.display = "none"; }
+		for (var key in div_frames)   { document.getElementById(div_frames[key]).style.display   = "none"; }
 		mbox_settings = true;
 		}
 	else {
 		for (var key in div_settings) { document.getElementById(div_settings[key]).style.display = "none"; }
-		for (var key in div_frames)   { document.getElementById(div_frames[key]).style.display = "block"; }
+		for (var key in div_frames)   { document.getElementById(div_frames[key]).style.display   = "block"; }
 		mbox_settings = false;
 		}
 	}
@@ -34,7 +34,7 @@ function settingsStatus (data) {
 	var text  = "";
 	var stage = "Prod Stage"; if (test) { stage = "Test Stage"; }
 
-	text += "<center><b>Info</b></center>";
+	text += "<center><b>"+lang("INFORMATION")+"</b></center>";
 	text += "<hr/>";
 	text += mboxTable("start");
 	text += mboxTable("<b>mBox-Client:",	appTitle + " " + appVersion + "<br/>(" + stage + ")");
@@ -70,10 +70,8 @@ function settingsStatus (data) {
 	text += button( "uploadImage();", "Upload Image" );
 	text += button( "toggleCoverPrint();", "Cover Images" );
 	text += "<hr/>";
-
-
-	text += "<hr/>";
-	text += "<center><b>Load Times</b></center>";
+	
+	text += "<center><b>"+lang("LOADING_TIME")+"</b></center>";
 	text += "<hr/>";
 	text += mboxTable("start");
 	text += mboxTable("<b>Initial load:",		Math.round(data["STATUS"]["system"]["server_start_duration"]*10)/10+" s" );
@@ -88,7 +86,7 @@ function settingsStatus (data) {
 	text += mboxTable("end");
 	text += "<hr/>";
 
-	text += "<center><b>Disk Space</b></center>";
+	text += "<center><b>"+lang("DISC_SPACE")+"</b></center>";
 	text += "<hr/>";
 	text += mboxTable("start");
 	text += mboxTable("<b>System Used:",		Math.round(data["STATUS"]["system"]["space_main_used"]/1024/1024*10)/10+" GByte" );
@@ -110,39 +108,39 @@ function settingsStatus (data) {
 
 	text = "";
 
-	text += "<center><b>Reload Data ...</b>";
+	text += "<center><b>" + lang("RELOAD_DATA") + " ...</b>";
 	text += "<hr/>";
 
 	var onclick = ""; var question = ""; var cmd = "";
 
-	question = "<br/>Files komplett neu in DB laden?<br/>Playlisten im Anschluss nicht mehr nutzbar und RFID-Cards müssen neu verknüpft werden.";
+	question = "<br/>"+lang("QUESTION_RELOAD");
 	onclick  = "mboxApp.requestAPI(#PUT#,[#load#,#all#],##,mboxShowLoading)";
         cmd      = "appMsg.confirm('" + question + "','" + onclick + "', 260);";
 	text    += button( cmd, "Reload Data" );
 
-	question = "<br/>Neue Files in DB laden?";
+	question = "<br/>"+lang("QUESTION_LOAD_NEW");
 	onclick  = "mboxApp.requestAPI(#PUT#,[#load#,#new#],##,mboxShowLoading)";
         cmd      = "appMsg.confirm('" + question + "','" + onclick + "', 260);";
 	text    += button( cmd, "Load New Data" );
 
-	question = "<br/>Neue Bilder in DB laden?";
+	question = "<br/>" + lang("QUESTION_LOAD_IMG");
 	onclick  = "mboxApp.requestAPI(#PUT#,[#load#,#images#],##,mboxShowLoading)";
         cmd      = "appMsg.confirm('" + question + "','" + onclick + "', 260);";
 	text    += button( cmd, "Load New Images" );
 
 	text += "<hr/>";
 
-	question = "<br/>Transfer data from JSON files to CouchDB?";
+	question = "<br/>"+lang("QUESTION_RESTORE_JSON");
 	onclick  = "mboxApp.requestAPI(#PUT#,[#backup#,#json2db#],##,mboxShowJson)";
         cmd      = "document.getElementById('json2db').disabled = true;";
-        cmd	+= "document.getElementById('json2db').innerHTML = 'Please wait ...';";
+        cmd	+= "document.getElementById('json2db').innerHTML = '" + lang("PLEASE_WAIT") + "';";
         cmd     += "appMsg.confirm('" + question + "','" + onclick + "', 260);";
 	text    += button( cmd, "Restore (JSON 2 DB)", "json2db" );
 
-	question = "<br/>Backup data from CouchDB to JSON files?";
+	question = "<br/>"+lang("QUESTION_BACKUP2JSON");
 	onclick  = "mboxApp.requestAPI(#PUT#,[#backup#,#db2json#],##,mboxShowJson)";
         cmd      = "document.getElementById('db2json').disabled = true;";
-        cmd	+= "document.getElementById('db2json').innerHTML = 'Please wait ...';";
+        cmd	+= "document.getElementById('db2json').innerHTML = '" + lang("PLEASE_WAIT") + " ...';";
         cmd     += "appMsg.confirm('" + question + "','" + onclick + "', 260);";
 	text    += button( cmd, "Backup (DB 2 JSON)", "db2json" );
 
@@ -165,12 +163,12 @@ function settingsStatus (data) {
 	}
 
 function mboxShowLoading(data) {
-	var text = "<b>Reload gestartet:</b><br/><br/><div id='reload_info' style='border-style:solid 1px;'>x</div>";
+	var text = "<b>" + lang("RELOAD_STARTED") + ":</b><br/><br/><div id='reload_info' style='border-style:solid 1px;'>x</div>";
 	appMsg.alert(text);
 	}
 
 function mboxShowJson(data) {
-	var text = "<b>Transfer JSON 2 DB finished.</b>";
+	var text = "<b>" + lang("RELOAD_STARTED") + "</b>";
 	appMsg.alert(text);
 	}
 

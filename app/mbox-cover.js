@@ -99,7 +99,7 @@ function mboxAlbumCover2(id,data) {
 
 function listCoverStart() {
 	var print = "<div class=\"print_album_back\">";
-        print += "<br>&nbsp;&nbsp;<b"+language[LANG]["COVER_PRINT_VIEW_1"]+"</b> "+language[LANG]["COVER_PRINT_VIEW_2"]+" <a style=\"cursor:pointer;\" onclick=\"toggleCoverPrint();\"><u>"+language[LANG]["COVER_PRINT_VIEW_3"]+"</u></a><br>";
+        print += "<br>&nbsp;&nbsp;<b"+lang("COVER_PRINT_VIEW_1")+"</b> "+lang("COVER_PRINT_VIEW_2")+" <a style=\"cursor:pointer;\" onclick=\"toggleCoverPrint();\"><u>"+lang("COVER_PRINT_VIEW_3")+"</u></a><br>";
 //        print += "<br>&nbsp;&nbsp;<b>Album-Cover für den Ausdruck:</b> Klicke auf ein Cover, um es auszublenden (z.B. wenn schon gedruckt). Klicke <a style=\"cursor:pointer;\" onclick=\"toggleCoverPrint();\"><u>hier</u></a>, um diese Ansicht zu schließen.<br>";
 	return print;
 	}

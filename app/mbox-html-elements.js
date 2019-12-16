@@ -105,7 +105,7 @@ function mboxScrollTo( type, uuid="" ) {
 		text += "<div id=\"scrollto_" + uuid.replace(/-/g,"") + "\">";
 		}
 	else if (type == "end") {
-		text += "<div>";
+		text += "</div>";
 		}
 	return text;
 	}

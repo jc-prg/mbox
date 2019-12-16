@@ -18,8 +18,9 @@ else {
 // app to load info and send cmd to IR device
 //--------------------------------
 
-var mboxApp     = new jcApp( "sampleApp", RESTurl, "status", "api/");     // cmd: <device>/<cmd>
+var mboxApp     = new jcApp( "mbox", RESTurl, "status", "api/");     // cmd: <device>/<cmd>
 mboxApp.init( "data_log", "error_log", reloadInterval, printAppStatus );
+mboxApp.timeout = -1; // timeout in milliseconds (-1 for no timeout)
 mboxApp.load( );
 mboxApp.setAutoupdate( mboxCheckStatus );
 

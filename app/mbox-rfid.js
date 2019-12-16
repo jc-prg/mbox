@@ -44,8 +44,8 @@ function CardID(uuid) {
 // edit dialog ... // OFFEN -> RADIO
 //---------------------------------
 
-function editCardDialogLoad1(uuid) 	{ mboxCardUUID = uuid; 			mboxApp.requestAPI("GET",["status"],  "", editCardDialogLoad2); }
-function editCardDialogLoad2(data)	{ mboxCardCID = data["LOAD"]["RFID"]; 	mboxApp.requestAPI("GET",["db","all","-"],"", editCardDialog); }
+function editCardDialogLoad1(uuid) 	{ mboxCardUUID = uuid; 			mboxApp.requestAPI("GET",["status"],                "", editCardDialogLoad2); }
+function editCardDialogLoad2(data)	{ mboxCardCID = data["LOAD"]["RFID"]; 	mboxApp.requestAPI("GET",["cards", mboxCardUUID],   "", editCardDialog); }
 function editCardDialog(data) {
 
 	var exist1 = "";
@@ -67,39 +67,40 @@ function editCardDialog(data) {
 
         // add rfid to album
 	if (uuid.indexOf("a_") >= 0) {
-	        var album  = albums[uuid];
-		var exist1 = "";
-		var exist2 = "";
 
-		if (album["card_id"]) 	{ cardID = album["card_id"]; }
-		else			{ cardID = ""; }
+	        var album   = {};;
+		var cardID  = "";
+
+		if (albums[uuid]) {
+			album  = albums[uuid];
+			if (album["card_id"]) 	{ cardID = album["card_id"]; }
+			}
 
 		// check if already connected
 		if (cardID != rfid) {
 			if (cardID.length > 0)  {
-				exist1 += "<u>neu</u> ";
-				exist2 += "Album bereits verknüpft mit: " + cardID + "<br/>";
+				exist1 += "<u>" + lang("NEW") + "</u> ";
+				exist2 += language[LANG]["ALBUM_CONNECTED_WITH"] + " " + cardID + "<br/>";
 				}
 			if (cards[rfid]) {
-				exist2 += "Karte bereits verknüpft mit:<br/>"+ cards[rfid][1];
+				exist2 += language[LANG]["CARD_CONNECTED_WITH"] + "<br/>"+ cards[rfid][1];
 				cmd = "";
 				}
 			}
-		else {	exist2 += "Karte ist bereits mit Album verknüpft.";
+		else {	exist2 += language[LANG]["CARD_CONNECTED"];
 			cmd = "";
 			}
 
 		// write message
 		dialog += "<br/><b>Album und Karte "+exist1+"verknüpfen ...</b><br/>&nbsp;<br/>";
-		dialog += "Album: " + album["artist"] + " / " + album["album"] + "<br/>";
+		dialog += "Album: "  + album["artist"] + " / " + album["album"] + "<br/>";
 		dialog += "CardID: " + rfid + "<br/>";
 		dialog += "<br/><i>" + exist2 + "</i>";
 		}
 
 	// add rfid to playlist
 	if (uuid.indexOf("p_") >= 0) {
-		var exist1 = "";
-		var exist2 = "";
+
 	        var album  = playlists[uuid];
 		if (album["card_id"]) 	{ cardID = album["card_id"]; }
 		else			{ cardID = ""; }
@@ -107,28 +108,27 @@ function editCardDialog(data) {
 		// check if already connected
 		if (cardID != rfid) {
 			if (cardID.length > 0)  {
-				exist1 += "<u>neu</u> ";
-				exist2 += "Album bereits verknüpft mit: " + cardID + "<br/>"; 
+				exist1 += "<u>" + language[LANG]["NEW"] + "</u> ";
+				exist2 += language[LANG]["LIST_CONNECTED_WITH"] + " " + cardID + "<br/>"; 
 				}
 			if (cards[rfid]) {
-				exist2 += "Karte bereits verknüpft mit: "+ cards[rfid][1];
+				exist2 += language[LANG]["CARD_CONNECTED_WITH"] + " "+ cards[rfid][1];
 				cmd = "";
 			}	}
-		else {	exist2 += "Karte ist bereits mit Album verknüpft.";
+		else {	exist2 += language[LANG]["CARD_CONNECTED"];
 			cmd = "";
 			}
 
 		// write message
 		dialog += "<br/><b>Playlist und Karte "+exist1+"verknüpfen ...</b><br/>&nbsp;<br/>";
-		dialog += "Album: " + album["title"] + " (" + album["description"] + ")<br/>";
+		dialog += "Album: "  + album["title"] + " (" + album["description"] + ")<br/>";
 		dialog += "CardID: " + rfid + "<br/>";
 		dialog += "<br/><i>" + exist2 + "</i>";
 		}
 
         // add rfid to radio channel
         if (uuid.indexOf("r_") >= 0) {
-                var exist1 = "";
-                var exist2 = "";
+
                 var channel  = radio[uuid];
                 if (channel["card_id"])   { cardID = channel["card_id"]; }
                 else                      { cardID = ""; }
@@ -136,7 +136,7 @@ function editCardDialog(data) {
                 // check if already connected
                 if (cardID != rfid) {
                         if (cardID.length > 0)  {
-                                exist1 += "<u>neu</u> ";
+				exist1 += "<u>" + language[LANG]["NEW"] + "</u> ";
                                 exist2 += "Channel bereits verknüpft mit: " + cardID + "<br/>"; 
                                 }
                         if (cards[rfid]) {
@@ -160,14 +160,11 @@ function editCardDialog(data) {
 // Show all defined RFID Cards ... later edit
 //---------------------------------
 
-//function mboxListCardsLoad() { mboxApp.sendCmd(["list","cards--album_info--playlists--radio"],mboxListCards); }
-function mboxListCardsLoad() { mboxApp.requestAPI("GET",["db","all","-"], "", mboxListCards); }
+function mboxListCardsLoad() { mboxApp.requestAPI("GET",["cards","-"], "", mboxListCards); console.log("Load list of RFID-Cards..."); }
 function mboxListCards(data) {
 
-        //var cards    = data["answer"]["cards"];
-        //var album    = data["answer"]["album_info"];
-        //var playlist = data["answer"]["playlists"];
-        //var radio    = data["answer"]["radio"];
+	console.log("Load list of RFID-Cards... DATA LOADED");
+
 	var title    = "";
         var cards    = data["DATA"]["cards"];
         var album    = data["DATA"]["album_info"];
@@ -181,6 +178,14 @@ function mboxListCards(data) {
 
         var text = "<center><b>Manage RIFD Cards:</b><hr/>";
         text += div0;
+
+	if (! typeof cards) {
+		console.log("test");
+		console.log(data["DATA"]);
+		//return;
+		}
+
+
 	if (typeof cards != "string" && Object.keys(cards).length > 0) {
            for (var card in cards) {
 		text += div2; //"<div style=\"float:left;height:70px;\">";
@@ -204,7 +209,7 @@ function mboxListCards(data) {
 		console.log(aa);
 
 		text    += div1; //"<div style=\"float:left;height:70px;\">";
-                text    +=  card + "<br/><b>";
+                text    += card + "<br/><b>";
 		notfound = "<font color=\"red\">NOT FOUND ...</b></font><br/>("+aa+" / "+cards[card][1]+")";
 
                 if (aa.indexOf("a_")>-1)   	{
@@ -239,11 +244,11 @@ function mboxListCards(data) {
 
                 text += "</small></a></b>" + divE;
 
-		if (data["LOAD"]["RFID"]["cardUID"] == card) 	{ color = "yellow"; }
-		else						{ color = "red"; }
+		if (data["LOAD"]["RFID"] == card) 	{ color = "yellow"; }
+		else					{ color = "red";    }
 
                 text += div2; // + "<div style=\"margin:px;\">";
-                text += mboxButton("delete","appMsg.confirm('<br/>Zuordnung zwischen Karte &quot;" + card  + "&quot; und Album &quot;" + title + "&quot; löschen?','mbox_delete_card(#" + card + "#,#" + cards[card] + "#)',150)",color);
+                text += mboxButton("delete","appMsg.confirm('<br/>Zuordnung zwischen Karte &quot;" + card  + "&quot; und Album &quot;" + title + "&quot; löschen?','mbox_delete_card(#" + card + "#,#" + cards[card][0] + "#)',150)",color);
 		text += divE; // + divE;
 
 		text += divE;
@@ -259,7 +264,7 @@ function mboxListCards(data) {
 		if (data["LOAD"]["RFID"]) { text += "Card detected: "+data["LOAD"]["RFID"]; }
 		}
 	text += divE + "</center>";
-	//text += data["RFID"]["cardUID"];
+	//text += data["LOAD"]["RFID"];
 
 	appMsg.confirm(text,"",400);
         //setTextById("remote1",text);
@@ -269,7 +274,8 @@ function mboxListCards(data) {
 function mbox_delete_card(card_id,uuid_pl) {
 
         //alert(card_id+"\n"+uuid_pl);
-	mboxApp.requestAPI("DELETE", ['cards', uuid_pl, card_id], "", editCard_save );
+	//mboxApp.requestAPI("DELETE", ['cards', uuid_pl, card_id], "", editCard_save );
+	mboxApp.requestAPI("DELETE", ['data', card_id], "", editCard_save );
 	}
 
 
@@ -277,6 +283,5 @@ function mbox_delete_card(card_id,uuid_pl) {
 //---------------------------------
 
 function editCard_save(data) {
-	mboxApp.requestAPI("GET",["db","all","-"], "", mboxListCards);
-	//mboxApp.sendCmd( ['list'], mboxListCards );
+        mboxListCardsLoad();
 	}

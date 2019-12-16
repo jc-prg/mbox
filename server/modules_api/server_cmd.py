@@ -250,10 +250,10 @@ def mboxAPI_checkVersion(APPversion):
 def mboxAPI_readDB(databases,db_filter=""):
        global couch
        param     = databases
-       
+
        if ">>" in db_filter:  thefilter = db_filter.split(">>")
        else:                  thefilter = db_filter.split("||")
-       
+
        try:
          uuid = thefilter[1]
        except:
@@ -271,7 +271,7 @@ def mboxAPI_readDB(databases,db_filter=""):
            else:                                  data = mboxAPI_error(data, "Database empty: "+database)
          else:
            data = mboxAPI_error(data, "Database not found: "+database)
-           
+
          if uuid != "" and uuid in data["DATA"][database]:
              data["DATA"]["_selected_uuid"]        = uuid
              data["DATA"]["_selected_db"]          = database
@@ -457,12 +457,14 @@ def mboxAPI_delete(uuid):
 
        # delete card and unlink linked element
        elif ","  in uuid:
+           logging.info("Delete card "+uuid)
            database = "cards"
            if uuid in db_entries[database]:
                entry_id = db_entries[database][uuid][0]
                del db_entries[database][uuid]
                for name in databases:
-                   if entry_id in db_entries[name]: del db_entries[name]["card_id"]
+                 if entry_id in db_entries[name] and "card_id" in db_entries[name][entry_id]:
+                   del db_entries[name][entry_id]["card_id"]
            else:
                data = mboxAPI_error(data, "Entry not found in DB: "+uuid+"/"+database)
 
@@ -667,6 +669,36 @@ def mboxAPI_playlist_items(cmd,uuid,param):
 
 # ---
 
+def mboxAPI_cardInfos(filter):
+
+       global couch
+       db_entries = {}
+       data       = mboxAPI_start("cards","cards","","","")
+       databases  = ["cards","album_info","playlists","radio"]
+
+       # read all data from DB
+       for name in databases:
+           db_entries[name]   = couch.read_cache(name)
+           data["DATA"][name] = {}
+
+       data["DATA"]["cards"]      = db_entries["cards"]
+
+       for card in db_entries["cards"]:
+           id = db_entries["cards"][card][0]
+
+           if "r_" in id and id in db_entries["radio"]:      data["DATA"]["radio"][id]      = db_entries["radio"][id]
+           if "a_" in id and id in db_entries["album_info"]: data["DATA"]["album_info"][id] = db_entries["album_info"][id]
+           if "p_" in id and id in db_entries["playlists"]:  data["DATA"]["playlists"][id]  = db_entries["playlists"][id]
+
+       for name in databases:
+           if filter in db_entries[name]: data["DATA"][name][filter] = db_entries[name][filter]
+
+       data = mboxAPI_end(data)
+       return(data)
+
+
+# ---
+
 def mboxAPI_cards(uuid,param):
 
        global couch
@@ -749,7 +781,7 @@ def mboxAPI_volume(param):
 
        data = mboxAPI_end(data)
        return(data)
-       
+
 # ---
 
 def mboxAPI_play(uuid):

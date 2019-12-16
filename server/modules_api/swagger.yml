@@ -362,6 +362,32 @@ paths:
               STATUS:
                 $ref: "#/definitions/STATUS"
 
+  /cards/{filter}/:
+    get:
+      operationId: modules_api.server_cmd.mboxAPI_cardInfos
+      tags:
+        - data_items
+      summary: get card infos
+      description: get card infos
+      parameters:
+        - name: filter
+          in: path
+          type: string
+          required: true
+      responses:
+        200:
+          description: Successfully made changes to card
+          schema:
+            properties:
+              API:
+                $ref: "#/definitions/API"
+              REQUEST:
+                $ref: "#/definitions/REQUEST"
+              LOAD:
+                $ref: "#/definitions/LOAD"
+              STATUS:
+                $ref: "#/definitions/STATUS"
+
   /cards/{uuid}/{param}/:
     put:
       operationId: modules_api.server_cmd.mboxAPI_cards

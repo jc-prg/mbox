@@ -36,14 +36,29 @@ $ sudo reboot now
      * **Variante 1: http://music-box/**, sofern der verwendete Router diese Variante unterstützt
      * **Variante 2: http://&lt;your-ip&gt;/**, falls nicht. Dazu gilt es die IP4-Adresse der Musikbox in Deinem Netzwerk ausfindig zu machen. Am einfachsten geht dies in der Regel über den Router. Dort sollte auch die IP-Adresse fix vergeben werden. 
      
-     
+8. Aktuell ist die Software noch nicht 100% ausgereift. Deshalb sollte zunächst noch ein **Software-Update** erfolgen.
+   Dazu die Box mit dem Internet verbinden und einloggen:
 
-8. Über das Menü und Einstellungen können die **Musik-Dateien neu geladen** werden (RELOAD DATA). In der empfohlenen Konfiguration handelt es sich dabei um die Musik-Dateien auf dem USB-Stick.
+```bash
+$ cd /project/prod/modules
+$ sudo git pull
+
+$ cd /project/prod/mbox
+$ sudo git pull
+$ sudo cd config/
+$ sudo ./create prod
+
+$ cd ../
+$ sudo docker-compose restart
+$ sudo docker-compose -f docker-compose-rpi.yml restart
+```
+
+9. Über das Menü und Einstellungen können die **Musik-Dateien neu geladen** werden (RELOAD DATA). In der empfohlenen Konfiguration handelt es sich dabei um die Musik-Dateien auf dem USB-Stick.
    Wurden nur weitere Musik-Dateien hinzugefügt, können die neuen Dateien geladen werden (LOAD NEW DATA).
 
-9. Das Verknüpfen von **RFID-Karten** erfolgt, indem die Karten auf die Box gelegt wird (blaue LED leuchtet) und das dann erscheinende Symbol mit der Karte in der App.
+10. Das Verknüpfen von **RFID-Karten** erfolgt, indem die Karten auf die Box gelegt wird (blaue LED leuchtet) und das dann erscheinende Symbol mit der Karte in der App.
    Um die Cover ausdrucken und auf die Karten zu kleben, gibt es im Menü den Punkt "Cover Bilder". Ein Screenshot von 6 Covern ausgedruck als Foto im Format 9 cm x 13 cm erzeugt Cover-Bilder in der richtigen Größe.
    
-10. Das Hinzufügen von Web-Streams und Playlisten ist hoffentlich intuitiv genug ;-).
+11. Das Hinzufügen von Web-Streams und Playlisten ist hoffentlich intuitiv genug ;-).
    
-11. **Viel Spa&szlig;!**
+12. **Viel Spa&szlig;!**

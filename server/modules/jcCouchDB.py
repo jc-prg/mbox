@@ -1,6 +1,7 @@
-import modules.jcJson        as jcJSON
-import modules.config_stage  as stage
-import modules.config_mbox   as mbox
+import modules.jcJson          as jcJSON
+import modules.config_stage    as stage
+import modules.config_mbox     as mbox
+import modules.speekmsg        as speek
 
 import logging, time, uuid
 import couchdb, requests, json
@@ -28,8 +29,15 @@ class jcCouchDB ():
 
       connects2db  = 0
       max_connects = 30
+      
+      self.speek = speek.speekThread(4, "Thread Speek", 1, "")  #  jcJSON.read("music"), jcJSON.read("radio"))
+      self.speek.start()
 
       while connects2db < max_connects+1:
+
+          if connects2db == 5 or connects2db == 10 or connects2db == 15 or connects2db == 20 or connects2db == 25:
+              self.speek.speek_message("WAITING-FOR-DB")
+              
           try:
               logging.info("Try to connect to CouchDB")
               response = requests.get(stage.data_db)
@@ -39,21 +47,27 @@ class jcCouchDB ():
               connects2db += 1
               logging.warn("Waiting 5s for connect to CouchDB: " + str(connects2db) + "/" + str(max_connects) + " ("+stage.data_db+")")
               logging.info("                      ... to CouchDB: " + stage.data_db)
+              
               time.sleep(5)
 
           if connects2db == max_connects:
+
+              if connects2db == 10:
+                   self.speek.speek_message("NO-DB-CONNECTION")
+
               logging.warn("Error connecting to CouchDB, give up.")
               sys.exit(1)
 
 
-      self.database     = couchdb.Server(stage.data_db)
-      self.databases    = databases
+      self.database      = couchdb.Server(stage.data_db)
+      self.databases     = databases
       self.check_db()
 
-      self.changed_data = False
-      self.cache        = {}
-      self.keys         = []
+      self.changed_data  = False
+      self.cache         = {}
+      self.keys          = []
       self.fill_cache()
+      
 
       logging.debug("Connect to CouchDB: "+stage.data_db)
 

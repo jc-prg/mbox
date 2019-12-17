@@ -48,6 +48,9 @@ music_dir            = stage.data_dir+"/music/"
 music_cover          = stage.data_dir+"/cover/"
 music_cover_upload   = stage.data_dir+"/cover_upload/"
 
+errormsg_dir         = "audio/"
+errormsg_test        = "DE_STARTING.mp3"
+
 # ---------------------------------
 
 databases  = { "radio" : [ "radio" ], 

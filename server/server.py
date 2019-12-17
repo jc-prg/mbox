@@ -51,6 +51,7 @@ if __name__ == "__main__":
 
   logging.info("Start WebServer ..."  + init.time_since_start())
   mbox.start_duration = time.time() - mbox.start_time
+  init.thread_speek.speek_message("READY-HAVE-FUN")
 
   app.run(debug=mbox.DEBUG,port=stage.server_port,use_reloader=False)
 

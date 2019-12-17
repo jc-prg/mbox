@@ -191,13 +191,30 @@ class musicThread (threading.Thread):
       return "not found"
       
    def playing_jump(self,percentage):
-
       percentage = float(percentage)   
       if percentage >= 0 and percentage <= 100:
           self.player.set_position(percentage/100)
           return "done"
-      
       return "not found"
+      
+   def play_file(self, filename):
+      file = filename
+      self.player.audio_set_volume(99)
+      self.media = self.instance.media_new( file ) #str(file.encode('utf-8')) )
+      self.player.set_media(self.media)
+      self.player.play()
+      
+      time.sleep(2)
+      
+      state = ""
+      while state == "State.Playing":
+        state = self.player.get_state()
+        if state != "State.Ended" and state != "State.Playing": 
+          self.player.audio_set_volume(int(self.music_ctrl["volume"]*100))
+          return "Error"
+        
+      self.player.audio_set_volume(int(self.music_ctrl["volume"]*100))
+      return "Ended"
 
 #------------------
 

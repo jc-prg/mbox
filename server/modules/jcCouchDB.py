@@ -52,8 +52,8 @@ class jcCouchDB ():
 
           if connects2db == max_connects:
 
-              if connects2db == 10:
-                   self.speek.speek_message("NO-DB-CONNECTION")
+              self.speek.speek_message("NO-DB-CONNECTION")
+              time.sleep(1)
 
               logging.warn("Error connecting to CouchDB, give up.")
               sys.exit(1)

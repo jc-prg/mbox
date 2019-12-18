@@ -9,9 +9,11 @@ import threading
 import logging
 import requests
 import vlc
+import urllib.request
 
-import modules.config_stage as stage
-import modules.config_mbox as mbox
+import modules.config_stage    as stage
+import modules.config_mbox     as mbox
+import modules.speekmsg        as speek
 
 #-------------------------------------------
 
@@ -48,6 +50,10 @@ class radioThread (threading.Thread):
       self.player       = self.instance.media_player_new()
       self.player.audio_set_volume(self.volume)
       self.player.audio_set_mute(False)
+      
+      self.speek = speek.speekThread(4, "Thread Speek", 1, "")  #  jcJSON.read("music"), jcJSON.read("radio"))
+      self.speek.start()
+
 
    def run(self):
       logging.info( "Starting " + self.name )
@@ -74,6 +80,13 @@ class radioThread (threading.Thread):
    #--------------------------------------
 
    def load(self,playlist,pl_data,pl_uuid):
+   
+      if self.connected() == False:
+          self.speek.speek_message("NO-INTERNET-CONNECTION")
+          time.sleep(1)
+          self.speek.speek_message("TRY-AGAIN-IN-A-MINUTE")
+          return
+      
       if "m3u" in playlist:
         logging.info("Load playlist URL from m3u ("+playlist+")")
         streams = self.get_url(playlist).replace("\r","")
@@ -156,7 +169,18 @@ class radioThread (threading.Thread):
 
        #logging.info(data1)
        return data1
+       
 
+#------------------
+
+   def connected(self):
+        host='https://google.com'
+        try:
+            response = requests.get(host)
+            return True
+        except requests.exceptions.RequestException as e:
+            logging.error("Error connecting to INTERNET: " + str(e))
+            return False
 
 
 #------------------

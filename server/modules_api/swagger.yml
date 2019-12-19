@@ -1,6 +1,6 @@
 swagger: "2.0"
 info:
-  version: "0.5.6"
+  version: "0.5.7"
   title: "jc://music-box/"
   description: API to control data handling and playback of music files and streams (use 'test' as uuid for test purposes)
   
@@ -520,6 +520,32 @@ paths:
         - name: percentage
           in: path
           type: integer
+          required: true
+      responses:
+        200:
+          description: Successfully started playback
+          schema:
+            properties:
+              API:
+                $ref: "#/definitions/API"
+              REQUEST:
+                $ref: "#/definitions/REQUEST"
+              LOAD:
+                $ref: "#/definitions/LOAD"
+              STATUS:
+                $ref: "#/definitions/STATUS"
+                
+  /speek/{message}/:
+    get:
+      operationId: modules_api.server_cmd.mboxAPI_speek
+      tags:
+        - maintain
+      summary: speek message
+      description: speek message in the language, defined in the presets (has to exist, e.g. "LETS-GO")
+      parameters:
+        - name: message
+          in: path
+          type: string
           required: true
       responses:
         200:

@@ -53,7 +53,7 @@ export MBOX_DIR_JCMODULES="/projects/$MBOX_CURRENT_STAGE/modules"
 export MBOX_DIR_DOCKERCOMPOSE="/usr/local/bin"
 
 # Mount points (if no extra device for data, use the same as for system)
-if [ ! $MBOX_DATA_USB == "yes" ]; then
+if [ $MBOX_DATA_USB == "yes" ]; then
   export MBOX_MOUNT_SYSTEM="/"
   export MBOX_MOUNT_DATA="/media/usb"
 else
@@ -62,7 +62,7 @@ else
 fi
 
 # Docker Images
-if [ ! $MBOX_WITH_RPI == "yes" ]; then
+if [ $MBOX_WITH_RPI == "yes" ]; then
   export MBOX_DOCKERIMAGE_CLIENT="php:7.1-apache"
   export MBOX_DOCKERIMAGE_COUCHDB="matthiasg/rpi-couchdb:latest"   # usr for raspberry
 else

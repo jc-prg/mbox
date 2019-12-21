@@ -61,6 +61,9 @@ class speekThread (threading.Thread):
 
     
    def speek_message(self, message):
+
+      if stage.speek_msg != "yes": return
+   
       fname       = mbox.errormsg_dir + stage.language + "_" + message + ".mp3"
       fname_EN    = mbox.errormsg_dir + "EN_" + message + ".mp3"
       fname_UE    = mbox.errormsg_dir + stage.language + "_UNKNOWN-ERROR.mp3"

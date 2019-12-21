@@ -5,8 +5,12 @@
 #---------------------------------------------
 
 # Language: EN, DE ... see ./app/mbox_language.js
-export MBOX_LANGUAGE="EN"  # options: "EN" if English, "DE" if German
-export MBOX_WITH_RPI="yes" # options: "yes" if is Raspberry, "no" if not
+export MBOX_LANGUAGE="EN"   # options: "EN" if English, "DE" if German
+export MBOX_WITH_RPI="yes"  # options: "yes" if is Raspberry, "no" if not
+export MBOX_DATA_USB="yes"  # options: "yes" if music data on usb stick - default mount point is /media/usb, "no" if not
+export MBOX_SPEEK_MSG="yes" # options: "yes" if the box should speek during startup and on errors, "no" if not
+
+# Network Devices 
 export WLAN="wlan0"
 export ETH="eth0"
 
@@ -16,19 +20,19 @@ export ETH0_IP=`/sbin/ip -o -4 addr list $ETH | awk '{print $4}' | cut -d/ -f1`
 
 # Stage
 export MBOX_CURRENT_STAGE="test"
-export MBOX_ACTIVE_STAGE="test"
+export MBOX_ACTIVE_STAGE="$MBOX_CURRENT_STAGE"
 export MBOX_IS_TEST="True"
 
 # Ports
 export MBOX_CLIENT_PORT=86
 export MBOX_SERVER_PORT=5006
 export MBOX_DATABASE_PORT=5106
-export MBOX_DATABASE_SERVER="$ETH0_IP"
 
 # Docker container names
-export MBOX_DOCKER_DATABASE="mbox_db_test"
-export MBOX_DOCKER_CLIENT="mbox_client_test"
-export MBOX_DOCKER_SERVER="mbox_server_test"
+export MBOX_DOCKER_DATABASE="db_$MBOX_CURRENT_STAGE"
+export MBOX_DOCKER_CLIENT="client_$MBOX_CURRENT_STAGE"
+export MBOX_DOCKER_SERVER="server_$MBOX_CURRENT_STAGE"
+export MBOX_DATABASE_SERVER="$ETH0_IP"
 
 # Docker container names
 export MBOX_DB_USER="mbox"
@@ -41,23 +45,30 @@ export MBOX_BUTTON_ACTIVE="true"
 
 # Directories
 export MBOX_DIR_DATA_ROOT="/projects_data"
-export MBOX_DIR_DATA="$MBOX_DIR_DATA_ROOT/test"
-export MBOX_DIR="/projects/test/mbox"
+export MBOX_DIR_DATA="$MBOX_DIR_DATA_ROOT/$MBOX_CURRENT_STAGE"
+export MBOX_DIR="/projects/$MBOX_CURRENT_STAGE/mbox"
 export MBOX_DIR_CLIENT="$MBOX_DIR/app"
 export MBOX_DIR_SERVER="$MBOX_DIR/server"
-export MBOX_DIR_JCMODULES="/projects/test/modules"
+export MBOX_DIR_JCMODULES="/projects/$MBOX_CURRENT_STAGE/modules"
 export MBOX_DIR_DOCKERCOMPOSE="/usr/local/bin"
 
 # Mount points (if no extra device for data, use the same as for system)
-export MBOX_MOUNT_SYSTEM="/"
-#export MBOX_MOUNT_DATA="/"
-export MBOX_MOUNT_DATA="/media/usb"
+if [ ! $MBOX_DATA_USB == "yes" ]; then
+  export MBOX_MOUNT_SYSTEM="/"
+  export MBOX_MOUNT_DATA="/media/usb"
+else
+  export MBOX_MOUNT_SYSTEM="/"
+  export MBOX_MOUNT_DATA="/"
+fi
 
-# Images
-export MBOX_DOCKERIMAGE_CLIENT="php:7.1-apache"
-#export MBOX_DOCKERIMAGE_COUCHDB="apache/couchdb:latest"          # use for regular x86
-export MBOX_DOCKERIMAGE_COUCHDB="matthiasg/rpi-couchdb:latest"   # usr for raspberry
-
+# Docker Images
+if [ ! $MBOX_WITH_RPI == "yes" ]; then
+  export MBOX_DOCKERIMAGE_CLIENT="php:7.1-apache"
+  export MBOX_DOCKERIMAGE_COUCHDB="matthiasg/rpi-couchdb:latest"   # usr for raspberry
+else
+  export MBOX_DOCKERIMAGE_CLIENT="php:7.1-apache"
+  export MBOX_DOCKERIMAGE_COUCHDB="apache/couchdb:latest"          # use for regular x86
+fi 
 
 #---------------------------------------------
 export THIS_IS_THE_PROJECT_TEMPLATE="Please edit not here, but the orginial configuration file. This files is created using a template."

@@ -18,6 +18,7 @@ mount_data   = "${MBOX_MOUNT_DATA}"
 demo_card    = "${MBOX_RFID_DEMOCARD}"
 
 language     = "${MBOX_LANGUAGE}"
+speek_msg    = "${MBOX_SPEEK_MSG}"
 
 server_port = ${MBOX_SERVER_PORT}
 server_ip   = "${MBOX_DATABASE_SERVER}"

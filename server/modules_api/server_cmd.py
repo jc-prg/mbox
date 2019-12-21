@@ -22,9 +22,6 @@ if stage.test:
 else:              logging.basicConfig(level=logging.WARN)    # DEBUG, INFO, WARNING, ERROR, CRITICAL
 
 
-thread_speek = speek.speekThread(4, "Thread Radio", 1, "")  #  jcJSON.read("music"), jcJSON.read("radio"))
-thread_speek.start()
-
 #-------------------------------------------------
 
 def diskSpace(init=False):

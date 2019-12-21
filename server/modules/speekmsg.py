@@ -27,24 +27,22 @@ class speekThread (threading.Thread):
 
       # init thread
       threading.Thread.__init__(self)
-      self.threadID     = threadID
-      self.name         = name
-      self.counter      = counter
-      self.stopProcess  = False
+      self.threadID       = threadID
+      self.name           = name
+      self.counter        = counter
+      self.stopProcess    = False
+      self.default_volume = 70;
       
       if stage.rollout == "prod":     self.instance     = vlc.Instance("--quiet")
       else:                           self.instance     = vlc.Instance()
             
       self.player       = self.instance.media_player_new()
-      self.player.audio_set_volume(80)
-      self.player.audio_set_mute(False)
 
       # init mixer
       #global music_plays, music_loaded, music_ctrl
 
    def play_file(self, filename):
       file = filename
-      self.player.audio_set_volume(99)
       self.media = self.instance.media_new( file ) #str(file.encode('utf-8')) )
       self.player.set_media(self.media)
       self.player.play()
@@ -61,6 +59,9 @@ class speekThread (threading.Thread):
 
     
    def speek_message(self, message):
+
+      self.player.audio_set_volume(self.default_volume)
+      self.player.audio_set_mute(False)
 
       if stage.speek_msg != "yes": return
    

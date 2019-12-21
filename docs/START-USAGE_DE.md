@@ -40,17 +40,24 @@ $ sudo reboot now
    Dazu die Box mit dem Internet verbinden und einloggen:
 
 ```bash
+# Dateien neu laden
 $ cd /project/prod/modules
 $ sudo git pull
-
 $ cd /project/prod/mbox
 $ sudo git pull
+
+# Konfiguration neu erzeugen
 $ sudo cd config/
+$ sudo rm config_prod
+$ sudo cp config_prod.sample config_prod
+$ sudo nano config_prod         # MBOX_LANGUAGE in "DE" ändern und anschließend speichern, weitere Änderungen optional
 $ sudo ./create prod
 
+# Komponenten neu starten ... alternativ Box einfach aus und wieder einschalten
 $ cd ../
-$ sudo docker-compose restart
-$ sudo docker-compose -f docker-compose-rpi.yml restart
+$ sudo docker-compose stop
+$ sudo docker-compose -f docker-compose-rpi.yml stop
+$ sudo ./start_mbox docker
 ```
 
 9. Über das Menü und Einstellungen können die **Musik-Dateien neu geladen** werden (RELOAD DATA). In der empfohlenen Konfiguration handelt es sich dabei um die Musik-Dateien auf dem USB-Stick.

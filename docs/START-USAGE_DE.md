@@ -2,7 +2,7 @@
 
 Ihr habt eine Musikbox geschenkt bekommen ... und nun?
 
-**Startet the Musikbox.** Das Starten dauert in der Regel 1:30 min. Sie ist bereit, sobald nur noch die weiße LED und vier grüne LED leuchten. 
+**Startet the Musikbox.** Das Starten dauert in der Regel 1:30 min. Sie ist bereit, sobald nur noch die weiße LED und vier grüne LED leuchten - oder die Box mit Euch spricht. 
 Nun kann Musik über ggf. vorbelegte RFID-Karten gestartet werden. Um weitere Karten zu belegen und eine Internet-Verbindung für die Nutzung von Web-Streams herzustellen, 
 sind ein paar weitere Schritte nötig:
 

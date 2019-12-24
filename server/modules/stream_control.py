@@ -81,16 +81,28 @@ class radioThread (threading.Thread):
 
    def load(self,playlist,pl_data,pl_uuid):
    
-      if self.connected(playlist) == False:
+      if self.connected() == False:
           self.speek.speek_message("NO-INTERNET-CONNECTION")
           time.sleep(0.5)
           self.speek.speek_message("TRY-AGAIN-IN-A-MINUTE")
           return
  
+      error = 0
       if "m3u" in playlist:
         logging.info("Load playlist URL from m3u ("+playlist+")")
-        streams = self.get_url(playlist).replace("\r","")
-        logging.info("PL"+streams)
+        
+        try:
+          streams = self.get_url(playlist).replace("\r","")
+          logging.info("PL: "+streams)
+          if "Not found" in  streams: error = 1
+        except Exception as e:
+          logging.error("Can't open the playlist from m3u ("+playlist+")")
+          error = 1
+          
+        if error == 1:
+          self.speek.speek_message("CANT-OPEN-STREAM")
+          return
+          
         streams = streams.split("\n")
 
         i=0
@@ -105,16 +117,12 @@ class radioThread (threading.Thread):
             i=1
 
       else:
-        streams = [playlist]
+        streams           = [playlist]
         self.playlist_url = streams[0]
 
       self.music_ctrl["file"]           = playlist
       self.music_ctrl["stream"]         = pl_data
       self.music_ctrl["stream"]["uuid"] = pl_uuid
-
-      #subprocess.Popen(["mpc", "clear"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-      #subprocess.Popen(["mpc", "load", playlist], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-      #self.playlist_name = self.current_play()
 
       logging.info("Load playlist ("+self.playlist_url+")")
       self.media = self.instance.media_new(self.playlist_url)
@@ -173,8 +181,8 @@ class radioThread (threading.Thread):
 
 #------------------
 
-   def connected(self,url):
-        host      = [url,'http://ckloth.de/','https://www.google.com']
+   def connected(self):
+        host      = ['http://ckloth.de/','https://duckduckgo.com/','https://www.google.com/']
         count     = 0
         error_msg = ""
         while count < len(host):

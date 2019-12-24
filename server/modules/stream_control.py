@@ -81,12 +81,12 @@ class radioThread (threading.Thread):
 
    def load(self,playlist,pl_data,pl_uuid):
    
-      if self.connected() == False:
+      if self.connected(playlist) == False:
           self.speek.speek_message("NO-INTERNET-CONNECTION")
-          time.sleep(1)
+          time.sleep(0.5)
           self.speek.speek_message("TRY-AGAIN-IN-A-MINUTE")
           return
-      
+ 
       if "m3u" in playlist:
         logging.info("Load playlist URL from m3u ("+playlist+")")
         streams = self.get_url(playlist).replace("\r","")
@@ -98,16 +98,16 @@ class radioThread (threading.Thread):
           logging.info("... line: "+stream)
           if "#" in stream: 
             logging.info("... comment: "+stream)
-            
+
           elif "http" in stream and i==0: 
             logging.info("... url: "+stream)
             self.playlist_url = stream
             i=1
-            
+
       else:
         streams = [playlist]
         self.playlist_url = streams[0]
-           
+
       self.music_ctrl["file"]           = playlist
       self.music_ctrl["stream"]         = pl_data
       self.music_ctrl["stream"]["uuid"] = pl_uuid
@@ -173,14 +173,31 @@ class radioThread (threading.Thread):
 
 #------------------
 
-   def connected(self):
-        host='https://google.com'
-        try:
-            response = requests.get(host)
+   def connected(self,url):
+        host      = [url,'http://ckloth.de/','https://www.google.com']
+        count     = 0
+        error_msg = ""
+        while count < len(host):
+          try:
+            response = requests.get(host[count])
+            f = open("/tmp/log_internet.txt", "a")
+            f.write("OK")
+            f.write(response.text)
+            f.close()
             return True
-        except requests.exceptions.RequestException as e:
-            logging.error("Error connecting to INTERNET: " + str(e))
-            return False
+
+          except requests.exceptions.RequestException as e:
+
+            msg        = "Error connecting to INTERNET: " + str(e) + "\n"
+            error_msg += msg
+            logging.error(msg)
+            count = count + 1
+
+        f = open("/tmp/log_internet.txt", "a")
+        f.write(error_msg)
+        f.close()
+
+        return False
 
 
 #------------------

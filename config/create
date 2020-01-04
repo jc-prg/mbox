@@ -46,33 +46,7 @@ if ! [ -f $config ]; then
 fi
 
 source $config
-
-rm -rf ../docker-compose.yml
-envsubst < "templates/docker-compose.yml" > "../docker-compose.yml"
-
-rm -rf ../docker-compose-rpi.yml
-envsubst < "templates/docker-compose-rpi.yml" > "../docker-compose-rpi.yml"
-
-rm -rf ../app/config_stage.js
-envsubst < "templates/config_stage.js" > "../app/config_stage.js"
-
-rm -rf ../server/modules/config_stage.py
-envsubst < "templates/config_stage.py" > "../server/modules/config_stage.py"
-
-rm -rf ../start_mbox
-envsubst < "templates/start_mbox" > "../start_mbox"
-chmod 755 ../start_mbox
-
-rm -rf install/install-datadir
-envsubst < "templates/install-datadir" > "./install/install-datadir"
-chmod 755 ./install/install-datadir
-
-rm -rf install/install-rclocal
-envsubst < "templates/install-rclocal" > "./install/install-rclocal"
-chmod 755 ./install/install-rclocal
-
-rm -rf $MBOX_DIR_DATA_ROOT/active.json
-envsubst < "templates/active.json" > "$MBOX_DIR_DATA_ROOT/active.json"
+source templates/00-envsubst
 
 echo
 echo "Done."

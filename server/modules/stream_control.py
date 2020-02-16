@@ -185,26 +185,20 @@ class radioThread (threading.Thread):
         host      = ['http://ckloth.de/','https://duckduckgo.com/','https://www.google.com/']
         count     = 0
         error_msg = ""
+        etime     = str(time.time())
         while count < len(host):
           try:
             response = requests.get(host[count])
-            f = open("/tmp/log_internet.txt", "a")
-            f.write("OK")
-            f.write(response.text)
-            f.close()
+            logging.warn("Connection OK: "+host[count])
             return True
 
           except requests.exceptions.RequestException as e:
+            msg   = "Error connecting to INTERNET ("+host[count]+"): " + str(e)
+            logging.warn(msg)
 
-            msg        = "Error connecting to INTERNET: " + str(e) + "\n"
-            error_msg += msg
-            logging.error(msg)
-            count = count + 1
+          count = count + 1
 
-        f = open("/tmp/log_internet.txt", "a")
-        f.write(error_msg)
-        f.close()
-
+        logging.error("Could not connect to INTERNET!")
         return False
 
 

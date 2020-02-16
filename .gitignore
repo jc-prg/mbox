@@ -3,6 +3,8 @@ server/modules/__pycache__/
 
 server/modules_api/__pycache__/
 
+log/server.log
+
 /docker-compose.yml
 
 /docker-compose-rpi.yml

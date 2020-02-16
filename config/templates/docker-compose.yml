@@ -50,7 +50,7 @@ services:
       - ${MBOX_DIR_DATA}:${MBOX_DIR_DATA}
       - ${MBOX_DIR_DATA}/music:${MBOX_DIR_DATA}/music
       - ${MBOX_DIR_DATA}/cover:${MBOX_DIR_DATA}/cover
-      - /tmp:/tmp
+      - ./log:/log
     ports:
       - ${MBOX_SERVER_PORT}:${MBOX_SERVER_PORT}
 

@@ -164,6 +164,7 @@ class radioThread (threading.Thread):
       logging.info("Stop playback of playlist")
       self.music_ctrl["status"]   = "stop"
       self.music_ctrl["playing"]  = 0
+      self.music_ctrl["LastCard"] = ""
       self.player.stop()
 
    def current_play(self):

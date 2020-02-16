@@ -14,6 +14,7 @@ import urllib.request
 import modules.config_stage    as stage
 import modules.config_mbox     as mbox
 import modules.speekmsg        as speek
+import modules.runcmd          as runcmd
 
 #-------------------------------------------
 
@@ -53,6 +54,7 @@ class radioThread (threading.Thread):
       
       self.speek = speek.speekThread(4, "Thread Speek", 1, "")  #  jcJSON.read("music"), jcJSON.read("radio"))
       self.speek.start()
+      #self.connected()
 
 
    def run(self):
@@ -68,6 +70,7 @@ class radioThread (threading.Thread):
            self.set_volume(self.volume)
          else:
            self.set_volume(0)
+
          self.load_if_rfid()
          #self.music_ctrl["channel_info"]  = self.current_play()
          time.sleep(2)
@@ -80,17 +83,27 @@ class radioThread (threading.Thread):
    #--------------------------------------
 
    def load(self,playlist,pl_data,pl_uuid):
-   
-      if self.connected() == False:
+
+      connected = self.connected()
+      if connected == "DNS-ERROR":
+
+          self.speek.speek_message("CONNECTION-ERROR-RESTART-SHORTLY")
+          time.sleep(20)
+          return
+
+      elif connected != "CONNECTED":
+
           self.speek.speek_message("NO-INTERNET-CONNECTION")
           time.sleep(0.5)
           self.speek.speek_message("TRY-AGAIN-IN-A-MINUTE")
+          time.sleep(20)
+          self.music_ctrl["LastCard"] = ""
           return
- 
+
       error = 0
       if "m3u" in playlist:
         logging.info("Load playlist URL from m3u ("+playlist+")")
-        
+
         try:
           streams = self.get_url(playlist).replace("\r","")
           logging.info("PL: "+streams)
@@ -98,11 +111,11 @@ class radioThread (threading.Thread):
         except Exception as e:
           logging.error("Can't open the playlist from m3u ("+playlist+")")
           error = 1
-          
+
         if error == 1:
           self.speek.speek_message("CANT-OPEN-STREAM")
           return
-          
+ 
         streams = streams.split("\n")
 
         i=0
@@ -177,29 +190,57 @@ class radioThread (threading.Thread):
 
        #logging.info(data1)
        return data1
-       
+ 
 
 #------------------
 
+   def connected_fileinfo(self,info):
+        f = open("/log/internet_connect", "w+")
+        f.write(info)
+        f.close()
+
    def connected(self):
-        host      = ['http://ckloth.de/','https://duckduckgo.com/','https://www.google.com/']
-        count     = 0
+        '''check if internet connection exists'''
+
+        host_ip   = stage.server_dns    # ['8.8.8.8','1.1.1.1']
+        host      = ['ckloth.de','spiegel.de','www.google.com']
+        ping_ip   = False
         error_msg = ""
-        etime     = str(time.time())
+
+        # check if internet connected
+        for key in host_ip:
+          if runcmd.ping(key): ping_ip = True
+
+        # check if dns is working correctly
+        count     = 0
         while count < len(host):
           try:
-            response = requests.get(host[count])
-            logging.warn("Connection OK: "+host[count])
-            return True
+            connect = runcmd.ping(host[count])
+            if connect and ping_ip:
+                error_msg = "CONNECTED"
+                self.connected_fileinfo(error_msg)
+                logging.warn("Internet connection OK: " + host[count])
+                return error_msg
+
+            elif ping_ip:
+                error_msg = "DNS-ERROR"
+                self.connected_fileinfo(error_msg)
+                logging.warn("Connection OK, DNS for Domain doesnt work: "+host[count])
+
+            else:
+                error_msg = "NO-CONNECTION"
+                self.connected_fileinfo(error_msg)
+                logging.warn("Internet connection ERROR: " + host[count])
 
           except requests.exceptions.RequestException as e:
+            error_msg = "NO-CONNECTION"
             msg   = "Error connecting to INTERNET ("+host[count]+"): " + str(e)
             logging.warn(msg)
 
           count = count + 1
 
         logging.error("Could not connect to INTERNET!")
-        return False
+        return error_msg
 
 
 #------------------

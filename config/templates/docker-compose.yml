@@ -9,6 +9,7 @@ services:
 
   ${MBOX_DOCKER_CLIENT}:
     image: ${MBOX_DOCKERIMAGE_CLIENT}
+    container_name: ${MBOX_DOCKER_CLIENT}
     ports:
       - ${MBOX_CLIENT_PORT}:5006
     volumes:
@@ -22,6 +23,10 @@ services:
       - ${MBOX_DIR_DATA}/cover_upload:/var/www/html/app/cover_upload
 
       - ${MBOX_DIR_JCMODULES}:/var/www/html/app/apps
+    dns:
+      - ${DNS01}
+      - ${DNS02}
+      - ${DNS03}
     depends_on:
       - ${MBOX_DOCKER_DATABASE}
       - ${MBOX_DOCKER_SERVER}
@@ -32,6 +37,7 @@ services:
 
   ${MBOX_DOCKER_DATABASE}:
     image: ${MBOX_DOCKERIMAGE_COUCHDB}
+    container_name: ${MBOX_DOCKER_DATABASE}
     ports:
       - ${MBOX_DATABASE_PORT}:5984
     volumes:
@@ -46,6 +52,7 @@ services:
 
   ${MBOX_DOCKER_SERVER}:
     build: ./config/container/srv
+    container_name: ${MBOX_DOCKER_SERVER}
     privileged: true
     volumes:
       - ${MBOX_DIR_SERVER}:/usr/src/app/server

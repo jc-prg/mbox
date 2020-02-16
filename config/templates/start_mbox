@@ -15,6 +15,7 @@ if [ ! ${DOLLAR}option ]; then
   echo "Press key - your options:"
   echo " 'q' - exit"
   echo " 'd' - docker"
+  echo " 'c' - install crontab"
   echo " 's' - server (in progress)"
   count=0
   while : ; do
@@ -27,8 +28,12 @@ if [ ! ${DOLLAR}option ]; then
        printf "\n... starting via docker.\n"
        break
     elif [[ ${DOLLAR}k = s ]] ; then
-       config="server"
+       option="server"
        printf "\n... starting directly from server.\n"
+       break
+    elif [[ ${DOLLAR}k = c ]] ; then
+       option="cron"
+       printf "\n... install mbox via crontab.\n"
        break
     else
        ((count=${DOLLAR}count+1))
@@ -37,6 +42,46 @@ if [ ! ${DOLLAR}option ]; then
     fi
   done
 fi
+
+#---------------------------------------
+
+install_cron() {
+  echo "CRON"
+  #write out current crontab
+  crontab -l > mycron
+  #echo new cron into cron file
+  echo "* * * * * /projects/prod/mbox/start_mbox check-dns >/dev/null 2>&1" >> mycron
+  #install new cron file
+  crontab mycron
+  rm mycron
+}
+
+install_rclocal() {
+  ${MBOX_DIR}/config/install/install-rclocal
+}
+
+check_dns() {
+  echo "... check if dns error."
+  test=`cat ${MBOX_DIR}/log/internet_connect`
+
+  if [ ${DOLLAR}test == "DNS-ERROR" ]; then
+     sleep 5
+     if [ ${DOLLAR}test == "DNS-ERROR" ]; then
+        ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose.yml restart
+        #/usr/bin/docker restart mbox_server_prod_1
+        echo "RESET" > ${MBOX_DIR}/log/internet_connect
+     fi
+  elif [ ${DOLLAR}test == "NO-CONNECTION" ]; then
+     sleep 5
+     if [ ${DOLLAR}test == "NO-CONNECTION" ]; then
+       /usr/bin/autohotspot
+       echo "RESET" > ${MBOX_DIR}/log/internet_connect
+     fi
+  fi
+
+}
+
+#---------------------------------------
 
 
 if [ ${DOLLAR}option == "docker" ]; then
@@ -52,8 +97,18 @@ if [ ${DOLLAR}option == "docker" ]; then
     ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose-rpi.yml up -d
   fi
   echo ""
+  echo "RESET" > ${MBOX_DIR}/log/internet_connect
   sleep 5s
   
+elif [ ${DOLLAR}option == "cron" ]; then
+
+  install_cron
+  install_rclocal
+
+elif [ ${DOLLAR}option == "check-dns" ]; then
+
+  check_dns
+
 elif [ ${DOLLAR}option == "server" ]; then
 
   echo "... IMPLEMENTATION NOT READY YET!"

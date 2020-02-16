@@ -1,0 +1,11 @@
+10:09:06,22 root WARNING MBOX Start (Log-Level WARN) ...
+10:09:19,756 root WARNING Waiting 5s for connect to CouchDB: 1/30 (http://mbox:mbox@10.1.0.1:5105/)
+10:09:42,536 root WARNING Connection OK: http://ckloth.de/
+10:09:48,735 root WARNING Connection OK: http://ckloth.de/
+10:09:52,947 root WARNING Connection OK: http://ckloth.de/
+10:11:47,212 root WARNING MBOX Start (Log-Level WARN) ...
+10:12:00,824 root WARNING Waiting 5s for connect to CouchDB: 1/30 (http://mbox:mbox@10.1.0.1:5105/)
+10:12:37,879 root WARNING Connection OK: http://ckloth.de/
+10:12:42,91 root WARNING Connection OK: http://ckloth.de/
+16.02.20 10:15:13,471 root WARNING MBOX Start (Log-Level WARN) ...
+16.02.20 10:15:26,656 root WARNING Waiting 5s for connect to CouchDB: 1/30 (http://mbox:mbox@10.1.0.1:5105/)

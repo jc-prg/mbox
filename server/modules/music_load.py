@@ -61,6 +61,7 @@ class musicLoadingThread (threading.Thread):
             self.music_database.changed_data = False
 
 
+        # set start time for reloading
         if self.reload_all or self.reload_new or self.reload_img:
             self.reload_time_start = time.time()
 
@@ -119,9 +120,39 @@ class musicLoadingThread (threading.Thread):
 #---------------------------------
 
 def readFiles(dir):
-    list,error=runCmd("find "+dir)
+    '''
+    get all files from directory
+    dont return files, if a file ".dont-scan" exists in directory
+    '''
+    
+    command = "find -L "+dir+" -maxdepth 4"
+    logging.info("Read files: " + command)
+      
+    list,error=runCmd(command)
     files=list.splitlines()
-    return files
+    
+    noscan       = []
+    files_return = []
+    if len(files) > 1:
+      for directory in files:
+        if ".dont-scan" in directory:
+          dir_parts = directory.split("/")
+          dir_parts = dir_parts[:-1]
+          noscan.append("/".join(dir_parts))
+    
+      for filename in files:
+        scan = True
+        
+        for entry in noscan:
+          if entry in filename: 
+            scan = False
+         
+        if scan == True: 
+          files_return.append(filename)
+
+    logging.info("Dont scan directories: "+str(noscan))
+    
+    return files_return
 
 #------------------------------------
 
@@ -398,33 +429,33 @@ def reloadMusic(data,all=True,thread=""):
 
     global music_dir, music_cover
 
-    data_a = {} # albums
-    data_i = {} # album infos - collect
-    data_e = {} # album infos
-    data_t = {} # tracks
-    data_f = {} # files
-    data_k = {} # files
-    data_h = {} # temporary dict to add image files to album
-    a_uuid      = ""
-    files_exist = data["files"]
+    data_album_list = {} # albums
+    data_album_info = {} # album infos
+    data_tracks     = {} # tracks
+    data_files      = {} # files
+    data_artists    = {} # files
+    data_i          = {} # album infos - collect
+    data_h          = {} # temporary dict to add image files to album
+    
+    a_uuid          = ""
+    files_exist     = data["files"]
+    
+    logging.info("Start reloading music data: " + music_dir + " | all=" + str(all))
 
     # delete old cover files (as not required after reload)
-    if all: # if all files / db entries should be reloaded (else: add only new entries)
+    if all:                                                 # if all files / db entries should be reloaded (else: add only new entries)
       files = readFiles(music_cover)
       for x in files:
         if os.path.isfile(x):
           os.remove(x)
 
-    # if not all, set existing entries to vars
+    # if not all, copy existing entries to vars
     else:
-      data_a = data["albums"]
-      data_e = data["album_info"]
-      data_t = data["tracks"]
-      data_f = data["files"]
-      data_k = data["artists"]
-
-
-    logging.info("Renew all: "+str(all))
+      data_album_list = data["albums"]      # data_a
+      data_album_info = data["album_info"]  # data_e
+      data_tracks     = data["tracks"]      # data_t
+      data_files      = data["files"]       # data_f
+      data_artists    = data["artists"]     # data_k
 
     # read all file names in music dir and start loop to read ID3 tags
     files            = readFiles(music_dir)
@@ -437,6 +468,8 @@ def reloadMusic(data,all=True,thread=""):
     last_title       = ""
     last_albumdir    = ""
 
+    logging.info("... renew all: " + str(files_amount) + " files found.")
+
     for file in files:
 
       # check if entry for file already exists in db
@@ -446,22 +479,22 @@ def reloadMusic(data,all=True,thread=""):
       files_count      += 1
       files_percentage  = float(files_count) / float(files_amount) * 100
       if thread != "":
-          thread.reload_progress  = files_percentage
-          current_time = time.time()
+          thread.reload_progress      = files_percentage
+          current_time                = time.time()
           thread.reload_time_required = time.time() - thread.reload_time_start
           thread.reload_time_left     = thread.reload_time_required * (100 - files_percentage) / files_percentage
+
       logging.debug("Reload progress: "+str(files_percentage)+"%")
 
       # check if file alread loaded and if all files should be loaded
       if (m_file not in files_exist) or all:
-        logging.debug("NOT EXIST_or_ALL:" + str(all))
+        logging.debug("NOT EXIST_or_ALL: " + str(all))
 
         # generate album identifier based on path to file
         albumID3  = ""
         albumPath = AlbumByPath(file)
         if (albumPath not in data_h):
           data_h[albumPath] = {}
-
 
         #logging.info("XXX" + file)
 
@@ -521,11 +554,6 @@ def reloadMusic(data,all=True,thread=""):
              if not isinstance( tag2, str ): tag2 = ""
              if not isinstance( tag3, str ): tag3 = ""
 
-             # if no ID3 tags available set to "" // python 2
-             #if not isinstance(tag1, basestring): tag1 = ""    # if not isinstance( tag1, str ) <- python3
-             #if not isinstance(tag2, basestring): tag2 = ""
-             #if not isinstance(tag3, basestring): tag3 = ""
-
              # if no data set to unknown
              if tag1 == "":
                 tag1 = "Unknown Artist"
@@ -554,24 +582,24 @@ def reloadMusic(data,all=True,thread=""):
 
              # correct hierachy
              if last_artist != tag1:
-               if tag1 not in data_a:              data_a[tag1]             = {}      # create category compilations
-               if last_album not in data_a[tag1]:  data_a[tag1][last_album] = {}      # create album in category
+               if tag1 not in data_album_list:              data_album_list[tag1]             = {}      # create category compilations
+               if last_album not in data_album_list[tag1]:  data_album_list[tag1][last_album] = {}      # create album in category
 
-               data_a[tag1][last_album]            = data_a[last_artist][last_album]  # move last entry to group "Compilation"
-               del data_a[last_artist][last_album]                                    # remove entry with artist name
+               data_album_list[tag1][last_album]            = data_album_list[last_artist][last_album]  # move last entry to group "Compilation"
+               del data_album_list[last_artist][last_album]                                             # remove entry with artist name
 
              # correct other
              if last_artist != tag1:
                lst_albumID3 = last_artist+"_"+tag2
                act_albumID3 = tag1+"_"+tag2
 
-               if lst_albumID3 in data_i: data_i[act_albumID3] = data_i[lst_albumID3]   # move track list from first song to compilation
+               if lst_albumID3 in data_i: data_i[act_albumID3] = data_i[lst_albumID3]                   # move track list from first song to compilation
                if lst_albumID3 in data_i: data_i[act_albumID3+"_tags"] = data_i[lst_albumID3+"_tags"]   # move track list from first song to compilation
-               if lst_albumID3 in data_h: data_h[act_albumID3] = data_h[lst_albumID3]   # move albumPath from first song to compilation
+               if lst_albumID3 in data_h: data_h[act_albumID3] = data_h[lst_albumID3]                   # move albumPath from first song to compilation
 
-               if lst_albumID3 in data_h: del data_h[lst_albumID3]    # delete albumPath for first song
-               if lst_albumID3 in data_i: del data_i[lst_albumID3]    # delete list of tracks for first song
-               #if a_uuid       in data_e: del data_e[a_uuid]         # delete album for first song
+               if lst_albumID3 in data_h: del data_h[lst_albumID3]                                      # delete albumPath for first song
+               if lst_albumID3 in data_i: del data_i[lst_albumID3]                                      # delete list of tracks for first song
+
           else:
              logging.debug("ALBUM DIR: " + tag4)
 
@@ -611,116 +639,95 @@ def reloadMusic(data,all=True,thread=""):
              data_i[albumID3+"_tags"] = [tags["uuid"]]
 
           # safe title and filename in dict
-          data_t[tags["uuid"]] = tags
-          data_f[tags["file"]] = tags
+          data_tracks[tags["uuid"]] = tags
+          data_files[tags["file"]]  = tags
 
           # create hierarchy: artist - track
-          if tag1_org not in data_k:
-            data_k[tag1_org]                       = {}
+          if tag1_org not in data_artists:        data_artists[tag1_org]         = {}
+          if tag3 not in data_artists[tag1_org]:  data_artists[tag1_org][tag3]   = {}
 
-          if tag3 not in data_k[tag1_org]:
-            data_k[tag1_org][tag3]                 = {}
-
-          data_k[tag1_org][tag3]                   = tags
-
+          data_artists[tag1_org][tag3] = tags
 
           # create hierarchy: artist - album - track
-          if tag1 not in data_a:
-            data_a[tag1]                       = {}
-            data_a[tag1][tag2]                 = {}
-            #data_a[tag1][tag2][tag3]           = []
-
-          if tag2 not in data_a[tag1]:
-              data_a[tag1][tag2]                 = {}
-
-          #if tag3 not in data_a[tag1][tag2]:
-          #    data_a[tag1][tag2][tag3] = []
-
-          if "tracks" not in data_a[tag1][tag2]:
-              data_a[tag1][tag2]["tracks"] = []
-
-          #data_a[tag1][tag2][tag3].append(tags)
-          data_a[tag1][tag2]["tracks"].append(tags["uuid"])
+          if tag1 not in data_album_list:          data_album_list[tag1]         = {}
+          if tag2 not in data_album_list[tag1]:    data_album_list[tag1][tag2]   = {}
 
 
     # create list of albums by UUID based on track infos -> album_info
     for key in data_i:
        a_uuid = "a_"+str(uuid.uuid1())
        if key+"_tags" in data_i:
-         if data_i[key][1] not in data_a[data_i[key][0]]: data_a[data_i[key][0]][data_i[key][1]] = {}
+         if data_i[key][1] not in data_album_list[data_i[key][0]]: data_album_list[data_i[key][0]][data_i[key][1]] = {}
 
-         data_a[data_i[key][0]][data_i[key][1]]["uuid"] = a_uuid  # KeyError 'Unknown Album'
-         data_e[a_uuid]                  = {}
-         data_e[a_uuid]["artist"]        = data_i[key][0]
-         data_e[a_uuid]["album"]         = data_i[key][1]
-         data_e[a_uuid]["tracks"]        = data_i[key+"_tags"]
-         data_e[a_uuid]["track_count"]   = len(data_i[key+"_tags"])
-         data_e[a_uuid]["albumpath"]     = data_i[key][2]
-         data_e[a_uuid]["albumsize"]     = 0
-         data_e[a_uuid]["albumlength"]   = 0
-         data_e[a_uuid]["genres"]        = []
-         data_e[a_uuid]["error"]         = []
+         data_album_list[data_i[key][0]][data_i[key][1]]["uuid"] = a_uuid  # KeyError 'Unknown Album'
+         data_album_info[a_uuid]                  = {}
+         data_album_info[a_uuid]["artist"]        = data_i[key][0]
+         data_album_info[a_uuid]["album"]         = data_i[key][1]
+         data_album_info[a_uuid]["tracks"]        = data_i[key+"_tags"]
+         data_album_info[a_uuid]["track_count"]   = len(data_i[key+"_tags"])
+         data_album_info[a_uuid]["albumpath"]     = data_i[key][2]
+         data_album_info[a_uuid]["albumsize"]     = 0
+         data_album_info[a_uuid]["albumlength"]   = 0
+         data_album_info[a_uuid]["genres"]        = []
+         data_album_info[a_uuid]["error"]         = []
 
-         data_e[a_uuid]["cover_images"]          = {}
-         data_e[a_uuid]["cover_images"]["dir"]   = []
-         data_e[a_uuid]["cover_images"]["track"] = []
+         data_album_info[a_uuid]["cover_images"]          = {}
+         data_album_info[a_uuid]["cover_images"]["dir"]   = []
+         data_album_info[a_uuid]["cover_images"]["track"] = []
 
          # consolidate data from tracks
-         for t_key in data_e[a_uuid]["tracks"]:
+         for t_key in data_album_info[a_uuid]["tracks"]:
 
            # calculate album size in bytes
-           data_e[a_uuid]["albumsize"]     = data_e[a_uuid]["albumsize"]   + data_t[t_key]["filesize"]
-           if "length" in data_t[t_key]:
-              data_e[a_uuid]["albumlength"]   = data_e[a_uuid]["albumlength"] + data_t[t_key]["length"]
+           data_album_info[a_uuid]["albumsize"]       = data_album_info[a_uuid]["albumsize"]   + data_tracks[t_key]["filesize"]
+           if "length" in data_tracks[t_key]: 
+             data_album_info[a_uuid]["albumlength"]   = data_album_info[a_uuid]["albumlength"] + data_tracks[t_key]["length"]
 
            # collect genre information from tracks
-           if "genre" in data_t[t_key]:
-             if data_t[t_key]["genre"] and not data_t[t_key]["genre"] in data_e[a_uuid]["genres"]:
-               data_e[a_uuid]["genres"].append(data_t[t_key]["genre"])
-           data_t[t_key]["uuid_album"] = a_uuid
+           if "genre" in data_tracks[t_key]:
+             if data_tracks[t_key]["genre"] and not data_tracks[t_key]["genre"] in data_album_info[a_uuid]["genres"]:
+               data_album_info[a_uuid]["genres"].append(data_tracks[t_key]["genre"])
+           data_tracks[t_key]["uuid_album"] = a_uuid
 
            # error message from tracks
-           if "error" in data_t[t_key]:
-             data_e[a_uuid]["error"].append(data_t[t_key]["error"] + " ("+data_t[t_key]["file"]+")")
-           data_t[t_key]["uuid_album"] = a_uuid
+           if "error" in data_tracks[t_key]:
+             data_album_info[a_uuid]["error"].append(data_tracks[t_key]["error"] + " ("+data_tracks[t_key]["file"]+")")
+           data_tracks[t_key]["uuid_album"] = a_uuid
 
 
          # check if already a rfid card is connected
-         data["cards"], data_e[a_uuid]["card_id"] = checkIfCardExists(data["cards"],data_e[a_uuid]["album"],data_e[a_uuid]["artist"],a_uuid)
+         data["cards"], data_album_info[a_uuid]["card_id"] = checkIfCardExists(data["cards"],data_album_info[a_uuid]["album"],data_album_info[a_uuid]["artist"],a_uuid)
 
          # set image information for album
          if key+"_image" in data_i:
-             data_e[a_uuid]["cover_images"]         = data_i[key+"_image"] # images extracted from audio file
+             data_album_info[a_uuid]["cover_images"]         = data_i[key+"_image"] # images extracted from audio file
 
          if "cover_images" in data_h[key]:
-             data_e[a_uuid]["cover_images"]["dir"]  = data_h[key]["cover_images"]["dir"] # images from directory
-             if len(data_e[a_uuid]["cover_images"]["track"]) == 0: data_e[a_uuid]["cover_images"]["active"] = "dir"
+             data_album_info[a_uuid]["cover_images"]["dir"]  = data_h[key]["cover_images"]["dir"] # images from directory
+             if len(data_album_info[a_uuid]["cover_images"]["track"]) == 0: data_album_info[a_uuid]["cover_images"]["active"] = "dir"
          else:
-             data_e[a_uuid]["cover_images"]["dir"]  = []
+             data_album_info[a_uuid]["cover_images"]["dir"]  = []
 
-         if len(data_e[a_uuid]["cover_images"]["track"]) == 0 and len(data_e[a_uuid]["cover_images"]["dir"]) == 0:
-             data_e[a_uuid]["cover_images"]["active"] = "none"
+         if len(data_album_info[a_uuid]["cover_images"]["track"]) == 0 and len(data_album_info[a_uuid]["cover_images"]["dir"]) == 0:
+             data_album_info[a_uuid]["cover_images"]["active"] = "none"
 
 
-    data["albums"]      = data_a
-    data["tracks"]      = data_t
-    data["files"]       = data_f
-    data["artists"]     = data_k
+    data["albums"]      = data_album_list
+    data["tracks"]      = data_tracks
+    data["files"]       = data_files
+    data["artists"]     = data_artists
 
     if all:
-      data["album_info"]  = data_e        # replace all albums
+      data["album_info"]  = data_album_info        # replace all albums
 
-      #data["cards"]       = {}            # remove all linked cards, as linked to uuids
-      #data["playlists"]   = {}           # remove all playlists, as linked to uuids
     else:
-      for x in data_e:
-        data["album_info"][x] = data_e[x] # add not existing albums
+      for x in data_album_info:
+        data["album_info"][x] = data_album_info[x] # add not existing albums
 
-    if "playlists" not in data:
-      data["playlists"] = {}
-
-    if "cards" not in data:
-      data["cards"] = {}
+    if "playlists" not in data:   data["playlists"] = {}
+    if "cards" not in data:       data["cards"]     = {}
+      
+    logging.info("Finished reloading music data: " + music_dir + " | all=" + str(all) + " | albums=" + str(len(data["albums"])))
 
     return data
 

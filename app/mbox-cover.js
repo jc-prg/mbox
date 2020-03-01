@@ -89,7 +89,7 @@ function mboxAlbumCover2(id,data) {
 		cover=encodeURI(cover);
 		}
 
-	if (checkImgExists)	 {
+	if (checkImgExists) {
 		if (mboxAlbumCover_checkFile(cover))	{ return cover; }
 		else					{ return ""; }
 		}

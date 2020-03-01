@@ -121,6 +121,9 @@ $ ./install-datadir           # create required sub-directories in data-dir, chm
 
   * *default structure of music directories:*
     * ./music/&lt;category&gt;/&lt;artist&gt;/&lt;album&gt;/
+    
+  * *exclude directories from scanning:*
+    * create a file ".dont-scan" in the directories you want to exclude
 
 
 **6. Set the maximum loudness of the Raspberry to 100% (per default it's too low):**

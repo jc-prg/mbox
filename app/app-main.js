@@ -18,9 +18,9 @@ else {
 // app to load info and send cmd to IR device
 //--------------------------------
 
-var mboxApp     = new jcApp( "mbox", RESTurl, "status", "api/");     // cmd: <device>/<cmd>
+var mboxApp     = new jcApp( "mbox", RESTurl, "status", "api/");	// cmd: <device>/<cmd>
 mboxApp.init( "data_log", "error_log", reloadInterval, printAppStatus );
-mboxApp.timeout = -1; // timeout in milliseconds (-1 for no timeout)
+mboxApp.timeout = -1; 							// timeout in milliseconds (-1 for no timeout)
 mboxApp.load( );
 mboxApp.setAutoupdate( mboxCheckStatus );
 
@@ -29,15 +29,18 @@ mboxApp.setAutoupdate( mboxCheckStatus );
 //--------------------------------
 
 var appMenu     = new jcMenu(     "appMenu", "menuItems", "navTitle" );
-var appMsg      = new jcMsg(      "appMsg" );  //rm3msg.wait("Loading App ...", "initRemote();" );
+var appMsg      = new jcMsg(      "appMsg" );
 var appCookie   = new jcCookie(   "appCookie");
 var reload      = true;
 
-check_for_updates();
-appMenu.init( dataAll );     // load data to class
+check_for_updates();		// check if app is up-to-date
+printAppStatusLoad();		// initial load of data (default: Album)
 
+
+//--------------------------------
 
 function printAppMenu() {
+
 	// initial menu ...
 	appMenu.empty();     // load data to class
 
@@ -46,7 +49,7 @@ function printAppMenu() {
 	else			 { mbox_filter_show = "show"; }
 
 	appMenu.add_script( "mboxToggleMode();printAppStatusLoad();if(mbox_settings){settingsToggle();}", "Modus: " + mbox_mode );
-	appMenu.add_script( "mboxToggleDevice();printAppStatusLoad();if(mbox_settings){settingsToggle();}", lang("DEVICE")+": " + mbox_device );
+	appMenu.add_script( "mboxToggleDevice();printAppStatusLoad();if(mbox_settings){settingsToggle();}", lang("DEVICE") + ": " + mbox_device );
 	if (mbox_mode == "Album") {
 		appMenu.add_script( "mboxToggleFilter();printAppStatusLoad();if(mbox_settings){settingsToggle();}", "Filter: " + mbox_filter_show );
 		}
@@ -54,9 +57,12 @@ function printAppMenu() {
 	appMenu.add_script( "mboxListCardsLoad();if(mbox_settings){settingsToggle();printAllStatusLoad();};", lang("RFID_CARDS") );
 	appMenu.add_script( "settingsToggle();settingsStatusLoad();printAppStatusLoad();", lang("SETTINGS") );
 	appMenu.add_line();
-        appMenu.add_script( "toggleCoverPrint();", lang("COVER_IMAGES"))
+        appMenu.add_script( "toggleCoverPrint();", lang("COVER_IMAGES"));
+        
         appMenu.set_title( appTitle + mbox_mode );
 	}
+
+
 //--------------------------------
 // print after loading data (callback)
 //--------------------------------
@@ -68,13 +74,14 @@ function printAppStatus(data) {
 	printAppMenu();
 
 	// initial app data ...
-	setTextById("remote3", appTitle + " (" + data["API"]["name"] + ": " + data["API"]["version"] 
-				+ " / " + data["STATUS"]["active_device"] + ") " + writeRFID(data["LOAD"]["RFID"]) );
+	setTextById("remote3",  appTitle + " (" + data["API"]["name"] + ": " + data["API"]["version"] + " / " + 
+				data["STATUS"]["active_device"] + ") " + writeRFID(data["LOAD"]["RFID"]) );
 
 	if (writeRFID(data["LOAD"]["RFID"]) != "") { mboxSetStatus("blue"); }
 
 	// write icon menu and lists
 	if (reload) {
+
 		// write icons for 3 modes
 		mboxWriteGroups();
 
@@ -87,8 +94,8 @@ function printAppStatus(data) {
 		}
 
 	// set info and control for playback
-	mboxControl(data);
-	mboxCheckLoading(data);
+	mboxControl(		data);
+	mboxCheckLoading(	data);
 	}
 
 //--------------------------------
@@ -102,7 +109,7 @@ function check_for_update_msg(data) {
         var msg = data["STATUS"]["check-version"];
         message = "<br/></b><i>"+msg["Msg"]+"</i>";
 
-        appMsg.wait(lang("LOADING_APP")+" ..."+message, ""); //"initRemote();" );
+        appMsg.wait(lang("LOADING_APP")+" ..."+message, "");
 
         if (msg["Code"] == "800") { setTimeout(function(){appMsg.hide();},3000); }
         if (msg["Code"] == "801") { setTimeout(function(){appMsg.hide();},3000); }
@@ -112,7 +119,7 @@ function check_for_update_msg(data) {
 
 function check_for_updates() {
 	console.log("Check version: "+appVersion);
-        appMsg.wait(lang("LOADING_APP")+" ...", ""); // "initRemote();" );
+        appMsg.wait(lang("LOADING_APP")+" ...", ""); 
         mboxApp.requestAPI("GET",["version", appVersion], "", check_for_update_msg, "wait");
         }
 

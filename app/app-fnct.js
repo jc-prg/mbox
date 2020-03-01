@@ -113,15 +113,13 @@ function clickMenu () {
      if (document.getElementById("menuItems").style.visibility == "hidden")     { document.getElementById("menuItems").style.visibility = "visible"; }
      else                                                                       { document.getElementById("menuItems").style.visibility = "hidden"; }
      }
-   else {
-	document.getElementById("menuItems").style.visibility = "visible"; 
-	}
+   else 									{ document.getElementById("menuItems").style.visibility = "visible"; }
    }
 
 //--------------------------------------
 
 function setNavTitle (title) {
-        setTextById("navTitle", "<div onClick=\"javascript:rm3settings.hide();rm3cookie.erase('remote');initRemote();\">"+title+"</div>");
+        setTextById("navTitle", "<div onClick=\"javascript:if(mbox_settings){settingsToggle();};appCookie.erase('appCookie');\">"+title+"</div>");
         }
 
 //--------------------------------------

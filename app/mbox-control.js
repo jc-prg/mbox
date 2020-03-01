@@ -519,3 +519,4 @@ function mboxToggleFilter () {
 	if (mbox_filter) 		{ mbox_filter = false;  document.getElementById("remote4").style.display="none"; }
 	else				{ mbox_filter = true;   document.getElementById("remote4").style.display="block"; }
 	}
+	

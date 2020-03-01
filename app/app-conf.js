@@ -7,7 +7,7 @@
 
 // REST API configuration
 
-var appVersion     = "v0.5.5";
+var appVersion     = "v0.5.7";
 var appTitle       = "jc://mbox/";
 
 var RESTip         = location.host;
@@ -23,6 +23,7 @@ var dataConfig	= {};
 
 var appUpdate        = false;
 var showImg          = true;	// preset: show images if defined (otherwise text)
+var checkImgExists   = false;   // check if album cover exists using http-requests (takes time ...)
 var eMsg             = false;
 var reloadInterval   = 5;	// reload data every x seconds
 var connect2stage    = "Prod";	// default stage to connect to (changed if rm3_test == true)

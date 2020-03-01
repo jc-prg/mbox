@@ -65,11 +65,12 @@ function mboxAlbumCover(artist,album) {
 //--------------------------------------
 
 
+
 function mboxAlbumCover2(id,data) {
 
 	var albumInfo;
-	var i             = 0;
-	var cover	  = "";
+	var i              = 0;
+	var cover	   = "";
 
 	if (data && data["uuid"]) 	{ albumInfo     = data; }
 	else if (data)			{ albumInfo     = data[id]; }
@@ -88,7 +89,19 @@ function mboxAlbumCover2(id,data) {
 		cover=encodeURI(cover);
 		}
 
-	return cover;
+	if (checkImgExists) {
+		if (mboxAlbumCover_checkFile(cover))	{ return cover; }
+		else					{ return ""; }
+		}
+	else { return cover; }
+	}
+	
+function mboxAlbumCover_checkFile(image_url) {
+
+	var http = new XMLHttpRequest();
+	http.open('HEAD', image_url, false);
+	http.send();
+	return http.status != 404;
 	}
 
 

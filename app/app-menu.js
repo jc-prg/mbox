@@ -74,17 +74,8 @@ function jcMenu(name, menu, title) {
   		return "<li><a onClick=\"javascript:" + script + ";clickMenu();setNavTitle('" + label + "');\">"+label+"</a></li>";
 		}
 
-	this.entry_device = function (device,label) {
-		//return "<li><a onclick=\"javascript:writeRemote(dataDevices,'" + device + "');clickMenu();setNavTitle('" + label + "');\" >" + label + "</a></li>";
-		return "<li><a onclick=\"rm3remotes.create('device','" + device + "');rm3settings.hide();clickMenu();setNavTitle('" + label + "');\" >" + label + "</a></li>";
-		}
-
-	this.entry_scene  = function (scene,label) {
-		//return "<li><a onclick=\"javascript:writeMixRemote(dataConfig,'" + remote + "');clickMenu();setNavTitle('" + remote + "');\" >" + remote + "</a></li>";
-		return "<li><a onclick=\"rm3remotes.create('scene','" + scene + "');rm3settings.hide();clickMenu();setNavTitle('" + label + "');\" >" + label + "</a></li>";
-		}
-
 	this.set_title = function(title) {
+		title = "<div onClick=\"javascript:if(mbox_settings){settingsToggle();};appCookie.erase('appCookie');\">"+title+"</div>";
 		setTextById(this.menuTitle,title);
 		}
 

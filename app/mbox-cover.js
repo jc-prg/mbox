@@ -4,6 +4,16 @@
 // create cover for list and detail views
 // and return cover for print view
 //--------------------------------------
+/* INDEX:
+function mboxAlbumInfoCover(nr,url_list,act,uuid)
+function mboxAlbumCover(artist,album)
+function mboxAlbumCover2(id,data) {
+function mboxAlbumCover_checkFile(image_url)
+function listCoverStart()
+function listCoverEnd()
+function listCoverEntry(id,cover) {
+*/
+//--------------------------------------
 
 function mboxAlbumInfoCover(nr,url_list,act,uuid) {
 	var border  = "";

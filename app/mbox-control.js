@@ -4,6 +4,29 @@
 // file mbox control at the bottom 
 // of the page (loaded by auto update)
 //--------------------------------------
+/* INDEX:
+function mboxWriteGroups()
+function mboxControlLoad()
+function mboxControl(data)
+function mboxControlChangePosition(e)
+function mboxControlProgressPrint()
+function mboxControlProgress()
+function mboxControlProgressTime()
+function mboxVolumeControl(volume, mute)
+function mboxPlaylistControl(uuid)
+function mboxShowUUID(uuid)
+function mboxRadioControl(uuid)
+function mboxShowPlaying(uuid,uuid_song,playing)
+function mboxButton2(sendCmd, label)
+function mboxControl_open()
+function mboxCheckLoading(data)
+function mboxCheckStatus()
+function mboxDeletePlaying()
+function mboxSetStatus(color)
+function mboxToggleDevice()
+function mboxToggleFilter()
+*/
+//--------------------------------------
 
 mbox_control_open = false;
 

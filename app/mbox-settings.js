@@ -3,6 +3,19 @@
 //--------------------------------------
 // create settings pages
 //--------------------------------------
+/* INDEX:
+function settingsToggle() {
+function settingsStatusLoad()
+function settingsStatus (data)
+function settingsStatus_PerformanceLoad()
+function settingsStatus_Performance(data)
+function mboxShowLoading(data)
+function mboxShowJson(data)
+function toggleCoverPrint()
+function uploadImage()
+function dict_size(d)
+*/
+//--------------------------------------
 
 var MusicDir = "/mbox_music/";
 

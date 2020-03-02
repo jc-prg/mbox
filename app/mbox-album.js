@@ -3,6 +3,29 @@
 //--------------------------------------
 // show album list and details
 //--------------------------------------
+/* INDEX:
+function mboxEmptyBelow()
+function mboxWriteBelow(text)
+function mboxAlbumAllLoad(filter="",uuid="")
+function mboxAlbumAll(data)
+function mboxAlbumAll_section(count,title,last_title)
+function mboxAlbumAll_album(count,uuid,title,description,cover,cmd_open,cmd_play)
+function mboxCreateAlbumFilter(data,selected)
+function mboxCreateArtistFilter(data,selected)
+function mboxAlbumLoad(i,uuid)
+function mboxListAlbum(data)
+function mboxTrackInfoLoad(uuid)
+function mboxTrackInfo(data)
+function mboxAlbumInfoLoad(uuid)
+function mboxAlbumInfoClose()
+function mboxAlbumInfo(data)
+function mboxAlbumDelete(album,uuid)
+function mboxAlbumTrackRow(id,dataTracks,album=true,artist=false,count=0)
+function show_triangle(i)
+function hide_triangle(i)
+function mboxEmptyAlbum()
+*/
+//--------------------------------------
 
 var mbox_list_count  = 3;
 var mbox_list_pos    = 0;
@@ -622,9 +645,4 @@ function mboxEmptyAlbum() {
 	}
 
 
-//--------------------------------------
-
-function sortNumber(a,b) {
-        return a - b;
-    }
 

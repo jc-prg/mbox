@@ -3,6 +3,32 @@
 //--------------------------------------
 // list and edit playlists
 //--------------------------------------
+/* INDEX:
+function mboxPlaylistAllLoad(filter="",uuid="")
+function mboxPlaylistAll(data)
+function mboxAddListDialog(i)
+function mboxPlaylistOneLoad2(uuid)
+function mboxPlaylistOneLoad(i,uuid)
+function mboxPlaylistOne(data)
+function mboxPlaylistEditLoad(uuid)
+function mboxPlaylistEdit(data)
+function mboxPlaylistInfoLoad(uuid)
+function mboxPlaylistInfo(data)
+function mboxPlaylistInfoClose()
+function mboxPlaylistEditEntryLoad(uuid)
+function mboxReloadPlaylist(uuid)
+function mboxDeletePlaylist(uuid,title)
+function mboxPlaylistEditAlbumsLoad(uuid)
+function mboxPlaylistEditAlbums(data)
+function mboxPlaylistEditTracksLoad(uuid,source="")
+function mboxPlaylistEditTracks(data)
+function mboxTrackRowPL(data,uuid,split=false,uuid_pl="")
+function mboxInfoDelete(data)
+function mboxInfoAdd(data)
+function add_playlist()
+function add_playlist_msg(data)
+*/
+//--------------------------------------
 
 function mboxPlaylistAllLoad(filter="",uuid="") {
                 if (filter["UUID"])     { filter = filter["UUID"]; }

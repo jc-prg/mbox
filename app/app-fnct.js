@@ -3,11 +3,23 @@
 //--------------------------------------
 // several functions ...
 //--------------------------------------
-
+/* INDEX:
 function showReturnMsg(data) {
-	if ("Result" in data)		{ appMsg.alert(data["Result"]["Msg"] + " (" + data["Result"]["Code"] + ")"); }
-	else if ("ReturnMsg" in data)	{ appMsg.alert(data["ReturnMsg"]); }
-	}
+function pausecomp(ms) {
+function pausecmd(s) {
+function convert_second2time(seconds) {
+function setTextById(id, text="") {
+function addTextById(id, text="") {
+function getTextById(id, text="") {
+function setOnclickById(id, script="") {
+function isHidden(id) {
+function elementHidden(id) {
+function elementVisible(id) {
+function changeVisibility(id) {
+function writeKeyBoard () {
+function sortNumber(a,b) {
+*/
+//--------------------------------------
 
 // Warten
 //--------------------------------
@@ -102,26 +114,6 @@ function changeVisibility(id) {
 	else { console.error("changeVisibility: ERROR Element not found - "+id); }
   	}
 
-
-//--------------------------------------
-// Show / hide menu and set app title
-//--------------------------------------
-
-
-function clickMenu () {
-   if (window.innerWidth < 910) {
-     if (document.getElementById("menuItems").style.visibility == "hidden")     { document.getElementById("menuItems").style.visibility = "visible"; }
-     else                                                                       { document.getElementById("menuItems").style.visibility = "hidden"; }
-     }
-   else 									{ document.getElementById("menuItems").style.visibility = "visible"; }
-   }
-
-//--------------------------------------
-
-function setNavTitle (title) {
-        setTextById("navTitle", "<div onClick=\"javascript:if(mbox_settings){settingsToggle();};appCookie.erase('appCookie');\">"+title+"</div>");
-        }
-
 //--------------------------------------
 
 function writeKeyBoard () {
@@ -132,4 +124,10 @@ function writeKeyBoard () {
    test = test + "</ul>";
    return test;
    }
+
+//--------------------------------------
+
+function sortNumber(a,b) {
+        return a - b;
+    }
 

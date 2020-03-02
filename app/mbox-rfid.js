@@ -3,6 +3,18 @@
 //--------------------------------------
 // list and edit rfid card infos
 //--------------------------------------
+/* INDEX:
+function writeRFID(data)
+function CardID(uuid)
+function editCardDialogLoad1(uuid)
+function editCardDialogLoad2(data)
+function editCardDialog(data)
+function mboxListCardsLoad()
+function mboxListCards(data)
+function mbox_delete_card(card_id,uuid_pl)
+function editCard_save(data)
+*/
+//--------------------------------------
 
 mboxCardUUID = "";
 mboxCardCID = "";

@@ -3,6 +3,12 @@
 //--------------------------------------
 // Local Player -- ACTUAL
 //--------------------------------------
+/* INDEX:
+function localPlayer(position=0, play=true)
+function writeAudioPlayer(id,divid)
+function myPlayer(id,divid)
+*/
+//--------------------------------------
 
 var mboxPlayer;
 

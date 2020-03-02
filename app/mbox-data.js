@@ -3,6 +3,19 @@
 //--------------------------------------
 // Edit data (playlist and web-stream)
 //--------------------------------------
+/* INDEX:
+function showReturnMsg(data)
+function mboxDataEdit(data)
+function mboxDataEditExecute(uuid, key_list, type)
+*/
+//--------------------------------------
+
+function showReturnMsg(data) {
+	if ("Result" in data)		{ appMsg.alert(data["Result"]["Msg"] + " (" + data["Result"]["Code"] + ")"); }
+	else if ("ReturnMsg" in data)	{ appMsg.alert(data["ReturnMsg"]); }
+	}
+
+//--------------------------------------
 
 function mboxDataEdit(data) {
         var text        = "";

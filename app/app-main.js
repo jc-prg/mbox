@@ -3,6 +3,14 @@
 //--------------------------------------
 // main functions to load the app
 //--------------------------------------
+/* INDEX:
+function printAppMenu()
+function printAppStatusLoad()
+function printAppStatus(data)
+function check_for_update_msg(data)
+function check_for_updates()
+*/
+//--------------------------------------
 
 if (test == true) {
 	appTitle 	+= "test/";

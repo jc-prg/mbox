@@ -7,7 +7,7 @@
 /* INDEX:
 function mboxWriteGroups()
 function mboxControlLoad()
-function mboxControl(data)
+function mboxControl (data)
 function mboxControlChangePosition(e)
 function mboxControlProgressPrint()
 function mboxControlProgress()
@@ -17,14 +17,14 @@ function mboxPlaylistControl(uuid)
 function mboxShowUUID(uuid)
 function mboxRadioControl(uuid)
 function mboxShowPlaying(uuid,uuid_song,playing)
-function mboxButton2(sendCmd, label)
+function mboxButton2( sendCmd, label )
 function mboxControl_open()
 function mboxCheckLoading(data)
-function mboxCheckStatus()
-function mboxDeletePlaying()
-function mboxSetStatus(color)
-function mboxToggleDevice()
-function mboxToggleFilter()
+function mboxCheckStatus ()
+function mboxDeletePlaying ()
+function mboxSetStatus (color)
+function mboxToggleDevice ()
+function mboxToggleFilter ()
 */
 //--------------------------------------
 
@@ -543,3 +543,16 @@ function mboxToggleFilter () {
 	else				{ mbox_filter = true;   document.getElementById("remote4").style.display="block"; }
 	}
 	
+
+
+
+
+
+
+
+
+
+
+
+
+

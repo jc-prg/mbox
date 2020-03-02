@@ -493,7 +493,7 @@ function mboxTrackRowPL(data,uuid,split=false,uuid_pl="") {
 	var trackinfo  = data["DATA"]["tracks"];
 
 
-	// if half of the list, split ... where is defined in function above
+	// if half of the list, split ... where is defined in funct. above
 	if (split==true) { no = "2";}
 
 	// if track exists ...
@@ -616,4 +616,17 @@ function add_playlist_msg(data) {
         appMsg.alert(text);
         mboxPlaylistAllLoad()
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
 

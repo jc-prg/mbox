@@ -50,7 +50,7 @@ function mboxDataEdit(data) {
         appMsg.confirm(text,"mboxDataEditExecute('"+uuid+"','" + key_list + "','" + type + "');",400);
         }
 
-//---------
+//--------------------------------------
 
 function mboxDataEditExecute(uuid, key_list, type) {
 	var data     = {};
@@ -70,4 +70,19 @@ function mboxDataEditExecute(uuid, key_list, type) {
 
 	mboxApp.requestAPI("PUT", ["data",uuid], data, callback );
 	}
+
+//--------------------------------------
+// EOF
+
+
+
+
+
+
+
+
+
+
+
+
 

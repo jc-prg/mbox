@@ -7,11 +7,11 @@
 /* INDEX:
 function mboxAlbumInfoCover(nr,url_list,act,uuid)
 function mboxAlbumCover(artist,album)
-function mboxAlbumCover2(id,data) {
+function mboxAlbumCover2(id,data)
 function mboxAlbumCover_checkFile(image_url)
 function listCoverStart()
 function listCoverEnd()
-function listCoverEntry(id,cover) {
+function listCoverEntry(id,cover)
 */
 //--------------------------------------
 
@@ -134,3 +134,16 @@ function listCoverEnd() {
 function listCoverEntry(id,cover) {
 	return "<div class=\"print_album_cover\" id=\"printCover_" + id + "\"onclick=\"document.getElementById('printCover_" + id + "').style.display='none';\" style=\"background:url("+cover+");background-size:cover;background-repeat:no-repeat;vertical-align:botton;\"></div>";
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -40,7 +40,7 @@ function writeRFID(data) {
 	return text;
 	}
 
-// function for cards ....
+// funct. for cards ....
 //--------------------------------------
 
 function CardID(uuid) {
@@ -297,3 +297,16 @@ function mbox_delete_card(card_id,uuid_pl) {
 function editCard_save(data) {
         mboxListCardsLoad();
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+

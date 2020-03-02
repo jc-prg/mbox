@@ -1,6 +1,10 @@
 //-----------------------------------------
 // slider for volume control
 //-----------------------------------------
+/* INDEX
+function slider ( name, container, callOnChange )
+*/
+//-----------------------------------------
 
 function slider ( name, container, callOnChange ) {
 
@@ -81,3 +85,16 @@ function slider ( name, container, callOnChange ) {
 
 //-----------------------------------------
 // EOF
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -3,6 +3,11 @@
 //--------------------------------------
 // Upload image for album, playlist ...
 //--------------------------------------
+/* INDEX:
+function mboxUploadImage(uuid,category,name="")
+function mboxUploadImageWrite(params)
+*/
+//--------------------------------------
 
 
 //----------------------------------------------------------------
@@ -33,4 +38,14 @@ function mboxUploadImageWrite(params) {
 	else 				{ mboxApp.requestAPI('PUT', [ 'images', 'upload', param[0], filename ], ''); }
 	appMsg.hide();
 	}
+
+
+
+
+
+
+
+
+
+
 

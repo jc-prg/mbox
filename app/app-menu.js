@@ -5,15 +5,8 @@
 //--------------------------------------
 /* INDEX:
 function jcMenu(name, menu, title)
-        this.init = function(data=[])
-        this.empty = function(data=[])
-	this.add_script = function(script,label)
-	this.add_line = function()
-	this.add_link = function(link,label)
-	this.entry_link = function (link,label)
+	this.entry_link   = function (link,label)
 	this.entry_script = function (script,label)
-	this.set_title = function(title)
-        this.log = function(msg)
 */
 //--------------------------------------
 
@@ -100,3 +93,16 @@ function jcMenu(name, menu, title) {
 
 //------------------------------------------
 // EOF
+
+
+
+
+
+
+
+
+
+
+
+
+

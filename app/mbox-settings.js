@@ -4,7 +4,7 @@
 // create settings pages
 //--------------------------------------
 /* INDEX:
-function settingsToggle() {
+function settingsToggle()
 function settingsStatusLoad()
 function settingsStatus (data)
 function settingsStatus_PerformanceLoad()
@@ -233,3 +233,16 @@ function dict_size(d) {
 
 //----------------------------------------------------------------
 // EOF
+
+
+
+
+
+
+
+
+
+
+
+
+

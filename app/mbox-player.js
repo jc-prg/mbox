@@ -63,3 +63,16 @@ function myPlayer(id,divid) {
 	}
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+

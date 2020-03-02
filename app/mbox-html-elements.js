@@ -2,22 +2,22 @@
 // jc://music-box/, (c) Christoph Kloth
 //--------------------------------------
 /* INDEX:
-function mboxCoverSeparator( content, cmd ) {
-function mboxCoverList( uuid, cover="", description="", cmd_open="", cmd_play="", type="album" ) {
-function mboxButton( button, cmd="", color="blue", small="", display="block" ) {
-function mboxToolTip( type, count=0, input_text="" ) {
-function mboxScrollTo( type, uuid="" ) {
-function mboxAlbumDetail( count ) {
-function show_data_object(data) {
-function mboxTableNew( cells=[], divide=false, width="100%", height="" ) {
-function mboxTable(p1,p2="",p3="",p4="") {
-function input_element( name, data ) {
-function button (onclick,label, id="") {
-function add_link(link, description="") {
-function clickMenu () {
-function setNavTitle (title) {
-function setButtonConfig(data) {
-function image(file) {
+function mboxCoverSeparator( content, cmd )
+function mboxCoverList( uuid, cover="", description="", cmd_open="", cmd_play="", type="album" )
+function mboxButton( button, cmd="", color="blue", small="", display="block" )
+function mboxToolTip( type, count=0, input_text="" )
+function mboxScrollTo( type, uuid="" )
+function mboxAlbumDetail( count )
+function show_data_object(data)
+function mboxTableNew( cells=[], divide=false, width="100%", height="" )
+function mboxTable(p1,p2="",p3="",p4="")
+function input_element( name, data )
+function button (onclick,label, id="")
+function add_link(link, description="")
+function clickMenu ()
+function setNavTitle (title)
+function setButtonConfig(data)
+function image(file)
 */
 //-------------------------------------------------------------
 
@@ -247,4 +247,17 @@ function image(file) {
         }
 //--------------------------------------
 // EOF
+
+
+
+
+
+
+
+
+
+
+
+
+
 

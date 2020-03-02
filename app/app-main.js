@@ -4,11 +4,11 @@
 // main functions to load the app
 //--------------------------------------
 /* INDEX:
-function printAppMenu()
-function printAppStatusLoad()
-function printAppStatus(data)
-function check_for_update_msg(data)
-function check_for_updates()
+function appPrintMenu()
+function appPrintStatus_load()
+function appPrintStatus(data)
+function appCheckUpdates_msg(data)
+function appCheckUpdates()
 */
 //--------------------------------------
 
@@ -27,7 +27,7 @@ else {
 //--------------------------------
 
 var mboxApp     = new jcApp( "mbox", RESTurl, "status", "api/");	// cmd: <device>/<cmd>
-mboxApp.init( "data_log", "error_log", reloadInterval, printAppStatus );
+mboxApp.init( "data_log", "error_log", reloadInterval, appPrintStatus );
 mboxApp.timeout = -1; 							// timeout in milliseconds (-1 for no timeout)
 mboxApp.load( );
 mboxApp.setAutoupdate( mboxCheckStatus );
@@ -41,13 +41,13 @@ var appMsg      = new jcMsg(      "appMsg" );
 var appCookie   = new jcCookie(   "appCookie");
 var reload      = true;
 
-check_for_updates();		// check if app is up-to-date
-printAppStatusLoad();		// initial load of data (default: Album)
+appCheckUpdates();		// check if app is up-to-date
+appPrintStatus_load();		// initial load of data (default: Album)
 
 
 //--------------------------------
 
-function printAppMenu() {
+function appPrintMenu() {
 
 	// initial menu ...
 	appMenu.empty();     // load data to class
@@ -75,11 +75,11 @@ function printAppMenu() {
 // print after loading data (callback)
 //--------------------------------
 
-function printAppStatusLoad() { reload=true; mboxApp.requestAPI('GET',["status"],"",printAppStatus,"","printAppStatusLoad"); }
-function printAppStatus(data) {
+function appPrintStatus_load() { reload=true; mboxApp.requestAPI('GET',["status"],"",appPrintStatus,"","appPrintStatus_load"); }
+function appPrintStatus(data) {
 
 	// print menu
-	printAppMenu();
+	appPrintMenu();
 
 	// initial app data ...
 	setTextById("remote3",  appTitle + " (" + data["API"]["name"] + ": " + data["API"]["version"] + " / " + 
@@ -110,7 +110,7 @@ function printAppStatus(data) {
 // send add commands
 //--------------------------------
 
-function check_for_update_msg(data) {
+function appCheckUpdates_msg(data) {
 
         if (!data || !data["STATUS"]["check-version"]) { return; } // unclear, why sometimes no data are returned ...
         
@@ -125,10 +125,10 @@ function check_for_update_msg(data) {
         }
 
 
-function check_for_updates() {
+function appCheckUpdates() {
 	console.log("Check version: "+appVersion);
         appMsg.wait(lang("LOADING_APP")+" ...", ""); 
-        mboxApp.requestAPI("GET",["version", appVersion], "", check_for_update_msg, "wait");
+        mboxApp.requestAPI("GET",["version", appVersion], "", appCheckUpdates_msg, "wait");
         }
 
 

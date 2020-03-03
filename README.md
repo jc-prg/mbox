@@ -192,6 +192,17 @@ $ sudo docker-compose -f docker-compose-rpi.yml up -d
 /usr/local/bin/docker-compose -f /projects/prod/mbox/docker-compose-rpi.yml up -d &
 ```
 
+**14. Optional - add automatic restart on connection errors to crontab (once a minute)**
+
+```bash
+$ crontab -e
+```
+
+add:
+```bash
+* * * * * /projects/prod/mbox/start check-dns >/dev/null 2>&1
+```
+
 ## Autohotspot
 
 Usually the box is used in our home wifi. But as my kids like the box we take it with us when we travel.

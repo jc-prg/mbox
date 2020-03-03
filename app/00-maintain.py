@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 #----------------------------------------------
 # create index for JS files ...
+# v0.1.3
 #----------------------------------------------
 
 # load basic modules and configuration
@@ -23,11 +24,11 @@ cache_manifest_dir = [
 
 text_to_replace = [
 #	[ "appPrintMenu", "appPrint_menu" ], # sample
-	[ "mboxPlaylistInfoClose","mboxPlaylistInfo_close" ],
-	[ "mboxPlaylistEditEntryLoad","mboxPlaylistEditEntry_load" ],
-	[ "mboxInfoDelete","mboxPlaylistInfoDelete" ],
-	[ "mboxInfoAdd","mboxPlaylistInfoAdd" ],
+	[ "mboxCoverAlbum2","mboxCoverAlbum_new" ],
+	[ "mboxAlbumInfoCover","mboxCoverAlbumInfo" ],
+	[ "toggleCoverPrint","mboxCoverTogglePrint" ],
 	]
+
 
 # create index for JS files
 #----------------------------------------------
@@ -103,18 +104,28 @@ def create_index_file(filename):
        for line in lines:
           if  "*/" in line and start == True:        end   = True
           if start == False and end == False:        new_lines_header.append( line )
-          if start == True  and end == True:         new_lines_body.append( line )
+          if start == True  and end == True:         new_lines_body.append(   line )
           if "/* INDEX" in line and start == False:  start = True
           if "appVersion" in line and "var" in line: appVersion = line
 
        for line in new_lines_body:
-          if "function " in line or "function	" in line:
+          if "function " in line or "function	" in line or "function(" in line and not "setTimeout" in line and not "setInterval" in line:
              parts = line.split(")")
              new_lines_index.append( parts[0]+")" )
 
-       for line in new_lines_header:  new_content += line + "\n"
-       for line in new_lines_index:   new_content += line + "\n"
-       for line in new_lines_body:    new_content += line + "\n"
+       for line in new_lines_header:
+          new_content += line
+          new_content += "\n"
+       for line in new_lines_index:
+          new_content += line
+          new_content += "\n"
+          
+       i = 0
+       for line in new_lines_body:
+          i           += 1
+          new_content += line
+          if (i != len(new_lines_body)): 
+            new_content += "\n"
 
     else:
        lines       = content.split("\n")

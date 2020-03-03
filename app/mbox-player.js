@@ -62,31 +62,5 @@ function myPlayer(id,divid) {
 	setTextById(divid,text);
 	}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//--------------------------------------
+// EOF

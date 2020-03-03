@@ -243,7 +243,7 @@ function mboxListCards(data) {
 			else { text += notfound;  title = "";}
 			}
 		else if (aa.indexOf("r_")>-1) {
-			onclick = "mboxRadioLoad();setTimeout(function(){mboxRadioLoadChannel(1,\""+aa+"\");},1000);"
+			onclick = "mboxRadio_load();setTimeout(function(){mboxRadioChannel_load(1,\""+aa+"\");},1000);"
 	                text += "<a style='cursor:pointer;' onclick='"+onclick+"'><small>";
 			if (aa in radio) {
 				text += radio[aa]["title"] + " / " + radio[aa]["description"] + "<br/>";
@@ -298,29 +298,5 @@ function editCard_save(data) {
         mboxListCardsLoad();
 	}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//---------------------------------
+// EOF

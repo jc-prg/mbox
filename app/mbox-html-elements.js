@@ -2,9 +2,8 @@
 // jc://music-box/, (c) Christoph Kloth
 //--------------------------------------
 /* INDEX:
-function mboxCoverSeparator( content, cmd )
-function mboxCoverList( uuid, cover="", description="", cmd_open="", cmd_play="", type="album" )
 function mboxButton( button, cmd="", color="blue", small="", display="block" )
+function dict_size(d)
 function mboxToolTip( type, count=0, input_text="" )
 function mboxScrollTo( type, uuid="" )
 function mboxAlbumDetail( count )
@@ -21,51 +20,6 @@ function image(file)
 */
 //-------------------------------------------------------------
 
-function mboxCoverSeparator( content, cmd ) {
-
-	var text = "";
-        text += "<div class=\"album_cover\" style=\"background:#eeeeee;background-size:cover;background-position:center;background-repeat:no-repeat;\" onclick='" + cmd + "'>";
-        text += "<div class=\"album_plus\">" + content + "</div>";
-        text += "</div>";
-	return text;
-	}
-
-
-//-------------------------------------------------------------
-
-function mboxCoverList( uuid, cover="", description="", cmd_open="", cmd_play="", type="album" ) {
-
-	var text          = "";
-	var button_play   = "";
-	var default_cover = mbox_icons[type];
-	var icon_playing  = mbox_icons["playing"];
-
-        if (mbox_device == "remote") {
-		button_play = "<div class=\"player_button small white\" onclick=\"" + cmd_play + "\"><img src=\"icon/play.png\" style=\"width:9px;height:9px;margin:2px;\"></div>";
-		}
-
-	if (cover == "") {
-                cover = default_cover;
-                text += "<div class=\"album_cover\" style=\"background:url(" + cover + ");\" onclick=\"" + cmd_open + "\">";
-		text += button_play;
-                text += "<div class=\"player_active\" id=\"playing2_" + uuid + "\" style=\"display:none;\"><img src=\"" + icon_playing + "\" style=\"width:10px;height:10px;margin:2px;\"></div>";
-                text += "<br/><br/>";
-                text += description + "<br/>";
-                text += "</div>";
-                }
-        else {
-                text += "<div class=\"album_cover\" style=\"background:url(" + cover + ");background-size:cover;background-repeat:no-repeat;vertical-align:botton;\" onclick=\"" + cmd_open + "\">";
-		text += button_play;
-                text += "<div class=\"player_active\" id=\"playing2_" + uuid + "\" style=\"display:none;\"><img src=\"" + icon_playing + "\" style=\"width:10px;height:10px;margin:2px;\"></div>";
-                text += "</div>";
-                }
-
-	return text;
-	}
-
-
-//-------------------------------------------------------------
-
 function mboxButton( button, cmd="", color="blue", small="", display="block" ) {
 
         var text  = "";
@@ -80,6 +34,14 @@ function mboxButton( button, cmd="", color="blue", small="", display="block" ) {
 
         return text;
         }
+
+//----------------------------------------------------------------
+
+function dict_size(d) {
+	var c=0;
+	for (var i in d) {c++;}
+	return c;
+	}
 
 //-------------------------------------------------------------
 
@@ -247,32 +209,3 @@ function image(file) {
         }
 //--------------------------------------
 // EOF
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

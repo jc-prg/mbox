@@ -40,7 +40,7 @@ function mboxWriteGroups() {
         var onclick = [
                         "mboxAlbumAllLoad();",
                         "mboxPlaylistAll_load();",
-                        "mboxRadioLoad();",
+                        "mboxRadio_load();",
                         ];
 
         text += "<div style='width:325px;margin:auto;'>";
@@ -543,30 +543,6 @@ function mboxToggleFilter () {
 	else				{ mbox_filter = true;   document.getElementById("remote4").style.display="block"; }
 	}
 	
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//--------------------------------------
+// EOF
 

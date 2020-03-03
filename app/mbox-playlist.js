@@ -42,7 +42,7 @@ function mboxPlaylistAll_load(filter="",uuid="") {
 
 function mboxPlaylistAll(data) {
 	var text                = "";
-	var print               = listCoverStart();
+	var print               = mboxCoverListStart();
 	var default_cover       = mbox_icons["playlist"]; // "img/cd2.png";
         var playlists           = data["DATA"]["playlists"];
         var playlist_active     = "";
@@ -82,7 +82,7 @@ function mboxPlaylistAll(data) {
 		if (uuid == playlist_active) { playlist_active_no = i; }
 
 		// check cover
-		cover = mboxAlbumCover2("",playlists[uuid]);
+		cover = mboxCoverAlbum_new("",playlists[uuid]);
 
 		// print playlist cover
 		text += mboxScrollTo( "start", uuid );
@@ -90,7 +90,7 @@ function mboxPlaylistAll(data) {
 
   		// write cover
 		text += mboxCoverList( uuid, cover, "<b>" + list_title + "</b><br/>Playlist", cmd_open, cmd_play );
-		if (cover != "") { print += listCoverEntry( uuid, cover ); }
+		if (cover != "") { print += mboxCoverListEntry( uuid, cover ); }
 
 		// write tooltip
 		text += mboxToolTip( "end", i, list_title );
@@ -106,7 +106,7 @@ function mboxPlaylistAll(data) {
 	text += mboxAlbumDetail( i );
 
         mbox_list_amount = i; /// IRGENDWO IST NOCH DER WURM DRIN ...
-	print += listCoverEnd();
+	print += mboxCoverListEnd();
 
 	setTextById("remote4", ""); // no filter defined yet
 	setTextById("remote2", text);
@@ -153,7 +153,7 @@ function mboxPlaylistOne(data) {
 
         // check cover
 	var default_cover = mbox_icons["playlist"];
-	var cover = mboxAlbumCover2("",albums);
+	var cover = mboxCoverAlbum_new("",albums);
 	if (!cover) { cover = default_cover; }
 
         // Log
@@ -524,10 +524,10 @@ function mboxPlaylistInfo(data) {
 
         var cover = "";
         if (album["cover_images"]) {
-                cover += mboxAlbumInfoCover(1, album["cover_images"]["track"],  album["cover_images"]["active"], uuid);
-                cover += mboxAlbumInfoCover(2, album["cover_images"]["dir"],    album["cover_images"]["active"], uuid);
-                cover += mboxAlbumInfoCover(3, album["cover_images"]["upload"], album["cover_images"]["active"], uuid);
-                cover += mboxAlbumInfoCover(4, album["cover_images"]["web"],    album["cover_images"]["active"], uuid);
+                cover += mboxCoverAlbumInfo(1, album["cover_images"]["track"],  album["cover_images"]["active"], uuid);
+                cover += mboxCoverAlbumInfo(2, album["cover_images"]["dir"],    album["cover_images"]["active"], uuid);
+                cover += mboxCoverAlbumInfo(3, album["cover_images"]["upload"], album["cover_images"]["active"], uuid);
+                cover += mboxCoverAlbumInfo(4, album["cover_images"]["web"],    album["cover_images"]["active"], uuid);
                 }
         else {  cover += "Altes Datenformat oder keine Bilder vorhanden, Titelinfos neu laden!";
                 }
@@ -627,35 +627,4 @@ function mboxPlaylistAdd_msg(data) {
 
 //---------------------------
 // EOF
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

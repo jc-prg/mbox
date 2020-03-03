@@ -3,6 +3,14 @@
 //-----------------------------------------
 /* INDEX
 function slider ( name, container, callOnChange )
+	this.init    = function( min, max, label )
+		this.slider.oninput = function( )
+		this.slider.onmousedown = function()
+		this.slider.onmouseup = function()
+		this.slider.ontouchstart = function()
+		this.slider.ontouchend = function()
+	this.set_value = function( value )
+	this.show_hide = function()
 */
 //-----------------------------------------
 
@@ -85,30 +93,3 @@ function slider ( name, container, callOnChange ) {
 
 //-----------------------------------------
 // EOF
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

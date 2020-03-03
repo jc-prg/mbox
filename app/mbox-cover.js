@@ -192,4 +192,3 @@ function mboxCoverSeparator( content, cmd ) {
 //--------------------------------------
 // EOF
 
-

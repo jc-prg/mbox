@@ -27,7 +27,7 @@ function mboxRadioAdd_msg(data)
 function mboxRadio_load()             { mboxApp.requestAPI("GET",["db","radio","-"],"", mboxRadio); }
 function mboxRadio(data) {
         var text          = "";
-	var print 	  = listCoverStart();
+	var print 	  = mboxCoverListStart();
         var default_cover = mbox_icons["radio"]; // "img/cd2.png";
 	var radio_data    = data["DATA"]["radio"];
 	var a             = 0;
@@ -53,7 +53,7 @@ function mboxRadio(data) {
              var cover    = default_cover;
 
              // check cover
-             cover = mboxAlbumCover2(uuid,radio_data);
+             cover = mboxCoverAlbum_new(uuid,radio_data);
 
              // print playlist cover
              text += mboxScrollTo( "start", uuid );
@@ -61,7 +61,7 @@ function mboxRadio(data) {
 
              // write cover
              text += mboxCoverList( uuid, cover, "<b>" + key + "</b><br/>WebRadio", cmd_open, cmd_play );
-             if (cover != "") { print += listCoverEntry( uuid, cover ); }
+             if (cover != "") { print += mboxCoverListEntry( uuid, cover ); }
 
              // write tooltip
              text += mboxToolTip( "end", i+1, "<b>" + key + "</b>" );
@@ -77,7 +77,7 @@ function mboxRadio(data) {
 	text += mboxAlbumDetail( a+1 );
 
         mbox_list_amount = sorted_r.length+1;
-	print += listCoverEnd();
+	print += mboxCoverListEnd();
 
 	setTextById("remote4", ""); // no filter defined yet
         setTextById("remote2", text);
@@ -116,7 +116,7 @@ function mboxRadioChannel(data) {
 		}
 		
         // Check if Cover exists
-        cover = mboxAlbumCover2(uuid,radio_data);
+        cover = mboxCoverAlbum_new(uuid,radio_data);
         if (!cover) { cover = default_cover; }
 
         // Write album cover
@@ -205,10 +205,10 @@ function mboxRadioInfo(data) {
 
 	var cover  = "";
         if (album["cover_images"]) {
-                cover += mboxAlbumInfoCover(1, album["cover_images"]["track"],  album["cover_images"]["active"], uuid);
-                cover += mboxAlbumInfoCover(2, album["cover_images"]["dir"],    album["cover_images"]["active"], uuid);
-                cover += mboxAlbumInfoCover(3, album["cover_images"]["upload"], album["cover_images"]["active"], uuid);
-                cover += mboxAlbumInfoCover(4, album["cover_images"]["web"],    album["cover_images"]["active"], uuid);
+                cover += mboxCoverAlbumInfo(1, album["cover_images"]["track"],  album["cover_images"]["active"], uuid);
+                cover += mboxCoverAlbumInfo(2, album["cover_images"]["dir"],    album["cover_images"]["active"], uuid);
+                cover += mboxCoverAlbumInfo(3, album["cover_images"]["upload"], album["cover_images"]["active"], uuid);
+                cover += mboxCoverAlbumInfo(4, album["cover_images"]["web"],    album["cover_images"]["active"], uuid);
                 }
         else {
                 cover += "Altes Datenformat oder keine Bilder vorhanden, Titelinfos neu laden!";
@@ -301,41 +301,3 @@ function mboxRadioAdd_msg(data) {
 
 //----------------------------------------------------------------
 // EOF
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -11,9 +11,6 @@ function settingsStatus_PerformanceLoad()
 function settingsStatus_Performance(data)
 function mboxShowLoading(data)
 function mboxShowJson(data)
-function toggleCoverPrint()
-function uploadImage()
-function dict_size(d)
 */
 //--------------------------------------
 
@@ -81,7 +78,7 @@ function settingsStatus (data) {
 	text += "<hr/>";
 
 	text += button( "uploadImage();", "Upload Image" );
-	text += button( "toggleCoverPrint();", "Cover Images" );
+	text += button( "mboxCoverTogglePrint();", "Cover Images" );
 	text += "<hr/>";
 	
 	text += "<center><b>"+lang("LOADING_TIME")+"</b></center>";
@@ -204,60 +201,4 @@ function mboxShowJson(data) {
 	}
 
 //----------------------------------------------------------------
-
-
-function toggleCoverPrint() {
-	if (document.getElementById("ontop").style.display == "none") 	{ document.getElementById("ontop").style.display = "block"; }
-	else								{ document.getElementById("ontop").style.display = "none"; }
-	}
-
-
-//----------------------------------------------------------------
-
-function uploadImage() {
-	var text = "Upload Test:<br/>&nbsp;<br/>" + default_form; //<br/><div id='uploadform'></div> <script> defaultUpload('uploadform'); </script>";
-	appMsg.confirm(text,"","");
-	enableUpload();
-	}
-
-
-//----------------------------------------------------------------
-
-
-function dict_size(d) {
-	var c=0;
-	for (var i in d) {c++;}
-	return c;
-	}
-
-
-//----------------------------------------------------------------
 // EOF
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

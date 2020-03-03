@@ -65,7 +65,7 @@ function mboxDataEditExecute(uuid, key_list, type) {
 			}
 		}}
 	if (type == "radio")      	{ callback = mboxRadioLoad; }
-	else if (type == "playlists")	{ callback = mboxPlaylistAllLoad; }
+	else if (type == "playlists")	{ callback = mboxPlaylistAll_load; }
 	else				{ callback = appMsg.hide; }
 
 	mboxApp.requestAPI("PUT", ["data",uuid], data, callback );
@@ -73,6 +73,20 @@ function mboxDataEditExecute(uuid, key_list, type) {
 
 //--------------------------------------
 // EOF
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

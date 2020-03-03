@@ -95,7 +95,7 @@ function appPrintStatus(data) {
 
 		// write menu entrie for 3 modes
 		if (mbox_mode == "Album")    { mboxAlbumAllLoad(); }
-		if (mbox_mode == "Playlist") { mboxPlaylistAllLoad(); }
+		if (mbox_mode == "Playlist") { mboxPlaylistAll_load(); }
 		if (mbox_mode == "Radio")    { mboxRadioLoad(); }
 
 		reload = false;
@@ -134,6 +134,20 @@ function appCheckUpdates() {
 
 //-----------------------------
 // EOF
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -39,7 +39,7 @@ function mboxWriteGroups() {
         var descr   = ["Album/CD","Playlist","Stream"];
         var onclick = [
                         "mboxAlbumAllLoad();",
-                        "mboxPlaylistAllLoad();",
+                        "mboxPlaylistAll_load();",
                         "mboxRadioLoad();",
                         ];
 
@@ -368,7 +368,7 @@ function mboxShowUUID(uuid) {
 	document.getElementById('scrollto_'+uuid.replace(/-/g,"")).scrollIntoView();
 
 	// reload and open album / playlist entry
-	if (uuid.indexOf("p_") >= 0) 		{ mboxPlaylistAllLoad("",uuid); }
+	if (uuid.indexOf("p_") >= 0) 		{ mboxPlaylistAll_load("",uuid); }
 	else if (uuid.indexOf("a_") >= 0) 	{ mboxAlbumAllLoad("",uuid); }
 	}
 
@@ -543,6 +543,20 @@ function mboxToggleFilter () {
 	else				{ mbox_filter = true;   document.getElementById("remote4").style.display="block"; }
 	}
 	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

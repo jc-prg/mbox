@@ -98,3 +98,17 @@ function slider ( name, container, callOnChange ) {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+

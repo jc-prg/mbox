@@ -29,7 +29,7 @@ function mboxAlbumInfoCover(nr,url_list,act,uuid) {
 
 	if 	(uuid.indexOf("r_")>=0) { close_cmd = "mboxRadioInfoClose"; }
 	else if (uuid.indexOf("a_")>=0) { close_cmd = "mboxAlbumInfoClose"; }
-	else if (uuid.indexOf("p_")>=0) { close_cmd = "mboxPlaylistInfoClose"; }
+	else if (uuid.indexOf("p_")>=0) { close_cmd = "mboxPlaylistInfo_close"; }
 
 	if (url_list) {
 	    if (url_list.length > 0) {
@@ -134,6 +134,20 @@ function listCoverEnd() {
 function listCoverEntry(id,cover) {
 	return "<div class=\"print_album_cover\" id=\"printCover_" + id + "\"onclick=\"document.getElementById('printCover_" + id + "').style.display='none';\" style=\"background:url("+cover+");background-size:cover;background-repeat:no-repeat;vertical-align:botton;\"></div>";
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

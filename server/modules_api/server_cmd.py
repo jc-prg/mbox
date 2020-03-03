@@ -134,7 +134,10 @@ def mboxAPI_end(data):
     data["STATUS"]["statistic"] = {}       
     for database in couch.database:
       temp = couch.read_cache(database)
-      data["STATUS"]["statistic"][database] = len(temp.keys())
+      try:
+        data["STATUS"]["statistic"][database] = len(temp.keys())
+      except:
+        data["STATUS"]["statistic"][database] = "error"
 
 
     logging.debug("mBox " + data["REQUEST"]["c-name"]  + " END")

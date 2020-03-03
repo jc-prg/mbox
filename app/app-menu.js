@@ -3,7 +3,19 @@
 //--------------------------------------
 // class for drop down menu
 //--------------------------------------
-
+/* INDEX:
+function jcMenu(name, menu, title)
+        this.init = function(data=[])
+        this.empty = function(data=[])
+	this.add_script = function(script,label)
+	this.add_line = function()
+	this.add_link = function(link,label)
+	this.entry_link   = function (link,label)
+	this.entry_script = function (script,label)
+	this.set_title = function(title)
+        this.log = function(msg)
+*/
+//--------------------------------------
 
 function jcMenu(name, menu, title) {
 
@@ -74,17 +86,8 @@ function jcMenu(name, menu, title) {
   		return "<li><a onClick=\"javascript:" + script + ";clickMenu();setNavTitle('" + label + "');\">"+label+"</a></li>";
 		}
 
-	this.entry_device = function (device,label) {
-		//return "<li><a onclick=\"javascript:writeRemote(dataDevices,'" + device + "');clickMenu();setNavTitle('" + label + "');\" >" + label + "</a></li>";
-		return "<li><a onclick=\"rm3remotes.create('device','" + device + "');rm3settings.hide();clickMenu();setNavTitle('" + label + "');\" >" + label + "</a></li>";
-		}
-
-	this.entry_scene  = function (scene,label) {
-		//return "<li><a onclick=\"javascript:writeMixRemote(dataConfig,'" + remote + "');clickMenu();setNavTitle('" + remote + "');\" >" + remote + "</a></li>";
-		return "<li><a onclick=\"rm3remotes.create('scene','" + scene + "');rm3settings.hide();clickMenu();setNavTitle('" + label + "');\" >" + label + "</a></li>";
-		}
-
 	this.set_title = function(title) {
+		title = "<div onClick=\"javascript:if(mbox_settings){settingsToggle();};appCookie.erase('appCookie');\">"+title+"</div>";
 		setTextById(this.menuTitle,title);
 		}
 
@@ -97,3 +100,4 @@ function jcMenu(name, menu, title) {
 
 //------------------------------------------
 // EOF
+

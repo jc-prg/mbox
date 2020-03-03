@@ -3,6 +3,16 @@
 //--------------------------------------
 // create settings pages
 //--------------------------------------
+/* INDEX:
+function settingsToggle()
+function settingsStatusLoad()
+function settingsStatus (data)
+function settingsStatus_PerformanceLoad()
+function settingsStatus_Performance(data)
+function mboxShowLoading(data)
+function mboxShowJson(data)
+*/
+//--------------------------------------
 
 var MusicDir = "/mbox_music/";
 
@@ -28,7 +38,7 @@ function settingsToggle() {
 // write status information to settings page ...
 // -----------------------------------------------------
 
-function settingsStatusLoad()  { mboxApp.requestAPI("GET",["db","all","-"],"",settingsStatus, "wait"); }
+function settingsStatusLoad()  { mboxApp.requestAPI("GET",["status"],"",settingsStatus, "wait"); }
 function settingsStatus (data) {
 
 	var text  = "";
@@ -51,12 +61,12 @@ function settingsStatus (data) {
 	text += mboxTable("end");
 	text += "<hr/>";
 	text += mboxTable("start");
-	text += mboxTable("<b>Files:", 		dict_size(data["DATA"]["files"]) );
-	text += mboxTable("<b>Tracks:", 	dict_size(data["DATA"]["tracks"]) );
-	text += mboxTable("<b>Artists:", 	dict_size(data["DATA"]["albums"]) );
-	text += mboxTable("<b>Albums:", 	dict_size(data["DATA"]["album_info"]) );
-	text += mboxTable("<b>Playlists:",	dict_size(data["DATA"]["playlists"]) );
-	text += mboxTable("<b>Web-Radio:",	dict_size(data["DATA"]["radio"]) );
+	text += mboxTable("<b>Files:", 		data["STATUS"]["statistic"]["files"] );
+	text += mboxTable("<b>Tracks:", 	data["STATUS"]["statistic"]["tracks"] );
+	text += mboxTable("<b>Artists:", 	data["STATUS"]["statistic"]["albums"] );
+	text += mboxTable("<b>Albums:", 	data["STATUS"]["statistic"]["album_info"] );
+	text += mboxTable("<b>Playlists:",	data["STATUS"]["statistic"]["playlists"] );
+	text += mboxTable("<b>Web-Radio:",	data["STATUS"]["statistic"]["radio"] );
 	text += mboxTable("end");
 
 	setTextById("setting1",text);
@@ -68,7 +78,7 @@ function settingsStatus (data) {
 	text += "<hr/>";
 
 	text += button( "uploadImage();", "Upload Image" );
-	text += button( "toggleCoverPrint();", "Cover Images" );
+	text += button( "mboxCoverTogglePrint();", "Cover Images" );
 	text += "<hr/>";
 	
 	text += "<center><b>"+lang("LOADING_TIME")+"</b></center>";
@@ -80,9 +90,14 @@ function settingsStatus (data) {
 
 	text += "<hr/>";
 	text += mboxTable("start");
+/*
 	text += mboxTable("<b>API request:",		Math.round(data["REQUEST"]["load-time-app"]/1000*10)/10+" s &nbsp; &nbsp; (all data)" );
 	text += mboxTable("<b>DB request:",		Math.round(data["REQUEST"]["load-time"]*1000)/1000+" s" );
 	text += mboxTable("<b>DB request per file:",	Math.round(data["REQUEST"]["load-time"]/dict_size(data["DATA"]["files"])*1000)/1000+" s &nbsp; &nbsp; ("+dict_size(data["DATA"]["files"])+")" );
+*/
+	text += mboxTable("<b>API request:", 		"<div id=\"duration_api_request\">Please Wait</div>" );
+	text += mboxTable("<b>DB request:",		"<div id=\"duration_db_request\">Please Wait</div>" );
+	text += mboxTable("<b>DB request per file:",	"<div id=\"duration_db_request_per_file\">Please Wait</div>" );
 	text += mboxTable("end");
 	text += "<hr/>";
 
@@ -93,11 +108,12 @@ function settingsStatus (data) {
 	text += mboxTable("<b>System Total:",	        Math.round(data["STATUS"]["system"]["space_main_available"]/1024/1024*10)/10+" GByte" );
 
 	text += mboxTable("<b>Data Used:",		Math.round(data["STATUS"]["system"]["space_usb_used"]/1024/1024*10)/10+" GByte" );
-	text += mboxTable("<b>Data Total:",	Math.round(data["STATUS"]["system"]["space_usb_available"]/1024/1024*10)/10+" GByte" );
+	text += mboxTable("<b>Data Total:",		Math.round(data["STATUS"]["system"]["space_usb_available"]/1024/1024*10)/10+" GByte" );
 	text += mboxTable("end");
 	text += "<hr/>";
 
 	setTextById("setting2",text);
+	settingsStatus_PerformanceLoad();
 
 	//---------------------------------
 
@@ -162,6 +178,18 @@ function settingsStatus (data) {
 	setTextById("setting3",text);
 	}
 
+//----------------------------------------------------------------
+
+function settingsStatus_PerformanceLoad() { mboxApp.requestAPI("GET",["db","all","-"],"",settingsStatus_Performance, "wait"); }
+function settingsStatus_Performance(data) {
+	setTextById("duration_api_request",		Math.round(data["REQUEST"]["load-time-app"]/1000*10)/10+" s &nbsp; &nbsp; (all data)");
+	setTextById("duration_db_request",		Math.round(data["REQUEST"]["load-time"]*1000)/1000+" s");
+	setTextById("duration_db_request_per_file",	Math.round(data["REQUEST"]["load-time"]/dict_size(data["DATA"]["files"])*1000)/1000+" s &nbsp; &nbsp; ("+dict_size(data["DATA"]["files"])+")");
+	}
+
+//----------------------------------------------------------------
+
+
 function mboxShowLoading(data) {
 	var text = "<b>" + lang("RELOAD_STARTED") + ":</b><br/><br/><div id='reload_info' style='border-style:solid 1px;'>x</div>";
 	appMsg.alert(text);
@@ -171,34 +199,6 @@ function mboxShowJson(data) {
 	var text = "<b>" + lang("RELOAD_STARTED") + "</b>";
 	appMsg.alert(text);
 	}
-
-//----------------------------------------------------------------
-
-
-function toggleCoverPrint() {
-	if (document.getElementById("ontop").style.display == "none") 	{ document.getElementById("ontop").style.display = "block"; }
-	else								{ document.getElementById("ontop").style.display = "none"; }
-	}
-
-
-//----------------------------------------------------------------
-
-function uploadImage() {
-	var text = "Upload Test:<br/>&nbsp;<br/>" + default_form; //<br/><div id='uploadform'></div> <script> defaultUpload('uploadform'); </script>";
-	appMsg.confirm(text,"","");
-	enableUpload();
-	}
-
-
-//----------------------------------------------------------------
-
-
-function dict_size(d) {
-	var c=0;
-	for (var i in d) {c++;}
-	return c;
-	}
-
 
 //----------------------------------------------------------------
 // EOF

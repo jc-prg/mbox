@@ -15,9 +15,11 @@ envsubst < "templates/config_stage.js" > "../app/config_stage.js"
 rm -rf ../server/modules/config_stage.py
 envsubst < "templates/config_stage.py" > "../server/modules/config_stage.py"
 
-rm -rf ../start_mbox
-envsubst < "templates/start_mbox" > "../start_mbox"
-chmod 755 ../start_mbox
+mkdir ../log
+
+rm -rf ../start
+envsubst < "templates/start_mbox" > "../start"
+chmod 755 ../start
 
 rm -rf install/install-datadir
 envsubst < "templates/install-datadir" > "./install/install-datadir"

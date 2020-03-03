@@ -1,66 +1,23 @@
 //--------------------------------------
 // jc://music-box/, (c) Christoph Kloth
 //--------------------------------------
-// INDEX:
-// ------
-// function show_data_object(data) {}
-// function add_link(link, description="") {}
-// function button (onclick,label, id="") {}
-// ------
-// function mboxTable(p1,p2="",p3="",p4="") {}
-// function mboxScrollTo(type, uuid="") {}
-// function mboxAlbumDetail( count ) {}
-// function mboxToolTip( type, count=0, input_text="" ) {}
-// function mboxButton( button, cmd="", color="blue", small="", display="block" ) {}
-// function mboxCoverList( uuid, cover="", cmd_open="", cmd_play="" ) {}
-// function mboxCoverSeparator( content, cmd ) {}
-
-
-//-------------------------------------------------------------
-
-function mboxCoverSeparator( content, cmd ) {
-
-	var text = "";
-        text += "<div class=\"album_cover\" style=\"background:#eeeeee;background-size:cover;background-position:center;background-repeat:no-repeat;\" onclick='" + cmd + "'>";
-        text += "<div class=\"album_plus\">" + content + "</div>";
-        text += "</div>";
-	return text;
-	}
-
-
-//-------------------------------------------------------------
-
-function mboxCoverList( uuid, cover="", description="", cmd_open="", cmd_play="", type="album" ) {
-
-	var text          = "";
-	var button_play   = "";
-	var default_cover = mbox_icons[type];
-	var icon_playing  = mbox_icons["playing"];
-
-        if (mbox_device == "remote") {
-		button_play = "<div class=\"player_button small white\" onclick=\"" + cmd_play + "\"><img src=\"icon/play.png\" style=\"width:9px;height:9px;margin:2px;\"></div>";
-		}
-
-	if (cover == "") {
-                cover = default_cover;
-                text += "<div class=\"album_cover\" style=\"background:url(" + cover + ");\" onclick=\"" + cmd_open + "\">";
-		text += button_play;
-                text += "<div class=\"player_active\" id=\"playing2_" + uuid + "\" style=\"display:none;\"><img src=\"" + icon_playing + "\" style=\"width:10px;height:10px;margin:2px;\"></div>";
-                text += "<br/><br/>";
-                text += description + "<br/>";
-                text += "</div>";
-                }
-        else {
-                text += "<div class=\"album_cover\" style=\"background:url(" + cover + ");background-size:cover;background-repeat:no-repeat;vertical-align:botton;\" onclick=\"" + cmd_open + "\">";
-		text += button_play;
-                text += "<div class=\"player_active\" id=\"playing2_" + uuid + "\" style=\"display:none;\"><img src=\"" + icon_playing + "\" style=\"width:10px;height:10px;margin:2px;\"></div>";
-                text += "</div>";
-                }
-
-	return text;
-	}
-
-
+/* INDEX:
+function mboxButton( button, cmd="", color="blue", small="", display="block" )
+function dict_size(d)
+function mboxToolTip( type, count=0, input_text="" )
+function mboxScrollTo( type, uuid="" )
+function mboxAlbumDetail( count )
+function show_data_object(data)
+function mboxTableNew( cells=[], divide=false, width="100%", height="" )
+function mboxTable(p1,p2="",p3="",p4="")
+function input_element( name, data )
+function button (onclick,label, id="")
+function add_link(link, description="")
+function clickMenu ()
+function setNavTitle (title)
+function setButtonConfig(data)
+function image(file)
+*/
 //-------------------------------------------------------------
 
 function mboxButton( button, cmd="", color="blue", small="", display="block" ) {
@@ -77,6 +34,14 @@ function mboxButton( button, cmd="", color="blue", small="", display="block" ) {
 
         return text;
         }
+
+//----------------------------------------------------------------
+
+function dict_size(d) {
+	var c=0;
+	for (var i in d) {c++;}
+	return c;
+	}
 
 //-------------------------------------------------------------
 
@@ -207,4 +172,40 @@ function add_link(link, description="") {
         return "<a href=\"" + link + "\" target=\"_blank\" style=\"color:white\">" + description + "</a><br/>";
         }
 
+//--------------------------------------
 
+function clickMenu () {
+   if (window.innerWidth < 910) {
+     if (document.getElementById("menuItems").style.visibility == "hidden")     { document.getElementById("menuItems").style.visibility = "visible"; }
+     else                                                                       { document.getElementById("menuItems").style.visibility = "hidden"; }
+     }
+   else 									{ document.getElementById("menuItems").style.visibility = "visible"; }
+   }
+
+//--------------------------------------
+
+function setNavTitle (title) {
+        setTextById("navTitle", "<div onClick=\"javascript:if(mbox_settings){settingsToggle();};appCookie.erase('appCookie');\">"+title+"</div>");
+        }
+
+// ------------------------------------------
+
+function setButtonConfig(data) {
+
+	// definition of button color
+        button_color = data["button_colors"];
+
+	// definition of images for buttons
+        button_img2  = data["button_images"];
+        for (var key in button_img2) {
+                button_img[key] = image(button_img2[key]);
+                }
+        }
+
+// ------------------------------------------
+
+function image(file) {
+        return "<img src='icon/"+file+"' style='height:15px;margin:0px;padding:0px;' alt='"+file+"' />";
+        }
+//--------------------------------------
+// EOF

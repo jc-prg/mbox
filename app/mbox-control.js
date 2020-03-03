@@ -4,6 +4,29 @@
 // file mbox control at the bottom 
 // of the page (loaded by auto update)
 //--------------------------------------
+/* INDEX:
+function mboxWriteGroups()
+function mboxControlLoad()
+function mboxControl (data)
+function mboxControlChangePosition(e)
+function mboxControlProgressPrint()
+function mboxControlProgress()
+function mboxControlProgressTime()
+function mboxVolumeControl(volume, mute)
+function mboxPlaylistControl(uuid)
+function mboxShowUUID(uuid)
+function mboxRadioControl(uuid)
+function mboxShowPlaying(uuid,uuid_song,playing)
+function mboxButton2( sendCmd, label )
+function mboxControl_open()
+function mboxCheckLoading(data)
+function mboxCheckStatus ()
+function mboxDeletePlaying ()
+function mboxSetStatus (color)
+function mboxToggleDevice ()
+function mboxToggleFilter ()
+*/
+//--------------------------------------
 
 mbox_control_open = false;
 
@@ -16,8 +39,8 @@ function mboxWriteGroups() {
         var descr   = ["Album/CD","Playlist","Stream"];
         var onclick = [
                         "mboxAlbumAllLoad();",
-                        "mboxPlaylistAllLoad();",
-                        "mboxRadioLoad();",
+                        "mboxPlaylistAll_load();",
+                        "mboxRadio_load();",
                         ];
 
         text += "<div style='width:325px;margin:auto;'>";
@@ -345,7 +368,7 @@ function mboxShowUUID(uuid) {
 	document.getElementById('scrollto_'+uuid.replace(/-/g,"")).scrollIntoView();
 
 	// reload and open album / playlist entry
-	if (uuid.indexOf("p_") >= 0) 		{ mboxPlaylistAllLoad("",uuid); }
+	if (uuid.indexOf("p_") >= 0) 		{ mboxPlaylistAll_load("",uuid); }
 	else if (uuid.indexOf("a_") >= 0) 	{ mboxAlbumAllLoad("",uuid); }
 	}
 
@@ -519,3 +542,7 @@ function mboxToggleFilter () {
 	if (mbox_filter) 		{ mbox_filter = false;  document.getElementById("remote4").style.display="none"; }
 	else				{ mbox_filter = true;   document.getElementById("remote4").style.display="block"; }
 	}
+	
+//--------------------------------------
+// EOF
+

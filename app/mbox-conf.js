@@ -53,3 +53,5 @@ function mboxTooltipLeft(i) {
         if (pos == 0) { return " left"; }
         }
 
+//----------------------------
+// EOF

@@ -3,6 +3,19 @@
 //--------------------------------------
 // Edit data (playlist and web-stream)
 //--------------------------------------
+/* INDEX:
+function mboxDataReturnMsg(data)
+function mboxDataEdit(data)
+function mboxDataEditExecute(uuid, key_list, type)
+*/
+//--------------------------------------
+
+function mboxDataReturnMsg(data) {
+	if ("Result" in data)		{ appMsg.alert(data["Result"]["Msg"] + " (" + data["Result"]["Code"] + ")"); }
+	else if ("ReturnMsg" in data)	{ appMsg.alert(data["ReturnMsg"]); }
+	}
+
+//--------------------------------------
 
 function mboxDataEdit(data) {
         var text        = "";
@@ -37,7 +50,7 @@ function mboxDataEdit(data) {
         appMsg.confirm(text,"mboxDataEditExecute('"+uuid+"','" + key_list + "','" + type + "');",400);
         }
 
-//---------
+//--------------------------------------
 
 function mboxDataEditExecute(uuid, key_list, type) {
 	var data     = {};
@@ -51,10 +64,13 @@ function mboxDataEditExecute(uuid, key_list, type) {
 			data[keys[i]] = document.getElementById('edit_'+keys[i]).value;
 			}
 		}}
-	if (type == "radio")      	{ callback = mboxRadioLoad; }
-	else if (type == "playlists")	{ callback = mboxPlaylistAllLoad; }
+	if (type == "radio")      	{ callback = mboxRadio_load; }
+	else if (type == "playlists")	{ callback = mboxPlaylistAll_load; }
 	else				{ callback = appMsg.hide; }
 
 	mboxApp.requestAPI("PUT", ["data",uuid], data, callback );
 	}
+
+//--------------------------------------
+// EOF
 

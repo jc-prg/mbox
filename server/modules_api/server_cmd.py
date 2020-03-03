@@ -61,7 +61,7 @@ def diskSpace(init=False):
 
 def mboxAPI_start(cName, cmd1, cmd2, param1, param2):
 
-    logging.info("mBox " + cName + " START ...")
+    logging.debug("mBox " + cName + " START ...")
     checkDevice()
 
     data                            = {}
@@ -131,7 +131,16 @@ def mboxAPI_end(data):
         "reload_time_left"      : thread_music_load.reload_time_left
         }
 
-    logging.info("mBox " + data["REQUEST"]["c-name"]  + " END")
+    data["STATUS"]["statistic"] = {}       
+    for database in couch.database:
+      temp = couch.read_cache(database)
+      try:
+        data["STATUS"]["statistic"][database] = len(temp.keys())
+      except:
+        data["STATUS"]["statistic"][database] = "error"
+
+
+    logging.debug("mBox " + data["REQUEST"]["c-name"]  + " END")
 
     return data
 
@@ -158,7 +167,7 @@ def mboxAPI_status():
 
        data = mboxAPI_start("status","status","","","")
        data = mboxAPI_end(data)
-       return(data)
+       return (data)
 
 # ---
 
@@ -197,12 +206,9 @@ def mboxAPI_setButton(buttonID):
        if param == "no_button": mbox.rfid_ctrl["buttonID"] = ""
        else:                    mbox.rfid_ctrl["buttonID"] = param
 
-       if mbox.active_device == "music_box" and param == "next":
-            thread_music_ctrl.playlist_next(1)
-       elif mbox.active_device == "music_box" and param == "back":
-            thread_music_ctrl.playlist_next(-1)
-       elif mbox.active_device == "music_box" and param == "pause":
-            thread_music_ctrl.pause_playback()
+       if   mbox.active_device == "music_box" and param == "next":    thread_music_ctrl.playlist_next(1)
+       elif mbox.active_device == "music_box" and param == "back":    thread_music_ctrl.playlist_next(-1)
+       elif mbox.active_device == "music_box" and param == "pause":   thread_music_ctrl.pause_playback()
 
        data = mboxAPI_end(data)
        return(data)

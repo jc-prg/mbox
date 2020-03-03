@@ -3,6 +3,18 @@
 //--------------------------------------
 // list and edit rfid card infos
 //--------------------------------------
+/* INDEX:
+function writeRFID(data)
+function CardID(uuid)
+function editCardDialogLoad1(uuid)
+function editCardDialogLoad2(data)
+function editCardDialog(data)
+function mboxListCardsLoad()
+function mboxListCards(data)
+function mbox_delete_card(card_id,uuid_pl)
+function editCard_save(data)
+*/
+//--------------------------------------
 
 mboxCardUUID = "";
 mboxCardCID = "";
@@ -28,7 +40,7 @@ function writeRFID(data) {
 	return text;
 	}
 
-// function for cards ....
+// funct. for cards ....
 //--------------------------------------
 
 function CardID(uuid) {
@@ -231,7 +243,7 @@ function mboxListCards(data) {
 			else { text += notfound;  title = "";}
 			}
 		else if (aa.indexOf("r_")>-1) {
-			onclick = "mboxRadioLoad();setTimeout(function(){mboxRadioLoadChannel(1,\""+aa+"\");},1000);"
+			onclick = "mboxRadio_load();setTimeout(function(){mboxRadioChannel_load(1,\""+aa+"\");},1000);"
 	                text += "<a style='cursor:pointer;' onclick='"+onclick+"'><small>";
 			if (aa in radio) {
 				text += radio[aa]["title"] + " / " + radio[aa]["description"] + "<br/>";
@@ -285,3 +297,6 @@ function mbox_delete_card(card_id,uuid_pl) {
 function editCard_save(data) {
         mboxListCardsLoad();
 	}
+
+//---------------------------------
+// EOF

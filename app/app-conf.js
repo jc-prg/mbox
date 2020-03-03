@@ -7,7 +7,7 @@
 
 // REST API configuration
 
-var appVersion     = "v0.5.5";
+var appVersion     = "v0.5.8";
 var appTitle       = "jc://mbox/";
 
 var RESTip         = location.host;
@@ -23,6 +23,7 @@ var dataConfig	= {};
 
 var appUpdate        = false;
 var showImg          = true;	// preset: show images if defined (otherwise text)
+var checkImgExists   = false;   // check if album cover exists using http-requests (takes time ...)
 var eMsg             = false;
 var reloadInterval   = 5;	// reload data every x seconds
 var connect2stage    = "Prod";	// default stage to connect to (changed if rm3_test == true)
@@ -52,26 +53,6 @@ var button_color  = {};
 var button_img    = {};
 var makro_def     = {};
 var device_status = {};
-
-
-// set images and colors for buttons
-// ------------------------------------------
-
-function setButtonConfig(data) {
-
-	// definition of button color
-        button_color = data["button_colors"];
-
-	// definition of images for buttons
-        button_img2  = data["button_images"];
-        for (var key in button_img2) {
-                button_img[key] = image(button_img2[key]);
-                }
-        }
-
-function image(file) {
-        return "<img src='icon/"+file+"' style='height:15px;margin:0px;padding:0px;' alt='"+file+"' />";
-        }
 
 // ------------------------------------------
 // EOF

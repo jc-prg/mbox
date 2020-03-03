@@ -3,6 +3,29 @@
 //--------------------------------------
 // show album list and details
 //--------------------------------------
+/* INDEX:
+function mboxEmptyBelow()
+function mboxWriteBelow(text)
+function mboxAlbumAllLoad(filter="",uuid="")
+function mboxAlbumAll(data)
+function mboxAlbumAll_section(count,title,last_title)
+function mboxAlbumAll_album(count,uuid,title,description,cover,cmd_open,cmd_play)
+function mboxCreateAlbumFilter(data,selected)
+function mboxCreateArtistFilter(data,selected)
+function mboxAlbumLoad(i,uuid)
+function mboxListAlbum(data)
+function mboxTrackInfoLoad(uuid)
+function mboxTrackInfo(data)
+function mboxAlbumInfoLoad(uuid)
+function mboxAlbumInfoClose()
+function mboxAlbumInfo(data)
+function mboxAlbumDelete(album,uuid)
+function mboxAlbumTrackRow(id,dataTracks,album=true,artist=false,count=0)
+function show_triangle(i)
+function hide_triangle(i)
+function mboxEmptyAlbum()
+*/
+//--------------------------------------
 
 var mbox_list_count  = 3;
 var mbox_list_pos    = 0;
@@ -14,11 +37,8 @@ var mbox_list_last   = 0;
 // Write / delete details info below the album in the list
 //----------------------------------------
 
-function mboxEmptyBelow() {
+function mboxEmptyBelow() {		// delete all infos from last loading
 	var divID = "";
-	// delete all infos from last loading
-	//alert(mbox_list_amount);
-
 	for (var i=0;i<=mbox_list_amount;i++) {
 		divID = "album_"+i;
 		if (document.getElementById(divID)) {
@@ -30,16 +50,13 @@ function mboxEmptyBelow() {
 
 //--------------------------------------
 
-function mboxWriteBelow(text) {
+function mboxWriteBelow(text) {		// write details to box below
+	
 	var divID = "";
+	mboxEmptyBelow();			// delete old entries
+	divID = "album_"+mbox_list_pos;		// write album info to next slot depending on width
 
-	// delete old entries
-	mboxEmptyBelow();
-
-	// write album info to next slot depending on width
-	divID = "album_"+mbox_list_pos;
-
-	//console.log("--"+divID+"--"+mbox_list_pos);
+	//console.log("--"divID+"--"+mbox_list_pos);
 	if (document.getElementById(divID)) {
 		document.getElementById(divID).style.display = "block";
 		setTextById(divID, text);
@@ -49,17 +66,18 @@ function mboxWriteBelow(text) {
 	if (document.getElementById(divID)) { return divID; }
 	}
 
+
 // List albums
 //--------------------------------------
 
-//function mboxListLoad(filter="",uuid="")     { mboxAlbumAllLoad(filter,uuid); } // old name
 function mboxAlbumAllLoad(filter="",uuid="") {
 		if (filter["UUID"]) 	{ filter = ">>"+filter["UUID"]; } 	// load after API call
 		else 			{ filter = filter+">>"+uuid; }		// load by filter function
 		mboxApp.requestAPI("GET",["db","album_info",filter], "", mboxAlbumAll,"","mboxAlbumAll");
 		}
 
-//function mboxList(data)     { mboxAlbumAll(data); } // old name
+//--------------------------------------
+
 function mboxAlbumAll(data) {
 
 	//console.log(data);
@@ -67,7 +85,7 @@ function mboxAlbumAll(data) {
 	if (!data) { return; } // unclear, why sometimes no data are returned ...
 
 	var text             = "";
-	var print            = listCoverStart();
+	var print            = mboxCoverListStart();
 	var default_cover    = mbox_icons["album"];
 	var album_info       = data["DATA"]["album_info"];
 	var album_active     = "";
@@ -84,8 +102,7 @@ function mboxAlbumAll(data) {
 		album_active        = filter_uuid[1];
 		var the_filter      = filters.split(":");
 		}
-	else {
-		filters 	   = "";
+	else {	filters 	   = "";
 		}
 
 	var filter = "";
@@ -116,9 +133,8 @@ function mboxAlbumAll(data) {
 
 	// list albums
 	var i = 1;
-	if (sorted_entries.length == 0) {
-		text += "<div>" + lang("NODATA_RELOAD") + "</div>";
-		}
+	if (sorted_entries.length == 0) { text += "<div>" + lang("NODATA_RELOAD") + "</div>"; }
+		
 	for (var a=0;a<sorted_entries.length;a++) {
 
 		var keys    = sorted_entries[a].split("||");
@@ -150,14 +166,15 @@ function mboxAlbumAll(data) {
 
 			if (uuid == album_active) { album_active_no = i; }
 			if (uuid) {
-				cover           = mboxAlbumCover2(uuid,album_info);         // Check if Cover exists
+				cover           = mboxCoverAlbum_new(uuid,album_info);         // Check if Cover exists
 				[text1, print1] = mboxAlbumAll_album(i,uuid,album,artist,cover,onclick_open,onclick_play);
 				if (text1 != "") { i++; text += text1; print += print1; }   // text = album list; print is cover for print out
 				}
 			}
+			//if (Number.isInteger(a / 6)) { setTextById("remote2",text); }
 		mbox_list_amount = i;
 		}
-	print += listCoverEnd();
+	print += mboxCoverListEnd();
 
 	setTextById("remote2",text);
 	setTextById("ontop",print);
@@ -203,7 +220,7 @@ function mboxAlbumAll_album(count,uuid,title,description,cover,cmd_open,cmd_play
 
 	// write cover
 	text += mboxCoverList( uuid, cover, "<b>"+title+"</b><br/>"+description, cmd_open, cmd_play, "album" );
-	if (cover != "") { print += listCoverEntry( uuid, cover ); }
+	if (cover != "") { print += mboxCoverListEntry( uuid, cover ); }
 
 	// write tooltip
 	text += mboxToolTip(  "end", count, "<b>" + title + ":</b> " + description );
@@ -218,6 +235,7 @@ function mboxAlbumAll_album(count,uuid,title,description,cover,cmd_open,cmd_play
 //--------------------------------------
 
 function mboxCreateAlbumFilter(data,selected) {
+
 	var filter   = "<select id='filter_album' onchange=\"mboxAlbumAllLoad(document.getElementById('filter_album').value);\"  class=\"album_filter_dropdown\">"; 
 	var criteria = "albumpath:";
 	var list     = [];
@@ -243,6 +261,7 @@ function mboxCreateAlbumFilter(data,selected) {
 //--------------------------------------
 
 function mboxCreateArtistFilter(data,selected) {
+
 	var filter   = "<select id='filter_artist' onchange=\"mboxAlbumAllLoad(document.getElementById('filter_artist').value);\" class=\"album_filter_dropdown\">"; 
 	var criteria = "artist:";
 	var list     = [];
@@ -320,7 +339,7 @@ function mboxListAlbum(data) {
 	mbox_playlist_queue["tracks"]   = track_list;
 
 	// Check if Cover exists
-        var cover  = mboxAlbumCover2(uuid,albums);
+        var cover  = mboxCoverAlbum_new(uuid,albums);
         if (cover == "") { cover = default_cover; }
 
 	console.log("album-id: "+albums["uuid"]+"/"+uuid + " ("+cover+")");
@@ -459,7 +478,7 @@ function mboxTrackInfo(data) {
 
 	text += "<b>Track Informationen</b><br/>";
 	cover = "";
-	if (track["cover_images"]) 	{ cover += mboxAlbumInfoCover(1, track["cover_images"]["track"],  track["cover_images"]["active"], uuid); }
+	if (track["cover_images"]) 	{ cover += mboxCoverAlbumInfo(1, track["cover_images"]["track"],  track["cover_images"]["active"], uuid); }
 	else 				{ cover += lang("DATA_OLD_FORMAT"); }
 
 	text += mboxTableNew("start");
@@ -485,6 +504,7 @@ function mboxTrackInfo(data) {
 //--------------------------------------
 
 function mboxAlbumInfoLoad(uuid) { mboxApp.requestAPI("GET",["data",uuid,"-"],"", mboxAlbumInfo ); }
+function mboxAlbumInfoClose() { setTimeout(function(){ mboxAlbumAllLoad(); }, 2000); appMsg.hide(); }
 function mboxAlbumInfo(data) {
 
 	var text   = "";
@@ -500,9 +520,9 @@ function mboxAlbumInfo(data) {
 
 	var cover = "";
 	if (album["cover_images"]) {
-		cover += mboxAlbumInfoCover(1, album["cover_images"]["track"],  album["cover_images"]["active"], uuid);
-		cover += mboxAlbumInfoCover(2, album["cover_images"]["dir"],    album["cover_images"]["active"], uuid);
-		cover += mboxAlbumInfoCover(3, album["cover_images"]["upload"], album["cover_images"]["active"], uuid);
+		cover += mboxCoverAlbumInfo(1, album["cover_images"]["track"],  album["cover_images"]["active"], uuid);
+		cover += mboxCoverAlbumInfo(2, album["cover_images"]["dir"],    album["cover_images"]["active"], uuid);
+		cover += mboxCoverAlbumInfo(3, album["cover_images"]["upload"], album["cover_images"]["active"], uuid);
 		}
 	else {	cover += lang("DATA_OLD_FORMAT");
 		}
@@ -532,14 +552,7 @@ function mboxAlbumInfo(data) {
 	text += "<tr><td colspan='2'><hr></td></tr>";
 	text += mboxTableNew("end");
 
-
 	appMsg.confirm(text,"",450);
-	}
-
-
-function mboxAlbumInfoClose() {
-	setTimeout(function(){ mboxAlbumAllLoad(); }, 2000);
-	appMsg.hide();
 	}
 
 
@@ -549,7 +562,7 @@ function mboxAlbumInfoClose() {
 function mboxAlbumDelete(album,uuid) {
 	//var cmd = "window.open('http://192.168.1.27:5006/mbox/album/delete/"+uuid+"/');";
 
-	var cmd = "mboxApp.requestAPI('DELETE',['data', '" + uuid + "'],'', showReturnMsg ); mboxAlbumAllLoad();";
+	var cmd = "mboxApp.requestAPI('DELETE',['data', '" + uuid + "'],'', mboxDataReturnMsg ); mboxAlbumAllLoad();";
 	appMsg.confirm("&nbsp;<br/>Album &quot;<b>"+album+"</b>&quot; wirklich aus der Datenbank löschen?<br/>&nbsp;<br/>(ID: "+uuid+")", cmd, 200);
 	//alert("test");
 	}
@@ -631,10 +644,6 @@ function mboxEmptyAlbum() {
 	setTextById("remote1","");
 	}
 
-
 //--------------------------------------
-
-function sortNumber(a,b) {
-        return a - b;
-    }
+// EOF
 

@@ -317,21 +317,25 @@ function mboxPlaylistEdit(data) {
 	console.log("Edit dialog playlist: "+uuid);
 
 	text += "<b>Playliste &quot;" + list["title"] + "&quot; bearbeiten</b><br/>&nbsp;<br/>";
+	
 	text += "<i>Neue Titel ...</i>";
 	text += "<div id='selectAlbumContainer'>Loading ...</div>";
-	text += "<div class='album_edit_list' id='selectTrack'>Loading ...</div>";
+	text += "<div id='selectTrack' class='album_edit_list' >Loading ...</div>";
+	
 	text += "<i>Enthaltene Titel ...</i>";
-    	text += "<div class='album_edit_list' id='selectTrackList'>Loading ...</div>";
+    	text += "<div id='selectTrackList'     class='album_edit_list'>Loading ...</div>";
 	text += "<div id='playlistEditingInfo' style='color:red;'></div>";
 
 	appMsg.confirm("<div style=\"text-align:left;\">" + text + "</div>", "", 450);
 
-	mboxPlaylistEditTracks_load(sep+uuid);						// Load data of playlist (to delete tracks)
 	mboxPlaylistEditAlbums_load(uuid);
+	setTimeout(function(){
+		mboxPlaylistEditTracks_load(sep+uuid);						// Load data of playlist (to delete tracks)
+		}, 1000);
 	}
 
 
-// write track list with edit & delete link
+// load albums and write drop down menus
 //---------------------------
 
 function mboxPlaylistEditAlbums_load(uuid) { mboxApp.requestAPI("GET",["db","albums--album_info",uuid],"", mboxPlaylistEditAlbums ); }
@@ -359,8 +363,8 @@ function mboxPlaylistEditAlbums(data) {
 		if (list_artists.indexOf(album_info[key]["artist"])<0) { list_artists.push(album_info[key]["artist"]); }
 		}
 	list_artists.sort();
-	text += "<select id='selectArtist' class='album_edit_select' ";
-	text += "onchange='mboxPlaylistEditAlbums_load(\""+uuid+sep+"\"+document.getElementById(\"selectArtist\").value);'>";
+	text += "<select id='selectArtist' class='album_edit_select' " + 
+	        "onchange='mboxPlaylistEditAlbums_load(\""+uuid+sep+"\"+document.getElementById(\"selectArtist\").value);'>";
 
 	for (var i=0;i<list_artists.length;i++) {
 		var sel = "";
@@ -392,6 +396,7 @@ function mboxPlaylistEditAlbums(data) {
 	mboxPlaylistEditTracks_load(document.getElementById("selectAlbum").value);
 	}
 
+// write track lists with edit & delete link (1) tracks of select album (2) tracks of playlist
 //---------------------------
 
 function mboxPlaylistEditTracks_load(uuid,source="") { mboxApp.requestAPI("GET",["db","all",uuid], "", mboxPlaylistEditTracks); }

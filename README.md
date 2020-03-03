@@ -213,6 +213,6 @@ The following packages are used within this software (thanks to the authors):
 
 ## Disclaimer
 
-I'm just starting to publish my code and to work with GitHub. So the projects are not complete at the moment but will grow.
+I started to publish my code and to work with GitHub. So the projects just have reached a quality where it works relatively stable.
 The software can be used "as is" or feel to modify. I'll give no warranty that it works for you and is free of bugs. Ideas and suggestions what and how to improve are welcome.
 

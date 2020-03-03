@@ -76,7 +76,7 @@ function image(file)
 ./mbox-conf.js (-1)
 ----------------------------
 ----------------------------
-./volume_slider.js (96)
+./volume_slider.js (88)
 ----------------------------
 function slider ( name, container, callOnChange )
 	this.init    = function( min, max, label )
@@ -106,7 +106,7 @@ function mboxListCards(data)
 function mbox_delete_card(card_id,uuid_pl)
 function editCard_save(data)
 ----------------------------
-./mbox-control.js (550)
+./mbox-control.js (549)
 ----------------------------
 function mboxWriteGroups()
 function mboxControlLoad()

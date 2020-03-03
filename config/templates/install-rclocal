@@ -9,7 +9,7 @@ IFS='' read -r -d '' String <<"EOF"
 
 # entries for jc://mbox/
 #-----------------------------
-${MBOX_DIR}/start_mbox docker &
+${MBOX_DIR}/start docker &
 
 exit 0
 EOF

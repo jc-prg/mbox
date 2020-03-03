@@ -4,13 +4,13 @@
 // Edit data (playlist and web-stream)
 //--------------------------------------
 /* INDEX:
-function showReturnMsg(data)
+function mboxDataReturnMsg(data)
 function mboxDataEdit(data)
 function mboxDataEditExecute(uuid, key_list, type)
 */
 //--------------------------------------
 
-function showReturnMsg(data) {
+function mboxDataReturnMsg(data) {
 	if ("Result" in data)		{ appMsg.alert(data["Result"]["Msg"] + " (" + data["Result"]["Code"] + ")"); }
 	else if ("ReturnMsg" in data)	{ appMsg.alert(data["ReturnMsg"]); }
 	}
@@ -64,7 +64,7 @@ function mboxDataEditExecute(uuid, key_list, type) {
 			data[keys[i]] = document.getElementById('edit_'+keys[i]).value;
 			}
 		}}
-	if (type == "radio")      	{ callback = mboxRadioLoad; }
+	if (type == "radio")      	{ callback = mboxRadio_load; }
 	else if (type == "playlists")	{ callback = mboxPlaylistAll_load; }
 	else				{ callback = appMsg.hide; }
 
@@ -73,6 +73,21 @@ function mboxDataEditExecute(uuid, key_list, type) {
 
 //--------------------------------------
 // EOF
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

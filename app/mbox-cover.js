@@ -5,17 +5,18 @@
 // and return cover for print view
 //--------------------------------------
 /* INDEX:
-function mboxAlbumInfoCover(nr,url_list,act,uuid)
-function mboxAlbumCover(artist,album)
-function mboxAlbumCover2(id,data)
-function mboxAlbumCover_checkFile(image_url)
-function listCoverStart()
-function listCoverEnd()
-function listCoverEntry(id,cover)
+function mboxCoverAlbumInfo(nr,url_list,act,uuid)
+function mboxCoverAlbum(artist,album)
+function mboxCoverAlbum_new(id,data)
+function mboxCoverAlbum_checkFile(image_url)
+function mboxCoverTogglePrint()
+function mboxCoverListStart()
+function mboxCoverListEnd()
+function mboxCoverListEntry(id,cover)
 */
 //--------------------------------------
 
-function mboxAlbumInfoCover(nr,url_list,act,uuid) {
+function mboxCoverAlbumInfo(nr,url_list,act,uuid) {
 	var border  = "";
 	var size    = "50px";
 
@@ -27,7 +28,7 @@ function mboxAlbumInfoCover(nr,url_list,act,uuid) {
         var img       = "<div class='album_cover' style='height:"+size+";width:"+size+";background:gray;cursor:default;"+border+"' title='"+select+"'></div>";
 	var close_cmd = "";
 
-	if 	(uuid.indexOf("r_")>=0) { close_cmd = "mboxRadioInfoClose"; }
+	if 	(uuid.indexOf("r_")>=0) { close_cmd = "mboxRadioInfo_close"; }
 	else if (uuid.indexOf("a_")>=0) { close_cmd = "mboxAlbumInfoClose"; }
 	else if (uuid.indexOf("p_")>=0) { close_cmd = "mboxPlaylistInfo_close"; }
 
@@ -56,7 +57,7 @@ function mboxAlbumInfoCover(nr,url_list,act,uuid) {
 // return cover for list and detail view
 //--------------------------------------
 
-function mboxAlbumCover(artist,album) {
+function mboxCoverAlbum(artist,album) {
 	var albums        = dataAlbums[artist][album];
 	var i             = 0;
 	var cover	  = "";
@@ -74,9 +75,7 @@ function mboxAlbumCover(artist,album) {
 // return cover for list and detail view
 //--------------------------------------
 
-
-
-function mboxAlbumCover2(id,data) {
+function mboxCoverAlbum_new(id,data) {
 
 	var albumInfo;
 	var i              = 0;
@@ -100,13 +99,15 @@ function mboxAlbumCover2(id,data) {
 		}
 
 	if (checkImgExists) {
-		if (mboxAlbumCover_checkFile(cover))	{ return cover; }
+		if (mboxCoverAlbum_checkFile(cover))	{ return cover; }
 		else					{ return ""; }
 		}
 	else { return cover; }
 	}
 	
-function mboxAlbumCover_checkFile(image_url) {
+//--------------------------------------
+
+function mboxCoverAlbum_checkFile(image_url) {
 
 	var http = new XMLHttpRequest();
 	http.open('HEAD', image_url, false);
@@ -116,24 +117,48 @@ function mboxAlbumCover_checkFile(image_url) {
 
 
 //--------------------------------------
+// show / hide print view
+//--------------------------------------
+
+function mboxCoverTogglePrint() {
+	if (document.getElementById("ontop").style.display == "none") 	{ document.getElementById("ontop").style.display = "block"; }
+	else								{ document.getElementById("ontop").style.display = "none"; }
+	}
+
+//--------------------------------------
 // LIST COVER
 //--------------------------------------
 
 
-function listCoverStart() {
+function mboxCoverListStart() {
 	var print = "<div class=\"print_album_back\">";
-        print += "<br>&nbsp;&nbsp;<b"+lang("COVER_PRINT_VIEW_1")+"</b> "+lang("COVER_PRINT_VIEW_2")+" <a style=\"cursor:pointer;\" onclick=\"toggleCoverPrint();\"><u>"+lang("COVER_PRINT_VIEW_3")+"</u></a><br>";
-//        print += "<br>&nbsp;&nbsp;<b>Album-Cover für den Ausdruck:</b> Klicke auf ein Cover, um es auszublenden (z.B. wenn schon gedruckt). Klicke <a style=\"cursor:pointer;\" onclick=\"toggleCoverPrint();\"><u>hier</u></a>, um diese Ansicht zu schließen.<br>";
+        print += "<br>&nbsp;&nbsp;<b"+lang("COVER_PRINT_VIEW_1")+"</b> "+lang("COVER_PRINT_VIEW_2")+" <a style=\"cursor:pointer;\" onclick=\"mboxCoverTogglePrint();\"><u>"+lang("COVER_PRINT_VIEW_3")+"</u></a><br>";
+//        print += "<br>&nbsp;&nbsp;<b>Album-Cover für den Ausdruck:</b> Klicke auf ein Cover, um es auszublenden (z.B. wenn schon gedruckt). Klicke <a style=\"cursor:pointer;\" onclick=\"mboxCoverTogglePrint();\"><u>hier</u></a>, um diese Ansicht zu schließen.<br>";
 	return print;
 	}
 
-function listCoverEnd() {
+function mboxCoverListEnd() {
 	return "</div>";
 	}
 
-function listCoverEntry(id,cover) {
+function mboxCoverListEntry(id,cover) {
 	return "<div class=\"print_album_cover\" id=\"printCover_" + id + "\"onclick=\"document.getElementById('printCover_" + id + "').style.display='none';\" style=\"background:url("+cover+");background-size:cover;background-repeat:no-repeat;vertical-align:botton;\"></div>";
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

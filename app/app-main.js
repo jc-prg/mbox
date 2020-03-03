@@ -65,7 +65,7 @@ function appPrintMenu() {
 	appMenu.add_script( "mboxListCardsLoad();if(mbox_settings){settingsToggle();printAllStatusLoad();};", lang("RFID_CARDS") );
 	appMenu.add_script( "settingsToggle();settingsStatusLoad();printAppStatusLoad();", lang("SETTINGS") );
 	appMenu.add_line();
-        appMenu.add_script( "toggleCoverPrint();", lang("COVER_IMAGES"));
+        appMenu.add_script( "mboxCoverTogglePrint();", lang("COVER_IMAGES"));
         
         appMenu.set_title( appTitle + mbox_mode );
 	}
@@ -96,7 +96,7 @@ function appPrintStatus(data) {
 		// write menu entrie for 3 modes
 		if (mbox_mode == "Album")    { mboxAlbumAllLoad(); }
 		if (mbox_mode == "Playlist") { mboxPlaylistAll_load(); }
-		if (mbox_mode == "Radio")    { mboxRadioLoad(); }
+		if (mbox_mode == "Radio")    { mboxRadio_load(); }
 
 		reload = false;
 		}
@@ -134,30 +134,4 @@ function appCheckUpdates() {
 
 //-----------------------------
 // EOF
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

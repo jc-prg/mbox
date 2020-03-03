@@ -85,7 +85,7 @@ function mboxAlbumAll(data) {
 	if (!data) { return; } // unclear, why sometimes no data are returned ...
 
 	var text             = "";
-	var print            = listCoverStart();
+	var print            = mboxCoverListStart();
 	var default_cover    = mbox_icons["album"];
 	var album_info       = data["DATA"]["album_info"];
 	var album_active     = "";
@@ -166,7 +166,7 @@ function mboxAlbumAll(data) {
 
 			if (uuid == album_active) { album_active_no = i; }
 			if (uuid) {
-				cover           = mboxAlbumCover2(uuid,album_info);         // Check if Cover exists
+				cover           = mboxCoverAlbum_new(uuid,album_info);         // Check if Cover exists
 				[text1, print1] = mboxAlbumAll_album(i,uuid,album,artist,cover,onclick_open,onclick_play);
 				if (text1 != "") { i++; text += text1; print += print1; }   // text = album list; print is cover for print out
 				}
@@ -174,7 +174,7 @@ function mboxAlbumAll(data) {
 			//if (Number.isInteger(a / 6)) { setTextById("remote2",text); }
 		mbox_list_amount = i;
 		}
-	print += listCoverEnd();
+	print += mboxCoverListEnd();
 
 	setTextById("remote2",text);
 	setTextById("ontop",print);
@@ -220,7 +220,7 @@ function mboxAlbumAll_album(count,uuid,title,description,cover,cmd_open,cmd_play
 
 	// write cover
 	text += mboxCoverList( uuid, cover, "<b>"+title+"</b><br/>"+description, cmd_open, cmd_play, "album" );
-	if (cover != "") { print += listCoverEntry( uuid, cover ); }
+	if (cover != "") { print += mboxCoverListEntry( uuid, cover ); }
 
 	// write tooltip
 	text += mboxToolTip(  "end", count, "<b>" + title + ":</b> " + description );
@@ -339,7 +339,7 @@ function mboxListAlbum(data) {
 	mbox_playlist_queue["tracks"]   = track_list;
 
 	// Check if Cover exists
-        var cover  = mboxAlbumCover2(uuid,albums);
+        var cover  = mboxCoverAlbum_new(uuid,albums);
         if (cover == "") { cover = default_cover; }
 
 	console.log("album-id: "+albums["uuid"]+"/"+uuid + " ("+cover+")");
@@ -478,7 +478,7 @@ function mboxTrackInfo(data) {
 
 	text += "<b>Track Informationen</b><br/>";
 	cover = "";
-	if (track["cover_images"]) 	{ cover += mboxAlbumInfoCover(1, track["cover_images"]["track"],  track["cover_images"]["active"], uuid); }
+	if (track["cover_images"]) 	{ cover += mboxCoverAlbumInfo(1, track["cover_images"]["track"],  track["cover_images"]["active"], uuid); }
 	else 				{ cover += lang("DATA_OLD_FORMAT"); }
 
 	text += mboxTableNew("start");
@@ -520,9 +520,9 @@ function mboxAlbumInfo(data) {
 
 	var cover = "";
 	if (album["cover_images"]) {
-		cover += mboxAlbumInfoCover(1, album["cover_images"]["track"],  album["cover_images"]["active"], uuid);
-		cover += mboxAlbumInfoCover(2, album["cover_images"]["dir"],    album["cover_images"]["active"], uuid);
-		cover += mboxAlbumInfoCover(3, album["cover_images"]["upload"], album["cover_images"]["active"], uuid);
+		cover += mboxCoverAlbumInfo(1, album["cover_images"]["track"],  album["cover_images"]["active"], uuid);
+		cover += mboxCoverAlbumInfo(2, album["cover_images"]["dir"],    album["cover_images"]["active"], uuid);
+		cover += mboxCoverAlbumInfo(3, album["cover_images"]["upload"], album["cover_images"]["active"], uuid);
 		}
 	else {	cover += lang("DATA_OLD_FORMAT");
 		}
@@ -562,7 +562,7 @@ function mboxAlbumInfo(data) {
 function mboxAlbumDelete(album,uuid) {
 	//var cmd = "window.open('http://192.168.1.27:5006/mbox/album/delete/"+uuid+"/');";
 
-	var cmd = "mboxApp.requestAPI('DELETE',['data', '" + uuid + "'],'', showReturnMsg ); mboxAlbumAllLoad();";
+	var cmd = "mboxApp.requestAPI('DELETE',['data', '" + uuid + "'],'', mboxDataReturnMsg ); mboxAlbumAllLoad();";
 	appMsg.confirm("&nbsp;<br/>Album &quot;<b>"+album+"</b>&quot; wirklich aus der Datenbank löschen?<br/>&nbsp;<br/>(ID: "+uuid+")", cmd, 200);
 	//alert("test");
 	}
@@ -644,32 +644,6 @@ function mboxEmptyAlbum() {
 	setTextById("remote1","");
 	}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//--------------------------------------
+// EOF
 

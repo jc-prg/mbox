@@ -6,28 +6,32 @@
 /* INDEX:
 function mboxPlaylistAll_load(filter="",uuid="")
 function mboxPlaylistAll(data)
-function mboxAddListDialog(i)
 function mboxPlaylistOne_load2(uuid)
 function mboxPlaylistOne_load(i,uuid)
 function mboxPlaylistOne(data)
+function mboxPlaylistReload(uuid)
 function mboxPlaylistEdit_load(uuid)
 function mboxPlaylistEdit(data)
-function mboxPlaylistInfo_load(uuid)
-function mboxPlaylistInfo(data)
-function mboxPlaylistInfo_close()
-function mboxPlaylistEditEntry_load(uuid)
-function mboxPlaylistReload(uuid)
-function mboxPlaylistDelete(uuid,title)
 function mboxPlaylistEditAlbums_load(uuid)
 function mboxPlaylistEditAlbums(data)
 function mboxPlaylistEditTracks_load(uuid,source="")
 function mboxPlaylistEditTracks(data)
+function mboxPlaylistEditEntry_load(uuid)
+function mboxPlaylistEditEntry(data)
 function mboxPlaylistTrackRow(data,uuid,split=false,uuid_pl="")
+function mboxPlaylistDelete(uuid,title)
+function mboxPlaylistInfo_load(uuid)
+function mboxPlaylistInfo(data)
+function mboxPlaylistInfo_close()
 function mboxPlaylistInfoDelete(data)
 function mboxPlaylistInfoAdd(data)
 function mboxPlaylistAdd()
+function mboxPlaylistAdd_dialog(i)
 function mboxPlaylistAdd_msg(data)
 */
+//--------------------------------------
+
+// show list of all playlists
 //--------------------------------------
 
 function mboxPlaylistAll_load(filter="",uuid="") {
@@ -96,7 +100,7 @@ function mboxPlaylistAll(data) {
 		i++;
 		}
 
-        var onclick  = "mboxAddListDialog("+i+");"
+        var onclick  = "mboxPlaylistAdd_dialog("+i+");"
 //	text += mboxCoverSeparator( "+", onclick );
 	text += mboxCoverSeparator( "<img src=\"icon/list_add.png\" style=\"height:50px;width:50px;margin-top:10px;\">", onclick );
 	text += mboxAlbumDetail( i );
@@ -115,19 +119,6 @@ function mboxPlaylistAll(data) {
 	                }
                 }
 	}
-
-function mboxAddListDialog(i) {
-	var onclick2 = "document.getElementById('album_"+(i)+"').style.display='none';";
-        var text  =  "<b>"+lang("ADD_PLAYLIST")+":</b><br/><br/><table>";
-        text += "<tr><td>"+lang("TITLE")+":</td><td><input id=\"playlist_title\" style=\"width:150px\"></input></td></tr>";
-        text += "<tr><td>"+lang("DESCRIPTION")+":</td><td><input id=\"playlist_description\" style=\"width:150px\"></input></td></tr>";
-        text += "</table><br/>";
-        text += button("mboxPlaylistAdd();",lang("ADD"),"mboxPlaylistAdd");
-        text += button(onclick2,lang("CLOSE"),"close_playlist");
-	setTextById("album_"+i,text);
-	document.getElementById("album_"+i).style.display="block";
-	}
-
 
 
 // List tracks of playlist
@@ -232,73 +223,12 @@ function mboxPlaylistOne(data) {
 	}
 
 
-// radio info as popup (incl. some settings ...)
-//--------------------------------------
-
-function mboxPlaylistInfo_load(uuid) { mboxApp.requestAPI("GET",["data",uuid,"-"],"", mboxPlaylistInfo ); }
-function mboxPlaylistInfo(data) {
-        var text   = "";
-        var album  = data["DATA"]["_selected"];
-        var uuid   = data["DATA"]["_selected_uuid"];
-        var url    = RESTurl + "mbox/read/playlists/"+uuid+"/";
-        var size   = Math.round(album["albumsize"]/1024/1024*100)/100;
-        var cardid = album["card_id"]; if (!cardid) { cardid = "Keine Karte verkn&uuml;pft."; }
-
-	if ("tracks" in album) {} else {album["tracks"] = [];}
-
-        var cover = "";
-        if (album["cover_images"]) {
-                cover += mboxAlbumInfoCover(1, album["cover_images"]["track"],  album["cover_images"]["active"], uuid);
-                cover += mboxAlbumInfoCover(2, album["cover_images"]["dir"],    album["cover_images"]["active"], uuid);
-                cover += mboxAlbumInfoCover(3, album["cover_images"]["upload"], album["cover_images"]["active"], uuid);
-                cover += mboxAlbumInfoCover(4, album["cover_images"]["web"],    album["cover_images"]["active"], uuid);
-                }
-        else {  cover += "Altes Datenformat oder keine Bilder vorhanden, Titelinfos neu laden!";
-                }
-
-        var edit = "";
-        edit += mboxButton("image_add", "mboxUploadImage('"+uuid+"','playlist','"+album["title"]+"');", "red");
-        edit += mboxButton("list_edit", "mboxPlaylistEdit_load('"+album["uuid"]+"');",          "red");
-        edit += mboxButton("edit",  	"mboxPlaylistEditEntry_load('"+album["uuid"]+"');",          "red");
-        edit += mboxButton("delete",  	"mboxPlaylistDelete('"+uuid+"','"+album["title"]+"');",         "red");
-
-
-        text += "<b>Playlist Informationen</b><br/>";
-        text += mboxTableNew("start");
-        text += "<tr><td colspan='2'><hr></td></tr>";
-        text += mboxTableNew(["<i>"+lang("TITLE")+":",        album["title"] ] );
-        text += mboxTableNew(["<i>"+lang("DESCRIPTION")+":",  album["description"] ] );
-        text += mboxTableNew(["<i>Tracks:",	       			album["tracks"].length ] );
-        text += mboxTableNew(["<i>UUID:",               "<a href='" + url + "/' target='_blank'>" + uuid + "</a>" ] );
-        text += mboxTableNew(["<i>Card ID:",            "<a style='cursor:pointer;' onclick='mboxListCardsLoad();'>"    + cardid + "</a>" ] );
-        text += mboxTableNew(["<i>"+lang("COVER_AVAILABLE")+":",      cover ] );
-        text += "<tr><td colspan='2'><hr></td></tr>";
-        text += mboxTableNew(["<i>"+lang("EDIT")+":",         edit ] );
-        text += "<tr><td colspan='2'><hr></td></tr>";
-        text += mboxTableNew("end");
-
-        appMsg.confirm(text,"",450);
-        }
-
-
-function mboxPlaylistInfo_close() {
-	setTimeout(function(){ mboxPlaylistLoad(); }, 2000);
-        appMsg.hide();
-        }
-
-// edit single entry
-//---------------------------
-
-function mboxPlaylistEditEntry_load(uuid) { mboxApp.requestAPI("GET",["data",uuid,"uuid,title,description"],"", mboxDataEdit ); }
-// -> mbox-data.js
-
-
 // reload after adding or deleting a track (BUG?)
 //---------------------------
 
 function mboxPlaylistReload(uuid) {
 	mboxPlaylistOne_load2(uuid);
-	mboxPlaylistEdit_load(uuid); // doent work ... reload of all data required / or load track list dynamically
+	mboxPlaylistEdit_load(uuid); // doesnt work? ... reload of all data required / or load track list dynamically
 	}
 
 // edit playlist // NOCH DER WURM DRIN?!
@@ -471,6 +401,12 @@ function mboxPlaylistEditTracks(data) {
 	}
 
 
+// edit single entry
+//---------------------------
+
+function mboxPlaylistEditEntry_load(uuid) { mboxApp.requestAPI("GET",["data",uuid,"uuid,title,description"],"", mboxPlaylistEditEntry ); }
+function mboxPlaylistEditEntry(data) { mboxDataEdit( data ); }  // -> mbox-data.js
+
 
 // track title row
 //--------------------------------------
@@ -572,9 +508,64 @@ function mboxPlaylistDelete(uuid,title) {
 	}
 
 
-// Reload editing dialog and playlist view when made a change
+// radio info as popup (incl. some settings ...)
+//--------------------------------------
+
+function mboxPlaylistInfo_load(uuid) { mboxApp.requestAPI("GET",["data",uuid,"-"],"", mboxPlaylistInfo ); }
+function mboxPlaylistInfo(data) {
+        var text   = "";
+        var album  = data["DATA"]["_selected"];
+        var uuid   = data["DATA"]["_selected_uuid"];
+        var url    = RESTurl + "mbox/read/playlists/"+uuid+"/";
+        var size   = Math.round(album["albumsize"]/1024/1024*100)/100;
+        var cardid = album["card_id"]; if (!cardid) { cardid = "Keine Karte verkn&uuml;pft."; }
+
+	if ("tracks" in album) {} else {album["tracks"] = [];}
+
+        var cover = "";
+        if (album["cover_images"]) {
+                cover += mboxAlbumInfoCover(1, album["cover_images"]["track"],  album["cover_images"]["active"], uuid);
+                cover += mboxAlbumInfoCover(2, album["cover_images"]["dir"],    album["cover_images"]["active"], uuid);
+                cover += mboxAlbumInfoCover(3, album["cover_images"]["upload"], album["cover_images"]["active"], uuid);
+                cover += mboxAlbumInfoCover(4, album["cover_images"]["web"],    album["cover_images"]["active"], uuid);
+                }
+        else {  cover += "Altes Datenformat oder keine Bilder vorhanden, Titelinfos neu laden!";
+                }
+
+        var edit = "";
+        edit += mboxButton("image_add", "mboxUploadImage('"+uuid+"','playlist','"+album["title"]+"');", "red");
+        edit += mboxButton("list_edit", "mboxPlaylistEdit_load('"+album["uuid"]+"');",          "red");
+        edit += mboxButton("edit",  	"mboxPlaylistEditEntry_load('"+album["uuid"]+"');",          "red");
+        edit += mboxButton("delete",  	"mboxPlaylistDelete('"+uuid+"','"+album["title"]+"');",         "red");
+
+
+        text += "<b>Playlist Informationen</b><br/>";
+        text += mboxTableNew("start");
+        text += "<tr><td colspan='2'><hr></td></tr>";
+        text += mboxTableNew(["<i>"+lang("TITLE")+":",        album["title"] ] );
+        text += mboxTableNew(["<i>"+lang("DESCRIPTION")+":",  album["description"] ] );
+        text += mboxTableNew(["<i>Tracks:",	       			album["tracks"].length ] );
+        text += mboxTableNew(["<i>UUID:",               "<a href='" + url + "/' target='_blank'>" + uuid + "</a>" ] );
+        text += mboxTableNew(["<i>Card ID:",            "<a style='cursor:pointer;' onclick='mboxListCardsLoad();'>"    + cardid + "</a>" ] );
+        text += mboxTableNew(["<i>"+lang("COVER_AVAILABLE")+":",      cover ] );
+        text += "<tr><td colspan='2'><hr></td></tr>";
+        text += mboxTableNew(["<i>"+lang("EDIT")+":",         edit ] );
+        text += "<tr><td colspan='2'><hr></td></tr>";
+        text += mboxTableNew("end");
+
+        appMsg.confirm(text,"",450);
+        }
+
 //----------------------------------------------------------------
 
+function mboxPlaylistInfo_close() {
+	setTimeout(function(){ mboxPlaylistLoad(); }, 2000);
+        appMsg.hide();
+        }
+
+
+// Reload editing dialog and playlist view when made a change
+//----------------------------------------------------------------
 
 function mboxPlaylistInfoDelete(data) {
         //appMsg.alert("<b>Eintrag gelöscht.</b><br/>" + data["StatusMsg"] + "<br/>" + data["INFO"]["_param"]);
@@ -610,6 +601,22 @@ function mboxPlaylistAdd() {
         mboxApp.requestAPI('POST',['data','playlists',title+'||'+descr], '', mboxPlaylistAdd_msg);
         }
 
+//--------------------------------------
+
+function mboxPlaylistAdd_dialog(i) {
+	var onclick2 = "document.getElementById('album_"+(i)+"').style.display='none';";
+        var text  =  "<b>"+lang("ADD_PLAYLIST")+":</b><br/><br/><table>";
+        text += "<tr><td>"+lang("TITLE")+":</td><td><input id=\"playlist_title\" style=\"width:150px\"></input></td></tr>";
+        text += "<tr><td>"+lang("DESCRIPTION")+":</td><td><input id=\"playlist_description\" style=\"width:150px\"></input></td></tr>";
+        text += "</table><br/>";
+        text += button("mboxPlaylistAdd();",lang("ADD"),"mboxPlaylistAdd");
+        text += button(onclick2,lang("CLOSE"),"close_playlist");
+	setTextById("album_"+i,text);
+	document.getElementById("album_"+i).style.display="block";
+	}
+
+//--------------------------------------
+
 function mboxPlaylistAdd_msg(data) {
         var text = "";
         if (data["REQUEST"]["status"] == "success")	{ text += "Playliste mit Titel angelegt."; }
@@ -620,6 +627,11 @@ function mboxPlaylistAdd_msg(data) {
 
 //---------------------------
 // EOF
+
+
+
+
+
 
 
 

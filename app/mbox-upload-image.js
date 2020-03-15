@@ -19,7 +19,7 @@ function uploadImage() {
 	enableUpload();
 	}
 
-/----------------------------------------------------------------
+//----------------------------------------------------------------
 
 function mboxUploadImage(uuid,category,name="") {
         var text = "<b>"+name+"</b> ("+category+")<br/>";

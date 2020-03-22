@@ -105,6 +105,12 @@ function mboxRadioChannel_load(i,uuid) {
 
 function mboxRadioChannel(data) {
 
+        if (!data["DATA"]["_selected"]) { 
+                console.error("Fehler mboxRadioChannel"); 
+                console.error(data);  
+                return; 
+                }
+
         var text          = "";
         var uuid          = data["DATA"]["_selected_uuid"];
         var radio_data    = data["DATA"]["_selected"];

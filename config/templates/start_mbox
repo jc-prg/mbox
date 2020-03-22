@@ -14,7 +14,8 @@ if [ ! ${DOLLAR}option ]; then
   echo
   echo "Press key - your options:"
   echo " 'q' - exit"
-  echo " 'd' - docker"
+  echo " 'd' - docker start"
+  echo " 'r' - docker restart"
   echo " 'c' - install crontab"
   echo " 's' - server (in progress)"
   count=0
@@ -25,6 +26,10 @@ if [ ! ${DOLLAR}option ]; then
        exit 0
     elif [[ ${DOLLAR}k = d ]] ; then
        option="docker"
+       printf "\n... starting via docker.\n"
+       break
+    elif [[ ${DOLLAR}k = r ]] ; then
+       option="restart"
        printf "\n... starting via docker.\n"
        break
     elif [[ ${DOLLAR}k = s ]] ; then
@@ -100,6 +105,22 @@ if [ ${DOLLAR}option == "docker" ]; then
   echo "RESET" > ${MBOX_DIR}/log/internet_connect
   sleep 5s
   
+elif [ ${DOLLAR}option == "restart" ]; then
+
+  echo "... restart main modules:"
+  ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose.yml stop
+  ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose.yml up -d
+
+  if [ ${DOLLAR}is_rpi == "yes" ]; then
+    echo "... restart rpi components:"
+    ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose-rpi.yml stop
+    ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose-rpi.yml up -d
+  fi
+  echo ""
+  echo "RESET" > ${MBOX_DIR}/log/internet_connect
+  sleep 5s
+  
+
 elif [ ${DOLLAR}option == "cron" ]; then
 
   install_cron

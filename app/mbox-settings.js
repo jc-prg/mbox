@@ -34,7 +34,6 @@ function settingsToggle() {
 		mbox_settings = false;
 		}
 	}
-
 // write status information to settings page ...
 // -----------------------------------------------------
 

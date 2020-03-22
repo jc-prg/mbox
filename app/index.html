@@ -43,7 +43,6 @@
 <script src="mbox-cover.js"></script>
 <script src="mbox-radio.js"></script>
 <script src="mbox-playlist.js"></script>
-<script src="mbox-settings.js"></script>
 <script src="mbox-upload-image.js"></script>
 
 <link  href="mbox-buttons.css" 	rel="stylesheet" >
@@ -54,6 +53,7 @@
 <script src="mbox-player.js"></script>  <link href="mbox-player.css"  rel="stylesheet" >
 <script src="mbox-control.js"></script> <link href="mbox-control.css" rel="stylesheet" >
 <script src="mbox-rfid.js"></script>    <link href="mbox-rfid.css"    rel="stylesheet" >
+<script src="mbox-settings.js"></script><link href="mbox-settings.css"    rel="stylesheet" >
 
 <script src="volume_slider.js"></script>
 
@@ -79,7 +79,7 @@
 
 <nav-title id="navTitle">...</nav-title>
 <ul>
-  <li id="navi"><div onClick="javascript:clickMenu();"><img src="icon/button.png" /></div>
+  <li id="navi"><div onClick="javascript:clickMenu();"  id="navi-click"><img src="icon/button.png" /></div>
     <ul id='menuItems' style="visibility:hidden;">
       <!-- filled by script -->
     </ul>
@@ -97,7 +97,15 @@
 &nbsp;<br/>
 <div id='remote_block' style="width:100%">
   <div class='frame_block'>
-    <div class='remote_nav' id='remote_nav'></div>
+    <div class='remote_nav' id='remote_nav'><nav-b>
+     <ul>
+      <li>
+        <ul id='menuItems2'>
+          <!-- filled by script -->
+        </ul>
+      </li>
+     </ul>
+    </div>
     <div class='frame_column wide' id='remote1'></div>
     <div class='frame_column wide' id='remote4' style='display:none'>Filter</div>
     <div class='frame_column wide' id='remote2' style='padding-bottom:20px;'></div>

@@ -544,5 +544,14 @@ function mboxToggleFilter () {
 	}
 	
 //--------------------------------------
+
+function mboxShowFilter () {
+	// switch next device setting
+
+	if (mbox_filter && !mbox_settings)	{ document.getElementById("remote4").style.display="block"; }
+	else					{ document.getElementById("remote4").style.display="none"; }
+	}
+	
+//--------------------------------------
 // EOF
 

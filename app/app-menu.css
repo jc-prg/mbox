@@ -172,7 +172,6 @@ nav li > a:only-child:after {
    }
 }
 
-
 /* AUDIO INFO */
 
 nav-info {
@@ -187,6 +186,118 @@ nav-info {
   font-size:   12px;
   font-family: sans-serif;
 }
+
+/* -------------------------------------------- */
+
+.remote_nav {
+   float   :  left;
+   display :  none;
+   width   : 150px;
+   height  : 100vh;
+}
+
+@media (min-width: 855px) {
+
+   .remote_nav { display: block; }
+   #navi-click { display: none; }
+}
+
+/* -------------------------------------------- */
+/* 2nd menu */
+/* -------------------------------------------- */
+
+nav-b {
+  position: fixed;
+  left: 0px;
+  top: 10px;
+  width: 0px;
+  
+  box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.25);
+  background: #111111;
+  padding: 0px;
+  z-index: 85;
+  text-decoration: none;
+  
+  display: block;
+  font-family: sans-serif;
+  font-size: 14px;
+
+  border-top: 1px solid darkgray;
+}
+
+/* übergeordnete Formatierung DropDown-Menü */
+
+nav-b ul {
+  list-style : none;
+  margin     : 0;
+  padding    : 0;
+  cursor     : pointer;
+  z-index    : 90;
+  width      : 145px;
+}
+
+/* Menüpunkte im Balken */
+
+nav-b > ul {
+  float: left;
+  overflow: hidden;
+  padding: 5px;
+  text-decoration: none;
+}
+
+nav-b > ul a {
+  display: block;
+  white-space: nowrap;
+  padding: 3px;
+  text-decoration: none;
+}
+
+/* Erste Unterebene, ausklappbar */
+/* UL => Hintergrund; LI => Eintrag */
+
+nav-b > ul > li {
+   float: left;
+}
+
+nav-b > ul > li > ul > li > hr {
+   width : 90%;
+}
+
+nav-b > ul > li > ul {
+  display    : block;
+//  visibility : hidden;
+  position   : absolute;
+  left       : 5px;
+  top        : 38px;
+  background : #ddddee;
+  border-radius: 5px;
+  box-shadow : 3px 3px 3px rgba(0, 0, 0, 0.25);
+  min-width  : 130px;
+}
+
+nav-b > ul > li > ul > li {
+  position: relative;
+}
+
+nav-b ul > li > ul > li a {
+   color: black;
+   padding: 8px 12px;
+   text-decoration: none;
+   display: block;
+}
+
+/* Element zum Aufklappen kennzeichnen */
+
+nav-b li > a:after {
+  content: " +";
+}
+
+nav-b li > a:only-child:after {
+  content: "";
+}
+
+/*-----------------------------*/
+
 
 #close {
   width:25px;

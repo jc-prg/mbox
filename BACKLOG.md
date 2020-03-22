@@ -139,8 +139,21 @@ Here you'll find a history of features implemented into hardware and software as
 * OK - BUG - connecting to cards doesn't work anymore
 * OK - API command to re-read data to cache, periodic re-read (not only on specific data changes - or ensure, no data change is forgotten)
 
-* BUG - if playing and press play in a playlist, start with first song instead of actuall running song (PlaySong -> start file, not list without loading list again)
+#--------------------------------
 
+* BUG - if playing and press play in a playlist, start with first song instead of actuall running song (PlaySong -> start file, not list without loading list again)
+* BUG - Start with STREAM and card laying on the RFID sensor leads to an error
+  - when no card is laying on the RFID sensor while starting (a bit later -> connection error, after restart it's working)
+  - seems to be a connection error?! "\[ErrNo 104\] Connection reset by peer"
+  - IDEAS:
+    -> restart mboxServer, if internet connection changes (autohotspot)
+    -> run mboxServer outside of a container (may require couchDB locally also)
+    -> run mboxDB outside of a container
+    
+
+#--------------------------------
+
+- import / export connection between card and albums, lists and streams as json
 - reconnect tracks / albums when reloading based on path/file or albumpath (mbox_load)
 - save presets in database and e.g. prefered device, start with last song played before switched off
 - check and show voltage ... "vcgencmd measure_volts core" ... sdram_i, sdram_p, sdram_c (problem, when recharging the battery)
@@ -261,10 +274,15 @@ Here you'll find a history of features implemented into hardware and software as
 * OK - new icon set, due to license reasons
 * OK - several optimizations
 * OK - enable multi-language support
+* OK - BUG printAppStatusLoad not defined
+* OK - BUG Settings displayed not correctly (on the box)
+* OK - BUG hide menu when width of browser > XX Pixel (720?); see remote
+* OK - BUG show filter from the beginning, if set "mbox_filter = true"
 
 - BUG jump to album doesnt work
 - BUG loading albums and tracks to edit playlist doesnt work every time
 
+- new volume control
 - timeout for API Request and reaction to the timeout (show error message) - required e.g. if parallel processes like a system update is running on the raspberry
 - filter for genres (or other metadata ...)
 - use enhanced local player also for playlists (tracks & albums to be loaded)

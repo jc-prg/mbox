@@ -41,3 +41,7 @@ server/modules/config_stage.py
 app/config_stage.js
 
 start
+
+app/icon/Thumbs.db
+
+app/icon/Thumbs.db:encryptable

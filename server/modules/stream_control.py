@@ -204,7 +204,7 @@ class radioThread (threading.Thread):
         '''check if internet connection exists'''
 
         host_ip   = stage.server_dns    # ['8.8.8.8','1.1.1.1']
-        host      = ['ckloth.de','spiegel.de','www.google.com']
+        host      = ['spiegel.de','google.com']
         ping_ip   = False
         error_msg = ""
 

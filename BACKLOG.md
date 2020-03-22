@@ -274,9 +274,11 @@ Here you'll find a history of features implemented into hardware and software as
 * OK - new icon set, due to license reasons
 * OK - several optimizations
 * OK - enable multi-language support
+* OK - BUG printAppStatusLoad not defined
+* OK - BUG Settings displayed not correctly (on the box)
+* OK - BUG hide menu when width of browser > XX Pixel (720?); see remote
+* OK - BUG show filter from the beginning, if set "mbox_filter = true"
 
-- BUG printAppStatusLoad not defined
-- BUG Settings displayed not correctly (on the box)
 - BUG jump to album doesnt work
 - BUG loading albums and tracks to edit playlist doesnt work every time
 

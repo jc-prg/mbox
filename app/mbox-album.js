@@ -179,6 +179,8 @@ function mboxAlbumAll(data) {
 	setTextById("remote2",text);
 	setTextById("ontop",print);
 
+	mboxShowFilter();
+
 	if (album_active && album_active != "") {
 		mboxAlbumLoad(album_active_no,album_active);
 		document.getElementById('scrollto_'+album_active.replace(/-/g,"")).scrollIntoView();

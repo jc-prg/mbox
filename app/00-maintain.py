@@ -24,9 +24,9 @@ cache_manifest_dir = [
 
 text_to_replace = [
 #	[ "appPrintMenu", "appPrint_menu" ], # sample
-	[ "mboxCoverAlbum2","mboxCoverAlbum_new" ],
-	[ "mboxAlbumInfoCover","mboxCoverAlbumInfo" ],
-	[ "toggleCoverPrint","mboxCoverTogglePrint" ],
+	[ "printAppStatusLoad","appPrintStatus_load" ],
+#	[ "mboxAlbumInfoCover","mboxCoverAlbumInfo" ],
+#	[ "toggleCoverPrint","mboxCoverTogglePrint" ],
 	]
 
 

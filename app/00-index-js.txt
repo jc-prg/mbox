@@ -76,7 +76,7 @@ function image(file)
 ./mbox-conf.js (-1)
 ----------------------------
 ----------------------------
-./volume_slider.js (88)
+./volume_slider.js (96)
 ----------------------------
 function slider ( name, container, callOnChange )
 	this.init    = function( min, max, label )
@@ -175,7 +175,7 @@ function appPrintStatus(data)
 function appCheckUpdates_msg(data)
 function appCheckUpdates()
 ----------------------------
-./mbox-radio.js (304)
+./mbox-radio.js (310)
 ----------------------------
 function mboxRadio_load()
 function mboxRadio(data)

@@ -56,14 +56,14 @@ function appPrintMenu() {
 	if (mbox_filter == true) { mbox_filter_show = "hide"; }
 	else			 { mbox_filter_show = "show"; }
 
-	appMenu.add_script( "mboxToggleMode();printAppStatusLoad();if(mbox_settings){settingsToggle();}", "Modus: " + mbox_mode );
-	appMenu.add_script( "mboxToggleDevice();printAppStatusLoad();if(mbox_settings){settingsToggle();}", lang("DEVICE") + ": " + mbox_device );
+	appMenu.add_script( "mboxToggleMode();appPrintStatus_load();if(mbox_settings){settingsToggle();}", "Modus: " + mbox_mode );
+	appMenu.add_script( "mboxToggleDevice();appPrintStatus_load();if(mbox_settings){settingsToggle();}", lang("DEVICE") + ": " + mbox_device );
 	if (mbox_mode == "Album") {
-		appMenu.add_script( "mboxToggleFilter();printAppStatusLoad();if(mbox_settings){settingsToggle();}", "Filter: " + mbox_filter_show );
+		appMenu.add_script( "mboxToggleFilter();appPrintStatus_load();if(mbox_settings){settingsToggle();}", "Filter: " + mbox_filter_show );
 		}
 	appMenu.add_line();
 	appMenu.add_script( "mboxListCardsLoad();if(mbox_settings){settingsToggle();printAllStatusLoad();};", lang("RFID_CARDS") );
-	appMenu.add_script( "settingsToggle();settingsStatusLoad();printAppStatusLoad();", lang("SETTINGS") );
+	appMenu.add_script( "settingsToggle();settingsStatusLoad();appPrintStatus_load();", lang("SETTINGS") );
 	appMenu.add_line();
         appMenu.add_script( "mboxCoverTogglePrint();", lang("COVER_IMAGES"));
         

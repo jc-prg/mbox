@@ -19,62 +19,58 @@ function jcMenu(name, menu, title)
 
 function jcMenu(name, menu, title) {
 
-	this.menuItems = menu;
-	this.menuTitle = title;
-        this.app_name  = name;
-	this.data      = {};
+	this.menuItems   = menu;
+	this.menuTitle   = title;
+        this.app_name    = name;
+        this.inital_load = true;
+	this.data        = {};
 
 
         // load data with devices (deviceConfig["devices"])
         this.init = function(data=[]) {
-                this.data = data;
-                this.log("Initialized new class 'jcMenu'.");
-    		setTextById(this.menuItems,"");
+        	if (data["DATA"]) 	{ this.data = data; }
+        	else			{ return; }
+                
+                if (this.initial_load) { 
+                	this.log("Initialized new class 'jcMenu'.");
+                	this.inital_load = false;
+                	}
+                else {
+                	this.log("Reload data 'jcMenu'.");
+                	}
+
+    		this.empty();
                 }
 
         // load data with devices (deviceConfig["devices"])
-        this.empty = function(data=[]) {
-    		setTextById(this.menuItems,"");
+        this.empty = function() {
+    		this.writeMenu("");
                 }
 
 
 	// add links to scenes to drop down menu
 	this.add_script = function(script,label) {
 
-		// set vars
-    		var menu = getTextById(this.menuItems);
-
-		// create link for javascript
+    		var menu = this.readMenu();
 		menu += this.entry_script(script,label);
-
-		// replace old menu
-    		setTextById(this.menuItems,menu);
+    		this.writeMenu(menu);
 		}
 
 
 	// add links to scenes to drop down menu
 	this.add_line = function() {
-		// set vars
-    		var menu = getTextById(this.menuItems);
-
-		// create link for javascript
+	
+    		var menu = this.readMenu();
 		menu += "<hr width=\"90%\" height=\"1px\" />";
-
-		// replace old menu
-    		setTextById(this.menuItems,menu);
+    		this.writeMenu(menu);
 		}
 
 	// add links to scenes to drop down menu
 	this.add_link = function(link,label) {
 
-		// set vars
-    		var menu = getTextById(this.menuItems);
-
-		// create link for javascript
-		menu += this.entry_link(link,label);
-
-		// replace old menu
-    		setTextById(this.menuItems,menu);
+    		var menu = this.readMenu();
+		menu += menuEntry(link,label);
+    		this.writeMenu(menu);;
 		}
 
 	// menu entries
@@ -95,6 +91,28 @@ function jcMenu(name, menu, title) {
         this.log = function(msg) {
                 console.log(this.app_name + ": " + msg);
                 }
+                
+        // write data to menu
+        this.writeMenu            = function(menutext) {
+        	if (typeof this.menuItems == "string") {
+        		setTextById(this.menuItems,menutext);
+        		}
+        	else if (typeof this.menuItems == "object") {
+        		for (var i=0; i<this.menuItems.length; i++) {
+	        		setTextById(this.menuItems[i],menutext);
+        			}
+        		}
+        	}
+        	
+        // read data from menu
+        this.readMenu             = function() {
+        	if (typeof this.menuItems == "string") {
+        		return getTextById(this.menuItems);
+        		}
+        	else if (typeof this.menuItems == "object") {
+        		return getTextById(this.menuItems[0]);
+        		}
+        	}
 	}
 
 

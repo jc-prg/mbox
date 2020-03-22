@@ -36,7 +36,7 @@ mboxApp.setAutoupdate( mboxCheckStatus );
 // additional apps to write menus, remotes, messages
 //--------------------------------
 
-var appMenu     = new jcMenu(     "appMenu", "menuItems", "navTitle" );
+var appMenu     = new jcMenu(     "appMenu", ["menuItems","menuItems2"], "navTitle" );
 var appMsg      = new jcMsg(      "appMsg" );
 var appCookie   = new jcCookie(   "appCookie");
 var reload      = true;

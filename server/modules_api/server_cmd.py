@@ -399,17 +399,18 @@ def mboxAPI_edit(uuid,entry_data):
 def mboxAPI_delete(uuid):
 
        global couch
-       database   = ""
-       databases  = ["files","tracks","albums","album_info","cards","playlists","radio","artists"]
-       db_entries = {}
-       data       = mboxAPI_start("delete","delete","",uuid,"")
+       database          = ""
+       databases         = ["files","tracks","albums","album_info","cards","playlists","radio","artists"]
+       databases_changed = []
+       db_entries        = {}
+       data              = mboxAPI_start("delete","delete","",uuid,"")
 
        # read all data from DB
-       for name in databases: db_entries[name] = couch.read(name)
+       for name in databases: db_entries[name] = couch.read_cache(name)
 
        # delete album, tracks, files, link to card
        if "a_" in uuid:
-           database      = "album_info"
+           database          = "album_info"
            if uuid in db_entries[database]:
                entry = db_entries[database][uuid]
 
@@ -917,7 +918,7 @@ def mboxAPI_pause():
        data       = mboxAPI_start("pause","pause","","","")
 
        if mbox.active_device == "music_box":   thread_music_ctrl.pause_playback()   # album or song
-       else:                          thread_radio_ctrl.pause_playback()   # radio
+       else:                                   thread_radio_ctrl.pause_playback()   # radio
        
        data = mboxAPI_end(data)
        return(data)

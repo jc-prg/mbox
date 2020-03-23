@@ -498,14 +498,26 @@ function mboxPlaylistTrackRow(data,uuid,split=false,uuid_pl="") {
         }
 
 
-// delete playlist (dialog to confirm)
+// delete playlist (from dialog to confirm to message)
 //---------------------------
 
 function mboxPlaylistDelete(uuid,title) {
 	text    = "Playlist <b>"+title+"</b> wirklich l&ouml;schen?";
-	cmd     = "mboxApp.requestAPI(#DELETE#,[#data#,#"+uuid+"#],##, mboxPlaylistAll_load);";
+	cmd     = "mboxPlaylistDelete_exec('"+uuid+"');";
 	appMsg.confirm(text,cmd,150,true);
+	console.error("1");
 	}
+	
+function mboxPlaylistDelete_exec(uuid) {
+	console.error("2");
+	mboxApp.requestAPI('DELETE',['data',uuid],'',mboxPlaylistDelete_msg);
+	}
+
+function mboxPlaylistDelete_msg(data) {
+	console.error("3");
+	mboxReturnMsg(data,"Playliste gelöscht.","Beim Löschen der Playliste ist ein Fehler aufgetreten.");
+        mboxPlaylistAll_load();
+        }
 
 
 // radio info as popup (incl. some settings ...)
@@ -514,9 +526,12 @@ function mboxPlaylistDelete(uuid,title) {
 function mboxPlaylistInfo_load(uuid) { mboxApp.requestAPI("GET",["data",uuid,"-"],"", mboxPlaylistInfo ); }
 function mboxPlaylistInfo(data) {
         var text   = "";
+        
+        if (!data["DATA"]["_selected"]) { console.log("mboxPlaylistInfo: no [DATA][_selected]"); return; }
+        
         var album  = data["DATA"]["_selected"];
         var uuid   = data["DATA"]["_selected_uuid"];
-        var url    = RESTurl + "mbox/read/playlists/"+uuid+"/";
+        var url    = RESTurl + "api/data/"+uuid+"/--";
         var size   = Math.round(album["albumsize"]/1024/1024*100)/100;
         var cardid = album["card_id"]; if (!cardid) { cardid = "Keine Karte verkn&uuml;pft."; }
 
@@ -618,11 +633,8 @@ function mboxPlaylistAdd_dialog(i) {
 //--------------------------------------
 
 function mboxPlaylistAdd_msg(data) {
-        var text = "";
-        if (data["REQUEST"]["status"] == "success")	{ text += "Playliste mit Titel angelegt."; }
-        else                         		 	{ text += "Beim Anlegen der Playliste ist ein Fehler aufgetreten."; }
-        appMsg.alert(text);
-        mboxPlaylistAll_load()
+	mboxReturnMsg(data,"Playliste angelegt.","Beim Anlegen der Playliste ist ein Fehler aufgetreten.");
+        mboxPlaylistAll_load();
         }
 
 //---------------------------

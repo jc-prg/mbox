@@ -130,8 +130,7 @@ function appCheckUpdates() {
         appMsg.wait(lang("LOADING_APP")+" ...", ""); 
         mboxApp.requestAPI("GET",["version", appVersion], "", appCheckUpdates_msg, "wait");
         }
-
-
+	
 //-----------------------------
 // EOF
 

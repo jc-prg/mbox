@@ -10,9 +10,27 @@ function mboxDataEditExecute(uuid, key_list, type)
 */
 //--------------------------------------
 
+//-----------------------------
+
+function mboxReturnMsg(data={},success="",error="") {
+
+	if (success == "") { success = "OK!"; }
+	if (error   == "") { error   = "Error!"; }
+	
+	if (data["REQUEST"]["status"] == "success" && !data["REQUEST"]["error"]) {
+		appMsg.alert(success);
+		}
+	else if (data["REQUEST"]["status"] == "success" && data["REQUEST"]["error"]) {
+		appMsg.alert(error + "<br/>("+data["REQUEST"]["error"]+")");
+		}
+	else {
+		appMsg.alert(error);
+		console.warn("Unknown data returned.");
+		}
+	}
+
 function mboxDataReturnMsg(data) {
-	if ("Result" in data)		{ appMsg.alert(data["Result"]["Msg"] + " (" + data["Result"]["Code"] + ")"); }
-	else if ("ReturnMsg" in data)	{ appMsg.alert(data["ReturnMsg"]); }
+	mboxReturnMsg(data);
 	}
 
 //--------------------------------------

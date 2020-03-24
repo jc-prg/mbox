@@ -361,7 +361,7 @@ function mboxPlaylistEditTracks(data) {
 			}
 		else	{ text_album += "<b class=\"album_edit_pl\" onclick=\""+onclick3+"\">(+)</b> &nbsp;"; }
 			
-		text_album += "<i><b>Ganzes Album:</b> "+data["DATA"]["album_info"][uuid]["album"]+"</i><br/>";
+		text_album += "<i><b>"+lang("ALBUM_COMPLETE")+":</b> "+data["DATA"]["album_info"][uuid]["album"]+"</i><br/>";
 		}
 
 	// ALBUM LIST - add or delete track
@@ -390,8 +390,8 @@ function mboxPlaylistEditTracks(data) {
 			var found      = true;
 			text_playlist += " <b class=\"album_delete_pl\" onclick=\""+onclick2+"\">(-)</b> &nbsp;";
 
-			if (tracks[i] in trackinfo)	{ text_playlist += trackinfo[tracks[i]]["title"]; }
-			else if (tracks[i] in albuminfo){ text_playlist += "<b>"+lang("ALBUM_COMPLETE")+":</b> " + albuminfo[tracks[i]]["album"]; }
+			if (tracks[i] in trackinfo)	{ text_playlist += trackinfo[tracks[i]]["title"] + " (" + trackinfo[tracks[i]]["artist"] + ")"; }
+			else if (tracks[i] in albuminfo){ text_playlist += "<b>"+lang("ALBUM_COMPLETE")+":</b> " + albuminfo[tracks[i]]["album"] + " (" + albuminfo[tracks[i]]["artist"] + ")"; }
 			else 				{ text_playlist += "<i>"+lang("NOT_FOUND")+": " + tracks[i] + "</i>"; found = false; }
 			
 			text_playlist += "<br/>";

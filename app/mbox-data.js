@@ -4,6 +4,7 @@
 // Edit data (playlist and web-stream)
 //--------------------------------------
 /* INDEX:
+function mboxReturnMsg(data={},success="",error="")
 function mboxDataReturnMsg(data)
 function mboxDataEdit(data)
 function mboxDataEditExecute(uuid, key_list, type)

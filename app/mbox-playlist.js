@@ -20,11 +20,14 @@ function mboxPlaylistEditEntry_load(uuid)
 function mboxPlaylistEditEntry(data)
 function mboxPlaylistTrackRow(data,uuid,split=false,uuid_pl="")
 function mboxPlaylistDelete(uuid,title)
+function mboxPlaylistDelete_exec(uuid)
+function mboxPlaylistDelete_msg(data)
 function mboxPlaylistInfo_load(uuid)
 function mboxPlaylistInfo(data)
 function mboxPlaylistInfo_close()
-function mboxPlaylistInfoDelete(data)
-function mboxPlaylistInfoAdd(data)
+function mboxPlaylistDeleteTrackInfo(data)
+function mboxPlaylistDeleteTrack(data)
+function mboxPlaylistAddTrackInfo(data)
 function mboxPlaylistAdd()
 function mboxPlaylistAdd_dialog(i)
 function mboxPlaylistAdd_msg(data)
@@ -616,7 +619,7 @@ function mboxPlaylistAdd() {
         var title = document.getElementById("playlist_title").value;
         var descr = document.getElementById("playlist_description").value;
         document.getElementById("mboxPlaylistAdd").disabled = true;
-        document.getElementById("mboxPlaylistAdd").innerHTML = "Please wait ...";
+        document.getElementById("mboxPlaylistAdd").innerHTML = lang("PLEASE_WAIT")+" ...";
         mboxApp.requestAPI('POST',['data','playlists',title+'||'+descr], '', mboxPlaylistAdd_msg);
         }
 

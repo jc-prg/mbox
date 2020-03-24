@@ -2,6 +2,23 @@
 
 Here you'll find a history of features implemented into hardware and software as well as ideas what else to implement.
 
+## KNOWN BUGS
+
+- BUG app/server - if playlist with the same title already exists, two lists with the same tracks, id, and image are displayed => check server side?
+- BUG server - reconnect Card doesn't work
+- BUG server - if playing and press play in a playlist, start with first song instead of actuall running song (PlaySong -> start file, not list without loading list again)
+- BUG server - Start with STREAM and card laying on the RFID sensor leads to an error
+  - when no card is laying on the RFID sensor while starting (a bit later -> connection error, after restart it's working)
+  - seems to be a connection error?! "\[ErrNo 104\] Connection reset by peer"
+  - IDEAS:
+    -> restart mboxServer, if internet connection changes (autohotspot)
+    -> run mboxServer outside of a container (may require couchDB locally also)
+    -> run mboxDB outside of a container
+- BUG app - edit playlist (if data is not connected correctly any more, e.g. due to reload)
+
+- UNSTABLE app/server - Delete RFID Cards doesn't work the 2nd time {Error: mbox - GET / http://music-box:5005/api/cards/-/ (not available/4/500).}
+- UNSTABLE app - loading albums and tracks to edit playlist doesnt work every time
+
 ## BOX BASICS
 
 * OK - Pi, Battery & Speaker in Box are installed
@@ -141,18 +158,8 @@ Here you'll find a history of features implemented into hardware and software as
 
 #--------------------------------
 
-* BUG - if playing and press play in a playlist, start with first song instead of actuall running song (PlaySong -> start file, not list without loading list again)
-* BUG - Start with STREAM and card laying on the RFID sensor leads to an error
-  - when no card is laying on the RFID sensor while starting (a bit later -> connection error, after restart it's working)
-  - seems to be a connection error?! "\[ErrNo 104\] Connection reset by peer"
-  - IDEAS:
-    -> restart mboxServer, if internet connection changes (autohotspot)
-    -> run mboxServer outside of a container (may require couchDB locally also)
-    -> run mboxDB outside of a container
-    
-
-#--------------------------------
-
+- speaking return message in API response (even if successful)
+- check if connected in the background (in a thread)
 - import / export connection between card and albums, lists and streams as json
 - reconnect tracks / albums when reloading based on path/file or albumpath (mbox_load)
 - save presets in database and e.g. prefered device, start with last song played before switched off
@@ -278,9 +285,10 @@ Here you'll find a history of features implemented into hardware and software as
 * OK - BUG Settings displayed not correctly (on the box)
 * OK - BUG hide menu when width of browser > XX Pixel (720?); see remote
 * OK - BUG show filter from the beginning, if set "mbox_filter = true"
+* OK - BUG app - jump to album doesnt work - no error detected 
+* OK - BUG app - track delete from list (when not connected any more), doesn't work ... maybe, as used the same function as in edit dialog?
+* OK - BUG app - create playlist -> missing translation ("pleases wait" on button)
 
-- BUG jump to album doesnt work
-- BUG loading albums and tracks to edit playlist doesnt work every time
 
 - new volume control
 - timeout for API Request and reaction to the timeout (show error message) - required e.g. if parallel processes like a system update is running on the raspberry

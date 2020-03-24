@@ -488,7 +488,7 @@ paths:
       tags:
         - playback
       summary: set step in playlist (-1,1)
-      description: set volume (mute, up, down)
+      description: play next or last song
       parameters:
         - name: step
           in: path
@@ -610,12 +610,12 @@ paths:
       tags:
         - playback
       summary: set volume
-      description: set volume (mute, up, down)
+      description: set volume (mute, up, down, set[0..100])
       parameters:
         - name: param
           in: path
           type: string
-          enum: ["mute","up","down"]
+#          enum: ["mute","up","down"]
           required: true
       responses:
         200:

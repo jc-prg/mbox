@@ -792,6 +792,10 @@ def mboxAPI_volume(param):
        elif (param == "down"):
             thread_music_ctrl.music_vol("down")
 
+       elif ("set" in param):
+            getvol = param.split(":")
+            thread_music_ctrl.music_vol(int(getvol[1]))
+
        else:
             data = mboxAPI_error(data, "Parameter not supported: "+param)
             logging.warn("Parameter not supported: " + param)   

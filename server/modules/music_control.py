@@ -140,9 +140,16 @@ class musicThread (threading.Thread):
       if (up == "up" and vol < 1.0):
         vol = vol + 0.05
         print("up")
-      elif (vol > 0.0):
+        
+      elif (up == "down" and vol > 0.0):
         vol = vol - 0.05
         print("down")
+        
+      elif (isinstance(up, int) and up >= 0 and up <= 100):
+        vol = up / 100
+        print("set vol:"+str(vol))
+        logging.warn("test ..."+str(vol))
+
 
       logging.info("MUSIC VOL:"+str(vol)+"/"+str(self.vol_factor))
 

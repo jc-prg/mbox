@@ -25,6 +25,7 @@ function mboxDeletePlaying ()
 function mboxSetStatus (color)
 function mboxToggleDevice ()
 function mboxToggleFilter ()
+function mboxShowFilter ()
 */
 //--------------------------------------
 
@@ -333,11 +334,17 @@ function mboxVolumeControl(volume, mute) {
 	setTextById("audio3", vol_str);
 	setTextById("audio_ctrl", top);
 
+	setOnclickById("audio1", "mboxSlider.show_hide();");
+	setOnclickById("audio2", "mboxSlider.show_hide();");
+	setOnclickById("audio3", "mboxSlider.show_hide();");
+	setOnclickById("audio4", "mboxSlider.show_hide();");
+
+/*
 	setOnclickById("audio1", "changeVisibility('audio_ctrl');");
 	setOnclickById("audio2", "changeVisibility('audio_ctrl');");
 	setOnclickById("audio3", "changeVisibility('audio_ctrl');");
 	setOnclickById("audio4", "changeVisibility('audio_ctrl');");
-
+*/
 	return text;
 	}
 

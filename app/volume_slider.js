@@ -14,14 +14,28 @@ function slider ( name, container, callOnChange )
 */
 //-----------------------------------------
 
-function slider ( name, container, callOnChange ) {
+var main_audio = "test";
+
+function slider ( name, container ) {
 
 	this.appName      = name;
 	this.appContainer = container;
-	this.callOnChange = callOnChange;
-
+	this.callOnChange = this.info;
+	this.showVolume   = this.info;
+	
+	// set callback functions
+	this.setOnChange	= function(callOnChange) {
+		if (callOnChange != "") { this.callOnChange = callOnChange; }
+		else			{ this.callOnChange = this.info; }
+		}
+		
+	this.setShowVolume	= function(showVolume,showVolumeContainer) {
+		if (showVolume != "")	{ this.showVolume = showVolume; this.showVolumeContainer = showVolumeContainer; }
+		else			{ this.showVolume = this.info;  this.showVolumeContainer = ""; }
+		}
+		
 	// initialize slider
-	this.init    = function( min, max, label ) {
+	this.init	= function( min, max, label ) {
 		name = this.appName;
 
 		if (this.container == undefined) {
@@ -42,40 +56,40 @@ function slider ( name, container, callOnChange ) {
 			}
 
 		this.slider_value.innerHTML	= this.slider.value;
-		this.slider_label.innerHTML	= label + " (" + main_audio + ")";
+		this.slider_label.innerHTML	= "Device: " + label;
 	
 		this.appMainAudio 		= main_audio;
 		this.appMainAudioLabel		= label;
 		this.audioMin     		= min;
 		this.audioMax     		= max;
 		
-		this.slider.oninput = function( ) {
-			rm3slider.slider_value.innerHTML	= rm3slider.slider.value;
-			console.log("Set Volume: " + rm3slider.slider.value);  
+		this.slider.oninput	= function( ) {
+			mboxSlider.slider_value.innerHTML	= mboxSlider.slider.value;
+			console.log("Set Volume: " + mboxSlider.slider.value);  
 			//this.slider_value.innerHTML 		= this.slider.value;
 
 			vol_color = "white";
-			vol_str   = show_volume( rm3slider.slider.value, rm3slider.audioMax, vol_color );
-			document.getElementById("audio3").innerHTML = vol_str;
+			vol_str   = this.showVolume( mboxSlider.slider.value, mboxSlider.audioMax, vol_color );
+			document.getElementById( mboxSlider.showVolumeContainer ).innerHTML = vol_str;
 			}
 		
-		this.slider.onmousedown = function() { rm3slider.slider_active = true; }
-		this.slider.onmouseup = function() {
+		this.slider.onmousedown	= function() { mboxSlider.slider_active = true; }
+		this.slider.onmouseup	= function() {
 			//this.callOnChange( this.slider.value );
-			rm3slider.callOnChange( rm3slider.appMainAudio, rm3slider.slider.value );
-			rm3slider.slider_active = false;
+			mboxSlider.callOnChange( mboxSlider.appMainAudio, mboxSlider.slider.value );
+			mboxSlider.slider_active = false;
 			}
 
-		this.slider.ontouchstart = function() {	rm3slider.slider_active = true;	}
-		this.slider.ontouchend = function() {
+		this.slider.ontouchstart= function() {	mboxSslider.slider_active = true;	}
+		this.slider.ontouchend	= function() {
 			//this.callOnChange( this.slider.value );
-			rm3slider.callOnChange( rm3slider.appMainAudio, rm3slider.slider.value );
-			rm3slider.slider_active = false;
+			mboxSlider.callOnChange( mboxSslider.appMainAudio, mboxSslider.slider.value );
+			mboxSlider.slider_active = false;
 			}
 		}
 				
 	// set value from outside (update data)
-	this.set_value = function( value ) {
+	this.set_value	= function( value ) {
 		if (this.slider_active == false) {
 			this.slider.value		= value;
 			this.slider_value.innerHTML	= value;
@@ -84,9 +98,13 @@ function slider ( name, container, callOnChange ) {
 		}
 		
 	// show or hide slider
-	this.show_hide = function() {
+	this.show_hide	= function() {
 		if (this.slider_cont.style.visibility == "hidden") 	{ this.slider_cont.style.visibility = "visible"; }
 		else							{ this.slider_cont.style.visibility = "hidden"; }
+		}
+	
+	this.info	= function() {
+		alert("Please define a function to be called on change.");
 		}
 		
 	}

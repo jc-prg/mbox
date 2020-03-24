@@ -41,6 +41,15 @@ var appMsg      = new jcMsg(      "appMsg" );
 var appCookie   = new jcCookie(   "appCookie");
 var reload      = true;
 
+var mboxSlider  = new slider( name="mboxSlider", container="audio_slider");
+mboxSlider.init(0,100,mbox_device);
+mboxSlider.setOnChange(test_slider);
+mboxSlider.setShowVolume("","audio3");
+
+function test_slider(var1="",var2="") {
+	alert("test: "+var1+"/"+var2);
+	}
+
 appCheckUpdates();		// check if app is up-to-date
 appPrintStatus_load();		// initial load of data (default: Album)
 
@@ -68,6 +77,8 @@ function appPrintMenu() {
         appMenu.add_script( "mboxCoverTogglePrint();", lang("COVER_IMAGES"));
         
         appMenu.set_title( appTitle + mbox_mode );
+
+	mboxSlider.init(0,100,mbox_device);
 	}
 
 
@@ -92,6 +103,9 @@ function appPrintStatus(data) {
 
 		// write icons for 3 modes
 		mboxWriteGroups();
+		
+		//
+		mboxSlider.init(data);
 
 		// write menu entrie for 3 modes
 		if (mbox_mode == "Album")    { mboxAlbumAllLoad(); }

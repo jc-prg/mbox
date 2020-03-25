@@ -81,22 +81,6 @@ function image(file)
 ./mbox-conf.js (-1)
 ----------------------------
 ----------------------------
-./volume_slider.js (117)
-----------------------------
-function slider ( name, container )
-	this.setOnChange	= function(callOnChange="")
-	this.setShowVolume	= function(showVolume="")
-	this.init	= function( min, max, label )
-		this.slider.oninput		= function( )
-		this.slider.onmousedown		= function()
-		this.slider.onmouseup		= function()
-		this.slider.ontouchstart	= function()
-		this.slider.ontouchend		= function()
-	this.set_value	= function( value )
-	this.show_hide	= function()
-	this.info	= function()
-		alert("Please define a function to be called on change.")
-----------------------------
 ./config_stage.js (-1)
 ----------------------------
 ----------------------------
@@ -115,7 +99,7 @@ function mboxListCards(data)
 function mbox_delete_card(card_id,uuid_pl)
 function editCard_save(data)
 ----------------------------
-./mbox-control.js (604)
+./mbox-control.js (606)
 ----------------------------
 function mboxWriteGroups()
 function mboxControlLoad()
@@ -180,10 +164,8 @@ function localPlayer(position=0, play=true)
 function writeAudioPlayer(id,divid)
 function myPlayer(id,divid)
 ----------------------------
-./app-main.js (156)
+./app-main.js (157)
 ----------------------------
-// ----------------- => function for testing <= ------------------)
-function test_slider(var1="",var2="")
 // ----------------- => function for testing <= ------------------)
 function appPrintMenu()
 function appPrintStatus_load()

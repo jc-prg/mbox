@@ -5,8 +5,6 @@
 //--------------------------------------
 /* INDEX:
 // ----------------- => function for testing <= ------------------)
-function test_slider(var1="",var2="")
-// ----------------- => function for testing <= ------------------)
 function appPrintMenu()
 function appPrintStatus_load()
 function appPrintStatus(data)

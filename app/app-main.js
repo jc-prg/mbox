@@ -4,6 +4,9 @@
 // main functions to load the app
 //--------------------------------------
 /* INDEX:
+// ----------------- => function for testing <= ------------------)
+function test_slider(var1="",var2="")
+// ----------------- => function for testing <= ------------------)
 function appPrintMenu()
 function appPrintStatus_load()
 function appPrintStatus(data)
@@ -41,14 +44,19 @@ var appMsg      = new jcMsg(      "appMsg" );
 var appCookie   = new jcCookie(   "appCookie");
 var reload      = true;
 
-var mboxSlider  = new slider( name="mboxSlider", container="audio_slider");
-mboxSlider.init(0,100,mbox_device);
-mboxSlider.setOnChange(test_slider);
-mboxSlider.setShowVolume("","audio3");
+//--------------------------------
+// load volume slider
+//--------------------------------
 
-function test_slider(var1="",var2="") {
-	alert("test: "+var1+"/"+var2);
-	}
+var mboxSlider  = new jcSlider( name="mboxSlider", container="audio_slider");
+//mboxSlider.setPosition(false,"200px",false,"200px");
+mboxSlider.setPosition(top="45px",bottom=false,left=false,right="10px");
+mboxSlider.init(0,100,mbox_device);
+mboxSlider.setOnChange(mboxVolumeSet);
+mboxSlider.setShowVolume(mboxVolumeShow);
+
+// ----------------- => function for testing <= ------------------
+
 
 appCheckUpdates();		// check if app is up-to-date
 appPrintStatus_load();		// initial load of data (default: Album)

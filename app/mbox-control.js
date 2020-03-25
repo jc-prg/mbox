@@ -12,6 +12,8 @@ function mboxControlChangePosition(e)
 function mboxControlProgressPrint()
 function mboxControlProgress()
 function mboxControlProgressTime()
+function mboxVolumeSet(volume)
+function mboxVolumeShow(volume,mute)
 function mboxVolumeControl(volume, mute)
 function mboxPlaylistControl(uuid)
 function mboxShowUUID(uuid)
@@ -68,6 +70,7 @@ function mboxControl (data) {
 	var playing    = d["playing"];
 	var uuid       = "";
 	var audio      = "";
+	
 
 	if (getTextById("audioPlayer") != false) { audio = getTextById("audioPlayer"); }
 
@@ -75,10 +78,19 @@ function mboxControl (data) {
 	text  += "<div class='mbox_ctrl_info'>";
 
 	// local player
-	if (mbox_device == "local") { text += "<div id='audioPlayer'>"+audio+"</div>"; 	}
+	if (mbox_device == "local") { 
+		// keep current player or create new container for local player
+		text += "<div id='audioPlayer'>"+audio+"</div>";
+
+		// set current value to slider
+		if (mboxPlayer) { mboxSlider.set_value(Math.round(mboxPlayer.volume*100)); }
+		}
 
 	// remote player
 	else {
+		// set current value to slider
+		mboxSlider.set_value(Math.round(volume*100));
+
 		// Info for running music, if music box
 		if (type == "music_box") {
 			var song        = d["song"];
@@ -284,25 +296,24 @@ function mboxControlProgressTime() {
 // show / control volume
 //---------------------------------------------
 
-function mboxVolumeControl(volume, mute) {
-
-
-	// buttons for top control
-	var top = "";
-	if (mbox_device != "local") {
-		top += mboxButton("vol+", "mboxApp.requestAPI('GET',['volume','up'],   '', mboxControl);", "blue big");
-		top += mboxButton("mute", "mboxApp.requestAPI('GET',['volume','mute'], '', mboxControl);", "blue big");
-		top += mboxButton("vol-", "mboxApp.requestAPI('GET',['volume','down'], '', mboxControl);", "blue big");
+function mboxVolumeSet(volume) {
+	if (volume >= 0 && volume <= 100) {
+		if (mbox_device != "local") 	{ mboxApp.requestAPI('GET',['volume','set:'+volume], '', mboxControl); }
+		else				{ volume = volume / 100;  mboxPlayer.volumeSet(volume);  mboxControl(); }
+		}
+	else if (volume == "mute") {
+		if (mbox_device != "local") 	{ mboxApp.requestAPI('GET',['volume','mute'], '', mboxControl); }
+		else				{ mboxPlayer.volumeMute(); mboxControl(); }
 		}
 	else {
-		top += mboxButton("vol+", "if (mboxPlayer) { mboxPlayer.volumeUp();   mboxVolumeControl(); }", "green big");
-		top += mboxButton("mute", "if (mboxPlayer) { mboxPlayer.volumeMute(); mboxVolumeControl(); }", "green big");
-		top += mboxButton("vol-", "if (mboxPlayer) { mboxPlayer.volumeDown(); mboxVolumeControl(); }", "green big");
+		console.warn("mboxVolumeSet: Value out of range ("+volume+")");
 		}
+	}
+	
+//---------------------------------------------
 
-	// buttons for bottom control
-	var text      = "";
-	var vol_color = "white";
+function mboxVolumeShow(volume,mute) {
+	var vol_col = "white";
 
 	// check volume and show in navigation bar
 	if (mbox_device == "local") {
@@ -324,27 +335,57 @@ function mboxVolumeControl(volume, mute) {
                 }
 
 	// check volume and show in navigation bar
+	if (volume > 1) { volume = volume / 100; }
         var volume  = Math.round( volume * 20 / 1 );
         var vol_str = "<font color='" + vol_color + "'>";
         for (var i=0; i<volume; i++) { vol_str += "I"; }
         vol_str += "</font>";
         for (var i=0; i<20-volume; i++) { vol_str += "I"; }
 
+	setTextById("audio3", vol_str);
+	}
+
+//---------------------------------------------
+
+function mboxVolumeControl(volume, mute) {
+
+	// buttons for bottom control
+	var text      = "";
+	var vol_color = "white";
+
+	// check volume and show in navigation bar
+	if (mbox_device == "local") {
+		var vol_color = "lightgreen";
+		if (mboxPlayer) { volume = mboxPlayer.volume; if (mboxPlayer.audio.muted) { mute = 1; } else { mute = 0; } }
+		else		{ volume = 0; }
+		}
+
+        // check audio status and show in navigation bar
+        if (Math.round(volume*20/1) < 1 || mute == 1) {
+                document.getElementById("audio1").style.display = "block";
+                document.getElementById("audio2").style.display = "none";
+                if (mbox_device != "local") 	    { vol_color = "gray"; }
+		else				    { vol_color = "green"; }
+                }
+        else {	// mute
+                document.getElementById("audio1").style.display = "none";
+                document.getElementById("audio2").style.display = "block";
+                }
+
+	// check volume and show in navigation bar
+        var volume  = Math.round( volume * 20 / 1 );
+        var vol_str = "<font color='" + vol_color + "'>";
+        for (var i=0; i<volume; i++) { vol_str += "I"; }
+        vol_str += "</font>";
+        for (var i=0; i<20-volume; i++) { vol_str += "I"; }
 
 	setTextById("audio3", vol_str);
-	setTextById("audio_ctrl", top);
 
 	setOnclickById("audio1", "mboxSlider.show_hide();");
 	setOnclickById("audio2", "mboxSlider.show_hide();");
 	setOnclickById("audio3", "mboxSlider.show_hide();");
 	setOnclickById("audio4", "mboxSlider.show_hide();");
 
-/*
-	setOnclickById("audio1", "changeVisibility('audio_ctrl');");
-	setOnclickById("audio2", "changeVisibility('audio_ctrl');");
-	setOnclickById("audio3", "changeVisibility('audio_ctrl');");
-	setOnclickById("audio4", "changeVisibility('audio_ctrl');");
-*/
 	return text;
 	}
 

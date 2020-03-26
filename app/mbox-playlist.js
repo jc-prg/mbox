@@ -511,16 +511,13 @@ function mboxPlaylistDelete(uuid,title) {
 	text    = lang("PLAYLIST_DELETE_ASK") + ": <b>"+title+"</b>?";
 	cmd     = "mboxPlaylistDelete_exec('"+uuid+"','"+title+"');";
 	appMsg.confirm(text,cmd,150,true);
-	console.error("1");
 	}
 	
 function mboxPlaylistDelete_exec(uuid,title) {
-	console.error("2");
 	mboxApp.requestAPI('DELETE',['data',uuid],'',[mboxPlaylistDelete_msg,title]);
 	}
 
 function mboxPlaylistDelete_msg(data,title) {
-	console.error("3");
 	mboxReturnMsg(data,lang("PLAYLIST_DELETED")+"<br/><b>"+title,lang("PLAYLIST_DELETE_ERROR")+"<br/><b>"+title);
         mboxPlaylistAll_load();
         }

@@ -230,13 +230,13 @@ function mboxRadioInfo(data) {
         text += "<tr><td colspan='2'><hr></td></tr>";
         text += mboxTableNew(["<i>"+lang("TITLE")+":",              	album["title"] ] );
         text += mboxTableNew(["<i>"+lang("DESCRIPTION")+":",        	album["description"] ] );
-        text += mboxTableNew(["<i>Info:",	        			"<a href=\"" + album["stream_info"] + "\" target=\"_blank\">" + album["stream_info"] + "</a>" ] );
-        text += mboxTableNew(["<i>Stream:",	        			"<a href=\"" + album["stream_url"] + "\" target=\"_blank\">" + album["stream_url"] + "</a>" ] );
-        text += mboxTableNew(["<i>UUID:",               			"<a href='" + url + "/' target='_blank'>" + uuid + "</a>" ] );
-        text += mboxTableNew(["<i>Card ID:",         				"<a style='cursor:pointer;' onclick='mboxListCardsLoad();'>"    + cardid + "</a>" ] );
-        text += mboxTableNew(["<i>"+lang("COVER_AVAILABLE")+":",      cover ] );
+        text += mboxTableNew(["<i>"+lang("INFORMATION")+":",	        "<a href=\"" + album["stream_info"] + "\" target=\"_blank\">" + album["stream_info"] + "</a>" ] );
+        text += mboxTableNew(["<i>"+lang("STREAM")+" URL:",        	"<a href=\"" + album["stream_url"] + "\" target=\"_blank\">" + album["stream_url"] + "</a>" ] );
+        text += mboxTableNew(["<i>"+lang("STREAM")+" UUID:",		"<a href='" + url + "/' target='_blank'>" + uuid + "</a>" ] );
+        text += mboxTableNew(["<i>"+lang("CARD_ID")+":",         	"<a style='cursor:pointer;' onclick='mboxListCardsLoad();'>"    + cardid + "</a>" ] );
+        text += mboxTableNew(["<i>"+lang("COVER_AVAILABLE")+":", 	cover ] );
         text += "<tr><td colspan='2'><hr></td></tr>";
-        text += mboxTableNew(["<i>"+lang("EDIT")+":",         edit ] );
+        text += mboxTableNew(["<i>"+lang("EDIT")+":",       		edit ] );
         text += "<tr><td colspan='2'><hr></td></tr>";
         text += mboxTableNew("end");
 
@@ -258,11 +258,20 @@ function mboxRadioEdit(data) 		{ mboxDataEdit(data); }
 
 // delete playlist (dialog to confirm)
 //---------------------------
+      
+function mboxStreamDelete(uuid,title) {
+	text    = lang("STREAM_DELETE_ASK") + ": <b>"+title+"</b>?";
+	cmd     = "mboxStreamDelete_exec('"+uuid+"','"+title+"');";
+	appMsg.confirm(text,cmd,150,true);
+	}
+	
+function mboxStreamDelete_exec(uuid,title) {
+	mboxApp.requestAPI('DELETE',['data',uuid],'',[mboxPlaylistDelete_msg,title]);
+	}
 
-function mboxRadioDelete(uuid,title) {
-        text    = lang("STREAM_DELETE_ASK") + ": <b>"+title+"</b>?";
-        cmd     = "mboxApp.requestAPI(#DELETE#,[#data#,#"+uuid+"#],##, mboxRadio_load);";
-        appMsg.confirm(text,cmd,150,true);
+function mboxStreamDelete_msg(data,title) {
+	mboxReturnMsg(data,lang("STREAM_DELETED")+"<br/><b>"+title,lang("STREAM_DELETE_ERROR")+"<br/><b>"+title);
+        mboxPlaylistAll_load();
         }
 
 //----------------------------------------------------------------
@@ -285,11 +294,11 @@ function mboxRadioAdd() {
 function mboxRadioAdd_dialog(i) {
         var onclick2 = "document.getElementById('album_"+(i)+"').style.display='none';";
         var text     = "<b>"+lang("ADD_STREAM")+":</b><br/><br/><table>";
-        text += "<tr><td>"+lang("TITLE")+":</td>         <td><input id=\"stream_title\" style=\"width:150px\"></input></td></tr>";
-        text += "<tr><td>"+lang("DESCRIPTION")+":</td>   <td><input id=\"stream_description\" style=\"width:150px\"></input></td></tr>";
-        text += "<tr><td>Website URL:</td>               <td><input id=\"stream_radio_url\" style=\"width:150px\"></input></td></tr>";
-        text += "<tr><td>Stream URL (m3u):</td>          <td><input id=\"stream_stream_url\" style=\"width:150px\"></input></td></tr>";
-        text += "<tr><td>Logo URL:</td>                  <td><input id=\"stream_image_url\" style=\"width:150px\"></input></td></tr>";
+        text += "<tr><td>"+lang("TITLE")+":</td>		<td><input id=\"stream_title\" style=\"width:150px\"></input></td></tr>";
+        text += "<tr><td>"+lang("DESCRIPTION")+":</td> 		<td><input id=\"stream_description\" style=\"width:150px\"></input></td></tr>";
+        text += "<tr><td>"+lang("WEBSITE")+" URL:</td>  	<td><input id=\"stream_radio_url\" style=\"width:150px\"></input></td></tr>";
+        text += "<tr><td>"+lang("STREAM")+" URL (m3u):</td>	<td><input id=\"stream_stream_url\" style=\"width:150px\"></input></td></tr>";
+        text += "<tr><td>"+lang("LOGO")+" URL:</td>		<td><input id=\"stream_image_url\" style=\"width:150px\"></input></td></tr>";
         text += "</table><br/>";
         text += button("mboxRadioAdd();",lang("ADD"),"mboxRadioAdd");
         text += button(onclick2,lang("CLOSE"),"close_stream");

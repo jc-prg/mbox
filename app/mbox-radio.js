@@ -153,12 +153,12 @@ function mboxRadioChannel(data) {
                 text += "<div id=\"show_card\">";
                 text += mboxButton("card",  "", "green");
                 text += "</div>";
-                text += CardID(uuid);
+                text += mboxCardEditLink(uuid);
                 }
         else {
                 text += "<div id=\"show_card\">";
                 text += "</div>";
-                text += CardID(uuid);
+                text += mboxCardEditLink(uuid);
                 }
         text += "</div>";
         text += "<div style=\"width:100%;float:left;\"><hr/></div>";
@@ -235,7 +235,7 @@ function mboxRadioInfo(data) {
         text += mboxTableNew(["<i>"+lang("INFORMATION")+":",	        "<a href=\"" + album["stream_info"] + "\" target=\"_blank\">" + album["stream_info"] + "</a>" ] );
         text += mboxTableNew(["<i>"+lang("STREAM")+" URL:",        	"<a href=\"" + album["stream_url"] + "\" target=\"_blank\">" + album["stream_url"] + "</a>" ] );
         text += mboxTableNew(["<i>"+lang("STREAM")+" UUID:",		"<a href='" + url + "/' target='_blank'>" + uuid + "</a>" ] );
-        text += mboxTableNew(["<i>"+lang("CARD_ID")+":",         	"<a style='cursor:pointer;' onclick='mboxListCardsLoad();'>"    + cardid + "</a>" ] );
+        text += mboxTableNew(["<i>"+lang("CARD_ID")+":",         	"<a style='cursor:pointer;' onclick='mboxCardList_load();'>"    + cardid + "</a>" ] );
         text += mboxTableNew(["<i>"+lang("COVER_AVAILABLE")+":", 	cover ] );
         text += "<tr><td colspan='2'><hr></td></tr>";
         text += mboxTableNew(["<i>"+lang("EDIT")+":",       		edit ] );

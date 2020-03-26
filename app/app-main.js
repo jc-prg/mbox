@@ -77,7 +77,7 @@ function appPrintMenu() {
 		appMenu.add_script( "mboxToggleFilter();appPrintStatus_load();if(mbox_settings){settingsToggle();}", "Filter: " + mbox_filter_show );
 		}
 	appMenu.add_line();
-	appMenu.add_script( "mboxListCardsLoad();if(mbox_settings){settingsToggle();printAllStatusLoad();};", lang("RFID_CARDS") );
+	appMenu.add_script( "mboxCardList_load();if(mbox_settings){settingsToggle();printAllStatusLoad();};", lang("RFID_CARDS") );
 	appMenu.add_script( "settingsToggle();settingsStatusLoad();appPrintStatus_load();", lang("SETTINGS") );
 	appMenu.add_line();
         appMenu.add_script( "mboxCoverTogglePrint();", lang("COVER_IMAGES"));
@@ -100,9 +100,9 @@ function appPrintStatus(data) {
 
 	// initial app data ...
 	setTextById("remote3",  appTitle + " (" + data["API"]["name"] + ": " + data["API"]["version"] + " / " + 
-				data["STATUS"]["active_device"] + ") " + writeRFID(data["LOAD"]["RFID"]) );
+				data["STATUS"]["active_device"] + ") " + mboxCardWriteRFID(data["LOAD"]["RFID"]) );
 
-	if (writeRFID(data["LOAD"]["RFID"]) != "") { mboxSetStatus("blue"); }
+	if (mboxCardWriteRFID(data["LOAD"]["RFID"]) != "") { mboxSetStatus("blue"); }
 
 	// write icon menu and lists
 	if (reload) {

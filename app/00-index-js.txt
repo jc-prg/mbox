@@ -87,17 +87,19 @@ function image(file)
 ./app-conf.js (-1)
 ----------------------------
 ----------------------------
-./mbox-rfid.js (303)
+./mbox-rfid.js (313)
 ----------------------------
-function writeRFID(data)
-function CardID(uuid)
-function editCardDialogLoad1(uuid)
-function editCardDialogLoad2(data)
-function editCardDialog(data)
-function mboxListCardsLoad()
-function mboxListCards(data)
-function mbox_delete_card(card_id,uuid_pl)
-function editCard_save(data)
+function mboxCardWriteRFID(data)
+function mboxCardEditLink(uuid)
+function mboxCardEditDialog_load1(uuid)
+function mboxCardEditDialog_load2(data)
+function mboxCardEditDialog(data)
+function mboxCardList_load()
+function mboxCardList(data)
+function mboxCardDelete(card_id,title)
+function mboxCardDelete_exec(uuid,title)
+function mboxCardDelete_msg(data,title)
+function mboxCardEdit_save(data)
 ----------------------------
 ./mbox-control.js (606)
 ----------------------------
@@ -135,7 +137,7 @@ function mboxDataReturnMsg(data)
 function mboxDataEdit(data)
 function mboxDataEditExecute(uuid, key_list, type)
 ----------------------------
-./mbox-album.js (669)
+./mbox-album.js (672)
 ----------------------------
 function mboxEmptyBelow()
 function mboxWriteBelow(text)
@@ -176,7 +178,7 @@ function appPrintStatus(data)
 function appCheckUpdates_msg(data)
 function appCheckUpdates()
 ----------------------------
-./mbox-radio.js (319)
+./mbox-radio.js (321)
 ----------------------------
 function mboxRadio_load()
 function mboxRadio(data)

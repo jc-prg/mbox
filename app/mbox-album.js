@@ -389,12 +389,12 @@ function mboxListAlbum(data) {
 		text += "<div id=\"show_card\">";
 		text += mboxButton("card",  "", "green");
 		text += "</div>";
-		text += CardID(albums["uuid"]);
+		text += mboxCardEditLink(albums["uuid"]);
 		}
 	else {
 		text += "<div id=\"show_card\">";
 		text += "</div>";
-		text += CardID(albums["uuid"]);
+		text += mboxCardEditLink(albums["uuid"]);
 		}
         text += "</div>";
 	text += "<div style=\"width:100%;float:left;\"><hr/></div>";

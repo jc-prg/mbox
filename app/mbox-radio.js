@@ -60,7 +60,7 @@ function mboxRadio(data) {
              text += mboxToolTip( "start" );
 
              // write cover
-             text += mboxCoverList( uuid, cover, "<b>" + key + "</b><br/>WebRadio", cmd_open, cmd_play );
+             text += mboxCoverList( uuid, cover, "<b>" + key + "</b><br/>"+lang("STREAM"), cmd_open, cmd_play );
              if (cover != "") { print += mboxCoverListEntry( uuid, cover ); }
 
              // write tooltip
@@ -207,7 +207,7 @@ function mboxRadioInfo(data) {
 
         var url    = RESTurl + "mbox/read/radio/"+uuid+"/";
         var size   = Math.round(album["albumsize"]/1024/1024*100)/100;
-        var cardid = album["card_id"]; if (!cardid) { cardid = "Keine Karte verkn&uuml;pft."; }
+        var cardid = album["card_id"]; if (!cardid) { cardid = lang("CARD_NOT_CONNECTED"); }
 
 	var cover  = "";
         if (album["cover_images"]) {
@@ -217,7 +217,7 @@ function mboxRadioInfo(data) {
                 cover += mboxCoverAlbumInfo(4, album["cover_images"]["web"],    album["cover_images"]["active"], uuid);
                 }
         else {
-                cover += "Altes Datenformat oder keine Bilder vorhanden, Titelinfos neu laden!";
+                cover += lang("DATA_OLD_FORMAT");
                 }
 
 	var edit = "";
@@ -225,7 +225,7 @@ function mboxRadioInfo(data) {
         edit += mboxButton("edit",  	"mboxRadioEdit_load('"+uuid+"');",                                                "red");
         edit += mboxButton("delete",  	"mboxAlbumDelete('"+album["title"]+": "+album["description"]+"','"+uuid+"');",   "red");
 
-        text += "<b>Stream Informationen</b><br/><br/>";
+        text += "<b>"+lang("STREAM_INFORMATION")+"</b><br/><br/>";
         text += mboxTableNew("start");
         text += "<tr><td colspan='2'><hr></td></tr>";
         text += mboxTableNew(["<i>"+lang("TITLE")+":",              	album["title"] ] );
@@ -260,7 +260,7 @@ function mboxRadioEdit(data) 		{ mboxDataEdit(data); }
 //---------------------------
 
 function mboxRadioDelete(uuid,title) {
-        text    = "Webstream <b>"+title+"</b> wirklich l&ouml;schen?";
+        text    = lang("STREAM_DELETE_ASK") + ": <b>"+title+"</b>?";
         cmd     = "mboxApp.requestAPI(#DELETE#,[#data#,#"+uuid+"#],##, mboxRadio_load);";
         appMsg.confirm(text,cmd,150,true);
         }
@@ -285,11 +285,11 @@ function mboxRadioAdd() {
 function mboxRadioAdd_dialog(i) {
         var onclick2 = "document.getElementById('album_"+(i)+"').style.display='none';";
         var text     = "<b>"+lang("ADD_STREAM")+":</b><br/><br/><table>";
-        text += "<tr><td>"+lang("TITLE")+":</td>           <td><input id=\"stream_title\" style=\"width:150px\"></input></td></tr>";
-        text += "<tr><td>"+lang("DESCRIPTION")+":</td>    <td><input id=\"stream_description\" style=\"width:150px\"></input></td></tr>";
-        text += "<tr><td>Website URL:</td>       <td><input id=\"stream_radio_url\" style=\"width:150px\"></input></td></tr>";
-        text += "<tr><td>Stream URL (m3u):</td><td><input id=\"stream_stream_url\" style=\"width:150px\"></input></td></tr>";
-        text += "<tr><td>Logo URL:</td>        <td><input id=\"stream_image_url\" style=\"width:150px\"></input></td></tr>";
+        text += "<tr><td>"+lang("TITLE")+":</td>         <td><input id=\"stream_title\" style=\"width:150px\"></input></td></tr>";
+        text += "<tr><td>"+lang("DESCRIPTION")+":</td>   <td><input id=\"stream_description\" style=\"width:150px\"></input></td></tr>";
+        text += "<tr><td>Website URL:</td>               <td><input id=\"stream_radio_url\" style=\"width:150px\"></input></td></tr>";
+        text += "<tr><td>Stream URL (m3u):</td>          <td><input id=\"stream_stream_url\" style=\"width:150px\"></input></td></tr>";
+        text += "<tr><td>Logo URL:</td>                  <td><input id=\"stream_image_url\" style=\"width:150px\"></input></td></tr>";
         text += "</table><br/>";
         text += button("mboxRadioAdd();",lang("ADD"),"mboxRadioAdd");
         text += button(onclick2,lang("CLOSE"),"close_stream");
@@ -299,8 +299,8 @@ function mboxRadioAdd_dialog(i) {
 
 function mboxRadioAdd_msg(data) {
         var text = "";
-        if (data["REQUEST"]["status"] == "success")     { text += "Webradio / Stream angelegt."; }
-        else                         		        { text += "Beim Anlegen des Webradios ist ein Fehler aufgetreten."; }
+        if (data["REQUEST"]["status"] == "success")     { text += lang("STREAM_CREATED"); } 
+        else                         		        { text += lang("STREAM_CREATED_ERROR"); } 
         appMsg.alert(text);
         mboxRadio_load()
         }

@@ -108,11 +108,11 @@ function mboxAlbumAll(data) {
 	var filter = "";
 	filter += "<div class='album_filter'>";
 	filter += mboxTableNew("start",true,"300px");
-	filter += mboxTableNew(["<i>Kategorie:", 		mboxCreateAlbumFilter(album_info,filters) ], true );	
+	filter += mboxTableNew(["<i>"+lang("CATEGORY")+":", 		mboxCreateAlbumFilter(album_info,filters) ], true );	
 	filter += mboxTableNew("end");
 	filter += "</div><div class='album_filter'>";
 	filter += mboxTableNew("start",true,"300px");
-	filter += mboxTableNew(["<i>Band / K&uuml;nstler:", 	mboxCreateArtistFilter(album_info,filters) ], true );
+	filter += mboxTableNew(["<i>"+lang("BAND_ARTIST")+":", 	mboxCreateArtistFilter(album_info,filters) ], true );
 	filter += mboxTableNew("end");
 	filter += "</div>";
 
@@ -478,24 +478,24 @@ function mboxTrackInfo(data) {
 	var url2   = "/mbox_music/";
 
 
-	text += "<b>Track Informationen</b><br/>";
+	text += "<b>"+lang("TRACK_INFORMATION")+ "</b><br/>";
 	cover = "";
 	if (track["cover_images"]) 	{ cover += mboxCoverAlbumInfo(1, track["cover_images"]["track"],  track["cover_images"]["active"], uuid); }
 	else 				{ cover += lang("DATA_OLD_FORMAT"); }
 
 	text += mboxTableNew("start");
 	text += "<tr><td colspan='2'><hr></td></tr>";
-	text += mboxTableNew(["<i>Title:", 		track["title"] ] );
-	text += mboxTableNew(["<i>Album:", 		track["album"] ] );
-	text += mboxTableNew(["<i>Interpret:", 		track["artist"] ] );
-	text += mboxTableNew(["<i>Gr&ouml;&szlig;e:", 	size + " MByte / " + length + " min" ] );
-	text += mboxTableNew(["<i>Track Dir:", 		"<a href='" + url2 + path + "' target='_blank'>" + path + "</a>" ] );
-	text += mboxTableNew(["<i>UUID:",	 	"<a href='" + url + "' target='_blank'>" + uuid + "</a>" ] );
-	text += mboxTableNew(["<i>UUID Album:", 	"<a href='" + url1 + "' target='_blank'>"    + track["uuid_album"] + "</a>" ] );
+	text += mboxTableNew(["<i>"+lang("TITLE")+":", 		track["title"] ] );
+	text += mboxTableNew(["<i>"+lang("ALBUM")+":", 		track["album"] ] );
+	text += mboxTableNew(["<i>"+lang("BAND_ARTIST")+":",	track["artist"] ] );
+	text += mboxTableNew(["<i>"+lang("SIZE")+":", 		size + " MByte / " + length + " min" ] );
+	text += mboxTableNew(["<i>"+lang("TRACK")+" Dir:", 	"<a href='" + url2 + path + "' target='_blank'>" + path + "</a>" ] );
+	text += mboxTableNew(["<i>UUID "+lang("TRACK")+":",	"<a href='" + url  + "' target='_blank'>" + uuid + "</a>" ] );
+	text += mboxTableNew(["<i>UUID "+lang("ALBUM")+":", 	"<a href='" + url1 + "' target='_blank'>" + track["uuid_album"] + "</a>" ] );
 	if ("error" in track) {
-		text += mboxTableNew(["<i><font color='red'>Error:</font><i>", "<i><font color='red'>"+track["error"]+"</font></i>" ] );
+		text += mboxTableNew(["<i><font color='red'>"+lang("ERROR")+":</font><i>", "<i><font color='red'>"+track["error"]+"</font></i>" ] );
 		}
-	text += mboxTableNew(["<i>Verf&uuml;gbare Cover:",	cover ] );
+	text += mboxTableNew(["<i>"+lang("COVER_AVAILABLE")+":", cover ] );
 	text += "<tr><td colspan='2'><hr></td></tr>";
 	text += mboxTableNew("end");
 
@@ -517,7 +517,7 @@ function mboxAlbumInfo(data) {
 	var url2   = RESTurl + "api/data/";
 	var size   = Math.round(album["albumsize"]/1024/1024*100)/100;
 	var length = convert_second2time(Math.round(album["albumlength"]));
-	var cardid = album["card_id"]; if (!cardid) { cardid = "Keine Karte verkn&uuml;pft."; } else { cardid =  "<a href='" + url2 + cardid + "/' target='_blank'>" + cardid + "</a>" ; }
+	var cardid = album["card_id"]; if (!cardid) { cardid = lang("CARD_NOT_CONNECTED"); } else { cardid =  "<a href='" + url2 + cardid + "/' target='_blank'>" + cardid + "</a>" ; }
 	var path   = album["albumpath"].replace(/\_/gi,"/");
 
 	var cover = "";
@@ -534,23 +534,23 @@ function mboxAlbumInfo(data) {
         edit += mboxButton("delete", "mboxAlbumDelete('"+album["artist"]+": "+album["album"]+"','"+uuid+"');", 	"red");
 
 
-	text += "<b>Album " + lang("INFORMATION") + "</b><br/>";
+	text += "<b>" + lang("ALBUM") + " " + lang("INFORMATION") + "</b><br/>";
 
 	text += mboxTableNew("start");
 	text += "<tr><td colspan='2'><hr></td></tr>";
-	text += mboxTableNew(["<i>Album:", 		album["album"] ] );
-	text += mboxTableNew(["<i>Interpret:", 		album["artist"] ] );
-	text += mboxTableNew(["<i>Genres:", 		album["genres"] ] );
-	text += mboxTableNew(["<i>Gr&ouml;&szlig;e:", 	size + " MByte / " + length + " min" ] );
-	text += mboxTableNew(["<i>Album Dir:", 		path ] );
-	text += mboxTableNew(["<i>UUID:",	 		"<a href='" + url + uuid + "/-/' target='_blank'>" + uuid + "</a>" ] );
-	text += mboxTableNew(["<i>Card ID:",		cardid ] );
+	text += mboxTableNew(["<i>" + lang("ALBUM") + ":", 		album["album"] ] );
+	text += mboxTableNew(["<i>" + lang("BAND_ARTIST") + ":", 	album["artist"] ] );
+	text += mboxTableNew(["<i>" + lang("GENRE") + ":", 		album["genres"] ] );
+	text += mboxTableNew(["<i>" + lang("SIZE") + ":", 		size + " MByte / " + length + " min" ] );
+	text += mboxTableNew(["<i>" + lang("ALBUM") + " Dir:", 		path ] );
+	text += mboxTableNew(["<i>" + lang("ALBUM") + " UUID:",	 	"<a href='" + url + uuid + "/-/' target='_blank'>" + uuid + "</a>" ] );
+	text += mboxTableNew(["<i>" + lang("CARD_ID") + ":",		cardid ] );
 	if ("error" in album) {
 		text += mboxTableNew(["<i><font color='red'>Error:</font><i>", "<i><font color='red'>"+album["error"].length + " Errors - first: " + album["error"][0]+"</font></i>" ] );
 		}
-	text += mboxTableNew(["<i>Verf&uuml;gbare Cover:",	cover ] );
+	text += mboxTableNew(["<i>" + lang("COVER_AVAILABLE") + ":",	cover ] );
 	text += "<tr><td colspan='2'><hr></td></tr>";
-	text += mboxTableNew(["<i>Bearbeiten:",		edit ] );
+	text += mboxTableNew(["<i>" + lang("EDIT") + ":",		edit ] );
 	text += "<tr><td colspan='2'><hr></td></tr>";
 	text += mboxTableNew("end");
 
@@ -561,13 +561,30 @@ function mboxAlbumInfo(data) {
 // delete album
 //--------------------------------------
 
-function mboxAlbumDelete(album,uuid) {
-	//var cmd = "window.open('http://192.168.1.27:5006/mbox/album/delete/"+uuid+"/');";
-
+/*
+function mboxAlbumDelete_old(album,uuid) {
 	var cmd = "mboxApp.requestAPI('DELETE',['data', '" + uuid + "'],'', mboxDataReturnMsg ); mboxAlbumAllLoad();";
-	appMsg.confirm("&nbsp;<br/>Album &quot;<b>"+album+"</b>&quot; wirklich aus der Datenbank löschen?<br/>&nbsp;<br/>(ID: "+uuid+")", cmd, 200);
+	appMsg.confirm("&nbsp;<br/>" + lang("ALBUM_DELETE_ASK") + ": <b>"+album+"</b?<br/>&nbsp;<br/>(ID: "+uuid+")", cmd, 200);
 	//alert("test");
 	}
+*/
+	
+function mboxAlbumDelete(title,uuid) {
+	text    = lang("ALBUM_DELETE_ASK") + ":<br/><b>"+title+"</b>?";
+	cmd     = "mboxAlbumDelete_exec('"+uuid+"','"+title+"')";
+	appMsg.confirm(text,cmd,150,true);
+	}
+	
+function mboxAlbumDelete_exec(uuid,title) {
+	console.error("TEST "+uuid+" / "+title);
+	mboxApp.requestAPI('DELETE',['data',uuid],'',[mboxAlbumDelete_msg,title]); //,"wait");
+	}
+
+function mboxAlbumDelete_msg(data,title) {
+	mboxReturnMsg(data,lang("ALBUM_DELETED")+"<br/><b>"+title,lang("ALBUM_DELETE_ERROR")+"<br/><b>"+title);
+        mboxAlbumAllLoad();
+        }
+
 
 // track title row
 //--------------------------------------

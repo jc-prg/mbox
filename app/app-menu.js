@@ -4,7 +4,7 @@
 // class for drop down menu
 //--------------------------------------
 /* INDEX:
-function jcMenu(name, menu, title)
+function appMenuDefinition(name, menu, title)
         this.init 		= function(data=[])
         this.empty 		= function()
 	this.add_script 	= function(script,label)
@@ -19,7 +19,7 @@ function jcMenu(name, menu, title)
 */
 //--------------------------------------
 
-function jcMenu(name, menu, title) {
+function appMenuDefinition(name, menu, title) {
 
 	this.menuItems   = menu;
 	this.menuTitle   = title;
@@ -81,11 +81,11 @@ function jcMenu(name, menu, title) {
 		}
 
 	this.entry_script 	= function (script,label) {
-  		return "<li><a onClick=\"javascript:" + script + ";clickMenu();setNavTitle('" + label + "');\">"+label+"</a></li>";
+  		return "<li><a onClick=\"javascript:" + script + ";clickMenu();mboxHtmlSetNavTitle('" + label + "');\">"+label+"</a></li>";
 		}
 
 	this.set_title 		= function(title) {
-		title = "<div onClick=\"javascript:if(mbox_settings){settingsToggle();};appCookie.erase('appCookie');\">"+title+"</div>";
+		title = "<div onClick=\"javascript:if(mbox_settings){mboxSettingsToggle();};appCookie.erase('appCookie');\">"+title+"</div>";
 		setTextById(this.menuTitle,title);
 		}
 

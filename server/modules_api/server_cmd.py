@@ -70,10 +70,10 @@ def mboxAPI_start(cName, cmd1, cmd2, param1, param2):
     data["REQUEST"]["status"]       = "success"
     data["REQUEST"]["command"]      = "mBox " + cName + ": " + str(cmd1) + ":"  + str(cmd2) + " / " + str(param1) + ":" + str(param2)
     data["REQUEST"]["c-name"]       = cName
+    data["REQUEST"]["c-param"]      = str(param1) + " " + str(param2)
     data["REQUEST"]["start-time"]   = time.time()
 
     data["STATUS"]                  = {}
-
     data["DATA"]                    = {}
 
     data["LOAD"]                    = {}
@@ -138,7 +138,6 @@ def mboxAPI_end(data):
         data["STATUS"]["statistic"][database] = len(temp.keys())
       except:
         data["STATUS"]["statistic"][database] = "error"
-
 
     logging.debug("mBox " + data["REQUEST"]["c-name"]  + " END")
 

@@ -50,7 +50,7 @@ function mboxCardEditLink(uuid) {
 
         // visibility controlled in mbox_rfid.js (if card detected)
         var editCard = "mboxCardEditDialog_load1('"+uuid+"')";	//\""+card_id+"\",\""+uuid+"\",\""+uuid+"\",\"\");";
-        text += "<div id=\"edit_card\" style=\"display:none\">" + mboxButton("card_edit", editCard, "red", "") + "</div>";
+        text += "<div id=\"edit_card\" style=\"display:none\">" + mboxHtmlButton("card_edit", editCard, "red", "") + "</div>";
 
         return text;
         }
@@ -204,7 +204,7 @@ function mboxCardList(data) {
            for (var card in cards) {
 		text += div2; //"<div style=\"float:left;height:70px;\">";
                 //text += "<div style=\"height:70px;width:30px;float:left;margin:2px;\">";
-                //text += mboxButton("rfid","","yellow");
+                //text += mboxHtmlButton("rfid","","yellow");
 		//text += "</div>";
 
                 var aa      = cards[card][0];
@@ -227,7 +227,7 @@ function mboxCardList(data) {
 		notfound = "<font color=\"red\">NOT FOUND ...</b></font><br/>("+aa+" / "+cards[card][1]+")";
 
                 if (aa.indexOf("a_")>-1)   	{
-			onclick = "mboxListLoad();setTimeout(function(){mboxAlbumLoad(1,\""+aa+"\");},1000);"
+			onclick = "mboxListLoad();setTimeout(function(){mboxAlbumList_load(1,\""+aa+"\");},1000);"
 	                text += "<a style='cursor:pointer;' onclick='"+onclick+"'><small>";
 			if (aa in album) {
 				text += album[aa]["album"] + " / " + album[aa]["artist"] + "<br/>";
@@ -245,7 +245,7 @@ function mboxCardList(data) {
 			else { text += notfound;  title = "";}
 			}
 		else if (aa.indexOf("r_")>-1) {
-			onclick = "mboxRadio_load();setTimeout(function(){mboxRadioChannel_load(1,\""+aa+"\");},1000);"
+			onclick = "mboxStream_load();setTimeout(function(){mboxStreamChannel_load(1,\""+aa+"\");},1000);"
 	                text += "<a style='cursor:pointer;' onclick='"+onclick+"'><small>";
 			if (aa in radio) {
 				text += radio[aa]["title"] + " / " + radio[aa]["description"] + "<br/>";
@@ -262,7 +262,7 @@ function mboxCardList(data) {
 		else					{ color = "red";    }
 
                 text += div2; // + "<div style=\"margin:px;\">";
-                text += mboxButton("delete","appMsg.confirm('<br/>Zuordnung zwischen Karte &quot;" + card  + "&quot; und Album &quot;" + title + "&quot; löschen?','mboxCardDelete(#" + card + "#,#" + cards[card][0] + "#)',150)",color);
+                text += mboxHtmlButton("delete","appMsg.confirm('<br/>Zuordnung zwischen Karte &quot;" + card  + "&quot; und Album &quot;" + title + "&quot; löschen?','mboxCardDelete(#" + card + "#,#" + cards[card][0] + "#)',150)",color);
 		text += divE; // + divE;
 
 		text += divE;
@@ -299,7 +299,7 @@ function mboxCardDelete_exec(uuid,title) {
 	}
 
 function mboxCardDelete_msg(data,title) {
-	mboxReturnMsg(data,lang("CARD_DELETED")+"<br/><b>"+title,lang("CARD_DELETE_ERROR")+"<br/><b>"+title);
+	mboxDataReturnMsg(data,lang("CARD_DELETED")+"<br/><b>"+title,lang("CARD_DELETE_ERROR")+"<br/><b>"+title);
         mboxPlaylistAll_load();
         }
 

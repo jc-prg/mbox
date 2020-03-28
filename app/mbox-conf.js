@@ -4,9 +4,9 @@
 // mbox configurations
 //--------------------------------------
 
-var mbox_music_dir     = "./mbox_music/";
-var mbox_cover_dir     = "./cover/";
-var mbox_cover_upl_dir = "./cover_upload/";
+var mbox_music_dir     = "mbox_music/";
+var mbox_cover_dir     = "cover/";
+var mbox_cover_upl_dir = "cover_upload/";
 var mbox_mode          = "Album";
 var mbox_settings      = false;
 var mbox_filter        = true;

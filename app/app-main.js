@@ -26,19 +26,19 @@ else {
 // app to load info and send cmd to IR device
 //--------------------------------
 
-var mboxApp     = new jcApp( "mbox", RESTurl, "status", "api/");	// cmd: <device>/<cmd>
-mboxApp.init( "data_log", "error_log", reloadInterval, appPrintStatus );
+var mboxApp = new jcApp("mbox", RESTurl, "status", "api/");	// cmd: <device>/<cmd>
+mboxApp.init("data_log", "error_log", reloadInterval, appPrintStatus );
 mboxApp.timeout = -1; 							// timeout in milliseconds (-1 for no timeout)
-mboxApp.load( );
+mboxApp.load();
 mboxApp.setAutoupdate( mboxControlCheckStatus );
 
 //--------------------------------
 // additional apps to write menus, remotes, messages
 //--------------------------------
 
-var appMenu     = new appMenuDefinition(     "appMenu", ["menuItems","menuItems2"], "navTitle" );
-var appMsg      = new jcMsg(      "appMsg" );
-var appCookie   = new jcCookie(   "appCookie");
+var appMenu     = new appMenuDefinition("appMenu", ["menuItems","menuItems2"], "navTitle" );
+var appMsg      = new jcMsg(      	"appMsg" );
+//var appCookie   = new jcCookie(         "appCookie");
 var reload      = true;
 
 //--------------------------------

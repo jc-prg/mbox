@@ -8,22 +8,19 @@
 function mboxControlGroups()
 function mboxControl_load()
 function mboxControl(data)
-function mboxControlChangePosition(e)
-function mboxControlProgressPrint()
-function mboxControlProgress()
-function mboxControlProgressTime()
 function mboxControlVolumeSet(volume)
 function mboxControlVolumeShow(volume,mute)
 function mboxControlVolumeControl(volume, mute)
-function mboxControlPlaylist(uuid)
-function mboxControlStream(uuid)
 function mboxControlShowUUID(uuid)
 function mboxControlPlaying_show(uuid,uuid_song,playing)
 function mboxControlPlaying_delete ()
-function mboxControlPanel_open()
+function mboxControlPanel_toggle()
+function mboxControlPanel_close()
+function mboxControlPanel_toggle()
 function mboxControlCheckLoading(data)
 function mboxControlCheckStatus ()
 function mboxControlSetStatus (color)
+function mboxControlToggleMode()
 function mboxControlToggleDevice ()
 function mboxControlToggleFilter ()
 function mboxControlToggleFilter_show ()
@@ -147,7 +144,7 @@ function mboxControl(data) {
 	text += "</div>";
 	text += "</div>";
 
-	if (playing != 0) {
+	if (playing != 0 || mbox_device == "local") {
 		// Control to open and close ...
 		var display_open  = "block";
         	var display_close = "none";
@@ -158,136 +155,26 @@ function mboxControl(data) {
 		else			{ on_off = " off1"; }
 
 		text += "<div class='mbox_ctrl_open' id='ctrl_open' style='display:"+display_open+";'>";
-		text += mboxHtmlButton("open", "mboxControlPanel_open();",   "blue", "right");
+		text += mboxHtmlButton("open", "mboxControlPanel_toggle();",   "blue", "right");
 		text += "</div>";
 
 		text += "<div class='mbox_ctrl_open' id='ctrl_close' style='display:"+display_close+";'>";
-		text += mboxHtmlButton("close", "mboxControlPanel_open();",   "red", "right");
+		text += mboxHtmlButton("close", "mboxControlPanel_toggle();",   "red", "right");
 		text += "</div>";
+		}
+	else {
+		mboxControlPanel_close();
 		}
 
 	// volume control
 	text += mboxControlVolumeControl(volume,mute);
+	text += mboxPlayerRemote(song,uuid,playing);
 
-	// playback control
-	var display_player = "hidden";
-	if (playing != 0) { display_player = "visible"; }
-
-	if (mbox_device != "local") {
-		text += "<div class='mbox_ctrl_info_player"+on_off+"' style='width:95%;float:left;visibility:"+display_player+";' id='mbox_control_info'>";
-		text += "<hr/>";
-		if (song)         {
-			text += "<div style='width:100%;float:left;'>"
-			text += mboxControlPlaylist(uuid);
-			text += "</div>";
-			text += "<div style='width:100%;float:left;'>"
-			text += "<hr/>";
-			text += mboxControlProgressPrint();
-			text += "</div>";
-			mboxControlPlaying_show(uuid,uuid_song,playing);
-			}
-		else if (channel) { text += mboxControlStream(uuid);    mboxControlPlaying_show(uuid,playing); }
-		else		  { mboxControlPlaying_delete(); }
-		text += "</div>";
-		}
-
-        setTextById("mbox_control",      	text);
-
-	if (document.getElementById("mbox_progresstime")) {
-		if (song_left) { setTextById("mboxPlayer_progresstime", 	"[ -" + song_left + " ]" ); }
-		mboxControlProgress();
-		setTextById("mbox_progresstime", 	song_left_s );
-		setTextById("mbox_progresspercentage", 	song_length );
-		setTextById("mbox_status",	 	status );
-		
-		progressbar = document.getElementById("mboxPlayer_progressbar");
-		progressbar.addEventListener("click", mboxControlChangePosition, false);
-		}
-	else {	mboxControlProgress(); } // to deactivate "setInterval"
+        setTextById("mbox_control", text);
+        
+        mboxPlayerProgressSet( status, song_length, song_left, song_left_s );
 
 	if (audio == "" && mbox_device == "local") { mboxPlayerLocal(0,false); }
-	}
-
-//---------------------------------------------
-
-function mboxControlChangePosition(e) {
-        var xPosition   = e.clientX;
-        var yPosition   = e.clientY;
-        var progressbar = document.getElementById("mboxPlayer_progressbar");
-        var width       = progressbar.offsetWidth;
-        
-	var bodyRect   = document.body.getBoundingClientRect(),
-	    elemRect   = progressbar.getBoundingClientRect(),
-	    offset     = elemRect.left - bodyRect.left;
-	    
-	var pos        = xPosition - offset;
-	var percentage = Math.round( pos / width * 100);
-
-	console.log("Position: " + xPosition + "/" + Math.round(pos) + "/" + percentage );
-	mboxApp.requestAPI('GET',['play_jump',percentage], '', mboxControl);
-	mboxControl_load();
-	}
-
-
-//---------------------------------------------
-
-function mboxControlProgressPrint() {
-
-	var progress = "";
-	if (document.getElementById("mboxPlayer_progress")) { progress = document.getElementById("mboxPlayer_progress").style.width; }
-
-	var player;
-	player  = "<table border='0' width='100%'>";
-	player += "<tr id='mboxPlayer_tr_progress'>";
-	player +=    "<td class='mboxPlayer_td_time'><center>";
-	player +=       "<div id=\"mboxPlayer_progresstime\"></div>";
-	player +=       "<div id=\"mbox_status\"             style=\"display:none;\"></div>";
-	player +=       "<div id=\"mbox_progresstime\"       style=\"display:none;\"></div>";
-	player +=       "<div id=\"mbox_progresspercentage\" style=\"display:none;\"></div>";
-	player +=    "</center></td>";
-	player +=    "<td class='mboxPlayer_td_progress'>";
-	player +=       "<div id=\"mboxPlayer_progressbar\"><div id=\"mboxPlayer_progress\" style=\"width:" + progress + "\"></div></div>";
-	player += "</td></tr>";
-	player += "</table>";
-	return player;
-	}
-
-// ID for set Interval
-var mboxControlProgress_ID = -1;
-
-// set Interval if player control for box available
-function mboxControlProgress() {
-	if (document.getElementById("mbox_progresstime")) {
-		if (mboxControlProgress_ID == -1) {
-			mboxControlProgress_ID = setInterval(function(){ mboxControlProgressTime(); },1000);
-			console.log("Set Intervall with ID "+mboxControlProgress_ID);
-			}
-		}
-	else if (mboxControlProgress_ID != -1) {
-		clearInterval( mboxControlProgress_ID );
-		mboxControlProgress_ID = -1;
-		console.log("Clear Intervall with ID "+mboxControlProgress_ID);
-		}
-	}
-
-// calulate and show time
-//----------------------------------
-function mboxControlProgressTime() {
-	var status	 	= document.getElementById("mbox_status").innerHTML;
-	var seconds_left 	= document.getElementById("mbox_progresstime").innerHTML;
-	var time_left		= convert_second2time(seconds_left);
-
-	// set new time if playing
-	if (seconds_left > 0 && status == "play")	{ setTextById( "mbox_progresstime", seconds_left - 1); }
-	else			{ } // mboxControl_load(); }
-	setTextById( "mboxPlayer_progresstime", "[ -" + time_left + " ]" );
-
-	// set progress
-	var hundred 	= document.getElementById("mbox_progresspercentage").innerHTML;
-	var progress    = (hundred - seconds_left) / hundred * 100;
-
-	document.getElementById("mboxPlayer_progress").style.width = progress + "%";
-	//console.log(hundred + " - " + progress+"%");
 	}
 
 
@@ -388,37 +275,7 @@ function mboxControlVolumeControl(volume, mute) {
 	return text;
 	}
 
-// control for playlist
-//--------------------------------------
 
-function mboxControlPlaylist(uuid) {
-	var text = "";
-
-	text += mboxHtmlButton("back", "mboxApp.requestAPI('GET', ['play_next','-1'],  '', mboxControl_load);",   "blue");
-	text += mboxHtmlButton("play", "mboxApp.requestAPI('GET', ['play','"+uuid+"'], '', mboxControl_load);",   "blue");
-	text += mboxHtmlButton("next", "mboxApp.requestAPI('GET', ['play_next','1'],   '', mboxControl_load);",   "blue");
-	text += mboxHtmlButton("empty");
-	text += mboxHtmlButton("pause","mboxApp.requestAPI('GET', ['pause'], '', mboxControl_load);",                    "blue");
-	text += mboxHtmlButton("stop", "mboxApp.requestAPI('GET', ['stop'],  '', mboxControl_load); mboxControlPanel_open();","blue");
-	text += mboxHtmlButton("empty");
-	text += mboxHtmlButton("goto", "mboxControlShowUUID('"+uuid+"');", "blue");
-
-	return text;
-	}
-
-
-// control for radio
-//--------------------------------------
-
-function mboxControlStream(uuid) {
-        var text = "";
-
-        text += mboxHtmlButton("play",  "mboxApp.requestAPI('GET', ['play','"+uuid+"'],  '', mboxControl);",         "blue");
-        text += mboxHtmlButton("pause", "mboxApp.requestAPI('GET', ['pause'], '', mboxControl);",                    "blue");
-        text += mboxHtmlButton("stop",  "mboxApp.requestAPI('GET', ['stop'],  '', mboxControl);mboxControlPanel_open();", "blue");
-
-        return text;
-        }
 // show album / playlist / ...
 //--------------------------------------
 
@@ -473,7 +330,9 @@ function mboxControlPlaying_delete () {
 // open and close mbox control at the bottom of the page
 //--------------------------------------
 
-function mboxControlPanel_open() {
+function mboxControlPanel_toggle() 	{ if (mbox_control_open == false) { mboxControlPanel_toggle(); } }
+function mboxControlPanel_close() 	{ if (mbox_control_open == true)  { mboxControlPanel_toggle(); } }
+function mboxControlPanel_toggle() {
 
 	if (mbox_control_open == false) {
 		document.getElementById('mbox_control').classList.remove('off');
@@ -553,6 +412,20 @@ function mboxControlSetStatus (color) {
 	var led = "<div id=\""+color+"\"></div>";
 	document.getElementById("statusLED").innerHTML = led;
 	}
+
+
+//--------------------------------------
+// select active mode
+//--------------------------------------
+
+function mboxControlToggleMode() {
+	if (mbox_mode == "Album")         { mbox_mode = "Playlist"; }
+	else if (mbox_mode == "Playlist") { mbox_mode = "Radio"; }
+	else                              { mbox_mode = "Album"; }
+
+	//appMenu.set_title( appTitle + "/" + mbox_mode );
+	}
+
 
 
 //--------------------------------------

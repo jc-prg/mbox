@@ -59,27 +59,24 @@ function mboxAlbumWriteBelow(text)
 ./mbox-conf.js (-1)
 ----------------------------
 ----------------------------
-./mbox-control.js (594)
+./mbox-control.js (466)
 ----------------------------
 function mboxControlGroups()
 function mboxControl_load()
 function mboxControl(data)
-function mboxControlChangePosition(e)
-function mboxControlProgressPrint()
-function mboxControlProgress()
-function mboxControlProgressTime()
 function mboxControlVolumeSet(volume)
 function mboxControlVolumeShow(volume,mute)
 function mboxControlVolumeControl(volume, mute)
-function mboxControlPlaylist(uuid)
-function mboxControlStream(uuid)
 function mboxControlShowUUID(uuid)
 function mboxControlPlaying_show(uuid,uuid_song,playing)
 function mboxControlPlaying_delete ()
-function mboxControlPanel_open()
+function mboxControlPanel_toggle()
+function mboxControlPanel_close()
+function mboxControlPanel_toggle()
 function mboxControlCheckLoading(data)
 function mboxControlCheckStatus ()
 function mboxControlSetStatus (color)
+function mboxControlToggleMode()
 function mboxControlToggleDevice ()
 function mboxControlToggleFilter ()
 function mboxControlToggleFilter_show ()
@@ -104,7 +101,7 @@ function mboxDataReturnMsg(data)
 function mboxDataEdit(data)
 function mboxDataEditExecute(uuid, key_list, type)
 ----------------------------
-./mbox-html-elements.js (241)
+./mbox-html-elements.js (254)
 ----------------------------
 function image(file)
 function dict_size(d)
@@ -113,6 +110,7 @@ function add_link(link, description="")
 function clickMenu ()
 function mboxHtmlButton( button, cmd="", color="blue", small="", display="block" )
 function mboxHtmlButton2( sendCmd, label )
+function mboxHtmlToolTipLeft(i)
 function mboxHtmlToolTip( type, count=0, input_text="" )
 function mboxHtmlScrollTo( type, uuid="" )
 function mboxHtmlEntryDetail( count )
@@ -125,9 +123,18 @@ function mboxHtmlShowLoading(data)
 function mboxHtmlShowDataObject(data)
 function mboxHtmlShowJson(data)
 ----------------------------
-./mbox-player.js (36)
+./mbox-player.js (252)
 ----------------------------
 function mboxPlayerLocal(position=0, play=true)
+function mboxPlayerRemote(song,uuid,playing)
+function mboxPlayerControlPlaylist(uuid)
+function mboxPlayerControlStream(uuid)
+function mboxPlayerProgress()
+function mboxPlayerProgressPrint()
+function mboxPlayerProgressTime()
+function mboxPlayerProgressSet( status, song_length, song_left, song_left_s )
+function mboxPlayerJumpToPosition(e)
+function mboxPlayerButton( button, cmd="", color="blue", small="", display="block" )
 ----------------------------
 ./mbox-playlist.js (647)
 ----------------------------
@@ -215,7 +222,7 @@ function mboxUploadImageWrite(params)
   6 - appPrintStatus_load
   2 - clickMenu
   5 - dict_size
-  5 - image
+  6 - image
   1 - mboxAlbumAll
   2 - mboxAlbumAll_album
   2 - mboxAlbumAll_section
@@ -248,23 +255,19 @@ function mboxUploadImageWrite(params)
   5 - mboxCardList_load
   3 - mboxCardWriteRFID
   4 - mboxControl
-  1 - mboxControlChangePosition
   2 - mboxControlCheckLoading
   2 - mboxControlCheckStatus
   3 - mboxControlGroups
-  5 - mboxControlPanel_open
+  2 - mboxControlPanel_close
+  9 - mboxControlPanel_toggle
   4 - mboxControlPlaying_delete
   3 - mboxControlPlaying_show
-  2 - mboxControlPlaylist
-  3 - mboxControlProgress
-  2 - mboxControlProgressPrint
-  2 - mboxControlProgressTime
   5 - mboxControlSetStatus
   2 - mboxControlShowUUID
-  2 - mboxControlStream
   2 - mboxControlToggleDevice
   2 - mboxControlToggleFilter
   2 - mboxControlToggleFilter_show
+  2 - mboxControlToggleMode
   2 - mboxControlVolumeControl
   1 - mboxControlVolumeSet
   1 - mboxControlVolumeShow
@@ -289,6 +292,15 @@ function mboxUploadImageWrite(params)
   2 - mboxHtmlShowDataObject
   1 - mboxHtmlShowJson
   1 - mboxHtmlShowLoading
+  2 - mboxHtmlToolTipLeft
+  2 - mboxPlayerControlPlaylist
+  2 - mboxPlayerControlStream
+  1 - mboxPlayerJumpToPosition
+  3 - mboxPlayerProgress
+  2 - mboxPlayerProgressPrint
+  2 - mboxPlayerProgressSet
+  2 - mboxPlayerProgressTime
+  2 - mboxPlayerRemote
   2 - mboxPlaylistAdd
   1 - mboxPlaylistAddTrackInfo
   2 - mboxPlaylistAdd_dialog

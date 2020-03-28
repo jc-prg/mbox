@@ -27,10 +27,10 @@ cache_manifest_dir = [
 
 text_to_replace = [
 #	[ "appPrintMenu", "appPrint_menu" ], # sample
-	[ "mboxShowUUID", "mboxControlShowUUID" ],
-	[ "mboxCheckStatus", "mboxControlCheckStatus" ],
-	[ "mboxDeletePlaying", "mboxControlPlaying_delete" ],
-	[ "mboxShowPlaying", "mboxControlPlaying_show" ],
+	[ "mboxToggleMode", "mboxControlToggleMode" ],
+	[ "mboxTooltipLeft", "mboxHtmlToolTipLeft" ],
+	[ "mboxControlProgress", "mboxPlayerProgress" ],
+	[ "mboxControlChangePosition", "mboxPlayerJumpToPosition" ],
 	
 	]
 

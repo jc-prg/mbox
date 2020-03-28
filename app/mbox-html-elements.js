@@ -9,6 +9,7 @@ function add_link(link, description="")
 function clickMenu ()
 function mboxHtmlButton( button, cmd="", color="blue", small="", display="block" )
 function mboxHtmlButton2( sendCmd, label )
+function mboxHtmlToolTipLeft(i)
 function mboxHtmlToolTip( type, count=0, input_text="" )
 function mboxHtmlScrollTo( type, uuid="" )
 function mboxHtmlEntryDetail( count )
@@ -91,6 +92,19 @@ function mboxHtmlButton2( sendCmd, label ) {
 
 //-------------------------------------------------------------
 
+function mboxHtmlToolTipLeft(i) {
+        var count = 3;
+        var width = document.body.clientWidth;
+        if (width > 705) { mbox_list_count = 6; }
+        else             { mbox_list_count = 3; }
+
+        // calculate if last album in row, than tooltip should show to the left
+        var pos = i-(Math.floor(i/mbox_list_count) * mbox_list_count);
+        if (pos == 0) { return " left"; }
+        }
+
+//-------------------------------------------------------------
+
 function mboxHtmlToolTip( type, count=0, input_text="" ) {
 
 	var text = "";
@@ -100,7 +114,7 @@ function mboxHtmlToolTip( type, count=0, input_text="" ) {
 	else if (type == "end") {
 	        text += "<span class='triangle1'></span>";
         	text += "<span class='triangle2'></span>";
-	        text += "<span class=\"tooltiptext " + mboxTooltipLeft(count) + "\">" + input_text + "</span>";
+	        text += "<span class=\"tooltiptext " + mboxHtmlToolTipLeft(count) + "\">" + input_text + "</span>";
         	text += "<div class='album_triangle'  id=\"album_tri1_" + count + "\"></div>";
 	        text += "<div class='album_triangle2' id=\"album_tri2_" + count + "\"></div>";
         	text += "</div>";
@@ -221,7 +235,7 @@ function mboxHtmlShowDataObject(data) {
         	str = str.replace(/}/g,"}<br/>");
 		}
 	else {
-		str = "Not data returned!";
+		str = "No data returned!";
 		}
 
         appMsg.confirm(

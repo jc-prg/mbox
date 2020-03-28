@@ -70,7 +70,7 @@ function appPrintMenu() {
 	if (mbox_filter == true) { mbox_filter_show = "hide"; }
 	else			 { mbox_filter_show = "show"; }
 
-	appMenu.add_script( "mboxToggleMode();appPrintStatus_load();if(mbox_settings){mboxSettingsToggle();}", "Modus: " + mbox_mode );
+	appMenu.add_script( "mboxControlToggleMode();appPrintStatus_load();if(mbox_settings){mboxSettingsToggle();}", "Modus: " + mbox_mode );
 	appMenu.add_script( "mboxControlToggleDevice();appPrintStatus_load();if(mbox_settings){mboxSettingsToggle();}", lang("DEVICE") + ": " + mbox_device );
 	if (mbox_mode == "Album") {
 		appMenu.add_script( "mboxControlToggleFilter();appPrintStatus_load();if(mbox_settings){mboxSettingsToggle();}", "Filter: " + mbox_filter_show );

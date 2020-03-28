@@ -331,15 +331,23 @@ def mboxAPI_readEntry(uuid,db_filter=""):
                    data["DATA"]["_selected_uuid"]        = uuid
                    data["DATA"]["_selected_db"]          = database
                    data["DATA"]["_selected"]             = temp[uuid]
+
                    if not "tracks" in data["DATA"]["_selected"]:
                       data["DATA"]["_selected"]["tracks"]   = {}
+
                    if "tracks" in temp[uuid]:
                       if not "tracks"     in data["DATA"]: data["DATA"]["tracks"]     = {}
                       if not "album_info" in data["DATA"]: data["DATA"]["album_info"] = {}
                       for key in temp[uuid]["tracks"]:
                           logging.info(key)
+                          # if track add track info
                           if key in temp_tracks: data["DATA"]["tracks"][key]     = temp_tracks[key]
-                          if key in temp_albums: data["DATA"]["album_info"][key] = temp_albums[key]
+                          # if album add album info and track infos
+                          if key in temp_albums: 
+                             data["DATA"]["album_info"][key] = temp_albums[key]
+                             for key_track in temp_albums[key]["tracks"]:
+                                data["DATA"]["tracks"][key_track]  = temp_tracks[key_track]
+
                    if not "uuid" in data["DATA"]["_selected"]:
                       data["DATA"]["_selected"]["uuid"] = uuid
                else:

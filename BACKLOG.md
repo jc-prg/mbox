@@ -4,6 +4,8 @@ Here you'll find a history of features implemented into hardware and software as
 
 ## KNOWN BUGS
 
+- BUG app - local player also for playlists (tracks & albums to be loaded)
+- BUG app - local player of streams doesn't work (plays last loaded album instead)
 - BUG app/server - if playlist with the same title already exists, two lists with the same tracks, id, and image are displayed => check server side?
 - BUG server - reconnect Card doesn't work
 - BUG server - if playing and press play in a playlist, start with first song instead of actuall running song (PlaySong -> start file, not list without loading list again)
@@ -14,7 +16,6 @@ Here you'll find a history of features implemented into hardware and software as
     -> restart mboxServer, if internet connection changes (autohotspot)
     -> run mboxServer outside of a container (may require couchDB locally also)
     -> run mboxDB outside of a container
-- BUG app - edit playlist (if data is not connected correctly any more, e.g. due to reload)
 
 - UNSTABLE app/server - Delete RFID Cards doesn't work the 2nd time {Error: mbox - GET / http://music-box:5005/api/cards/-/ (not available/4/500).}
 - UNSTABLE app - loading albums and tracks to edit playlist doesnt work every time
@@ -288,12 +289,12 @@ Here you'll find a history of features implemented into hardware and software as
 * OK - BUG app - jump to album doesnt work - no error detected 
 * OK - BUG app - track delete from list (when not connected any more), doesn't work ... maybe, as used the same function as in edit dialog?
 * OK - BUG app - create playlist -> missing translation ("pleases wait" on button)
+* OK - new volume control
+* OK - BUG app - edit playlist (if data is not connected correctly any more, e.g. due to reload)
+* OK - cleaned code (readable functions, sorted into the right files)
 
-
-- new volume control
 - timeout for API Request and reaction to the timeout (show error message) - required e.g. if parallel processes like a system update is running on the raspberry
 - filter for genres (or other metadata ...)
-- use enhanced local player also for playlists (tracks & albums to be loaded)
 - appMsg.confirm -> place dialog in the middle (bit more above ...)
 - reload control panel whenever pressed button (show new title and new buttons immedatley)
 

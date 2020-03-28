@@ -23,11 +23,15 @@ var mbox_icons     = {
         "radio_bw"    : "icon/stream.png",
         "playlist_bw" : "icon/list.png",
 	}
+var mbox_track_color = [ "",
+	"lightseagreen","turquoise",
+	"indianred","darksalmon"
+	]
 
 var mbox_playlist       = {};
 var mbox_playlist_queue = {};
 var mbox_device         = "remote";
 var mbox_show_char      = true;
 
-//----------------------------
+//--------------------------------------
 // EOF

@@ -1,7 +1,34 @@
 //--------------------------------------
 // jc://music-box/, (c) Christoph Kloth
 //--------------------------------------
-// Local Player -- ACTUAL
+// Player - LOCAL and REMOTE
+//--------------------------------------
+// local player requires modules/jc-player/jc-player-*.js
+// ... fill playlist for local player via:
+/*
+mbox_playlist_queue["type"]     = "album";
+mbox_playlist_queue["scrollto"] = "scrollto_" + uuid.replace(/-/g,"");
+mbox_playlist_queue["album"]	= {
+		"album"        : "<album-title>",
+		"title"        : "<album-title>",
+		"artist"       : "<artist-name>",
+		"uuid"         : "<album-uuid>",
+		"tracks"       : ["<uuid-1>","<uuid-2>"],
+		"cover_image"  : "<url-cover-image>",
+		}
+mbox_playlist_queue["tracks"]	= [
+		"<uuid-1>" : {
+			"title"  : "...",
+			"artist" : "...",
+			"file"   : "...",
+			},
+		"<uuid-2>" : {
+			"title" : "...",
+			"artist" : "...",
+			"file"  : "...",
+			},
+		]
+*/
 //--------------------------------------
 /* INDEX:
 function mboxPlayerLocal(position=0, play=true)
@@ -24,7 +51,6 @@ var mboxPlayer;
 //--------------------------------------
 
 function mboxPlayerLocal(position=0, play=true) {
-	//appMsg.confirm("<div id='mboxPlayerLocal' style='width:100%;height:200px;'></div>","",280);
 
 	if (!mboxPlayer) { mboxPlayer = new jcPlayer("mboxPlayer","audioPlayer", mbox_music_dir, mbox_cover_dir, "apps/"); }
 
@@ -32,10 +58,9 @@ function mboxPlayerLocal(position=0, play=true) {
 	mboxPlayer.activeCtrl["info_cover"] 	  = false;
 	mboxPlayer.activeCtrl["info_short"] 	  = true;
 	mboxPlayer.activeCtrl["progress_padding"] = "0";
-
 	mboxPlayer.init();
 
-	//console.log(mbox_playlist_queue);
+	console.log(mbox_playlist_queue);
 
 	if (play) {
 		mboxPlayer.load(mbox_playlist_queue);

@@ -59,7 +59,7 @@ function mboxAlbumWriteBelow(text)
 ./mbox-conf.js (-1)
 ----------------------------
 ----------------------------
-./mbox-control.js (466)
+./mbox-control.js (467)
 ----------------------------
 function mboxControlGroups()
 function mboxControl_load()
@@ -101,7 +101,7 @@ function mboxDataReturnMsg(data)
 function mboxDataEdit(data)
 function mboxDataEditExecute(uuid, key_list, type)
 ----------------------------
-./mbox-html-elements.js (254)
+./mbox-html-elements.js (255)
 ----------------------------
 function image(file)
 function dict_size(d)
@@ -123,7 +123,7 @@ function mboxHtmlShowLoading(data)
 function mboxHtmlShowDataObject(data)
 function mboxHtmlShowJson(data)
 ----------------------------
-./mbox-player.js (252)
+./mbox-player.js (277)
 ----------------------------
 function mboxPlayerLocal(position=0, play=true)
 function mboxPlayerRemote(song,uuid,playing)
@@ -136,7 +136,7 @@ function mboxPlayerProgressSet( status, song_length, song_left, song_left_s )
 function mboxPlayerJumpToPosition(e)
 function mboxPlayerButton( button, cmd="", color="blue", small="", display="block" )
 ----------------------------
-./mbox-playlist.js (647)
+./mbox-playlist.js (728)
 ----------------------------
 function mboxPlaylistAll_load(filter="",uuid="")
 function mboxPlaylistAll(data)
@@ -152,7 +152,8 @@ function mboxPlaylistEditTracks_load(uuid,source="")
 function mboxPlaylistEditTracks(data)
 function mboxPlaylistEditEntry_load(uuid)
 function mboxPlaylistEditEntry(data)
-function mboxPlaylistTrackRow(data,uuid,split=false,uuid_pl="")
+function mboxPlaylistTrackRow(data,uuid,split=false,uuid_pl="",color=0)
+function mboxPlaylistTrackLine(split=false,color)
 function mboxPlaylistDelete(uuid,title)
 function mboxPlaylistDelete_exec(uuid,title)
 function mboxPlaylistDelete_msg(data,title)
@@ -289,7 +290,7 @@ function mboxUploadImageWrite(params)
   3 - mboxHtmlInputElement
   1 - mboxHtmlSetButtonConfig	
   2 - mboxHtmlSetNavTitle
-  2 - mboxHtmlShowDataObject
+  3 - mboxHtmlShowDataObject
   1 - mboxHtmlShowJson
   1 - mboxHtmlShowLoading
   2 - mboxHtmlToolTipLeft

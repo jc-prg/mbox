@@ -68,7 +68,7 @@ function mboxControl(data) {
 	var audio      = "";
 	
 
-	if (getTextById("audioPlayer") != false) { audio = getTextById("audioPlayer"); }
+	if (getTextById("audioPlayer")) { audio = getTextById("audioPlayer"); }
 
 	text  += "<div style='width:100%;'>";
 	text  += "<div class='mbox_ctrl_info'>";

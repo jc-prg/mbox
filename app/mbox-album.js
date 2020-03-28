@@ -332,15 +332,15 @@ function mboxAlbumList(data) {
 
 	if (mbox_device != "local") {
 		text += "<div class=\"player_active big\" id=\"playing_"+uuid+"\" style=\"display:none;\"><img src=\""+mbox_icons["playing"]+"\" style=\"height:20px;width:20px;margin:2px;\"></div>";
-        	text += mboxHtmlButton("play",  "mboxApp.requestAPI('GET',['play', '" + uuid + "'],'',mboxControl);", "blue");
-	        text += mboxHtmlButton("pause", "mboxApp.requestAPI('GET',['pause'],'',mboxControl);",                     "blue");
-        	text += mboxHtmlButton("stop",  "mboxApp.requestAPI('GET',['stop'],'',mboxControl);",                      "blue");
+        	text += mboxHtmlButton("play",  "mboxApp.requestAPI('GET',['play', '" + uuid + "'],'',mboxControl);",	"blue");
+	        text += mboxHtmlButton("pause", "mboxApp.requestAPI('GET',['pause'],'',mboxControl);",			"blue");
+        	text += mboxHtmlButton("stop",  "mboxApp.requestAPI('GET',['stop'],'',mboxControl);",			"blue");
 	        text += mboxHtmlButton("empty");
 		}
 	if (mbox_device != "remote") {
-        	text += mboxHtmlButton("play",  "mboxPlayerLocal();",                      	"green");
-        	text += mboxHtmlButton("pause", "mboxPlayer.pause();",                      "green");
-        	text += mboxHtmlButton("stop",  "mboxPlayer.stop();",                      "green");
+        	text += mboxHtmlButton("play",  "mboxPlayerLocal();",	"green");
+        	text += mboxHtmlButton("pause", "mboxPlayer.pause();",	"green");
+        	text += mboxHtmlButton("stop",  "mboxPlayer.stop();",	"green");
         	//text += mboxHtmlButton("next",  "mboxHtmlShowDataObject(mbox_playlist_queue);",	"green");
 	        text += mboxHtmlButton("empty");
 		}

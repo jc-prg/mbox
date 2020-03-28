@@ -18,7 +18,8 @@ function mboxPlaylistEditTracks_load(uuid,source="")
 function mboxPlaylistEditTracks(data)
 function mboxPlaylistEditEntry_load(uuid)
 function mboxPlaylistEditEntry(data)
-function mboxPlaylistTrackRow(data,uuid,split=false,uuid_pl="")
+function mboxPlaylistTrackRow(data,uuid,split=false,uuid_pl="",color=0)
+function mboxPlaylistTrackLine(split=false,color)
 function mboxPlaylistDelete(uuid,title)
 function mboxPlaylistDelete_exec(uuid,title)
 function mboxPlaylistDelete_msg(data,title)
@@ -127,11 +128,7 @@ function mboxPlaylistAll(data) {
 // List tracks of playlist
 //--------------------------------------
 
-function mboxPlaylistOne_load2(uuid) { 
-	//console.error("Load2:"+uuid);
-	mboxApp.requestAPI("GET",["data",uuid,"-"], "", mboxPlaylistOne); 
-	}
-	
+function mboxPlaylistOne_load2(uuid) { mboxApp.requestAPI("GET",["data",uuid,"-"], "", mboxPlaylistOne); }
 function mboxPlaylistOne_load(i,uuid) {
 	//console.error("Load:"+uuid+"/"+i);
 	var count = 3;
@@ -144,16 +141,52 @@ function mboxPlaylistOne_load(i,uuid) {
         mboxApp.requestAPI("GET",["data",uuid,"-"],"",mboxPlaylistOne );
         }
 
+//--------------------------------------
+
 function mboxPlaylistOne(data) {
 
-	var text       = "";
-        var uuid       = data["DATA"]["_selected_uuid"];
-	var albums     = data["DATA"]["_selected"];
-	var track_list = [];
+	var text		= "";
+        var uuid		= data["DATA"]["_selected_uuid"];
+	var albums		= data["DATA"]["_selected"];
+	var track_list		= [];
+	var track_list_complete = [];
+	var track_list_album    = {};
+	
 	if (data["DATA"]["_selected"] && data["DATA"]["_selected"]["tracks"]) {
 		track_list = data["DATA"]["_selected"]["tracks"];
 		}
 
+	// create playlist including all tracks from included albums
+	for (var i=0;i<track_list.length;i++) {
+		if (track_list[i].includes("t_"))	{ track_list_complete.push( track_list[i] ); }
+		else if (track_list[i].includes("a_"))	{ 
+			if (data["DATA"]["album_info"][track_list[i]]) {
+				album_tracks = data["DATA"]["album_info"][track_list[i]]["tracks"];
+				for (var j=0;j<album_tracks.length;j++) {
+					track_list_complete.push( album_tracks[j] );
+					}
+				track_list_album[track_list[i]] = album_tracks;
+				}
+			else {
+				track_list_complete.push( track_list[i] );
+				}
+			}
+		}
+
+	// fill local playlist queue
+	if (mbox_device == "local") {
+	
+		
+		// handover data to local player
+		mbox_playlist_queue["type"]		= "list";
+		mbox_playlist_queue["album"]		= albums;
+		mbox_playlist_queue["album"]["tracks"]	= track_list_complete;
+		mbox_playlist_queue["scrollto"]		= "scrollto_" + uuid.replace(/-/g,"");
+		mbox_playlist_queue["tracks"]		= data["DATA"]["tracks"];
+
+		console.debug(mbox_playlist_queue);
+		}
+	
         // check cover
 	var default_cover = mbox_icons["playlist"];
 	var cover = mboxCoverAlbum_new("",albums);
@@ -182,6 +215,13 @@ function mboxPlaylistOne(data) {
 	        text += mboxHtmlButton("play",  "mboxApp.requestAPI('GET',['play', '" + uuid + "'],'', mboxControl);", "blue");
         	text += mboxHtmlButton("pause", "mboxApp.requestAPI('GET',['pause'],'',                mboxControl);", "blue");
 	        text += mboxHtmlButton("stop",  "mboxApp.requestAPI('GET',['stop'],'',                 mboxControl);", "blue");
+	        text += mboxHtmlButton("empty");
+		}
+	if (mbox_device != "remote") {
+        	text += mboxHtmlButton("play",  "mboxPlayerLocal();",	"green");
+        	text += mboxHtmlButton("pause", "mboxPlayer.pause();",	"green");
+        	text += mboxHtmlButton("stop",  "mboxPlayer.stop();",	"green");
+        	//text += mboxHtmlButton("next",  "mboxHtmlShowDataObject(mbox_playlist_queue);",	"green");
 	        text += mboxHtmlButton("empty");
 		}
 
@@ -214,10 +254,51 @@ function mboxPlaylistOne(data) {
 	    setTimeout(function(){
 		setTextById("album_tracks","");
 		setTextById("album_tracks2","");
+		
+		var title_num = track_list.length;
+		for (var i=0; i < track_list.length;i++) { if (track_list_album[track_list[i]]) {
+		 	if (track_list[i].includes("a_")) { title_num = title_num + track_list_album[track_list[i]].length; }
+		 	} }
+		 	
+		//alert(title_num);
+		var k = 0;
+		var color = 1;
 		for (var i=0; i < track_list.length;i++) {
 			var split = false;
-			if (i >= Math.round(track_list.length/2)) { split = true; } // split if half of the list
-			mboxPlaylistTrackRow(data,track_list[i],split,uuid);
+			if (k >= Math.round(title_num/2)) { split = true; } // split if half of the list
+			k += 1;
+			
+			// if entry is a track
+			if (track_list[i].includes("t_")) {
+				mboxPlaylistTrackRow(data,track_list[i],split,uuid);
+				}
+				
+			// if entry is an album
+			else if (track_list[i].includes("a_")) {
+				if (color == 1)	{ color = 3; }
+				else		{ color = 1; }
+				
+				// if album exists search for tracks in the album
+				if (track_list_album[track_list[i]]) {
+					mboxPlaylistTrackLine(split,color);
+					mboxPlaylistTrackRow(data,track_list[i],split,uuid,(color+1));
+					mboxPlaylistTrackLine(split,color);
+					tracks_album = track_list_album[track_list[i]];
+					for (var j=0;j<tracks_album.length;j++) {
+						//console.error(tracks_album[j]);
+						if (k >= Math.round(title_num/2)) { split = true; } // split if half of the list
+						mboxPlaylistTrackRow(data,tracks_album[j],split,uuid);//,(color+1));
+						k += 1;
+						}
+					mboxPlaylistTrackLine(split,color);
+					}
+				// else just print album (error message)
+				else {
+					mboxPlaylistTrackRow(data,track_list[i],split,uuid,(color+1));
+					}
+				}
+
+				
 			//console.log(i + " / " + track_list.length + " - " + split);
 		} }, 2000); }
 	else {
@@ -414,7 +495,7 @@ function mboxPlaylistEditEntry(data) { mboxDataEdit( data ); }  // -> mbox-data.
 // track title row
 //--------------------------------------
 
-function mboxPlaylistTrackRow(data,uuid,split=false,uuid_pl="") {
+function mboxPlaylistTrackRow(data,uuid,split=false,uuid_pl="",color=0) {
 
         var text       = "";
         var cmd        = "";
@@ -437,14 +518,14 @@ function mboxPlaylistTrackRow(data,uuid,split=false,uuid_pl="") {
                 	}
 
 		// Controls to play Track ...
-	       	cmd += "<div class=\"album_tracks_control\">";
+	       	cmd += "<div class=\"album_tracks_control\"  style=\"background:"+mbox_track_color[color]+";\">";
 		if (mbox_device == "local")	{ cmd += mboxHtmlButton("play",  "writeAudioPlayer('" + uuid + "','audioPlayer');", "green",   "small right"); }
 		else 				{ cmd += mboxHtmlButton("play",  "mboxApp.requestAPI('GET',['play', '"+uuid+"'],'',mboxControl);", "blue", "small right"); }
                 cmd += "<div class=\"player_active right\" id=\"playing3_"+uuid+"\" style=\"display:none;\"><img src=\""+mbox_icons["playing"]+"\" style=\"width:10px;height:10px;margin:2px;\"></div>";
 	       	cmd += "</div>";
 
 		// Show Title if exist ...
-        	text += "<div class=\"album_tracks_title\">";
+        	text += "<div class=\"album_tracks_title\"  style=\"background:"+mbox_track_color[color]+";\">";
                 text += "<b>" +track["title"] + "</b><br/>";
                 text += track["artist"] + "/";
                 text += track["album"] + "<br/>";
@@ -461,23 +542,22 @@ function mboxPlaylistTrackRow(data,uuid,split=false,uuid_pl="") {
                 	length = " <font color='gray'>(" + convert_second2time(Math.round(albuminfo[uuid]["albumlength"])) + ")</font>";
                 	}
 
-		mbox_playlist_queue["type"]     = "album";
-		mbox_playlist_queue["album"]    = albuminfo[uuid];
-		mbox_playlist_queue["scrollto"] = "scrollto_" + uuid.replace(/-/g,"");
-		mbox_playlist_queue["tracks"]   = albuminfo[uuid]["tracks"];
-
 		// Controls to play Track ...
-	       	cmd += "<div class=\"album_tracks_control\">";
+/*
+	       	cmd += "<div class=\"album_tracks_control\"  style=\"background:"+mbox_track_color[color]+";\">";
 		if (mbox_device == "local")	{ cmd += mboxHtmlButton("play",  "mboxPlayerLocal();", "gray", "small right"); }	        //cmd += mboxHtmlButton("play",  "writeAudioPlayer('" + uuid + "','audioPlayer');", "green",   "small right");
         	else				{ cmd += mboxHtmlButton("play",  "mboxApp.requestAPI('GET',['play', '"+uuid+"'],'',mboxControl);", "blue", "small right"); }
 	       	cmd += "</div>";
-
+*/
 		// Show Title if exist ...
-        	text += "<div class=\"album_tracks_title\">";
+        	text += "<div class=\"album_tracks_headline\" style=\"background:"+mbox_track_color[color]+";\">";
+                text += "<center><i>" +albuminfo[uuid]["artist"] + "<br/><b>" +albuminfo[uuid]["album"] + "</b></i></center>";
+/*        	
                 text += "<b><i>Album: </i>" +albuminfo[uuid]["album"] + "</b><br/>";
                 text += albuminfo[uuid]["artist"]+" ";
 		text += "<i>("+albuminfo[uuid]["tracks"].length+" Tracks)</i><br/>";
 		text += length;
+*/
 	        text += "</div>";
         	text += cmd;
 		}
@@ -492,17 +572,19 @@ function mboxPlaylistTrackRow(data,uuid,split=false,uuid_pl="") {
 	       	cmd += "</div>";
 
         	text += "<div class=\"album_tracks_title\">";
-                text += "<b style='color:red'>"+lang("TRACK")+"/"+lang("ALBUM")+" "+lang("NOT_FOUND")+"</b><br/>";
+        	if (uuid.includes("a_")) { text += "<b style='color:red'>"+lang("ALBUM")+" "+lang("NOT_FOUND")+"</b><br/>"; }
+        	else			 { text += "<b style='color:red'>"+lang("TRACK")+" "+lang("NOT_FOUND")+"</b><br/>"; }
 		text += uuid;
 	       	text += "</div>" + cmd;
 		}
 
-	if (document.getElementById("album_tracks"+no)) {
-		document.getElementById("album_tracks"+no).innerHTML += text;
-		}
-	else { console.log("error: "+"album_tracks"+no); }
+	addTextById("album_tracks"+no,text);
         }
 
+function mboxPlaylistTrackLine(split=false,color) {
+	if (split==true) { no = "2";} else { no = ""; }
+	addTextById("album_tracks"+no,"<div class=\"album_tracks_line\"><hr style=\"color:"+mbox_track_color[color]+"\"/></div>");
+	}
 
 // delete playlist (from dialog to confirm to message)
 //---------------------------

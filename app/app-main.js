@@ -70,14 +70,17 @@ function appPrintMenu() {
 	if (mbox_filter == true) { mbox_filter_show = "hide"; }
 	else			 { mbox_filter_show = "show"; }
 
-	appMenu.add_script( "mboxControlToggleMode();appPrintStatus_load();if(mbox_settings){mboxSettingsToggle();}", "Modus: " + mbox_mode );
-	appMenu.add_script( "mboxControlToggleDevice();appPrintStatus_load();if(mbox_settings){mboxSettingsToggle();}", lang("DEVICE") + ": " + mbox_device );
+	appMenu.add_script( "mboxControlToggleMode();           appPrintStatus_load(); if(mbox_settings){mboxSettingsToggle();}", "Modus: " + mbox_mode );
+	appMenu.add_script( "mboxControlToggleDevice();         appPrintStatus_load(); if(mbox_settings){mboxSettingsToggle();}", lang("DEVICE") + ": " + mbox_device );
+	
 	if (mbox_mode == "Album") {
-		appMenu.add_script( "mboxControlToggleFilter();appPrintStatus_load();if(mbox_settings){mboxSettingsToggle();}", "Filter: " + mbox_filter_show );
+		appMenu.add_script( "mboxControlToggleFilter(); appPrintStatus_load(); if(mbox_settings){mboxSettingsToggle();}", "Filter: " + mbox_filter_show );
 		}
+	
 	appMenu.add_line();
-	appMenu.add_script( "mboxCardList_load();if(mbox_settings){mboxSettingsToggle();printAllStatusLoad();};", lang("RFID_CARDS") );
-	appMenu.add_script( "mboxSettingsToggle();mboxSettingsStatus_load();appPrintStatus_load();", lang("SETTINGS") );
+	appMenu.add_script( "mboxCardList_load();  if(mbox_settings){mboxSettingsToggle();printAllStatusLoad();};", lang("RFID_CARDS") );
+	appMenu.add_script( "mboxSettingsToggle(); mboxSettingsStatus_load(); appPrintStatus_load();", lang("SETTINGS") );
+	
 	appMenu.add_line();
         appMenu.add_script( "mboxCoverTogglePrint();", lang("COVER_IMAGES"));
         
@@ -109,7 +112,7 @@ function appPrintStatus(data) {
 		// write icons for 3 modes
 		mboxControlGroups();
 		
-		//
+		// wriete volume slider (default = hidden)
 		mboxSlider.init(data);
 
 		// write menu entrie for 3 modes
@@ -121,8 +124,8 @@ function appPrintStatus(data) {
 		}
 
 	// set info and control for playback
-	mboxControl(		data);
-	mboxControlCheckLoading(	data);
+	mboxControl(data);
+	mboxControlCheckLoading(data);
 	}
 
 //--------------------------------
@@ -143,6 +146,7 @@ function appCheckUpdates_msg(data) {
         if (msg["Code"] == "802") { appUpdate = true; }
         }
 
+//--------------------------------
 
 function appCheckUpdates() {
 	console.log("Check version: "+appVersion);

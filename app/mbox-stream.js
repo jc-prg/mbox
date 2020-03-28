@@ -34,6 +34,7 @@ function mboxStream(data) {
 	var radio_data    = data["DATA"]["radio"];
 	var a             = 0;
         mbox_cover_list   = [];
+        mbox_mode         = 'Radio'; 
 
         // sort by radio name
         var sorted_r   = [];

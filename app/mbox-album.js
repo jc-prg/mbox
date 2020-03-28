@@ -60,6 +60,7 @@ function mboxAlbumAll(data) {
 	var album_active     = "";
 	var album_active_no  = 0;
 	var last_chapter     = "";
+        mbox_mode            = 'Album'; 
 
 	// reset cover list (to show cover of all albums, playlists, ...)
 	mbox_cover_list   = [];

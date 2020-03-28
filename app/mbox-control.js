@@ -37,15 +37,20 @@ function mboxControlGroups() {
         var cover   = [mbox_icons["album_bw"],mbox_icons["playlist_bw"],mbox_icons["radio_bw"]];
         var descr   = [lang("ALBUM"),lang("PLAYLIST"),lang("STREAM")];
         var onclick = [
+/*
+                        "mboxAlbumAll_load();    mbox_mode='Album';",
+                        "mboxPlaylistAll_load(); mbox_mode='Playlist';",
+                        "mboxStream_load();      mbox_mode='Radio';",
+*/
                         "mboxAlbumAll_load();",
                         "mboxPlaylistAll_load();",
-                        "mboxStream_load();",
+                        "mboxStream_load();"
                         ];
 
         text += "<div style='width:325px;margin:auto;'>";
         for (var i=0;i<cover.length;i++) {
-               text += "<div class=\"album_cover small\" style=\"background:url("+cover[i]+");background-size:cover;background-repeat:no-repeat;vertical-align:botton;border:none;\" onclick='" + onclick[i] + "'></div>";
-                text += "<div class=\"album_cover_descr\" onclick='" + onclick[i] + "'>" + descr[i] + "</div>";
+                text += "<div class=\"album_cover small\" style=\"background:url("+cover[i]+");background-size:cover;background-repeat:no-repeat;vertical-align:botton;border:none;\" onclick='" + onclick[i] + "'></div>";
+                text += "<div class=\"album_cover_descr\" onclick=\"" + onclick[i] + "\">" + descr[i] + "</div>";
                 }
         text += "</div>";
         setTextById("remote1",text);

@@ -52,6 +52,7 @@ function mboxPlaylistAll(data) {
         var playlist_active     = "";
         var playlist_active_no  = 0;
         var last_char           = "";
+        mbox_mode               = 'Playlist'; 
 
         // reset cover list (to show cover of all albums, playlists, ...)
         mbox_cover_list   = [];

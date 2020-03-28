@@ -4,8 +4,7 @@ Here you'll find a history of features implemented into hardware and software as
 
 ## KNOWN BUGS
 
-- BUG app - local player also for playlists (tracks & albums to be loaded)
-- BUG app - local player of streams doesn't work (plays last loaded album instead)
+- BUG app - volume doesn't work with iOS / Safari -> HTML5 audio processing?
 - BUG app/server - if playlist with the same title already exists, two lists with the same tracks, id, and image are displayed => check server side?
 - BUG server - reconnect Card doesn't work
 - BUG server - if playing and press play in a playlist, start with first song instead of actuall running song (PlaySong -> start file, not list without loading list again)
@@ -292,6 +291,8 @@ Here you'll find a history of features implemented into hardware and software as
 * OK - new volume control
 * OK - BUG app - edit playlist (if data is not connected correctly any more, e.g. due to reload)
 * OK - cleaned code (readable functions, sorted into the right files)
+* OK - BUG app - local player also for playlists (tracks & albums to be loaded)
+* OK - BUG app - local player of streams doesn't work (plays last loaded album instead)
 
 - timeout for API Request and reaction to the timeout (show error message) - required e.g. if parallel processes like a system update is running on the raspberry
 - filter for genres (or other metadata ...)

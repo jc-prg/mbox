@@ -177,7 +177,6 @@ function mboxPlaylistOne(data) {
 	// fill local playlist queue
 	if (mbox_device == "local") {
 	
-		
 		// handover data to local player
 		mbox_playlist_queue["type"]		= "list";
 		mbox_playlist_queue["album"]		= albums;

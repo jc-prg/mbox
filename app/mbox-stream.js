@@ -124,6 +124,20 @@ function mboxStreamChannel(data) {
 	        console.debug("Show Radio Channel: " + uuid + "/" + radio_data["title"]);
 		}
 		
+	// fill local playlist queue
+	if (mbox_device == "local") {
+		
+		// handover data to local player
+		mbox_playlist_queue["type"]		= "stream";
+		mbox_playlist_queue["album"]		= radio_data;
+		mbox_playlist_queue["scrollto"]		= "scrollto_" + uuid.replace(/-/g,"");
+		mbox_playlist_queue["tracks"]		= {};
+		mbox_playlist_queue["url"]		= radio_data["stream_url2"];
+
+		console.debug(mbox_playlist_queue);
+		}
+
+		
         // Check if Cover exists
         cover = mboxCoverAlbum_new(uuid,radio_data);
         if (!cover) { cover = default_cover; }
@@ -141,10 +155,17 @@ function mboxStreamChannel(data) {
         // player control (in box)
         text += "<div class=\"album_control new\">";
         text += "<div class=\"player_active big\" id=\"playing_"+uuid+"\" style=\"display:none;\"><img src=\""+mbox_icons["playing"]+"\" style=\"height:20px;width:20px;margin:2px;\"></div>";
+        
 	if (mbox_device != "local") {
       		text += mboxHtmlButton("play",  "mboxApp.requestAPI('GET',['play', '" + uuid + "'],'',mboxControl);", "blue");
         	text += mboxHtmlButton("stop",  "mboxApp.requestAPI('GET',['stop'],'',mboxControl);", "blue");
         	text += mboxHtmlButton("empty");
+		}
+		
+	if (mbox_device != "remote") {
+        	text += mboxHtmlButton("play",  "mboxPlayerLocal();",	"green");
+        	text += mboxHtmlButton("stop",  "mboxPlayer.stop();",	"green");
+	        text += mboxHtmlButton("empty");
 		}
 
         text += mboxHtmlButton("info",  "mboxStreamInfo_load('"+uuid+"');",  "red");
@@ -161,25 +182,16 @@ function mboxStreamChannel(data) {
                 text += "</div>";
                 text += mboxCardEditLink(uuid);
                 }
+                
         text += "</div>";
         text += "<div style=\"width:100%;float:left;\"><hr/></div>";
 
         // write tracks
         text += "<div class=\"album_tracks\">";
-	text += "Web-Seite: <a href=\"" + radio_data["stream_info"] + "\" target=\"_blank\">"+ radio_data["stream_info"] + "</a>";
+	text += lang("WEBSITE")+":<br/><a href=\"" + radio_data["stream_info"] + "\" target=\"_blank\">"+ radio_data["stream_info"] + "</a>";
         text += "</div>";
-        text += "<div style=\"width:100%;float:left;\"><hr/></div>";
-	//alert(radio_data["stream_url2"]);
-	if (mbox_device == "local") {
-        	text += "<div class=\"album_tracks_player\" id=\"audioPlayer\">";
-        	text += "</div>";
-		}
 
         mboxAlbumWriteBelow(text);
-        //setTextById("remote1",text);
-        if (radio_data["stream_url2"]) {
-	        mboxStreamWriteAudioPlayer(radio_data["title"],radio_data["stream_url2"],"audioPlayer");
-		}
         }
 
 
@@ -208,7 +220,7 @@ function mboxStreamInfo(data) {
         var album  = data["DATA"]["_selected"];
         var uuid   = data["DATA"]["_selected_uuid"];
 
-        var url    = RESTurl + "mbox/read/radio/"+uuid+"/";
+        var url    = RESTurl + "api/data/"+uuid+"/--";
         var size   = Math.round(album["albumsize"]/1024/1024*100)/100;
         var cardid = album["card_id"]; if (!cardid) { cardid = lang("CARD_NOT_CONNECTED"); }
 
@@ -224,22 +236,22 @@ function mboxStreamInfo(data) {
                 }
 
 	var edit = "";
-        edit += mboxHtmlButton("image_add", "mboxUploadImage('"+uuid+"','radio','"+album["title"]+"');",                     "red");
+        edit += mboxHtmlButton("image_add",	"mboxUploadImage('"+uuid+"','radio','"+album["title"]+"');",                     "red");
         edit += mboxHtmlButton("edit",  	"mboxStreamEdit_load('"+uuid+"');",                                                "red");
         edit += mboxHtmlButton("delete",  	"mboxAlbumDelete('"+album["title"]+": "+album["description"]+"','"+uuid+"');",   "red");
 
         text += "<b>"+lang("STREAM_INFORMATION")+"</b><br/><br/>";
         text += mboxHtmlTableNew("start");
         text += "<tr><td colspan='2'><hr></td></tr>";
-        text += mboxHtmlTableNew(["<i>"+lang("TITLE")+":",              	album["title"] ] );
-        text += mboxHtmlTableNew(["<i>"+lang("DESCRIPTION")+":",        	album["description"] ] );
-        text += mboxHtmlTableNew(["<i>"+lang("INFORMATION")+":",	        "<a href=\"" + album["stream_info"] + "\" target=\"_blank\">" + album["stream_info"] + "</a>" ] );
+        text += mboxHtmlTableNew(["<i>"+lang("TITLE")+":",             	album["title"] ] );
+        text += mboxHtmlTableNew(["<i>"+lang("DESCRIPTION")+":",       	album["description"] ] );
+        text += mboxHtmlTableNew(["<i>"+lang("INFORMATION")+":",        "<a href=\"" + album["stream_info"] + "\" target=\"_blank\">" + album["stream_info"] + "</a>" ] );
         text += mboxHtmlTableNew(["<i>"+lang("STREAM")+" URL:",        	"<a href=\"" + album["stream_url"] + "\" target=\"_blank\">" + album["stream_url"] + "</a>" ] );
-        text += mboxHtmlTableNew(["<i>"+lang("STREAM")+" UUID:",		"<a href='" + url + "/' target='_blank'>" + uuid + "</a>" ] );
+        text += mboxHtmlTableNew(["<i>"+lang("STREAM")+" UUID:",	"<a href='" + url + "/' target='_blank'>" + uuid + "</a>" ] );
         text += mboxHtmlTableNew(["<i>"+lang("CARD_ID")+":",         	"<a style='cursor:pointer;' onclick='mboxCardList_load();'>"    + cardid + "</a>" ] );
         text += mboxHtmlTableNew(["<i>"+lang("COVER_AVAILABLE")+":", 	cover ] );
         text += "<tr><td colspan='2'><hr></td></tr>";
-        text += mboxHtmlTableNew(["<i>"+lang("EDIT")+":",       		edit ] );
+        text += mboxHtmlTableNew(["<i>"+lang("EDIT")+":",       	edit ] );
         text += "<tr><td colspan='2'><hr></td></tr>";
         text += mboxHtmlTableNew("end");
 

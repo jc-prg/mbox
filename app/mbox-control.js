@@ -37,11 +37,6 @@ function mboxControlGroups() {
         var cover   = [mbox_icons["album_bw"],mbox_icons["playlist_bw"],mbox_icons["radio_bw"]];
         var descr   = [lang("ALBUM"),lang("PLAYLIST"),lang("STREAM")];
         var onclick = [
-/*
-                        "mboxAlbumAll_load();    mbox_mode='Album';",
-                        "mboxPlaylistAll_load(); mbox_mode='Playlist';",
-                        "mboxStream_load();      mbox_mode='Radio';",
-*/
                         "mboxAlbumAll_load();",
                         "mboxPlaylistAll_load();",
                         "mboxStream_load();"

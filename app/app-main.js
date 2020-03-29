@@ -30,6 +30,7 @@ var mboxApp = new jcApp("mbox", RESTurl, "status", "api/");	// cmd: <device>/<cm
 mboxApp.init("data_log", "error_log", reloadInterval, appPrintStatus );
 mboxApp.timeout = -1; 							// timeout in milliseconds (-1 for no timeout)
 mboxApp.load();
+mboxApp.requestAPI_init();
 mboxApp.setAutoupdate( mboxControlCheckStatus );
 
 //--------------------------------

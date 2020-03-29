@@ -36,7 +36,8 @@ function mboxDataReturnMsg(data) {
 
 //--------------------------------------
 
-function mboxDataEdit(data) {
+function mboxDataEdit(data,callback) {
+
         var text        = "";
 	var key_list    = "";
         var album       = data["DATA"]["_selected"];
@@ -86,10 +87,12 @@ function mboxDataEditExecute(uuid, key_list, type) {
 	if (type == "radio")      	{ callback = mboxStream_load; }
 	else if (type == "playlists")	{ callback = mboxPlaylistAll_load; }
 	else				{ callback = appMsg.hide; }
+	
+	console.error("EDIT EXECUTE"+type);
 
 	mboxApp.requestAPI("PUT", ["data",uuid], data, callback );
 	}
 
 //--------------------------------------
 // EOF
-
+	

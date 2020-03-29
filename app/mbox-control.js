@@ -57,16 +57,19 @@ function mboxControlGroups() {
 function mboxControl_load()            { mboxApp.requestAPI('GET', ["status"], "", mboxControl,"","mboxControl_load"); }
 function mboxControl(data) {
 
-        var text       = "";
 	var d          = data["STATUS"]["playback"];
+	
+	if (!d)	{ return; }
+	
 	var type       = d["device"];
 	var volume     = d["volume"];
 	var mute       = d["mute"];
 	var status     = d["status"];
 	var playing    = d["playing"];
+
+        var text       = "";
 	var uuid       = "";
 	var audio      = "";
-	
 
 	if (getTextById("audioPlayer")) { audio = getTextById("audioPlayer"); }
 

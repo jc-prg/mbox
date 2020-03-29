@@ -138,7 +138,7 @@ elif [ ${DOLLAR}option == "update" ]; then
     
     echo "Stop docker"
     ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose.yml stop
-    if [ ${DOLLAR}harware == "yes" ]; then
+    if [ ${DOLLAR}hardware == "yes" ]; then
       ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose-rpi.yml stop
     fi
     
@@ -159,7 +159,7 @@ elif [ ${DOLLAR}option == "update" ]; then
     
     echo "Restart docker"
     ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose.yml up -d
-    if [ ${DOLLAR}harware == "yes" ]; then
+    if [ ${DOLLAR}hardware == "yes" ]; then
       ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose-rpi.yml up -d
     fi
 

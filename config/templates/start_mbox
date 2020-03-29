@@ -137,9 +137,9 @@ elif [ ${DOLLAR}option == "update" ]; then
     cd ${MBOX_DIR}
     
     echo "Stop docker"
-    ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${REMOTE_DIR}/docker-compose.yml stop
+    ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose.yml stop
     if [ ${DOLLAR}harware == "yes" ]; then
-      ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${REMOTE_DIR}/docker-compose-rpi.yml stop
+      ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose-rpi.yml stop
     fi
     
     echo "Update MBOX from repository"
@@ -154,13 +154,13 @@ elif [ ${DOLLAR}option == "update" ]; then
     echo "Create new configuration"
     cd ${MBOX_DIR}
     cd config/
-    ./create ${REMOTE_CURRENT_STAGE}
+    ./create ${MBOX_CURRENT_STAGE}
     cd ..
     
     echo "Restart docker"
-    ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${REMOTE_DIR}/docker-compose.yml up -d
+    ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose.yml up -d
     if [ ${DOLLAR}harware == "yes" ]; then
-      ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${REMOTE_DIR}/docker-compose-rpi.yml up -d
+      ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose-rpi.yml up -d
     fi
 
 elif [ ${DOLLAR}option == "cron" ]; then

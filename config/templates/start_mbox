@@ -104,7 +104,7 @@ if [ ${DOLLAR}option == "docker" ]; then
   ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose.yml up -d
 
   if [ ${DOLLAR}is_rpi == "yes" ]; then
-    if [ ${DOLLAR}harware == "yes" ]; then
+    if [ ${DOLLAR}hardware == "yes" ]; then
       echo "... start rpi components:"
       ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose-rpi.yml up -d
     fi
@@ -120,7 +120,7 @@ elif [ ${DOLLAR}option == "restart" ]; then
   ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose.yml up -d
 
   if [ ${DOLLAR}is_rpi == "yes" ]; then
-    if [ ${DOLLAR}harware == "yes" ]; then
+    if [ ${DOLLAR}hardware == "yes" ]; then
       echo "... restart rpi components:"
       ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose-rpi.yml stop
       ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose-rpi.yml up -d

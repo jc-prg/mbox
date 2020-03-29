@@ -131,7 +131,7 @@ elif [ ${DOLLAR}option == "restart" ]; then
   sleep 5s
   
 
-elif [ ${D}option == "update" ]; then
+elif [ ${DOLLAR}option == "update" ]; then
 
     echo "Change dir"
     cd ${MBOX_DIR}

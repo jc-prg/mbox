@@ -68,6 +68,7 @@ install_cron() {
 }
 
 install_rclocal() {
+  echo "INSTALL startup with /etc/rc.local"
   ${MBOX_DIR}/config/install/install-rclocal
 }
 
@@ -94,7 +95,7 @@ check_dns() {
 
 #---------------------------------------
 
-
+# Start using docker container
 if [ ${DOLLAR}option == "docker" ]; then
 
   echo "... mount usb if available and not done already."
@@ -113,6 +114,7 @@ if [ ${DOLLAR}option == "docker" ]; then
   echo "RESET" > ${MBOX_DIR}/log/internet_connect
   sleep 5s
   
+# Restart docker container
 elif [ ${DOLLAR}option == "restart" ]; then
 
   echo "... restart main modules:"
@@ -130,7 +132,7 @@ elif [ ${DOLLAR}option == "restart" ]; then
   echo "RESET" > ${MBOX_DIR}/log/internet_connect
   sleep 5s
   
-
+# Update from GitHub
 elif [ ${DOLLAR}option == "update" ]; then
 
     echo "Change dir"
@@ -163,15 +165,18 @@ elif [ ${DOLLAR}option == "update" ]; then
       ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose-rpi.yml up -d
     fi
 
+# install cron and automatic start
 elif [ ${DOLLAR}option == "cron" ]; then
 
   install_cron
   install_rclocal
 
+# check if DNS error (and restart if so)
 elif [ ${DOLLAR}option == "check-dns" ]; then
 
   check_dns
 
+# start using server option (in progress)
 elif [ ${DOLLAR}option == "server" ]; then
 
   echo "... IMPLEMENTATION NOT READY YET!"
@@ -182,10 +187,12 @@ elif [ ${DOLLAR}option == "server" ]; then
   ${MBOX_DIR}/server/server.py &
   
   if [ ${DOLLAR}is_rpi == "yes"]; then
-    echo "... start server rpi components"
-    ${MBOX_DIR}/server/server_led.py &
-    ${MBOX_DIR}/server/server_rfid.py &
-    ${MBOX_DIR}/server/server_button.py &
+    if [ ${DOLLAR}hardware == "yes" ]; then
+      echo "... start server rpi components"
+      ${MBOX_DIR}/server/server_led.py &
+      ${MBOX_DIR}/server/server_rfid.py &
+      ${MBOX_DIR}/server/server_button.py &
+    fi
   fi
   echo ""
   

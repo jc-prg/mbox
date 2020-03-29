@@ -326,25 +326,27 @@ function mboxPlaylistEdit(data) {
 	var list   = data["DATA"]["_selected"];			//dataLists[uuid]["title"];
 	var tracks = list["tracks"];
         var albums = data["DATA"]["albums"];			//dataAlbums;
-	var text   = "";
+        
+	var text  	 = "";
+	var empty_select = "<select class='album_edit_select'><option>Loading ...</option></select>";
 
 	console.log("Edit dialog playlist: "+uuid);
 
 	text += "<b>"+lang("PLAYLIST_EDIT")+": &quot;" + list["title"] + "&quot;</b><br/>&nbsp;<br/>";
 	
-	text += "<i>Neue Titel ...</i>";
-	text += "<div id='selectAlbumContainer'>Loading ...</div>";
-	text += "<div id='selectTrack' class='album_edit_list' >Loading ...</div>";
+	text += "<i onclick=\"mboxPlaylistEditAlbums_load('"+uuid+"');\" style=\"cursor:pointer;\">Neue Titel ...</i>";
+	text += "<div id='selectAlbumContainer'>"+empty_select+"<br/>"+empty_select+"</div>";
+	text += "<div id='selectTrack' class='album_edit_list' >"+lang("SELECT_ARTIST")+" ...</div>";
 	
-	text += "<i>"+lang("TRACKS_INSIDE")+" ...</i>";
+	text += "<i onclick=\"mboxPlaylistEditTracks_load('"+uuid+sep+uuid+"');\" style=\"cursor:pointer;\">"+lang("TRACKS_INSIDE")+" ...</i>";
     	text += "<div id='selectTrackList'     class='album_edit_list'>Loading ...</div>";
 	text += "<div id='playlistEditingInfo' style='color:red;'></div>";
 
 	appMsg.confirm("<div style=\"text-align:left;\">" + text + "</div>", "", 450);
 
-	mboxPlaylistEditAlbums_load(uuid);
-	setTimeout(function(){
-		mboxPlaylistEditTracks_load(sep+uuid);						// Load data of playlist (to delete tracks)
+	setTimeout(function() {
+		mboxPlaylistEditAlbums_load(uuid);		// load dropdowns with
+		mboxPlaylistEditTracks_load(uuid+sep+uuid);	// load data of playlist (to delete tracks)
 		}, 1000);
 	}
 
@@ -352,17 +354,16 @@ function mboxPlaylistEdit(data) {
 // load albums and write drop down menus
 //---------------------------
 
-function mboxPlaylistEditAlbums_load(uuid) { mboxApp.requestAPI("GET",["db","albums--album_info",uuid],"", mboxPlaylistEditAlbums ); }
+//function mboxPlaylistEditAlbums_load(uuid) { mboxApp.requestAPI("GET",["db","albums--album_info",uuid],"", mboxPlaylistEditAlbums ); }
+function mboxPlaylistEditAlbums_load(uuid) { mboxApp.requestAPI("GET",["db","artists",uuid],"", mboxPlaylistEditAlbums ); }
 function mboxPlaylistEditAlbums(data) {
 
-	var uuid	 = "";
+	var selected;
+	var uuid;
 	var text         = "";
 	var sep          = "||";
 	var list_artists = [];
-	var selected;
-
-	var albums       = data["DATA"]["albums"];
-	var album_info   = data["DATA"]["album_info"];
+	var artists      = data["DATA"]["artists"];
 
 	if ( data["REQUEST"]["db_filter"].indexOf(sep) > -1) {	
 		var temp     = data["REQUEST"]["db_filter"].split(sep);
@@ -373,12 +374,12 @@ function mboxPlaylistEditAlbums(data) {
 		}
 
 	// drop down "artists"
-	for (var key in album_info) {
-		if (list_artists.indexOf(album_info[key]["artist"])<0) { list_artists.push(album_info[key]["artist"]); }
-		}
+	list_artists = Object.keys(artists);
 	list_artists.sort();
+	
 	text += "<select id='selectArtist' class='album_edit_select' " + 
 	        "onchange='mboxPlaylistEditAlbums_load(\""+uuid+sep+"\"+document.getElementById(\"selectArtist\").value);'>";
+	text += "<option value=''>"+lang("SELECT_ARTIST")+" ...</option>";;
 
 	for (var i=0;i<list_artists.length;i++) {
 		var sel = "";
@@ -390,18 +391,16 @@ function mboxPlaylistEditAlbums(data) {
 
 	// drop down "albums"
 	text += "<select id='selectAlbum' class='album_edit_select' ";
-	text += "onchange='mboxPlaylistEditTracks_load(document.getElementById(\"selectAlbum\").value);' ";
-	text += "onload='mboxPlaylistEditTracks_load(document.getElementById(\"selectAlbum\").value);'>";
-
-	for (var key in album_info) {
-		if (selected) {
-			if (selected == album_info[key]["artist"]) {
-				text += "<option value='"+key+sep+uuid+"'>" + album_info[key]["album"] + "</option>";
-				}
+	text += "onchange='mboxPlaylistEditTracks_load(document.getElementById(\"selectAlbum\").value);'>";
+	
+	if (selected) {
+		for (var i=0;i<artists[selected].length;i++) {
+			key   = artists[selected][i]["uuid"];
+			album = artists[selected][i]["album"];
+			text += "<option value='"+key+sep+uuid+"'>" + album + "</option>";
 			}
-		else if (album_info[key]["artist"] == list_artists[0]) {
-			text += "<option value='"+key+sep+uuid+"'>" + album_info[key]["album"] + "</option>";
-			}
+		}
+	else {	text += "<option value=''>"+lang("SELECT_ARTIST")+" ...</option>";
 		}
 
 	text += "</select>&nbsp;<br/>";	
@@ -413,8 +412,77 @@ function mboxPlaylistEditAlbums(data) {
 // write track lists with edit & delete link (1) tracks of select album (2) tracks of playlist
 //---------------------------
 
-function mboxPlaylistEditTracks_load(uuid,source="") { mboxApp.requestAPI("GET",["db","all",uuid], "", mboxPlaylistEditTracks); }
+// ==> nur nötiges Album laden !!!!
+
+function mboxPlaylistEditTracks_load(uuid_filter,source="") { 
+	var sep			= "||";
+	var ids			= uuid_filter.split(sep);	// list of IDs, uuid of playlist first
+	var uuid		= ids[0];       		// id of album (selected ...)
+	var filter		= ids[1];
+	if (filter == "") { filter = "-"; }
+
+	mboxApp.requestAPI("GET",["data",uuid,filter], "", mboxPlaylistEditTracks);
+	}
+
 function mboxPlaylistEditTracks(data) {
+
+console.error("mboxPlaylistEditTracks");
+console.error(data);
+
+	var filter		= data["REQUEST"]["db_filter"];
+	var uuid		= data["DATA"]["_selected_uuid"];
+	var album		= data["DATA"]["_selected"];
+	var tracklist		= data["DATA"]["_selected"]["tracks"];
+	var trackinfo		= data["DATA"]["tracks"];
+	var albuminfo		= data["DATA"]["album_info"];
+	
+	// ALBUM LIST - add tracks to playlist
+	if (uuid.includes("a_")) {
+		if (tracklist.length > 0) {
+			var text_album = "<b>"+lang("ALBUM_COMPLETE")+":</b> " + album["album"] + "<br/>";
+			
+			for (var i=0;i<tracklist.length;i++) {
+				var onclick_add    =  "mboxApp.requestAPI('PUT',['playlist_items','add',   '"+filter+"','"+tracklist[i]+"'],'', mboxPlaylistAddTrackInfo);";			
+				var onclick_delete =  "mboxApp.requestAPI('PUT',['playlist_items','delete','"+filter+"','"+tracklist[i]+"'],'', mboxPlaylistDeleteTrackInfo);";
+	
+				// text_album += " <b class=\"album_delete_pl\" onclick=\""+onclick_delete+"\">(-)</b> &nbsp;";
+				text_album += " <b class=\"album_edit_pl\"   onclick=\""+onclick_add+"\">(+)</b> &nbsp;"; 
+	
+				if (tracklist[i] in trackinfo) 		{ text_album += trackinfo[tracklist[i]]["title"]; }
+				else 					{ text_album += "<i>"+lang("NOT_FOUND")+": " + tracklist[i] + "</i>"; }
+				
+				text_album += "<br/>";
+				}
+			setTextById("selectTrack", text_album);
+			}
+		else {	setTextById("selectTrack", lang("EMPTY_LIST"));
+			}
+		}
+
+	// PLAYLIST - delete track	
+	if (uuid.includes("p_")) {
+		if (tracklist.length > 0) {
+			var text_playlist = "";
+			for (var i=0;i<tracklist.length;i++) {
+				var onclick_delete  =  "mboxApp.requestAPI('PUT',['playlist_items','delete','"+filter+"', '"+tracklist[i]+"'],'', mboxPlaylistDeleteTrackInfo);";
+				text_playlist += " <b class=\"album_delete_pl\" onclick=\""+onclick_delete+"\">(-)</b> &nbsp;";
+				
+				if (tracklist[i] in trackinfo)		{ text_playlist += trackinfo[tracklist[i]]["title"] + " (" + trackinfo[tracklist[i]]["artist"] + ")<br/>"; }
+				else if (tracklist[i] in albuminfo)	{ text_playlist += "<b>"+lang("ALBUM_COMPLETE")+":</b> " + albuminfo[tracklist[i]]["album"] + " (" + albuminfo[tracklist[i]]["artist"] + ")<br/>"; }
+				else 					{ text_playlist += "<i>"+lang("NOT_FOUND")+": " + tracklist[i] + "</i><br/>"; }
+				}
+			setTextById("selectTrackList", text_playlist);
+			}
+		else {	setTextById("selectTrackList", lang("EMPTY_LIST"));
+			}
+		}
+	return;
+	}
+
+// =======================
+
+function mboxPlaylistEditTracks_load_old(uuid,source="") { mboxApp.requestAPI("GET",["db","all",uuid], "", mboxPlaylistEditTracks_old); }
+function mboxPlaylistEditTracks_old(data) {
 
 	var sep			= "||";
 	var ids			= data["REQUEST"]["db_filter"].split(sep);	// list of IDs, uuid of playlist first
@@ -508,7 +576,7 @@ function mboxPlaylistTrackRow(data,uuid,split=false,uuid_pl="",color=0) {
 	if (split==true) { no = "2";}
 
 	// if track exists ...
-        if (uuid in trackinfo) {
+        if (trackinfo && trackinfo[uuid]) {
 
 		var track = trackinfo[uuid];
 
@@ -542,22 +610,9 @@ function mboxPlaylistTrackRow(data,uuid,split=false,uuid_pl="",color=0) {
                 	length = " <font color='gray'>(" + convert_second2time(Math.round(albuminfo[uuid]["albumlength"])) + ")</font>";
                 	}
 
-		// Controls to play Track ...
-/*
-	       	cmd += "<div class=\"album_tracks_control\"  style=\"background:"+mbox_track_color[color]+";\">";
-		if (mbox_device == "local")	{ cmd += mboxHtmlButton("play",  "mboxPlayerLocal();", "gray", "small right"); }	        //cmd += mboxHtmlButton("play",  "writeAudioPlayer('" + uuid + "','audioPlayer');", "green",   "small right");
-        	else				{ cmd += mboxHtmlButton("play",  "mboxApp.requestAPI('GET',['play', '"+uuid+"'],'',mboxControl);", "blue", "small right"); }
-	       	cmd += "</div>";
-*/
 		// Show Title if exist ...
         	text += "<div class=\"album_tracks_headline\" style=\"background:"+mbox_track_color[color]+";\">";
                 text += "<center><i>" +albuminfo[uuid]["artist"] + "<br/><b>" +albuminfo[uuid]["album"] + "</b></i></center>";
-/*        	
-                text += "<b><i>Album: </i>" +albuminfo[uuid]["album"] + "</b><br/>";
-                text += albuminfo[uuid]["artist"]+" ";
-		text += "<i>("+albuminfo[uuid]["tracks"].length+" Tracks)</i><br/>";
-		text += length;
-*/
 	        text += "</div>";
         	text += cmd;
 		}
@@ -668,10 +723,14 @@ function mboxPlaylistInfo_close() {
 //----------------------------------------------------------------
 
 function mboxPlaylistDeleteTrackInfo(data) {
+	var sep = "||";
 	setTextById("playlistEditingInfo","Lösche "+data["LOAD"]["UUID"] + " ...");
 	setTimeout(function(){
-		mboxApp.requestAPI("GET",["db","all",document.getElementById("selectAlbum").value], "", mboxPlaylistEditTracks,"wait");
-		mboxPlaylistAll_load('', data["LOAD"]["UUID"]);
+		param = data["REQUEST"]["c-param"].split(" ");
+		mboxPlaylistEditTracks_load(param[0]+sep+param[0]);
+		mboxPlaylistAll_load('', param[0]);
+		//mboxApp.requestAPI("GET",["db","all",document.getElementById("selectAlbum").value], "", mboxPlaylistEditTracks,"wait");
+		//mboxPlaylistAll_load('', data["LOAD"]["UUID"]);
 		setTextById("playlistEditingInfo","");
 		}, 1000);
 	}
@@ -682,10 +741,14 @@ function mboxPlaylistDeleteTrack(data) {
 	}
 
 function mboxPlaylistAddTrackInfo(data) {
+	var sep = "||";
 	setTextById("playlistEditingInfo","Füge Eintrag zu "+data["LOAD"]["UUID"] +" hinzu ...");
 	setTimeout(function(){
-		mboxApp.requestAPI("GET",["db","all",document.getElementById("selectAlbum").value], "", mboxPlaylistEditTracks,"wait");
-		mboxPlaylistAll_load('', data["LOAD"]["UUID"]);
+		param = data["REQUEST"]["c-param"].split(" ");
+		mboxPlaylistEditTracks_load(param[0]+sep+param[0]);
+		mboxPlaylistAll_load('', param[0]);
+		//mboxApp.requestAPI("GET",["db","all",document.getElementById("selectAlbum").value], "", mboxPlaylistEditTracks,"wait");
+		//mboxPlaylistAll_load('', data["LOAD"]["UUID"]);
 		setTextById("playlistEditingInfo","");
 		}, 1000);
 	}

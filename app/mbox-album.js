@@ -77,12 +77,12 @@ function mboxAlbumAll(data) {
 
 	var filter = "";
 	filter += "<div class='album_filter'>";
-	filter += mboxHtmlTableNew("start",true,"300px");
-	filter += mboxHtmlTableNew(["<i>"+lang("CATEGORY")+":", 		mboxAlbumFilterPath(album_info,filters) ], true );	
+	filter += mboxHtmlTableNew("start",true,"310px");
+	filter += mboxHtmlTableNew(["<i>"+lang("CATEGORY")+":", 	mboxAlbumFilterPath(album_info,filters) ], ["90px","210px"] );	
 	filter += mboxHtmlTableNew("end");
 	filter += "</div><div class='album_filter'>";
-	filter += mboxHtmlTableNew("start",true,"300px");
-	filter += mboxHtmlTableNew(["<i>"+lang("BAND_ARTIST")+":", 	mboxAlbumFilterArtist(album_info,filters) ], true );
+	filter += mboxHtmlTableNew("start",true,"310px","");
+	filter += mboxHtmlTableNew(["<i>"+lang("BAND_ARTIST")+":", 	mboxAlbumFilterArtist(album_info,filters) ], ["90px","210px"] );
 	filter += mboxHtmlTableNew("end");
 	filter += "</div>";
 
@@ -208,7 +208,8 @@ function mboxAlbumAll_album(count,uuid,title,description,cover,cmd_open,cmd_play
 
 function mboxAlbumFilterPath(data,selected) {
 
-	var filter   = "<select id='filter_album' onchange=\"mboxAlbumAll_load(document.getElementById('filter_album').value);\"  class=\"album_filter_dropdown\">"; 
+	var command  = "mboxAlbumAll_load(document.getElementById('filter_album').value);";
+	var filter   = "<select id='filter_album' onchange=\""+command+"\"  class=\"album_filter_dropdown\">"; 
 	var criteria = "albumpath:";
 	var list     = [];
 
@@ -227,6 +228,7 @@ function mboxAlbumFilterPath(data,selected) {
 		filter += "<option"+sel+" value='" + criteria + list[i] + "'>" + list[i] + "</option>";
 		}
 	filter += "<select>";
+	filter += "<button onclick=\""+command+"\" class=\"album_filter_button\">&gt;</button>";
 	return filter;
 	}
 
@@ -234,7 +236,8 @@ function mboxAlbumFilterPath(data,selected) {
 
 function mboxAlbumFilterArtist(data,selected) {
 
-	var filter   = "<select id='filter_artist' onchange=\"mboxAlbumAll_load(document.getElementById('filter_artist').value);\" class=\"album_filter_dropdown\">"; 
+	var command = "mboxAlbumAll_load(document.getElementById('filter_artist').value);";
+	var filter   = "<select id='filter_artist' onchange=\""+command+"\" class=\"album_filter_dropdown\">"; 
 	var criteria = "artist:";
 	var list     = [];
 
@@ -253,6 +256,7 @@ function mboxAlbumFilterArtist(data,selected) {
 		filter += "<option"+sel+" value='"+ criteria + list[i] + "'>" + list[i] + "</option>";
 		}
 	filter += "<select>";
+	filter += "<button onclick=\""+command+"\" class=\"album_filter_button\">&gt;</button>";
 	return filter;
 	}
 

@@ -147,16 +147,23 @@ function mboxHtmlEntryDetail( count ) {
 
 function mboxHtmlTableNew( cells=[], divide=false, width="100%", height="" ) {
 
+	var cells_width = [];
+
         // set width of colums
-	if (divide) 	{ var cell_width = 100 / cells.length + "%"; }
-	else		{ var cell_width = ""; }
+	if (divide == true) 		{ var cell_width = 100 / cells.length + "%"; }
+	else if (divide != false)	{ cells_width    = divide; }
+	else				{ var cell_width = ""; }
 
         // return start, end or row
         if (cells == "start")      { return "<table border=\"0\" width=\"" + width + "\" height=\"" + height + "\">"; }
         else if (cells == "end")   { return "</table>"; }
 	else  {
 		var text = "<tr>";
-		for (var i=0;i<cells.length;i++) { text += "<td width=\"" + cell_width + "\">" + cells[i] + "</td>"; }
+		for (var i=0;i<cells.length;i++) { 
+			if (cells_width != [])	{ width = cells_width[i]; }
+			else			{ width = cell_width; }
+			text += "<td width=\"" + width + "\">" + cells[i] + "</td>";
+			}
 		text    += "</tr>";
 		return text;
 		}

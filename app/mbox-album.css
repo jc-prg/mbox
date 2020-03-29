@@ -64,17 +64,25 @@
    }
 
 .album_filter {
-   float : left;
-   width : 300px;
-   }
+	float 	    : left;
+	width 	    : 310px;
+	margin-left : 5px;
+	}
 
 .album_filter_dropdown {
-   width : 160px;
-   }
+	width : 155px;
+	}
+   
+.album_filter_button {
+	width      : 30px;
+	height     : 25px;
+	background : lightgray;
+	color      : black;
+	}
 
 .character {
-   cursor          : default;
-   }
+	cursor          : default;
+	}
 
 .album_triangle {
 	display		: none;

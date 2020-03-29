@@ -4,7 +4,6 @@ Here you'll find a history of features implemented into hardware and software as
 
 ## KNOWN BUGS
 
-- BUG app - callback functions overwriten by second call?
 - BUG app - volume doesn't work with iOS / Safari -> HTML5 audio processing?
 - BUG app/server - if playlist with the same title already exists, two lists with the same tracks, id, and image are displayed => check server side?
 - BUG server - reconnect Card doesn't work
@@ -295,8 +294,10 @@ Here you'll find a history of features implemented into hardware and software as
 * OK - BUG app - local player also for playlists (tracks & albums to be loaded)
 * OK - BUG app - local player of streams doesn't work (plays last loaded album instead)
 * Button for filter
+* OK - Queue for jcApp.requestAPI
+* OK - BUG app - callback functions overwriten by second call?
+* OK - timeout for API Request and reaction to the timeout (show error message) - required e.g. if parallel processes like a system update is running on the raspberry
 
-- timeout for API Request and reaction to the timeout (show error message) - required e.g. if parallel processes like a system update is running on the raspberry
 - filter for genres (or other metadata ...)
 - appMsg.confirm -> place dialog in the middle (bit more above ...)
 - reload control panel whenever pressed button (show new title and new buttons immedatley)

@@ -38,8 +38,11 @@ function mboxSettingsToggle() {
 function mboxSettingsStatus_load()  { mboxApp.requestAPI("GET",["status"],"",mboxSettingsStatus, "wait"); }
 function mboxSettingsStatus (data) {
 
-	var text  = "";
-	var stage = "Prod Stage"; if (test) { stage = "Test Stage"; }
+	var text    = "";
+	var stage   = "Prod Stage"; if (test) { stage = "Test Stage"; }
+	var player  = new jcPlayer("player");
+	var message = new jcMsg("message");
+	var slider  = new jcSlider("slider");
 
 	text += "<center><b>"+lang("INFORMATION")+"</b></center>";
 	text += "<hr/>";
@@ -47,23 +50,26 @@ function mboxSettingsStatus (data) {
 	text += mboxHtmlTable("<b>mBox-Client:",	appTitle + " " + appVersion + "<br/>(" + stage + ")");
 	text += mboxHtmlTable("<b>mBox-Server:",	data["API"]["name"] + " " + data["API"]["version"] + "<br/>(" + data["API"]["stage"] + ")");
 	text += mboxHtmlTable("<b>jcApp:",		mboxApp.appVersion);
+	text += mboxHtmlTable("<b>jcMessage:",		message.appVersion);
+	text += mboxHtmlTable("<b>jcPlayer:",		player.appVersion);
+	text += mboxHtmlTable("<b>jcSlider:",		slider.appVersion);
 	text += mboxHtmlTable("end");
 	text += "<hr/>";
 	text += mboxHtmlTable("start");
 	text += mboxHtmlTable("<b>Modus:", 		mbox_mode);
-	text += mboxHtmlTable("<b>Status:", 	data["STATUS"]["playback"]["status"] + " (" + data["STATUS"]["playback"]["file"] + ")");
-	text += mboxHtmlTable("<b>Playing:", 	data["STATUS"]["playback"]["playing"]);
+	text += mboxHtmlTable("<b>Status:",	 	data["STATUS"]["playback"]["status"] + " (" + data["STATUS"]["playback"]["file"] + ")");
+	text += mboxHtmlTable("<b>Playing:", 		data["STATUS"]["playback"]["playing"]);
 	text += mboxHtmlTable("<b>Active Device:", 	data["STATUS"]["active_device"]);
-	text += mboxHtmlTable("<b>Window:", 	document.body.clientWidth + "x" + document.body.clientHeight);
+	text += mboxHtmlTable("<b>Window:", 		document.body.clientWidth + "x" + document.body.clientHeight);
 	text += mboxHtmlTable("end");
 	text += "<hr/>";
 	text += mboxHtmlTable("start");
 	text += mboxHtmlTable("<b>Files:", 		data["STATUS"]["statistic"]["files"] );
-	text += mboxHtmlTable("<b>Tracks:", 	data["STATUS"]["statistic"]["tracks"] );
-	text += mboxHtmlTable("<b>Artists:", 	data["STATUS"]["statistic"]["albums"] );
-	text += mboxHtmlTable("<b>Albums:", 	data["STATUS"]["statistic"]["album_info"] );
-	text += mboxHtmlTable("<b>Playlists:",	data["STATUS"]["statistic"]["playlists"] );
-	text += mboxHtmlTable("<b>Web-Radio:",	data["STATUS"]["statistic"]["radio"] );
+	text += mboxHtmlTable("<b>Tracks:", 		data["STATUS"]["statistic"]["tracks"] );
+	text += mboxHtmlTable("<b>Artists:", 		data["STATUS"]["statistic"]["albums"] );
+	text += mboxHtmlTable("<b>Albums:", 		data["STATUS"]["statistic"]["album_info"] );
+	text += mboxHtmlTable("<b>Playlists:",		data["STATUS"]["statistic"]["playlists"] );
+	text += mboxHtmlTable("<b>Web-Radio:",		data["STATUS"]["statistic"]["radio"] );
 	text += mboxHtmlTable("end");
 
 	setTextById("setting1",text);

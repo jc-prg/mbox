@@ -2,6 +2,7 @@
 
 option=${DOLLAR}1
 is_rpi="${MBOX_WITH_RPI}"
+hardware="${MBOX_WITH_HARDWARE}"
 
 echo
 echo "-------------------------------------"
@@ -17,6 +18,7 @@ if [ ! ${DOLLAR}option ]; then
   echo " 'd' - docker start"
   echo " 'r' - docker restart"
   echo " 'c' - install crontab"
+  echo " 'u' - update from GitHub"
   echo " 's' - server (in progress)"
   count=0
   while : ; do
@@ -35,6 +37,10 @@ if [ ! ${DOLLAR}option ]; then
     elif [[ ${DOLLAR}k = s ]] ; then
        option="server"
        printf "\n... starting directly from server.\n"
+       break
+    elif [[ ${DOLLAR}k = u ]] ; then
+       option="update"
+       printf "\n... update from https://github.com.\n"
        break
     elif [[ ${DOLLAR}k = c ]] ; then
        option="cron"
@@ -98,8 +104,10 @@ if [ ${DOLLAR}option == "docker" ]; then
   ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose.yml up -d
 
   if [ ${DOLLAR}is_rpi == "yes" ]; then
-    echo "... start rpi components:"
-    ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose-rpi.yml up -d
+    if [ ${DOLLAR}harware == "yes" ]; then
+      echo "... start rpi components:"
+      ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose-rpi.yml up -d
+    fi
   fi
   echo ""
   echo "RESET" > ${MBOX_DIR}/log/internet_connect
@@ -112,14 +120,48 @@ elif [ ${DOLLAR}option == "restart" ]; then
   ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose.yml up -d
 
   if [ ${DOLLAR}is_rpi == "yes" ]; then
-    echo "... restart rpi components:"
-    ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose-rpi.yml stop
-    ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose-rpi.yml up -d
+    if [ ${DOLLAR}harware == "yes" ]; then
+      echo "... restart rpi components:"
+      ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose-rpi.yml stop
+      ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose-rpi.yml up -d
+    fi
   fi
   echo ""
   echo "RESET" > ${MBOX_DIR}/log/internet_connect
   sleep 5s
   
+
+elif [ ${D}option == "update" ]; then
+
+    echo "Change dir"
+    cd ${MBOX_DIR}
+    
+    echo "Stop docker"
+    ${DOCKERCOMPOSE_DIR}/docker-compose -f ${REMOTE_DIR}/docker-compose.yml stop
+    if [ ${DOLLAR}harware == "yes" ]; then
+      ${DOCKERCOMPOSE_DIR}/docker-compose -f ${REMOTE_DIR}/docker-compose-rpi.yml stop
+    fi
+    
+    echo "Update MBOX from repository"
+    git stash
+    git pull
+    
+    echo "Update MODULES from repository"
+    cd ${MBOX_DIR_JCMODULES}
+    git stash
+    git pull
+    
+    echo "Create new configuration"
+    cd ${MBOX_DIR}
+    cd config/
+    ./create ${REMOTE_CURRENT_STAGE}
+    cd ..
+    
+    echo "Restart docker"
+    ${DOCKERCOMPOSE_DIR}/docker-compose -f ${REMOTE_DIR}/docker-compose.yml up -d
+    if [ ${DOLLAR}harware == "yes" ]; then
+      ${DOCKERCOMPOSE_DIR}/docker-compose -f ${REMOTE_DIR}/docker-compose-rpi.yml up -d
+    fi
 
 elif [ ${DOLLAR}option == "cron" ]; then
 

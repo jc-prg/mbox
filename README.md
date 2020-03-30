@@ -28,7 +28,7 @@ The software for client and server runs on two boxes and runs relatively stable.
 
 ## What's inside
 
-This software is built to play music (MP3 / M4A files and web-streams) on a _Raspberry Pi 3B+_ in a wooden box with speakers. It consists of:
+This software is built to play music (MP3 / M4A files and web-streams) on a _Raspberry Pi 3B+/4B_ in a wooden box with speakers. It consists of:
 
 - **Client** to show and manage content and control playback (JavaScript/HTML5/CSS)
 - **Server** to import and manage content and control playback (Python3)
@@ -56,7 +56,7 @@ In order to use jc://music-box/ as it is you must have installed:
 1. git
 2. docker, docker-compose
 
-The *server software* has been tested on a Raspberry Pi 3B+ with [Raspbian](docs/INSTRUCTION_PREPARE_RPI.md) and on an Ubuntu Desktop. RFID reader, LED and Buttons only tested on the Raspberry Pi.
+The *server software* has been tested on a Raspberry Pi 3B+/4B with [Raspbian](docs/INSTRUCTION_PREPARE_RPI.md) and on an Ubuntu Desktop. RFID reader, LED and Buttons only tested on the Raspberry Pi.
 
 The *client software* has been tested with Chrome 70.0, Firefox 68.0 and Safari on iOS 13 (iPhone XS, iPhone SE).
 

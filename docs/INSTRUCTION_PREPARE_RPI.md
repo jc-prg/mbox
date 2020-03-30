@@ -14,6 +14,8 @@
 
 ## Prepare your Raspberry Pi
 
+For a faster starting and a better experience it's recommended to use a _Raspberry Pi 4B_. Nevertheless Raspberry Pi 3B+ will do a good job also, but it will need more to to start.
+
 ### Download Image
 
 Download an up-to-date raspbian image: [https://www.raspberrypi.org/downloads/raspbian/](https://www.raspberrypi.org/downloads/raspbian/). 

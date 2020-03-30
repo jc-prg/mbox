@@ -6,7 +6,7 @@ A friend has built a similar box based on an existing free software (which I've 
 
 ## Status
 
-At the moment I'm finishing a new box ... which means optimizing, testing and bug-fixing all the time. Not everything is working stable at the moment... . Stay tuned, I'm nearly finished.
+The software for client and server runs on two boxes and runs relatively stable. This includes the docker container setup. The autohotspot feature is experimental at the moment.
 
 ## Table of Contents
 
@@ -21,6 +21,7 @@ At the moment I'm finishing a new box ... which means optimizing, testing and bu
   - [Initial Raspberry Pi setup](#initial-raspberry-pi-setup)
   - [Prerequisites](#prerequisites)
   - [How to install, configure and run the software](#how-to-install-configure-and-run-the-software)
+  - [How to update the software](#how-to-update-the-software)
 - [Autohotspot](#autohotspot)
 - [Sources](#sources)
 - [Disclaimer](#disclaimer)
@@ -35,7 +36,8 @@ This software is built to play music (MP3 / M4A files and web-streams) on a _Ras
 - **Button Server** to read commands via push buttons and send to main server (Python3)
 - **RFID Server** to detect RFID cards (Python3)
 
-The jc://music-box/ uses VLC and several other [sources](#sources). It's written in PYTHON (server) and JAVASCRIPT (client).
+For a more detailed feature list see the [release notes](docs/RELEASE-NOTES.md). 
+The jc://music-box/ uses VLC and several other [sources](#sources).
 
 ## How to build the hardware
 
@@ -158,8 +160,7 @@ $ ln -s /media/usb/music /projects_data/prod/music
 
 ```bash
 $ cd /projects/prod/mbox
-$ sudo docker-compose -f docker-compose.yml up -d
-$ sudo docker-compose -f docker-compose-rpi.yml up -d
+$ ./start start
 ```
 
 
@@ -188,8 +189,7 @@ $ sudo docker-compose -f docker-compose-rpi.yml up -d
 
 ```bash
 # jc://mbox/ client, database and server components (except the 2 above)
-/usr/local/bin/docker-compose -f /projects/prod/mbox/docker-compose.yml up -d &
-/usr/local/bin/docker-compose -f /projects/prod/mbox/docker-compose-rpi.yml up -d &
+/projects/prod/mbox/start start &
 ```
 
 **14. Optional - add automatic restart on connection errors to crontab (once a minute)**
@@ -203,9 +203,17 @@ add:
 * * * * * /projects/prod/mbox/start check-dns >/dev/null 2>&1
 ```
 
+## How to update the software
+
+From the version v0.6.4 the software comes with an automatic update function in the start script.
+
+```bash
+./start update
+```
+
 ## Autohotspot
 
-Usually the box is used in our home wifi. But as my kids like the box we take it with us when we travel.
+Experimental feature: Usually the box is used in our home wifi. But as my kids like the box we take it with us when we travel.
 Without remote access to the box it's not possible to use the app or to change some configurations on the box.
 To solve this, the script found on https://www.raspberryconnect.com/ automatically creates a wifi-hotspot, 
 when the box cannot connect to the home-wifi. So you it's possible to get access to the app even in the car.

@@ -932,6 +932,24 @@ def mboxAPI_next(step):
 
 # ---
 
+def mboxAPI_last(step):
+
+       global couch
+       db_entries = {}
+       data       = mboxAPI_start("last","last","",step,"")
+       
+       if mbox.active_device == "music_box":   
+            thread_music_ctrl.playlist_next(int(step)*-1)
+            
+       else:
+            data = mboxAPI_error(data, "Command only for music_box: "+mbox.active_device+"/"+str(step))
+            logging.warn("Command only for music_box: "+mbox.active_device+"/"+str(step))   
+            
+       data = mboxAPI_end(data,["no-statistic","no-system"])
+       return(data)
+
+# ---
+
 def mboxAPI_jump(percentage):
 
        global couch

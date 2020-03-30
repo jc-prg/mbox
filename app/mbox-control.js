@@ -72,9 +72,9 @@ function mboxControl(data) {
 	var audio      = "";
 
 	if (getTextById("audioPlayer")) { audio = getTextById("audioPlayer"); }
-
-	text  += "<div style='width:100%;'>";
-	text  += "<div class='mbox_ctrl_info'>";
+	
+	text    += "<div style='width:100%;'>";
+	text    += "<div class='mbox_ctrl_info'>";
 
 	// local player
 	if (mbox_device == "local") { 
@@ -97,14 +97,10 @@ function mboxControl(data) {
 			var p_position  = d["playlist_pos"];
 			var p_length    = d["playlist_len"];
 
-			if ("playlist_uuid" in d && d["playlist_uuid"].length > 0) {
-				uuid = d["playlist_uuid"];
-				}
-			else {	uuid = song["uuid_album"];
-				}
-
-			if (song)	{ uuid_song   = song["uuid"]; }
-                        else		{ uuid_song   = ""; }
+			if ("playlist_uuid" in d && d["playlist_uuid"].length > 0)	{ uuid 		= d["playlist_uuid"]; }
+			else 								{ uuid 		= song["uuid_album"]; }
+			if (song)							{ uuid_song 	= song["uuid"]; }
+                        else								{ uuid_song 	= ""; }
 
 			// calculate position in song
 			var song_length = Math.round(d["length"]);
@@ -148,6 +144,7 @@ function mboxControl(data) {
 	text += "</div>";
 
 	if (playing != 0 || mbox_device == "local") {
+	
 		// Control to open and close ...
 		var display_open  = "block";
         	var display_close = "none";
@@ -166,7 +163,7 @@ function mboxControl(data) {
 		text += "</div>";
 		}
 	else {
-		mboxControlPanel_close();
+		//mboxControlPanel_close();
 		}
 
 	// volume control

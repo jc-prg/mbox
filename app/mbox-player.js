@@ -114,12 +114,12 @@ function mboxPlayerRemote(song,uuid,playing) {
 function mboxPlayerControlPlaylist(uuid) {
 	var text = "";
 
-	text += mboxPlayerButton("back", "mboxApp.requestAPI('GET', ['play_next','-1'],  '', mboxControl_load);",   "blue");
-	text += mboxPlayerButton("play", "mboxApp.requestAPI('GET', ['play','"+uuid+"'], '', mboxControl_load);",   "blue");
-	text += mboxPlayerButton("next", "mboxApp.requestAPI('GET', ['play_next','1'],   '', mboxControl_load);",   "blue");
+	text += mboxPlayerButton("back", "mboxApp.requestAPI('GET', ['play_last','1'],  '', mboxControl);",   "blue");
+	text += mboxPlayerButton("play", "mboxApp.requestAPI('GET', ['play','"+uuid+"'],'', mboxControl);",   "blue");
+	text += mboxPlayerButton("next", "mboxApp.requestAPI('GET', ['play_next','1'],  '', mboxControl);",   "blue");
 	text += mboxPlayerButton("empty");
-	text += mboxPlayerButton("pause","mboxApp.requestAPI('GET', ['pause'], '', mboxControl_load);",                    "blue");
-	text += mboxPlayerButton("stop", "mboxApp.requestAPI('GET', ['stop'],  '', mboxControl_load); mboxControlPanel_toggle();","blue");
+	text += mboxPlayerButton("pause","mboxApp.requestAPI('GET', ['pause'], 		'', mboxControl);",                    		"blue");
+	text += mboxPlayerButton("stop", "mboxApp.requestAPI('GET', ['stop'],  		'', mboxControl); mboxControlPanel_toggle();",	"blue");
 	text += mboxPlayerButton("empty");
 	text += mboxPlayerButton("goto", "mboxControlShowUUID('"+uuid+"');", "blue");
 
@@ -133,9 +133,9 @@ function mboxPlayerControlPlaylist(uuid) {
 function mboxPlayerControlStream(uuid) {
         var text = "";
 
-        text += mboxPlayerButton("play",  "mboxApp.requestAPI('GET', ['play','"+uuid+"'],  '', mboxControl);",         "blue");
-        text += mboxPlayerButton("pause", "mboxApp.requestAPI('GET', ['pause'], '', mboxControl);",                    "blue");
-        text += mboxPlayerButton("stop",  "mboxApp.requestAPI('GET', ['stop'],  '', mboxControl);mboxControlPanel_toggle();", "blue");
+        text += mboxPlayerButton("play",  "mboxApp.requestAPI('GET', ['play','"+uuid+"'],  '',	mboxControl);",				  "blue");
+        text += mboxPlayerButton("pause", "mboxApp.requestAPI('GET', ['pause'], '', 		mboxControl);",				  "blue");
+        text += mboxPlayerButton("stop",  "mboxApp.requestAPI('GET', ['stop'],  '', 		mboxControl);mboxControlPanel_toggle();", "blue");
 
         return text;
         }

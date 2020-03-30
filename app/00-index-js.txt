@@ -2,7 +2,7 @@
 ./app-conf.js (-1)
 ----------------------------
 ----------------------------
-./app-main.js (156)
+./app-main.js (161)
 ----------------------------
 function appPrintMenu()
 function appPrintStatus_load()
@@ -31,7 +31,7 @@ function appMenuDefinition(name, menu, title)
 ./config_stage.js (-1)
 ----------------------------
 ----------------------------
-./mbox-album.js (665)
+./mbox-album.js (670)
 ----------------------------
 function mboxAlbumAll_load(filter="",uuid="")
 function mboxAlbumAll(data)
@@ -94,14 +94,14 @@ function mboxCoverListEnd()
 function mboxCoverListEntry(id,cover)
 function mboxCoverSeparator( content, cmd )
 ----------------------------
-./mbox-data.js (96)
+./mbox-data.js (99)
 ----------------------------
 function mboxDataReturnMsg(data={},success="",error="")
 function mboxDataReturnMsg(data)
-function mboxDataEdit(data)
+function mboxDataEdit(data,callback)
 function mboxDataEditExecute(uuid, key_list, type)
 ----------------------------
-./mbox-html-elements.js (255)
+./mbox-html-elements.js (262)
 ----------------------------
 function image(file)
 function dict_size(d)
@@ -136,7 +136,7 @@ function mboxPlayerProgressSet( status, song_length, song_left, song_left_s )
 function mboxPlayerJumpToPosition(e)
 function mboxPlayerButton( button, cmd="", color="blue", small="", display="block" )
 ----------------------------
-./mbox-playlist.js (728)
+./mbox-playlist.js (719)
 ----------------------------
 function mboxPlaylistAll_load(filter="",uuid="")
 function mboxPlaylistAll(data)
@@ -146,9 +146,10 @@ function mboxPlaylistOne(data)
 function mboxPlaylistReload(uuid)
 function mboxPlaylistEdit_load(uuid)
 function mboxPlaylistEdit(data)
+//function mboxPlaylistEditAlbums_load(uuid)
 function mboxPlaylistEditAlbums_load(uuid)
 function mboxPlaylistEditAlbums(data)
-function mboxPlaylistEditTracks_load(uuid,source="")
+function mboxPlaylistEditTracks_load(uuid_filter,source="")
 function mboxPlaylistEditTracks(data)
 function mboxPlaylistEditEntry_load(uuid)
 function mboxPlaylistEditEntry(data)
@@ -181,7 +182,7 @@ function mboxCardDelete_exec(uuid,title)
 function mboxCardDelete_msg(data,title)
 function mboxCardEdit_save(data)
 ----------------------------
-./mbox-settings.js (189)
+./mbox-settings.js (195)
 ----------------------------
 function mboxSettingsToggle()
 function mboxSettingsStatus_load()
@@ -189,7 +190,7 @@ function mboxSettingsStatus (data)
 function mboxSettingsStatusPerformance_load()
 function mboxSettingsStatusPerformance(data)
 ----------------------------
-./mbox-stream.js (321)
+./mbox-stream.js (334)
 ----------------------------
 function mboxStream_load()
 function mboxStream(data)
@@ -313,8 +314,8 @@ function mboxUploadImageWrite(params)
   2 - mboxPlaylistDelete_exec
   1 - mboxPlaylistDelete_msg
   1 - mboxPlaylistEdit
-  2 - mboxPlaylistEditAlbums
-  3 - mboxPlaylistEditAlbums_load
+  3 - mboxPlaylistEditAlbums
+  6 - mboxPlaylistEditAlbums_load
   2 - mboxPlaylistEditEntry
   2 - mboxPlaylistEditEntry_load
   1 - mboxPlaylistEditTracks
@@ -345,6 +346,6 @@ function mboxUploadImageWrite(params)
   2 - mboxStreamInfo
   1 - mboxStreamInfo_close
   2 - mboxStreamInfo_load
-  2 - mboxStreamWriteAudioPlayer
+  1 - mboxStreamWriteAudioPlayer
   6 - mboxStream_load
   1 - mboxUploadImageWrite

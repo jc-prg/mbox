@@ -2,7 +2,7 @@
 crontab -e
 ------------------------------------
 
-At the bottom of the file enter the command
+ADD to or REMOVE from the crontab file:
 
   */5 * * * * sudo /usr/bin/autohotspot >/dev/null 2>&1
 

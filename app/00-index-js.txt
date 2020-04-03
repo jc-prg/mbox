@@ -1,173 +1,8 @@
 ----------------------------
-./mbox-upload-image.js (53)
-----------------------------
-function uploadImage()
-function mboxUploadImage(uuid,category,name="")
-function mboxUploadImageWrite(params)
-----------------------------
-./mbox-playlist.js (631)
-----------------------------
-function mboxPlaylistAll_load(filter="",uuid="")
-function mboxPlaylistAll(data)
-function mboxPlaylistOne_load2(uuid)
-function mboxPlaylistOne_load(i,uuid)
-function mboxPlaylistOne(data)
-function mboxPlaylistReload(uuid)
-function mboxPlaylistEdit_load(uuid)
-function mboxPlaylistEdit(data)
-function mboxPlaylistEditAlbums_load(uuid)
-function mboxPlaylistEditAlbums(data)
-function mboxPlaylistEditTracks_load(uuid,source="")
-function mboxPlaylistEditTracks(data)
-function mboxPlaylistEditEntry_load(uuid)
-function mboxPlaylistEditEntry(data)
-function mboxPlaylistTrackRow(data,uuid,split=false,uuid_pl="")
-function mboxPlaylistDelete(uuid,title)
-function mboxPlaylistInfo_load(uuid)
-function mboxPlaylistInfo(data)
-function mboxPlaylistInfo_close()
-function mboxPlaylistInfoDelete(data)
-function mboxPlaylistInfoAdd(data)
-function mboxPlaylistAdd()
-function mboxPlaylistAdd_dialog(i)
-function mboxPlaylistAdd_msg(data)
-----------------------------
-./app-menu.js (104)
-----------------------------
-function jcMenu(name, menu, title)
-        this.init = function(data=[])
-        this.empty = function(data=[])
-	this.add_script = function(script,label)
-	this.add_line = function()
-	this.add_link = function(link,label)
-	this.entry_link   = function (link,label)
-	this.entry_script = function (script,label)
-	this.set_title = function(title)
-        this.log = function(msg)
-----------------------------
-./mbox-settings.js (205)
-----------------------------
-function settingsToggle()
-function settingsStatusLoad()
-function settingsStatus (data)
-function settingsStatus_PerformanceLoad()
-function settingsStatus_Performance(data)
-function mboxShowLoading(data)
-function mboxShowJson(data)
-----------------------------
-./mbox-html-elements.js (212)
-----------------------------
-function mboxButton( button, cmd="", color="blue", small="", display="block" )
-function dict_size(d)
-function mboxToolTip( type, count=0, input_text="" )
-function mboxScrollTo( type, uuid="" )
-function mboxAlbumDetail( count )
-function show_data_object(data)
-function mboxTableNew( cells=[], divide=false, width="100%", height="" )
-function mboxTable(p1,p2="",p3="",p4="")
-function input_element( name, data )
-function button (onclick,label, id="")
-function add_link(link, description="")
-function clickMenu ()
-function setNavTitle (title)
-function setButtonConfig(data)
-function image(file)
-----------------------------
-./mbox-conf.js (-1)
-----------------------------
-----------------------------
-./volume_slider.js (96)
-----------------------------
-function slider ( name, container, callOnChange )
-	this.init    = function( min, max, label )
-		this.slider.oninput = function( )
-		this.slider.onmousedown = function()
-		this.slider.onmouseup = function()
-		this.slider.ontouchstart = function()
-		this.slider.ontouchend = function()
-	this.set_value = function( value )
-	this.show_hide = function()
-----------------------------
-./config_stage.js (-1)
-----------------------------
-----------------------------
 ./app-conf.js (-1)
 ----------------------------
 ----------------------------
-./mbox-rfid.js (303)
-----------------------------
-function writeRFID(data)
-function CardID(uuid)
-function editCardDialogLoad1(uuid)
-function editCardDialogLoad2(data)
-function editCardDialog(data)
-function mboxListCardsLoad()
-function mboxListCards(data)
-function mbox_delete_card(card_id,uuid_pl)
-function editCard_save(data)
-----------------------------
-./mbox-control.js (549)
-----------------------------
-function mboxWriteGroups()
-function mboxControlLoad()
-function mboxControl (data)
-function mboxControlChangePosition(e)
-function mboxControlProgressPrint()
-function mboxControlProgress()
-function mboxControlProgressTime()
-function mboxVolumeControl(volume, mute)
-function mboxPlaylistControl(uuid)
-function mboxShowUUID(uuid)
-function mboxRadioControl(uuid)
-function mboxShowPlaying(uuid,uuid_song,playing)
-function mboxButton2( sendCmd, label )
-function mboxControl_open()
-function mboxCheckLoading(data)
-function mboxCheckStatus ()
-function mboxDeletePlaying ()
-function mboxSetStatus (color)
-function mboxToggleDevice ()
-function mboxToggleFilter ()
-----------------------------
-./config_language.js (-1)
-----------------------------
-----------------------------
-./mbox-data.js (77)
-----------------------------
-function mboxDataReturnMsg(data)
-function mboxDataEdit(data)
-function mboxDataEditExecute(uuid, key_list, type)
-----------------------------
-./mbox-album.js (650)
-----------------------------
-function mboxEmptyBelow()
-function mboxWriteBelow(text)
-function mboxAlbumAllLoad(filter="",uuid="")
-function mboxAlbumAll(data)
-function mboxAlbumAll_section(count,title,last_title)
-function mboxAlbumAll_album(count,uuid,title,description,cover,cmd_open,cmd_play)
-function mboxCreateAlbumFilter(data,selected)
-function mboxCreateArtistFilter(data,selected)
-function mboxAlbumLoad(i,uuid)
-function mboxListAlbum(data)
-function mboxTrackInfoLoad(uuid)
-function mboxTrackInfo(data)
-function mboxAlbumInfoLoad(uuid)
-function mboxAlbumInfoClose()
-function mboxAlbumInfo(data)
-function mboxAlbumDelete(album,uuid)
-function mboxAlbumTrackRow(id,dataTracks,album=true,artist=false,count=0)
-function show_triangle(i)
-function hide_triangle(i)
-function mboxEmptyAlbum()
-----------------------------
-./mbox-player.js (67)
-----------------------------
-function localPlayer(position=0, play=true)
-function writeAudioPlayer(id,divid)
-function myPlayer(id,divid)
-----------------------------
-./app-main.js (138)
+./app-main.js (161)
 ----------------------------
 function appPrintMenu()
 function appPrintStatus_load()
@@ -175,22 +10,76 @@ function appPrintStatus(data)
 function appCheckUpdates_msg(data)
 function appCheckUpdates()
 ----------------------------
-./mbox-radio.js (310)
+./app-menu.js (124)
 ----------------------------
-function mboxRadio_load()
-function mboxRadio(data)
-function mboxRadioChannel_load(i,uuid)
-function mboxRadioChannel(data)
-function mboxRadioWriteAudioPlayer(title,file,divid)
-function mboxRadioInfo_load(uuid)
-function mboxRadioInfo(data)
-function mboxRadioInfo_close()
-function mboxRadioEdit_load(uuid)
-function mboxRadioEdit(data)
-function mboxRadioDelete(uuid,title)
-function mboxRadioAdd()
-function mboxRadioAdd_dialog(i)
-function mboxRadioAdd_msg(data)
+function appMenuDefinition(name, menu, title)
+        this.init 		= function(data=[])
+        this.empty 		= function()
+	this.add_script 	= function(script,label)
+	this.add_line 		= function()
+	this.add_link 		= function(link,label)
+	this.entry_link		= function (link,label)
+	this.entry_script 	= function (script,label)
+	this.set_title 		= function(title)
+        this.log 		= function(msg)
+        this.writeMenu		= function(menutext)
+        this.readMenu		= function()
+----------------------------
+./config_language.js (-1)
+----------------------------
+----------------------------
+./config_stage.js (-1)
+----------------------------
+----------------------------
+./mbox-album.js (670)
+----------------------------
+function mboxAlbumAll_load(filter="",uuid="")
+function mboxAlbumAll(data)
+function mboxAlbumAll_section(count,title,last_title)
+function mboxAlbumAll_album(count,uuid,title,description,cover,cmd_open,cmd_play)
+function mboxAlbumFilterPath(data,selected)
+function mboxAlbumFilterArtist(data,selected)
+function mboxAlbumList_load(i,uuid)
+function mboxAlbumList(data)
+function mboxAlbumInfo_load(uuid)
+function mboxAlbumInfo_close()
+function mboxAlbumInfo(data)
+function mboxAlbumDelete(title,uuid)
+function mboxAlbumDelete_exec(uuid,title)
+function mboxAlbumDelete_msg(data,title)
+function mboxAlbumTrackInfo_load(uuid)
+function mboxAlbumTrackInfo(data)
+function mboxAlbumTrackRow(id,dataTracks,album=true,artist=false,count=0)
+function mboxAlbumShowTriangle(i)
+function mboxAlbumHideTriangle(i)
+function mboxAlbumEmptyAll()
+function mboxAlbumEmptyBelow()
+function mboxAlbumWriteBelow(text)
+----------------------------
+./mbox-conf.js (-1)
+----------------------------
+----------------------------
+./mbox-control.js (467)
+----------------------------
+function mboxControlGroups()
+function mboxControl_load()
+function mboxControl(data)
+function mboxControlVolumeSet(volume)
+function mboxControlVolumeShow(volume,mute)
+function mboxControlVolumeControl(volume, mute)
+function mboxControlShowUUID(uuid)
+function mboxControlPlaying_show(uuid,uuid_song,playing)
+function mboxControlPlaying_delete ()
+function mboxControlPanel_toggle()
+function mboxControlPanel_close()
+function mboxControlPanel_toggle()
+function mboxControlCheckLoading(data)
+function mboxControlCheckStatus ()
+function mboxControlSetStatus (color)
+function mboxControlToggleMode()
+function mboxControlToggleDevice ()
+function mboxControlToggleFilter ()
+function mboxControlToggleFilter_show ()
 ----------------------------
 ./mbox-cover.js (195)
 ----------------------------
@@ -204,3 +93,259 @@ function mboxCoverListStart()
 function mboxCoverListEnd()
 function mboxCoverListEntry(id,cover)
 function mboxCoverSeparator( content, cmd )
+----------------------------
+./mbox-data.js (99)
+----------------------------
+function mboxDataReturnMsg(data={},success="",error="")
+function mboxDataReturnMsg(data)
+function mboxDataEdit(data,callback)
+function mboxDataEditExecute(uuid, key_list, type)
+----------------------------
+./mbox-html-elements.js (262)
+----------------------------
+function image(file)
+function dict_size(d)
+function button (onclick,label, id="")
+function add_link(link, description="")
+function clickMenu ()
+function mboxHtmlButton( button, cmd="", color="blue", small="", display="block" )
+function mboxHtmlButton2( sendCmd, label )
+function mboxHtmlToolTipLeft(i)
+function mboxHtmlToolTip( type, count=0, input_text="" )
+function mboxHtmlScrollTo( type, uuid="" )
+function mboxHtmlEntryDetail( count )
+function mboxHtmlTableNew( cells=[], divide=false, width="100%", height="" )
+function mboxHtmlTable(p1,p2="",p3="",p4="")
+function mboxHtmlInputElement( name, data )
+function mboxHtmlSetNavTitle (title)
+function mboxHtmlSetButtonConfig	(data)
+function mboxHtmlShowLoading(data)
+function mboxHtmlShowDataObject(data)
+function mboxHtmlShowJson(data)
+----------------------------
+./mbox-player.js (277)
+----------------------------
+function mboxPlayerLocal(position=0, play=true)
+function mboxPlayerRemote(song,uuid,playing)
+function mboxPlayerControlPlaylist(uuid)
+function mboxPlayerControlStream(uuid)
+function mboxPlayerProgress()
+function mboxPlayerProgressPrint()
+function mboxPlayerProgressTime()
+function mboxPlayerProgressSet( status, song_length, song_left, song_left_s )
+function mboxPlayerJumpToPosition(e)
+function mboxPlayerButton( button, cmd="", color="blue", small="", display="block" )
+----------------------------
+./mbox-playlist.js (719)
+----------------------------
+function mboxPlaylistAll_load(filter="",uuid="")
+function mboxPlaylistAll(data)
+function mboxPlaylistOne_load2(uuid)
+function mboxPlaylistOne_load(i,uuid)
+function mboxPlaylistOne(data)
+function mboxPlaylistReload(uuid)
+function mboxPlaylistEdit_load(uuid)
+function mboxPlaylistEdit(data)
+//function mboxPlaylistEditAlbums_load(uuid)
+function mboxPlaylistEditAlbums_load(uuid)
+function mboxPlaylistEditAlbums(data)
+function mboxPlaylistEditTracks_load(uuid_filter,source="")
+function mboxPlaylistEditTracks(data)
+function mboxPlaylistEditEntry_load(uuid)
+function mboxPlaylistEditEntry(data)
+function mboxPlaylistTrackRow(data,uuid,split=false,uuid_pl="",color=0)
+function mboxPlaylistTrackLine(split=false,color)
+function mboxPlaylistDelete(uuid,title)
+function mboxPlaylistDelete_exec(uuid,title)
+function mboxPlaylistDelete_msg(data,title)
+function mboxPlaylistInfo_load(uuid)
+function mboxPlaylistInfo(data)
+function mboxPlaylistInfo_close()
+function mboxPlaylistDeleteTrackInfo(data)
+function mboxPlaylistDeleteTrack(data)
+function mboxPlaylistAddTrackInfo(data)
+function mboxPlaylistAdd()
+function mboxPlaylistAdd_dialog(i)
+function mboxPlaylistAdd_msg(data)
+----------------------------
+./mbox-rfid.js (315)
+----------------------------
+function mboxCardWriteRFID(data)
+function mboxCardEditLink(uuid)
+function mboxCardEditDialog_load1(uuid)
+function mboxCardEditDialog_load2(data)
+function mboxCardEditDialog(data)
+function mboxCardList_load()
+function mboxCardList(data)
+function mboxCardDelete(card_id,title)
+function mboxCardDelete_exec(uuid,title)
+function mboxCardDelete_msg(data,title)
+function mboxCardEdit_save(data)
+----------------------------
+./mbox-settings.js (195)
+----------------------------
+function mboxSettingsToggle()
+function mboxSettingsStatus_load()
+function mboxSettingsStatus (data)
+function mboxSettingsStatusPerformance_load()
+function mboxSettingsStatusPerformance(data)
+----------------------------
+./mbox-stream.js (334)
+----------------------------
+function mboxStream_load()
+function mboxStream(data)
+function mboxStreamChannel_load(i,uuid)
+function mboxStreamChannel(data)
+function mboxStreamWriteAudioPlayer(title,file,divid)
+function mboxStreamInfo_load(uuid)
+function mboxStreamInfo(data)
+function mboxStreamInfo_close()
+function mboxStreamEdit_load(uuid)
+function mboxStreamEdit(data)
+function mboxStreamDelete(uuid,title)
+function mboxStreamDelete_exec(uuid,title)
+function mboxStreamDelete_msg(data,title)
+function mboxStreamAdd()
+function mboxStreamAdd_dialog(i)
+function mboxStreamAdd_msg(data)
+----------------------------
+./mbox-upload-image.js (44)
+----------------------------
+function mboxUploadImage(uuid,category,name="")
+function mboxUploadImageWrite(params)
+----------------------------
+ USAGE ...
+----------------------------
+  2 - appCheckUpdates
+  1 - appCheckUpdates_msg
+  2 - appMenuDefinition
+  2 - appPrintMenu
+  2 - appPrintStatus
+  6 - appPrintStatus_load
+  2 - clickMenu
+  5 - dict_size
+  6 - image
+  1 - mboxAlbumAll
+  2 - mboxAlbumAll_album
+  2 - mboxAlbumAll_section
+  3 - mboxAlbumDelete
+  2 - mboxAlbumDelete_exec
+  1 - mboxAlbumDelete_msg
+  4 - mboxAlbumEmptyAll
+  5 - mboxAlbumEmptyBelow
+  2 - mboxAlbumFilterArtist
+  2 - mboxAlbumFilterPath
+  3 - mboxAlbumHideTriangle
+  2 - mboxAlbumInfo
+  1 - mboxAlbumInfo_close
+  2 - mboxAlbumInfo_load
+  2 - mboxAlbumList
+  4 - mboxAlbumList_load
+  2 - mboxAlbumShowTriangle
+  2 - mboxAlbumTrackInfo
+  2 - mboxAlbumTrackInfo_load
+  4 - mboxAlbumWriteBelow
+  2 - mboxCardDelete
+  1 - mboxCardDelete_exec
+  1 - mboxCardDelete_msg
+  1 - mboxCardEditDialog
+  2 - mboxCardEditDialog_load1
+  1 - mboxCardEditDialog_load2
+  7 - mboxCardEditLink
+  2 - mboxCardEdit_save
+  1 - mboxCardList
+  5 - mboxCardList_load
+  3 - mboxCardWriteRFID
+  4 - mboxControl
+  2 - mboxControlCheckLoading
+  2 - mboxControlCheckStatus
+  3 - mboxControlGroups
+  2 - mboxControlPanel_close
+  9 - mboxControlPanel_toggle
+  4 - mboxControlPlaying_delete
+  3 - mboxControlPlaying_show
+  5 - mboxControlSetStatus
+  2 - mboxControlShowUUID
+  2 - mboxControlToggleDevice
+  2 - mboxControlToggleFilter
+  2 - mboxControlToggleFilter_show
+  2 - mboxControlToggleMode
+  2 - mboxControlVolumeControl
+  1 - mboxControlVolumeSet
+  1 - mboxControlVolumeShow
+  3 - mboxControl_load
+  1 - mboxCoverAlbum
+ 13 - mboxCoverAlbumInfo
+  2 - mboxCoverAlbum_checkFile
+  7 - mboxCoverAlbum_new
+  4 - mboxCoverListEnd
+  4 - mboxCoverListEntry
+  4 - mboxCoverListStart
+  5 - mboxCoverSeparator
+  5 - mboxCoverTogglePrint
+  3 - mboxDataEdit
+  2 - mboxDataEditExecute
+ 10 - mboxDataReturnMsg
+  1 - mboxHtmlButton2
+  6 - mboxHtmlEntryDetail
+  3 - mboxHtmlInputElement
+  1 - mboxHtmlSetButtonConfig	
+  2 - mboxHtmlSetNavTitle
+  3 - mboxHtmlShowDataObject
+  1 - mboxHtmlShowJson
+  1 - mboxHtmlShowLoading
+  2 - mboxHtmlToolTipLeft
+  2 - mboxPlayerControlPlaylist
+  2 - mboxPlayerControlStream
+  1 - mboxPlayerJumpToPosition
+  3 - mboxPlayerProgress
+  2 - mboxPlayerProgressPrint
+  2 - mboxPlayerProgressSet
+  2 - mboxPlayerProgressTime
+  2 - mboxPlayerRemote
+  2 - mboxPlaylistAdd
+  1 - mboxPlaylistAddTrackInfo
+  2 - mboxPlaylistAdd_dialog
+  1 - mboxPlaylistAdd_msg
+  1 - mboxPlaylistAll
+  2 - mboxPlaylistDelete
+  1 - mboxPlaylistDeleteTrack
+  1 - mboxPlaylistDeleteTrackInfo
+  2 - mboxPlaylistDelete_exec
+  1 - mboxPlaylistDelete_msg
+  1 - mboxPlaylistEdit
+  3 - mboxPlaylistEditAlbums
+  6 - mboxPlaylistEditAlbums_load
+  2 - mboxPlaylistEditEntry
+  2 - mboxPlaylistEditEntry_load
+  1 - mboxPlaylistEditTracks
+  3 - mboxPlaylistEdit_load
+  2 - mboxPlaylistInfo
+  1 - mboxPlaylistInfo_close
+  2 - mboxPlaylistInfo_load
+  2 - mboxPlaylistOne
+  3 - mboxPlaylistOne_load
+  2 - mboxPlaylistOne_load2
+  1 - mboxPlaylistReload
+  1 - mboxSettingsStatus
+  1 - mboxSettingsStatusPerformance
+  2 - mboxSettingsStatusPerformance_load
+  2 - mboxSettingsStatus_load
+  8 - mboxSettingsToggle
+  1 - mboxStream
+  2 - mboxStreamAdd
+  2 - mboxStreamAdd_dialog
+  1 - mboxStreamAdd_msg
+  2 - mboxStreamChannel
+  3 - mboxStreamChannel_load
+  1 - mboxStreamDelete
+  3 - mboxStreamDelete_exec
+  1 - mboxStreamDelete_msg
+  2 - mboxStreamEdit
+  2 - mboxStreamEdit_load
+  2 - mboxStreamInfo
+  1 - mboxStreamInfo_close
+  2 - mboxStreamInfo_load
+  1 - mboxStreamWriteAudioPlayer
+  6 - mboxStream_load
+  1 - mboxUploadImageWrite

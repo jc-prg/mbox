@@ -45,8 +45,8 @@ class jcCouchDB ():
 
           except requests.exceptions.RequestException as e:
               connects2db += 1
-              logging.warn("Waiting 5s for connect to CouchDB: " + str(connects2db) + "/" + str(max_connects) + " ("+stage.data_db+")")
-              logging.info("                      ... to CouchDB: " + stage.data_db)
+              logging.warning("Waiting 5s for connect to CouchDB: " + str(connects2db) + "/" + str(max_connects) + " ("+stage.data_db+")")
+              logging.info(   "                      ... to CouchDB: " + stage.data_db)
 
               time.sleep(5)
 
@@ -57,8 +57,8 @@ class jcCouchDB ():
               if stage.speek_ask_whom != "ASK--FOR-HELP":
                  self.speek.speek_message(stage.speek_ask_whom)
 
-              logging.warn("Error connecting to CouchDB, give up.")
-              sys.exit(1)
+              logging.warning("Error connecting to CouchDB, give up.")
+              sys.exit(1)  ### -> LEADS TO AN ERROR !!!
 
 
       self.database      = couchdb.Server(stage.data_db)

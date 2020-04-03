@@ -487,13 +487,40 @@ paths:
       operationId: modules_api.server_cmd.mboxAPI_next
       tags:
         - playback
-      summary: set step in playlist (-1,1)
-      description: set volume (mute, up, down)
+      summary: set step in playlist (1) - forward
+      description: play next song
       parameters:
         - name: step
           in: path
           type: integer
-          enum: [1,-1]
+          enum: [1,2,3,4]
+          required: true
+      responses:
+        200:
+          description: Successfully started playback
+          schema:
+            properties:
+              API:
+                $ref: "#/definitions/API"
+              REQUEST:
+                $ref: "#/definitions/REQUEST"
+              LOAD:
+                $ref: "#/definitions/LOAD"
+              STATUS:
+                $ref: "#/definitions/STATUS"
+
+  /play_last/{step}/:
+    get:
+      operationId: modules_api.server_cmd.mboxAPI_last
+      tags:
+        - playback
+      summary: set step in playlist (1) -backward
+      description: play last song
+      parameters:
+        - name: step
+          in: path
+          type: integer
+          enum: [1,2,3,4]
           required: true
       responses:
         200:
@@ -610,12 +637,12 @@ paths:
       tags:
         - playback
       summary: set volume
-      description: set volume (mute, up, down)
+      description: set volume (mute, up, down, set[0..100])
       parameters:
         - name: param
           in: path
           type: string
-          enum: ["mute","up","down"]
+#          enum: ["mute","up","down"]
           required: true
       responses:
         200:

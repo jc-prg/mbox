@@ -70,10 +70,10 @@ def mboxAPI_start(cName, cmd1, cmd2, param1, param2):
     data["REQUEST"]["status"]       = "success"
     data["REQUEST"]["command"]      = "mBox " + cName + ": " + str(cmd1) + ":"  + str(cmd2) + " / " + str(param1) + ":" + str(param2)
     data["REQUEST"]["c-name"]       = cName
+    data["REQUEST"]["c-param"]      = str(param1) + " " + str(param2)
     data["REQUEST"]["start-time"]   = time.time()
 
     data["STATUS"]                  = {}
-
     data["DATA"]                    = {}
 
     data["LOAD"]                    = {}
@@ -102,7 +102,7 @@ def mboxAPI_filter(data,db_filter=""):
 
 # ---
 
-def mboxAPI_end(data):
+def mboxAPI_end(data,reduce_data=[]):
 
     data["REQUEST"]["load-time"] = time.time() - data["REQUEST"]["start-time"]
 
@@ -112,8 +112,12 @@ def mboxAPI_end(data):
     out = diskSpace()
 
     data["STATUS"]["active_device"] = mbox.active_device
-    data["STATUS"]["playback"]      = deviceStatus()
-    data["STATUS"]["system"]        = {
+
+    if not "no-playback" in reduce_data:
+      data["STATUS"]["playback"]      = deviceStatus()
+    
+    if not "no-system" in reduce_data:
+      data["STATUS"]["system"]        = {
         "space_usb_used"        :  out[0],
         "space_usb_available"   :  out[1],
         "space_usb_mount"       :  stage.mount_data,
@@ -131,14 +135,18 @@ def mboxAPI_end(data):
         "reload_time_left"      : thread_music_load.reload_time_left
         }
 
-    data["STATUS"]["statistic"] = {}       
-    for database in couch.database:
-      temp = couch.read_cache(database)
-      try:
-        data["STATUS"]["statistic"][database] = len(temp.keys())
-      except:
-        data["STATUS"]["statistic"][database] = "error"
-
+    if not "no-statistic" in reduce_data:
+      data["STATUS"]["statistic"] = {}       
+      for database in couch.database:
+        temp = couch.read_cache(database)
+        try:
+          data["STATUS"]["statistic"][database] = len(temp.keys())
+        except:
+          data["STATUS"]["statistic"][database] = "error"
+          
+    if "no-request" in reduce_data: del data["REQUEST"]
+    if "no-load"    in reduce_data: del data["LOAD"]
+    if "no-api"     in reduce_data: del data["API"]
 
     logging.debug("mBox " + data["REQUEST"]["c-name"]  + " END")
 
@@ -259,7 +267,7 @@ def mboxAPI_checkVersion(APPversion):
 
        data["STATUS"]["check-version"] = result
 
-       data = mboxAPI_end(data)
+       data = mboxAPI_end(data,["no-statistic","no-playback","no-system"])
        return(data)
 
 
@@ -279,12 +287,14 @@ def mboxAPI_readDB(databases,db_filter=""):
        except:
          uuid = ""
 
-       if databases == "all":   db_list = ["files","tracks","albums","album_info","cards","playlists","radio","artists"]
-       elif "--" in databases:  db_list = databases.split("--")
-       else:                    db_list = [databases]
+       if databases == "all":       db_list = ["files","tracks","albums","album_info","cards","playlists","radio","artists"]
+       elif "--" in databases:      db_list = databases.split("--")
+       elif databases == "artists": db_list = ["albums","album_info"]
+       else:                        db_list = [databases]
 
        data    = mboxAPI_start("readDB","readDB","",param,"")
 
+       # read complete databases
        for database in db_list:
          if database in couch.database:
            if "main" in couch.database[database]: data["DATA"][database] = couch.read_cache(database)
@@ -296,9 +306,26 @@ def mboxAPI_readDB(databases,db_filter=""):
              data["DATA"]["_selected_uuid"]        = uuid
              data["DATA"]["_selected_db"]          = database
              data["DATA"]["_selected"]             = data["DATA"][database][uuid]
+       
+       # create combined requests - ARTISTS
+       if databases == "artists":
+          artists = {}
+          for key in data["DATA"]["album_info"]:
+             album_info     = data["DATA"]["album_info"][key]
+             artist         = album_info["artist"] 
+             album          = {}
+             album["album"] = album_info["album"] 
+             album["uuid"]  = key 
+            
+             if not artist in artists: artists[artist] = []
+             artists[artist].append( album )
+            
+          data["DATA"]["artists"] = artists
+          del data["DATA"]["album_info"]
+          del data["DATA"]["albums"]
 
        data = mboxAPI_filter(data,db_filter)
-       data = mboxAPI_end(data)
+       data = mboxAPI_end(data,["no-statistic","no-playback","no-system"])
        return(data)
 
 # ---
@@ -332,15 +359,23 @@ def mboxAPI_readEntry(uuid,db_filter=""):
                    data["DATA"]["_selected_uuid"]        = uuid
                    data["DATA"]["_selected_db"]          = database
                    data["DATA"]["_selected"]             = temp[uuid]
+
                    if not "tracks" in data["DATA"]["_selected"]:
                       data["DATA"]["_selected"]["tracks"]   = {}
+
                    if "tracks" in temp[uuid]:
                       if not "tracks"     in data["DATA"]: data["DATA"]["tracks"]     = {}
                       if not "album_info" in data["DATA"]: data["DATA"]["album_info"] = {}
                       for key in temp[uuid]["tracks"]:
                           logging.info(key)
+                          # if track add track info
                           if key in temp_tracks: data["DATA"]["tracks"][key]     = temp_tracks[key]
-                          if key in temp_albums: data["DATA"]["album_info"][key] = temp_albums[key]
+                          # if album add album info and track infos
+                          if key in temp_albums: 
+                             data["DATA"]["album_info"][key] = temp_albums[key]
+                             for key_track in temp_albums[key]["tracks"]:
+                                data["DATA"]["tracks"][key_track]  = temp_tracks[key_track]
+
                    if not "uuid" in data["DATA"]["_selected"]:
                       data["DATA"]["_selected"]["uuid"] = uuid
                else:
@@ -351,7 +386,7 @@ def mboxAPI_readEntry(uuid,db_filter=""):
            data = mboxAPI_error(data, "Database not found: "+database)
 
        data = mboxAPI_filter(data,db_filter)
-       data = mboxAPI_end(data)
+       data = mboxAPI_end(data,["no-statistic","no-playback","no-system"])
        return(data)
 
 
@@ -391,7 +426,7 @@ def mboxAPI_edit(uuid,entry_data):
        # write change data to DB
        for name in databases: couch.write(name, db_entries[name])
 
-       data = mboxAPI_end(data)
+       data = mboxAPI_end(data,["no-statistic","no-playback","no-system"])
        return(data)
 
 # ---
@@ -399,17 +434,18 @@ def mboxAPI_edit(uuid,entry_data):
 def mboxAPI_delete(uuid):
 
        global couch
-       database   = ""
-       databases  = ["files","tracks","albums","album_info","cards","playlists","radio","artists"]
-       db_entries = {}
-       data       = mboxAPI_start("delete","delete","",uuid,"")
+       database          = ""
+       databases         = ["files","tracks","albums","album_info","cards","playlists","radio","artists"]
+       databases_changed = []
+       db_entries        = {}
+       data              = mboxAPI_start("delete","delete","",uuid,"")
 
        # read all data from DB
-       for name in databases: db_entries[name] = couch.read(name)
+       for name in databases: db_entries[name] = couch.read_cache(name)
 
        # delete album, tracks, files, link to card
        if "a_" in uuid:
-           database      = "album_info"
+           database          = "album_info"
            if uuid in db_entries[database]:
                entry = db_entries[database][uuid]
 
@@ -494,7 +530,7 @@ def mboxAPI_delete(uuid):
        # write change data to DB
        for name in databases: couch.write(name, db_entries[name])
 
-       data = mboxAPI_end(data)
+       data = mboxAPI_end(data,["no-statistic","no-playback","no-system"])
        return(data)
 
 # ---
@@ -564,7 +600,7 @@ def mboxAPI_add(database,param):
        # write change data to DB
        for name in db_entries: couch.write(name, db_entries[name])
 
-       data = mboxAPI_end(data)
+       data = mboxAPI_end(data,["no-statistic","no-playback","no-system"])
        return(data)
 
 # ---
@@ -615,7 +651,7 @@ def mboxAPI_images(cmd,uuid,param):
        # write change data to DB
        couch.write(key, db_entries[key])
 
-       data = mboxAPI_end(data)
+       data = mboxAPI_end(data,["no-statistic","no-playback","no-system"])
        return(data)
 
 # ---
@@ -684,7 +720,7 @@ def mboxAPI_playlist_items(cmd,uuid,param):
        # write change data to DB
        for name in databases: couch.write(name, db_entries[name])
 
-       data = mboxAPI_end(data)
+       data = mboxAPI_end(data,["no-statistic","no-playback","no-system"])
        return(data)
 
 # ---
@@ -713,7 +749,7 @@ def mboxAPI_cardInfos(filter):
        for name in databases:
            if filter in db_entries[name]: data["DATA"][name][filter] = db_entries[name][filter]
 
-       data = mboxAPI_end(data)
+       data = mboxAPI_end(data,["no-statistic","no-playback","no-system"])
        return(data)
 
 
@@ -766,7 +802,7 @@ def mboxAPI_cards(uuid,param):
        # write change data to DB
        for name in databases: couch.write(name, db_entries[name])
 
-       data = mboxAPI_end(data)
+       data = mboxAPI_end(data,["no-statistic","no-playback","no-system"])
        return(data)
 
 
@@ -791,6 +827,10 @@ def mboxAPI_volume(param):
        elif (param == "down"):
             thread_music_ctrl.music_vol("down")
 
+       elif ("set" in param):
+            getvol = param.split(":")
+            thread_music_ctrl.music_vol(int(getvol[1]))
+
        else:
             data = mboxAPI_error(data, "Parameter not supported: "+param)
             logging.warn("Parameter not supported: " + param)   
@@ -799,7 +839,7 @@ def mboxAPI_volume(param):
        thread_radio_ctrl.volume = round(thread_music_ctrl.music_ctrl["volume"]*100)
        thread_radio_ctrl.mute   = thread_music_ctrl.music_ctrl["mute"]
 
-       data = mboxAPI_end(data)
+       data = mboxAPI_end(data,["no-statistic","no-system"])
        return(data)
 
 # ---
@@ -869,7 +909,7 @@ def mboxAPI_play(uuid):
             data = mboxAPI_error(data, "UUID format not supported: "+uuid)
             logging.warn("UUID format not supported: " + uuid)
        
-       data = mboxAPI_end(data)
+       data = mboxAPI_end(data,["no-statistic","no-system"])
        return(data)
 
 # ---
@@ -887,7 +927,25 @@ def mboxAPI_next(step):
             data = mboxAPI_error(data, "Command only for music_box: "+mbox.active_device+"/"+str(step))
             logging.warn("Command only for music_box: "+mbox.active_device+"/"+str(step))   
             
-       data = mboxAPI_end(data)
+       data = mboxAPI_end(data,["no-statistic","no-system"])
+       return(data)
+
+# ---
+
+def mboxAPI_last(step):
+
+       global couch
+       db_entries = {}
+       data       = mboxAPI_start("last","last","",step,"")
+       
+       if mbox.active_device == "music_box":   
+            thread_music_ctrl.playlist_next(int(step)*-1)
+            
+       else:
+            data = mboxAPI_error(data, "Command only for music_box: "+mbox.active_device+"/"+str(step))
+            logging.warn("Command only for music_box: "+mbox.active_device+"/"+str(step))   
+            
+       data = mboxAPI_end(data,["no-statistic","no-system"])
        return(data)
 
 # ---
@@ -905,7 +963,7 @@ def mboxAPI_jump(percentage):
             data = mboxAPI_error(data, "Command only for music_box: "+mbox.active_device+"/"+str(percentage))
             logging.warn("Command only for music_box: "+mbox.active_device+"/"+str(percentage))   
             
-       data = mboxAPI_end(data)
+       data = mboxAPI_end(data,["no-statistic","no-system"])
        return(data)
 
 # ---
@@ -917,9 +975,9 @@ def mboxAPI_pause():
        data       = mboxAPI_start("pause","pause","","","")
 
        if mbox.active_device == "music_box":   thread_music_ctrl.pause_playback()   # album or song
-       else:                          thread_radio_ctrl.pause_playback()   # radio
+       else:                                   thread_radio_ctrl.pause_playback()   # radio
        
-       data = mboxAPI_end(data)
+       data = mboxAPI_end(data,["no-statistic","no-system"])
        return(data)
 
 # ---
@@ -933,7 +991,7 @@ def mboxAPI_stop():
        if mbox.active_device == "music_box":   thread_music_ctrl.stop_playback()   # album or song
        else:                          thread_radio_ctrl.stop_playback()   # radio
        
-       data = mboxAPI_end(data)
+       data = mboxAPI_end(data,["no-statistic","no-system"])
        return(data)
 
 #-------------------------------------------------
@@ -946,7 +1004,7 @@ def mboxAPI_template_read(param):
        db_entries = {}
        data       = mboxAPI_start("template_read","template_read","",param,"")
 
-       data = mboxAPI_end(data)
+       data = mboxAPI_end(data,["no-statistic","no-playback","no-system"])
        return(data)
 
 # --- 
@@ -965,7 +1023,7 @@ def mboxAPI_template_edit(database,param):
        # write change data to DB
        for name in databases: couch.write(name, db_entries[name])
 
-       data = mboxAPI_end(data)
+       data = mboxAPI_end(data,["no-statistic","no-playback","no-system"])
        return(data)
 
 

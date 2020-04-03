@@ -26,20 +26,35 @@ else {
 // app to load info and send cmd to IR device
 //--------------------------------
 
-var mboxApp     = new jcApp( "mbox", RESTurl, "status", "api/");	// cmd: <device>/<cmd>
-mboxApp.init( "data_log", "error_log", reloadInterval, appPrintStatus );
+var mboxApp = new jcApp("mbox", RESTurl, "status", "api/");	// cmd: <device>/<cmd>
+mboxApp.init("data_log", "error_log", reloadInterval, appPrintStatus );
 mboxApp.timeout = -1; 							// timeout in milliseconds (-1 for no timeout)
-mboxApp.load( );
-mboxApp.setAutoupdate( mboxCheckStatus );
+mboxApp.load();
+mboxApp.requestAPI_init();
+mboxApp.setAutoupdate( mboxControlCheckStatus );
 
 //--------------------------------
 // additional apps to write menus, remotes, messages
 //--------------------------------
 
-var appMenu     = new jcMenu(     "appMenu", ["menuItems","menuItems2"], "navTitle" );
-var appMsg      = new jcMsg(      "appMsg" );
-var appCookie   = new jcCookie(   "appCookie");
+var appMenu     = new appMenuDefinition("appMenu", ["menuItems","menuItems2"], "navTitle" );
+var appMsg      = new jcMsg(      	"appMsg" );
+//var appCookie   = new jcCookie(         "appCookie");
 var reload      = true;
+
+//--------------------------------
+// load volume slider
+//--------------------------------
+
+var mboxSlider  = new jcSlider( name="mboxSlider", container="audio_slider");
+//mboxSlider.setPosition(false,"200px",false,"200px");
+mboxSlider.setPosition(top="45px",bottom=false,left=false,right="10px");
+mboxSlider.init(0,100,mbox_device);
+mboxSlider.setOnChange(mboxControlVolumeSet);
+mboxSlider.setShowVolume(mboxControlVolumeShow);
+
+// ----------------- => fct. for testing <= ------------------
+
 
 appCheckUpdates();		// check if app is up-to-date
 appPrintStatus_load();		// initial load of data (default: Album)
@@ -56,18 +71,23 @@ function appPrintMenu() {
 	if (mbox_filter == true) { mbox_filter_show = "hide"; }
 	else			 { mbox_filter_show = "show"; }
 
-	appMenu.add_script( "mboxToggleMode();appPrintStatus_load();if(mbox_settings){settingsToggle();}", "Modus: " + mbox_mode );
-	appMenu.add_script( "mboxToggleDevice();appPrintStatus_load();if(mbox_settings){settingsToggle();}", lang("DEVICE") + ": " + mbox_device );
+	appMenu.add_script( "mboxControlToggleMode();           appPrintStatus_load(); if(mbox_settings){mboxSettingsToggle();}", "Modus: " + mbox_mode );
+	appMenu.add_script( "mboxControlToggleDevice();         appPrintStatus_load(); if(mbox_settings){mboxSettingsToggle();}", lang("DEVICE") + ": " + mbox_device );
+	
 	if (mbox_mode == "Album") {
-		appMenu.add_script( "mboxToggleFilter();appPrintStatus_load();if(mbox_settings){settingsToggle();}", "Filter: " + mbox_filter_show );
+		appMenu.add_script( "mboxControlToggleFilter(); appPrintStatus_load(); if(mbox_settings){mboxSettingsToggle();}", "Filter: " + mbox_filter_show );
 		}
+	
 	appMenu.add_line();
-	appMenu.add_script( "mboxListCardsLoad();if(mbox_settings){settingsToggle();printAllStatusLoad();};", lang("RFID_CARDS") );
-	appMenu.add_script( "settingsToggle();settingsStatusLoad();appPrintStatus_load();", lang("SETTINGS") );
+	appMenu.add_script( "mboxCardList_load();  if(mbox_settings){mboxSettingsToggle();printAllStatusLoad();};", lang("RFID_CARDS") );
+	appMenu.add_script( "mboxSettingsToggle(); mboxSettingsStatus_load(); appPrintStatus_load();", lang("SETTINGS") );
+	
 	appMenu.add_line();
         appMenu.add_script( "mboxCoverTogglePrint();", lang("COVER_IMAGES"));
         
         appMenu.set_title( appTitle + mbox_mode );
+
+	mboxSlider.init(0,100,mbox_device);
 	}
 
 
@@ -83,27 +103,30 @@ function appPrintStatus(data) {
 
 	// initial app data ...
 	setTextById("remote3",  appTitle + " (" + data["API"]["name"] + ": " + data["API"]["version"] + " / " + 
-				data["STATUS"]["active_device"] + ") " + writeRFID(data["LOAD"]["RFID"]) );
+				data["STATUS"]["active_device"] + ") " + mboxCardWriteRFID(data["LOAD"]["RFID"]) );
 
-	if (writeRFID(data["LOAD"]["RFID"]) != "") { mboxSetStatus("blue"); }
+	if (mboxCardWriteRFID(data["LOAD"]["RFID"]) != "") { mboxControlSetStatus("blue"); }
 
 	// write icon menu and lists
 	if (reload) {
 
 		// write icons for 3 modes
-		mboxWriteGroups();
+		mboxControlGroups();
+		
+		// wriete volume slider (default = hidden)
+		mboxSlider.init(data);
 
 		// write menu entrie for 3 modes
-		if (mbox_mode == "Album")    { mboxAlbumAllLoad(); }
+		if (mbox_mode == "Album")    { mboxAlbumAll_load(); }
 		if (mbox_mode == "Playlist") { mboxPlaylistAll_load(); }
-		if (mbox_mode == "Radio")    { mboxRadio_load(); }
+		if (mbox_mode == "Radio")    { mboxStream_load(); }
 
 		reload = false;
 		}
 
 	// set info and control for playback
-	mboxControl(		data);
-	mboxCheckLoading(	data);
+	mboxControl(data);
+	mboxControlCheckLoading(data);
 	}
 
 //--------------------------------
@@ -124,14 +147,14 @@ function appCheckUpdates_msg(data) {
         if (msg["Code"] == "802") { appUpdate = true; }
         }
 
+//--------------------------------
 
 function appCheckUpdates() {
 	console.log("Check version: "+appVersion);
         appMsg.wait(lang("LOADING_APP")+" ...", ""); 
         mboxApp.requestAPI("GET",["version", appVersion], "", appCheckUpdates_msg, "wait");
         }
-
-
+	
 //-----------------------------
 // EOF
 

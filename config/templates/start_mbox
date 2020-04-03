@@ -2,6 +2,7 @@
 
 option=${DOLLAR}1
 is_rpi="${MBOX_WITH_RPI}"
+hardware="${MBOX_WITH_HARDWARE}"
 
 echo
 echo "-------------------------------------"
@@ -17,6 +18,7 @@ if [ ! ${DOLLAR}option ]; then
   echo " 'd' - docker start"
   echo " 'r' - docker restart"
   echo " 'c' - install crontab"
+  echo " 'u' - update from GitHub"
   echo " 's' - server (in progress)"
   count=0
   while : ; do
@@ -35,6 +37,10 @@ if [ ! ${DOLLAR}option ]; then
     elif [[ ${DOLLAR}k = s ]] ; then
        option="server"
        printf "\n... starting directly from server.\n"
+       break
+    elif [[ ${DOLLAR}k = u ]] ; then
+       option="update"
+       printf "\n... update from https://github.com.\n"
        break
     elif [[ ${DOLLAR}k = c ]] ; then
        option="cron"
@@ -62,6 +68,7 @@ install_cron() {
 }
 
 install_rclocal() {
+  echo "INSTALL startup with /etc/rc.local"
   ${MBOX_DIR}/config/install/install-rclocal
 }
 
@@ -88,23 +95,26 @@ check_dns() {
 
 #---------------------------------------
 
-
+# Start using docker container
 if [ ${DOLLAR}option == "docker" ]; then
 
   echo "... mount usb if available and not done already."
   mount /dev/sda1 /media/usb/
   
   echo "... start main modules:"
-  ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose.yml up -d
+  ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose.yml up -d --remove-orphans
 
   if [ ${DOLLAR}is_rpi == "yes" ]; then
-    echo "... start rpi components:"
-    ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose-rpi.yml up -d
+    if [ ${DOLLAR}hardware == "yes" ]; then
+      echo "... start rpi components:"
+      ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose-rpi.yml up -d --remove-orphans
+    fi
   fi
   echo ""
   echo "RESET" > ${MBOX_DIR}/log/internet_connect
   sleep 5s
   
+# Restart docker container
 elif [ ${DOLLAR}option == "restart" ]; then
 
   echo "... restart main modules:"
@@ -112,24 +122,61 @@ elif [ ${DOLLAR}option == "restart" ]; then
   ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose.yml up -d
 
   if [ ${DOLLAR}is_rpi == "yes" ]; then
-    echo "... restart rpi components:"
-    ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose-rpi.yml stop
-    ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose-rpi.yml up -d
+    if [ ${DOLLAR}hardware == "yes" ]; then
+      echo "... restart rpi components:"
+      ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose-rpi.yml stop
+      ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose-rpi.yml up -d
+    fi
   fi
   echo ""
   echo "RESET" > ${MBOX_DIR}/log/internet_connect
   sleep 5s
   
+# Update from GitHub
+elif [ ${DOLLAR}option == "update" ]; then
 
+    echo "Change dir"
+    cd ${MBOX_DIR}
+    
+    echo "Stop docker"
+    ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose.yml stop
+    if [ ${DOLLAR}hardware == "yes" ]; then
+      ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose-rpi.yml stop
+    fi
+    
+    echo "Update MBOX from repository"
+    git stash
+    git pull
+    
+    echo "Update MODULES from repository"
+    cd ${MBOX_DIR_JCMODULES}
+    git stash
+    git pull
+    
+    echo "Create new configuration"
+    cd ${MBOX_DIR}
+    cd config/
+    ./create ${MBOX_CURRENT_STAGE}
+    cd ..
+    
+    echo "Restart docker"
+    ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose.yml up -d
+    if [ ${DOLLAR}hardware == "yes" ]; then
+      ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose-rpi.yml up -d
+    fi
+
+# install cron and automatic start
 elif [ ${DOLLAR}option == "cron" ]; then
 
   install_cron
   install_rclocal
 
+# check if DNS error (and restart if so)
 elif [ ${DOLLAR}option == "check-dns" ]; then
 
   check_dns
 
+# start using server option (in progress)
 elif [ ${DOLLAR}option == "server" ]; then
 
   echo "... IMPLEMENTATION NOT READY YET!"
@@ -140,10 +187,12 @@ elif [ ${DOLLAR}option == "server" ]; then
   ${MBOX_DIR}/server/server.py &
   
   if [ ${DOLLAR}is_rpi == "yes"]; then
-    echo "... start server rpi components"
-    ${MBOX_DIR}/server/server_led.py &
-    ${MBOX_DIR}/server/server_rfid.py &
-    ${MBOX_DIR}/server/server_button.py &
+    if [ ${DOLLAR}hardware == "yes" ]; then
+      echo "... start server rpi components"
+      ${MBOX_DIR}/server/server_led.py &
+      ${MBOX_DIR}/server/server_rfid.py &
+      ${MBOX_DIR}/server/server_button.py &
+    fi
   fi
   echo ""
   

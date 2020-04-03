@@ -30,8 +30,8 @@ function mboxCoverAlbumInfo(nr,url_list,act,uuid) {
         var img       = "<div class='album_cover' style='height:"+size+";width:"+size+";background:gray;cursor:default;"+border+"' title='"+select+"'></div>";
 	var close_cmd = "";
 
-	if 	(uuid.indexOf("r_")>=0) { close_cmd = "mboxRadioInfo_close"; }
-	else if (uuid.indexOf("a_")>=0) { close_cmd = "mboxAlbumInfoClose"; }
+	if 	(uuid.indexOf("r_")>=0) { close_cmd = "mboxStreamInfo_close"; }
+	else if (uuid.indexOf("a_")>=0) { close_cmd = "mboxAlbumInfo_close"; }
 	else if (uuid.indexOf("p_")>=0) { close_cmd = "mboxPlaylistInfo_close"; }
 
 	if (url_list) {

@@ -64,17 +64,25 @@
    }
 
 .album_filter {
-   float : left;
-   width : 300px;
-   }
+	float 	    : left;
+	width 	    : 310px;
+	margin-left : 5px;
+	}
 
 .album_filter_dropdown {
-   width : 160px;
-   }
+	width : 155px;
+	}
+   
+.album_filter_button {
+	width      : 30px;
+	height     : 25px;
+	background : lightgray;
+	color      : black;
+	}
 
 .character {
-   cursor          : default;
-   }
+	cursor          : default;
+	}
 
 .album_triangle {
 	display		: none;
@@ -181,10 +189,10 @@
 
 .album_tracks {
    color           : black;
-   width           : 305px;
+   width           : 303px;
 
-   margin-left     :   3px;
-   margin-right    :   3px;
+   margin-left     :   4px;
+   margin-right    :   4px;
 
    overflow        : hidden;
 
@@ -193,10 +201,30 @@
    //border        : solid 1px;
    }
 
-.album_tracks_title {
-	width           : 245px;
+.album_tracks_headline {
+	width           : 290px;
 	float           : left;
-	margin-bottom   : 5px;
+	margin		: 1px;
+	padding         : 4px;
+	}
+
+.album_tracks_line {
+	width           : 300px;
+	float           : left;
+	margin          : 1px;
+	padding		: 0px;
+	}
+
+.album_tracks_line hr {
+	margin          : 1px;
+	padding		: 0px;
+	}
+	
+.album_tracks_title {
+	width           : 240px;
+	float           : left;
+	margin-top      : 3px;
+	margin-bottom   : 2px;
 	}
 
 .album_track_title_shorten {

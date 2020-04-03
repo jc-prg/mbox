@@ -1,5 +1,5 @@
 CACHE MANIFEST
-# 2020-03-22 Version v0.5.9
+# 2020-03-30 Version v0.6.5
 
 CACHE:
 ./mbox-upload-image.js
@@ -9,7 +9,6 @@ CACHE:
 ./mbox-html-elements.js
 ./index.html
 ./mbox-conf.js
-./volume_slider.js
 ./config_stage.js
 ./app-conf.js
 ./upload.php
@@ -20,9 +19,11 @@ CACHE:
 ./config_language.js
 ./upload.html
 ./mbox-data.js
+./mbox-stream.js
 ./00-maintain.py
 ./app-menu.css
 ./cache.manifest
+./mbox-settings.css
 ./mbox-album.js
 ./app-frame.css
 ./mbox-control.css
@@ -31,7 +32,6 @@ CACHE:
 ./00-index-js.txt
 ./mbox-player.js
 ./app-main.js
-./mbox-radio.js
 ./mbox-play.css
 ./mbox-cover.js
 ./mbox-player.css

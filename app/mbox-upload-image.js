@@ -4,20 +4,11 @@
 // Upload image for album, playlist ...
 //--------------------------------------
 /* INDEX:
-function uploadImage()
 function mboxUploadImage(uuid,category,name="")
 function mboxUploadImageWrite(params)
 */
 //--------------------------------------
 
-
-///----------------------------------------------------------------
-
-function uploadImage() {
-	var text = "Upload Test:<br/>&nbsp;<br/>" + default_form; //<br/><div id='uploadform'></div> <script> defaultUpload('uploadform'); </script>";
-	appMsg.confirm(text,"","");
-	enableUpload();
-	}
 
 //----------------------------------------------------------------
 
@@ -41,9 +32,9 @@ function mboxUploadImageWrite(params) {
         filename = document.getElementById('fName').value;
 	if (filename == "") { filename = "-"; }
 
-	if (param[1] == "album") 	{ mboxApp.requestAPI('PUT', [ 'images', 'upload', param[0], filename ], '', mboxAlbumAllLoad); }
+	if (param[1] == "album") 	{ mboxApp.requestAPI('PUT', [ 'images', 'upload', param[0], filename ], '', mboxAlbumAll_load); }
 	if (param[1] == "playlist") 	{ mboxApp.requestAPI('PUT', [ 'images', 'upload', param[0], filename ], '', mboxPlaylistAll_load); }
-	if (param[1] == "radio") 	{ mboxApp.requestAPI('PUT', [ 'images', 'upload', param[0], filename ], '', mboxRadio_load); }
+	if (param[1] == "radio") 	{ mboxApp.requestAPI('PUT', [ 'images', 'upload', param[0], filename ], '', mboxStream_load); }
 	else 				{ mboxApp.requestAPI('PUT', [ 'images', 'upload', param[0], filename ], ''); }
 	appMsg.hide();
 	}

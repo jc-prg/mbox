@@ -4,20 +4,40 @@
 // Edit data (playlist and web-stream)
 //--------------------------------------
 /* INDEX:
+function mboxDataReturnMsg(data={},success="",error="")
 function mboxDataReturnMsg(data)
-function mboxDataEdit(data)
+function mboxDataEdit(data,callback)
 function mboxDataEditExecute(uuid, key_list, type)
 */
 //--------------------------------------
 
+//-----------------------------
+
+function mboxDataReturnMsg(data={},success="",error="") {
+
+	if (success == "") { success = "OK!"; }
+	if (error   == "") { error   = "Error!"; }
+	
+	if (data["REQUEST"]["status"] == "success" && !data["REQUEST"]["error"]) {
+		appMsg.alert(success);
+		}
+	else if (data["REQUEST"]["status"] == "success" && data["REQUEST"]["error"]) {
+		appMsg.alert(error + "<br/>("+data["REQUEST"]["error"]+")");
+		}
+	else {
+		appMsg.alert(error);
+		console.warn("Unknown data returned.");
+		}
+	}
+
 function mboxDataReturnMsg(data) {
-	if ("Result" in data)		{ appMsg.alert(data["Result"]["Msg"] + " (" + data["Result"]["Code"] + ")"); }
-	else if ("ReturnMsg" in data)	{ appMsg.alert(data["ReturnMsg"]); }
+	mboxDataReturnMsg(data);
 	}
 
 //--------------------------------------
 
-function mboxDataEdit(data) {
+function mboxDataEdit(data,callback) {
+
         var text        = "";
 	var key_list    = "";
         var album       = data["DATA"]["_selected"];
@@ -31,19 +51,19 @@ function mboxDataEdit(data) {
 	text += "<div style='width:100%;height:350px;border:0px;overflow:auto'>";
         text += "<b>Edit " + type + "</b><br/><br/>";
 	text += "<hr/>";
-        text += mboxTableNew("start");
+        text += mboxHtmlTableNew("start");
 
 	if (sorted_keys.length == 0) { for (var key in album) {
 		var star = "";
 		if (typeof album[key] == "string") { key_list += key + ","; star = "*"; }
-		text     += mboxTableNew(["<i>"+key+":</i>", input_element("edit_"+key, album[key]), star ]);
+		text     += mboxHtmlTableNew(["<i>"+key+":</i>", mboxHtmlInputElement("edit_"+key, album[key]), star ]);
 		} }
 	else { for (var i=0;i<sorted_keys.length;i++) {
 		if (typeof album[sorted_keys[i]] == "string") { key_list += sorted_keys[i] + ","; }
-		text     += mboxTableNew(["<i>"+sorted_keys[i]+":</i>", input_element("edit_"+sorted_keys[i], album[sorted_keys[i]]) ]);
+		text     += mboxHtmlTableNew(["<i>"+sorted_keys[i]+":</i>", mboxHtmlInputElement("edit_"+sorted_keys[i], album[sorted_keys[i]]) ]);
 		} }
 
-        text += mboxTableNew("end");
+        text += mboxHtmlTableNew("end");
 	text += "<hr/>";
 	text += "</div>";
 
@@ -64,13 +84,15 @@ function mboxDataEditExecute(uuid, key_list, type) {
 			data[keys[i]] = document.getElementById('edit_'+keys[i]).value;
 			}
 		}}
-	if (type == "radio")      	{ callback = mboxRadio_load; }
+	if (type == "radio")      	{ callback = mboxStream_load; }
 	else if (type == "playlists")	{ callback = mboxPlaylistAll_load; }
 	else				{ callback = appMsg.hide; }
+	
+	console.error("EDIT EXECUTE"+type);
 
 	mboxApp.requestAPI("PUT", ["data",uuid], data, callback );
 	}
 
 //--------------------------------------
 // EOF
-
+	

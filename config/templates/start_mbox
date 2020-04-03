@@ -102,12 +102,12 @@ if [ ${DOLLAR}option == "docker" ]; then
   mount /dev/sda1 /media/usb/
   
   echo "... start main modules:"
-  ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose.yml up -d
+  ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose.yml up -d --remove-orphans
 
   if [ ${DOLLAR}is_rpi == "yes" ]; then
     if [ ${DOLLAR}hardware == "yes" ]; then
       echo "... start rpi components:"
-      ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose-rpi.yml up -d
+      ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose-rpi.yml up -d --remove-orphans
     fi
   fi
   echo ""

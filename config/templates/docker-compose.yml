@@ -23,10 +23,6 @@ services:
       - ${MBOX_DIR_DATA}/cover_upload:/var/www/html/app/cover_upload
 
       - ${MBOX_DIR_JCMODULES}:/var/www/html/app/apps
-    dns:
-      - ${DNS01}
-      - ${DNS02}
-      - ${DNS03}
     depends_on:
       - ${MBOX_DOCKER_DATABASE}
       - ${MBOX_DOCKER_SERVER}
@@ -61,6 +57,10 @@ services:
       - ${MBOX_DIR_DATA}/music:${MBOX_DIR_DATA}/music
       - ${MBOX_DIR_DATA}/cover:${MBOX_DIR_DATA}/cover
       - ./log:/log
+    dns:
+      - ${DNS01}
+      - ${DNS02}
+      - ${DNS03}
     ports:
       - ${MBOX_SERVER_PORT}:${MBOX_SERVER_PORT}
     depends_on:

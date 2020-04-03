@@ -7,6 +7,7 @@ source config
 
 test="" # add value to test the script
 date=`date +%y%m%d`
+date="-$date"
 
 echo
 echo "Install Wifi Auto-hotspot ($date)"
@@ -22,8 +23,10 @@ if ! [ -f "config" ]; then
 fi
 echo "Press key - your options:"
 echo " 'q' - exit"
-echo " 't' - test"
+echo " 't' - test install"
+echo " 's' - test uninstall"
 echo " 'i' - install"
+echo " 'u' - uninstall"
 echo
 
 count=0
@@ -36,6 +39,11 @@ while : ; do
        printf "\nRunning installation in test mode ...\n"
        test=".test"
        option="install"
+       break
+   elif [[ $k = s ]] ; then
+       printf "\nRunning uninstallation in test mode ...\n"
+       test=".test"
+       option="uninstall"
        break
    elif [[ $k = i ]] ; then
        printf "\nStart installation ...\n"
@@ -52,6 +60,9 @@ while : ; do
    fi
 done
 
+
+mkdir templates/backup_install
+mkdir templates/backup_uninstall
 
 # install software
 #-----------------------------
@@ -84,16 +95,21 @@ system_enable_services() {            # not checked yet ...
 #-----------------------------
 
 hotspot_install_script() {
-  cp /etc/systemd/system/autohotspot.service /etc/systemd/system/autohotspot.service.backup$date
-  cat templates/autohotspot.service > /etc/systemd/system/autohotspot.service$test
+  cp /etc/systemd/system/autohotspot.service 	templates/backup_install/autohotspot.service$test$date
+  cp /usr/bin/autohotspot 			templates/backup_install/autohotspot$test$date
+  
+  cat templates/autohotspot.service  		> /etc/systemd/system/autohotspot.service$test
+#  cat templates/autohotspot          		> /usr/bin/autohotspot$test
+  envsubst < "templates/autohotspot.template"  > "/usr/bin/autohotspot$test"
 
-  cp /usr/bin/autohotspot /usr/bin/autohotspot.backup$date
-  cat templates/autohotspot > /usr/bin/autohotspot$test
+  
   sudo chmod +x /usr/bin/autohotspot$test
 }
 
 hotspot_uninstall_script() {           # not checked yet ...
-  # remove script
+
+  mv /etc/systemd/system/autohotspot.service$test 	templates/backup_uninstall/autohotspot.service$test$date
+  mv /usr/bin/autohotspot$test                    	templates/backup_uninstall/autohotspot$test$date
 }
 
 
@@ -101,12 +117,13 @@ hotspot_uninstall_script() {           # not checked yet ...
 #-----------------------------
 
 hotspot_config_on_dnsmasq() {
-  cp /etc/dnsmasq.conf /etc/dnsmasq.conf.backup$date
-  cat templates/dnsmasq.conf > /etc/dnsmasq.conf$test
+  cp /etc/dnsmasq.conf 				templates/backup_install/dnsmasq.conf$test$date
+  cat templates/dnsmasq.conf 			> /etc/dnsmasq.conf$test
 }
 
-hotspot_config_off_dnsmasq() {          # not checked yet ...
-  # remove/rename dnsmasq.conf ???
+hotspot_config_off_dnsmasq() {
+
+  mv /etc/dnsmasq.conf$test   			templates/backup_uninstall/dnsmasq.conf$test$date
 }
 
 
@@ -114,13 +131,15 @@ hotspot_config_off_dnsmasq() {          # not checked yet ...
 #-----------------------------
 
 hotspot_config_on_hostapd() {
-  cp /etc/hostapd/hostapd.conf /etc/hostapd/hostapd.conf.backup$date
-  envsubst < "templates/hostapd.conf.template" > "/etc/hostapd/hostapd.conf$test"
+  cp /etc/hostapd/hostapd.conf 			templates/backup_install/hostapd.conf$test$date
+  
+  envsubst < "templates/hostapd.conf.template"  > "/etc/hostapd/hostapd.conf$test"
 
   file_name="/etc/default/hostapd"
 
   file_content=$(cat $file_name)
   file_content=$(echo "$file_content" | sed -e "s/#DAEMON_CONF\=\"\"/DAEMON_CONF\=\"\/etc\/hostapd\/hostapd.conf\"/g")
+  file_content=$(echo "$file_content" | sed -e "s/#DAEMON_CONF\=/DAEMON_CONF\=/g")
   echo "$file_content"     > $file_name$test
 
   file_content=$(cat $file_name$test)
@@ -128,9 +147,18 @@ hotspot_config_on_hostapd() {
   echo "$file_content"     > $file_name$test
 }
 
-hotspot_config_off_hostapd() {           # not checked yet ...
-  # comment again ...   DAEMON_CONF\=
-  # uncomment again ... #DAEMON_OPTS\=
+hotspot_config_off_hostapd() {          
+  cp /etc/hostapd/hostapd.conf$test		templates/backup_uninstall/hostapd.conf$test$date
+  
+  file_name="/etc/default/hostapd"
+
+  file_content=$(cat $file_name)
+  file_content=$(echo "$file_content" | sed -e "s/DAEMON_CONF\=/#DAEMON_CONF\=/g")
+  echo "$file_content"     > $file_name$test
+
+  file_content=$(cat $file_name$test)
+  file_content=$(echo "$file_content" | sed -e "s/#DAEMON_OPTS\=/DAEMON_OPTS\=/g")
+  echo "$file_content"     > $file_name$test
 }
 
 
@@ -138,16 +166,23 @@ hotspot_config_off_hostapd() {           # not checked yet ...
 #-----------------------------
 
 hotspot_config_on_dhcp() {
-  cp /etc/dhcpcd.conf /etc/dhcpcd.conf.backup$date
+  cp /etc/dhcpcd.conf				templates/backup_install/dhcpcd.conf$test$date
+  
   if [[ $test != "" ]]; then
     cp /etc/dhcpcd.conf /etc/dhcpcd.conf$test
   fi
-  echo "" 			>> /etc/dhcpcd.conf$test
-  echo "nohook wpa_supplicant"	>> /etc/dhcpcd.conf$test
+  
+  echo "nohook wpa_supplicant"			>> /etc/dhcpcd.conf$test
 }
 
-hotspot_config_off_dhcp() {               # not checked yet ...
-  # remove lines "nohook wpa_supplicant"
+hotspot_config_off_dhcp() {
+  cp /etc/dhcpcd.conf$test			templates/backup_uninstall/dhcpcd.conf$test$date
+
+  file_name="/etc/dhcpcd.conf"
+
+  file_content=$(cat $file_name$test)
+  file_content=$(echo "$file_content" | sed -e "s/nohook wpa_supplicant/#nohook wpa_supplicant")
+  echo "$file_content"     > $file_name$test
 }
 
 
@@ -155,15 +190,15 @@ hotspot_config_off_dhcp() {               # not checked yet ...
 #-----------------------------
 
 hotspot_config_on_interfaces() {
-  cp /etc/network/interfaces /etc/network/interfaces.backup$date
-  cat templates/interfaces > /etc/network/interfaces$test
+  cp /etc/network/interfaces$test		templates/backup_install/interfaces$test$date
+  cat templates/interfaces$test			> /etc/network/interfaces$test
 }
 
-hotspot_config_off_interfaces() {         # not checked yet ...
+hotspot_config_off_interfaces() {
   # create new interfaces-file with existing login data or
   # get first version of interfaces-file
-  
-  # -> check how to configure if creditials set via rasp-config
+  # -> check how to configure if login data set via rasp-config
+  echo "."
 }
 
 
@@ -171,11 +206,12 @@ hotspot_config_off_interfaces() {         # not checked yet ...
 #-----------------------------
 
 hotspot_config_on_wpa() {
-  cp /etc/wpa_supplicant/wpa_supplicant.conf /etc/wpa_supplicant/wpa_supplicant.conf.backup$date
+  cp /etc/wpa_supplicant/wpa_supplicant.conf 		templates/backup_install/wpa_supplicant.conf$test$date
   envsubst < "templates/wpa_supplicant.conf.template" > "/etc/wpa_supplicant/wpa_supplicant.conf$test"
 }
 
-hotspot_config_off_wpa() {                # not checked yet ...
+hotspot_config_off_wpa() {
+  mv /etc/wpa_supplicant/wpa_supplicant.conf$test 	templates/backup_uninstall/wpa_supplicant.conf$test$date
 }
 
 
@@ -186,7 +222,7 @@ hotspot_enable_script() {
   systemctl enable autohotspot.service
   }
 
-hotspot_disable_script() {                # not checked yet ...
+hotspot_disable_script() {
   systemctl disable autohotspot.service
   }
 
@@ -203,6 +239,11 @@ hotspot_enable_crontab() {
 }
 
 hotspot_disable_crontab() {               # not checked yet ...
+  echo
+  echo "Still to do manually ..."
+  echo
+  cat info.txt
+  echo
 }
 
 
@@ -224,14 +265,27 @@ if [[ $option = "install" ]]; then
   hotspot_config_on_interfaces
   hotspot_config_on_wpa
 
-  hotspot_enable_script
-  hotspot_enable_crontab
+  if [[ $test = "" ]]; then
+    hotspot_enable_script
+    hotspot_enable_crontab
+  fi
   
 fi
 if [[ $option = "uninstall" ]]; then
 
-  echo
-  echo "to be implemented ..."
-  echo
+  if [[ $test = "1" ]]; then
+    hotspot_disable_crontab
+    hotspot_disable_script
+  fi
 
+  hotspot_config_off_dnsmasq
+  hotspot_config_off_hostapd
+  hotspot_config_off_dhcp
+  hotspot_config_off_interfaces
+  hotspot_config_off_wpa
+
+  if [[ $test = "1" ]]; then
+    hotspot_uninstall_script
+    system_enable_services
+  fi
 fi

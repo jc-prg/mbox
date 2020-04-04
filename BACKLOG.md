@@ -4,6 +4,10 @@ Here you'll find a history of features implemented into hardware and software as
 
 ## KNOWN BUGS
 
+- BUG box - blue LED doesn't work correctly
+IN PROGRESS - if card not connected or wrong connected, speak message!
+IN PROGRESS - BUG app - deletion of card connection doesn't work (at least, if album not found ...)
+	
 - BUG app - volume doesn't work with iOS / Safari -> HTML5 audio processing?
 - BUG app/server - if playlist with the same title already exists, two lists with the same tracks, id, and image are displayed => check server side?
 - BUG server - reconnect Card doesn't work
@@ -155,6 +159,7 @@ Here you'll find a history of features implemented into hardware and software as
 * OK - BUG - Start radio channel by card doesn't work for all channels (starting via UI works) -> reread mp3-url when ever loaded - ignore comments in m3u-files
 * OK - BUG - connecting to cards doesn't work anymore
 * OK - API command to re-read data to cache, periodic re-read (not only on specific data changes - or ensure, no data change is forgotten)
+* OK - BUG server - if card is not connect (wrong connected/connected with album which cannot be found?) -> error; after that no card is loaded any more:
 
 #--------------------------------
 

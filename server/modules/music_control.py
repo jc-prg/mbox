@@ -12,6 +12,7 @@ import modules.jcJson       as jcJSON
 import modules.jcCouchDB    as jcCouch
 import modules.config_stage as stage
 import modules.config_mbox  as mbox
+import modules.speekmsg     as speek
 
 from modules.config_mbox import *
 from decimal             import *
@@ -51,6 +52,9 @@ class musicThread (threading.Thread):
       self.music_ctrl["state"]   = "Started"
       
       self.music_load_new   = False
+
+      self.speek = speek.speekThread(4, "Thread Speek", 1, "")  #  jcJSON.read("music"), jcJSON.read("radio"))
+      self.speek.start()
 
       self.relevant_db  = self.music_database.databases["music"] # ["albums","album_info","tracks","files","cards"]
       self.vol_factor   = 0.8 # factor to limit audio level (max = 1.0)
@@ -420,13 +424,14 @@ def musicGetTracks(thread,album_uuid):
     logging.debug("test // " + album_uuid)
 
     # read data from db IF Album
-    if "a_" in album_uuid:
+    if "a_" in album_uuid and album_uuid in db_album_info:
        songs       = db_album_info                      # db["album_info"]
        tracks      = songs[album_uuid]["tracks"]
        track_info  = db_tracks                          # db["tracks"]
+       track_list  = sortAlbumTracks(tracks,track_info)
 
     # read data from db IF Playlist
-    elif "p_" in album_uuid:
+    elif "p_" in album_uuid and album_uuid in db_playlists:
        songs       = db_playlists                       # db["playlists"]
        tracks1     = songs[album_uuid]["tracks"]
        tracks      = []
@@ -439,13 +444,10 @@ def musicGetTracks(thread,album_uuid):
            tracks2 = sortAlbumTracks(tracks2,track_info)
            for key2 in tracks2: tracks.append(key2)
 
-
-    # sort by song number if album
-    if "a_" in album_uuid:
-      track_list = sortAlbumTracks(tracks,track_info)
-
+       track_list = tracks
+       
     else:
-      track_list = tracks
+       self.speek.speek_message("UNVALID-ENTRY-CONNECTED-TO-CARD")
 
     return track_list
 

@@ -101,7 +101,6 @@ function mboxPlayerRemote(song,uuid,playing) {
 			text += "</div>";
 			mboxControlPlaying_show(uuid,uuid_song,playing);
 			}
-		else if (channel) { text += mboxPlayerControlStream(uuid);    mboxControlPlaying_show(uuid,playing); }
 		else		  { mboxControlPlaying_delete(); }
 		text += "</div>";
 		}

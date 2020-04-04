@@ -262,6 +262,7 @@ function mboxCardList(data) {
 		else					{ color = "red";    }
 
                 text += div2; // + "<div style=\"margin:px;\">";
+                text += mboxHtmlButton("delete","mboxCardDelete('" + card + "','" + cards[card][1] + "')",color);
                 text += mboxHtmlButton("delete","appMsg.confirm('<br/>Zuordnung zwischen Karte &quot;" + card  + "&quot; und Album &quot;" + title + "&quot; löschen?','mboxCardDelete(#" + card + "#,#" + cards[card][0] + "#)',150)",color);
 		text += divE; // + divE;
 
@@ -289,8 +290,8 @@ function mboxCardList(data) {
 //---------------------------------
 
 function mboxCardDelete(card_id,title) {
-	text    = lang("CARD_DELETE_ASK") + ": <b>"+title+"</b>?";
-	cmd     = "mboxStreamDelete_exec('"+uuid+"','"+title+"');";
+	text    = lang("CARD_DELETE_ASK") + "?<br/> "+lang("TITLE")+": <b>"+title+"</b><br/>ID: "+card_id;
+	cmd     = "mboxStreamDelete_exec('"+card_id+"','"+title+"');";
 	appMsg.confirm(text,cmd,150,true);
 	}
 	

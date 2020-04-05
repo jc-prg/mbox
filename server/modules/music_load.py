@@ -178,11 +178,16 @@ def AlbumByPath(file):
 def checkIfCardExists(data_cards,album,artist,uuid):
     '''Check for JPG files in the folder again without reloading the music'''
 
-    for key in data_cards:
-      if "," in data_cards[key]:
-        if data_cards[key][1] == album and data_cards[key][2] == artist:
-          data_cards[key][0] = uuid
-          return data_cards, key
+    for card_id in data_cards:
+    
+      # check if card
+      if "," in data_cards[card_id]:
+      
+        # check if album and artist exist
+        if data_cards[card_id][1] == album and data_cards[card_id][2] == artist:
+        
+          data_cards[card_id][0] = uuid     # replace old UUID by current UUID
+          return data_cards, card_id	    # return data and card_id
 
     return data_cards, ""
 
@@ -450,8 +455,12 @@ def reloadMusic(data,all=True,thread=""):
            data_tracks[t_key]["uuid_album"] = a_uuid
 
 
-         # check if already a rfid card is connected
+         # -------------------------
+         # check if already a rfid card is connected ???
          data["cards"], data_album_info[a_uuid]["card_id"] = checkIfCardExists(data["cards"],data_album_info[a_uuid]["album"],data_album_info[a_uuid]["artist"],a_uuid)
+
+         # -------------------------
+
 
          # set image information for album
          if key+"_image" in data_i:

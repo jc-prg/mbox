@@ -13,6 +13,16 @@ import eyed3
 import os
 import uuid
 import logging
+import hashlib
+
+#------------------------------------
+
+def fileHashMD5(fname):
+    hash_md5 = hashlib.md5()
+    with open(fname, "rb") as f:
+        for chunk in iter(lambda: f.read(4096), b""):
+            hash_md5.update(chunk)
+    return hash_md5.hexdigest()
 
 #------------------------------------
 
@@ -47,6 +57,10 @@ def readMetadata(path_to_file):
     
     if tags["album"] == "Unbekanntes Album":          tags["album"] = "Unknown Album"
     if tags["artist"] == "Unbekannte Künstler":       tags["album"] = "Unknown Artist"
+    
+    tags["MD5"] = fileHashMD5(path_to_file)
+    
+    logging.info(path_to_file + " MD5: " + tags["MD5"])
     
     return tags, str(tags["artist"]), str(tags["album"]), str(tags["title"])
     
@@ -208,7 +222,7 @@ def readID3(file):
              tags["cover_images"]["active"] = "track"
              tags["cover_image"]            = 1
 
-             logging.warn("################# image ##" + image_url)
+             logging.debug("## image ##" + image_url)
         else:
            tags["cover_image"]              = 0
 

@@ -55,6 +55,8 @@ class radioThread (threading.Thread):
       self.speek = speek.speekThread(4, "Thread Speek", 1, "")  #  jcJSON.read("music"), jcJSON.read("radio"))
       self.speek.start()
       #self.connected()
+      
+      self.last_card_identified = ""
 
 
    def run(self):
@@ -274,10 +276,12 @@ class radioThread (threading.Thread):
 
           # else stop playing
           else:
-            logging.debug("No Radio connected.")
             self.music_ctrl["LastCard"]       = ""
             self.music_ctrl["playlist_uuid"]  = ""
             self.stop_playback()
+            if mbox.rfid_ctrl["cardUID"] != self.last_card_identified:
+               logging.debug("No Radio connected.")
+               self.last_card_identified = mbox.rfid_ctrl["cardUID"]
 
 
    #--------------------------------------

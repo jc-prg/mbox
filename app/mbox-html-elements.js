@@ -194,6 +194,7 @@ function mboxHtmlInputElement( name, data ) {
 	var text = "";
 
 	if (typeof data == "string") { text += "<input id='"+name+"' name='"+name+"' value='"+data+"'>"; }
+//	else if (!data) { text += "<input id='"+name+"' name='"+name+"' value=''> (undefined)"; }
 	else if (data) {
 	        var str = JSON.stringify(data);
         	str = str.replace(/,/g,",<br/>");

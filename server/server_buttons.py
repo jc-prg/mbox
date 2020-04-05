@@ -66,7 +66,7 @@ cmd["mute"]  = url+"volume/mute/"
 cmd["down"]  = url+"volume/down/"
 cmd["pause"] = url+"pause/"
 cmd["next"]  = url+"play_next/1/"
-cmd["back"]  = url+"play_next/-1/"
+cmd["back"]  = url+"play_last/1/"
 
 wait         = 0.3
 

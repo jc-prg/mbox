@@ -101,15 +101,16 @@ if [ ${DOLLAR}option == "docker" ]; then
   echo "... mount usb if available and not done already."
   mount /dev/sda1 /media/usb/
   
-  echo "... start main modules:"
-  ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose.yml up -d #--remove-orphans
-
   if [ ${DOLLAR}is_rpi == "yes" ]; then
     if [ ${DOLLAR}hardware == "yes" ]; then
       echo "... start rpi components:"
-      ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose-rpi.yml up -d #--remove-orphans
+      ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose-rpi.yml up -d & #--remove-orphans
     fi
   fi
+
+  echo "... start main modules:"
+  ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose.yml up -d & #--remove-orphans
+
   echo ""
   echo "RESET" > ${MBOX_DIR}/log/internet_connect
   sleep 5s
@@ -117,17 +118,17 @@ if [ ${DOLLAR}option == "docker" ]; then
 # Restart docker container
 elif [ ${DOLLAR}option == "restart" ]; then
 
+  if [ ${DOLLAR}is_rpi == "yes" ]; then
+    if [ ${DOLLAR}hardware == "yes" ]; then
+      echo "... restart rpi components:"
+      ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose-rpi.yml stop 
+      ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose-rpi.yml up -d
+    fi
+  fi
   echo "... restart main modules:"
   ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose.yml stop
   ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose.yml up -d
 
-  if [ ${DOLLAR}is_rpi == "yes" ]; then
-    if [ ${DOLLAR}hardware == "yes" ]; then
-      echo "... restart rpi components:"
-      ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose-rpi.yml stop
-      ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose-rpi.yml up -d
-    fi
-  fi
   echo ""
   echo "RESET" > ${MBOX_DIR}/log/internet_connect
   sleep 5s

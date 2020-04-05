@@ -288,10 +288,7 @@ function mboxPlaylistOne(data) {
 					mboxPlaylistTrackLine(split,color);
 					var tracks_album1  = track_list_album[track_list[i]];
 					var tracks_album2  = mboxAlbumSortTracks(tracks_album1,data["DATA"]["tracks"]);
-console.error(data["DATA"]["tracks"]);
-console.error(tracks_album1);
-console.error(tracks_album2);
-
+					
 					for (var j=0;j<tracks_album2.length;j++) {
 						//console.error(tracks_album[j]);
 						if (k >= Math.round(title_num/2)) { split = true; } // split if half of the list

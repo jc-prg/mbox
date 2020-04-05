@@ -2,28 +2,38 @@
 
 Here you'll find a history of features implemented into hardware and software as well as ideas what else to implement.
 
-## KNOWN BUGS
+## ToDo
+
+### IN PROGRESS
+
+IN PROGRESS - BUG app - deletion of card connection doesn't work (at least, if album not found ...)
+IN PROGRESS - server: create HASH from files to reconnect (? additionally to filename ?)
+
+### KNOWN BUGS
 
 - BUG box - blue LED doesn't work correctly
-IN PROGRESS - if card not connected or wrong connected, speak message!
-IN PROGRESS - BUG app - deletion of card connection doesn't work (at least, if album not found ...)
-	
-- BUG app - volume doesn't work with iOS / Safari -> HTML5 audio processing?
+- BUG server - Start with STREAM and card laying on the RFID sensor leads to an error -> remove card_id, until connection is OK
 - BUG app/server - if playlist with the same title already exists, two lists with the same tracks, id, and image are displayed => check server side?
-- BUG server - reconnect Card doesn't work
+- BUG server - reconnect Cards when reloading data doesn't work
 - BUG server - if playing and press play in a playlist, start with first song instead of actuall running song (PlaySong -> start file, not list without loading list again)
-- BUG server - Start with STREAM and card laying on the RFID sensor leads to an error
-  - when no card is laying on the RFID sensor while starting (a bit later -> connection error, after restart it's working)
-  - seems to be a connection error?! "\[ErrNo 104\] Connection reset by peer"
-  - IDEAS:
-    -> restart mboxServer, if internet connection changes (autohotspot)
-    -> run mboxServer outside of a container (may require couchDB locally also)
-    -> run mboxDB outside of a container
-
 - UNSTABLE app/server - Delete RFID Cards doesn't work the 2nd time {Error: mbox - GET / http://music-box:5005/api/cards/-/ (not available/4/500).}
-- UNSTABLE app - loading albums and tracks to edit playlist doesnt work every time
+- UNSTABLE app - loading albums and tracks to edit playlist doesnt work every time (on the box more often than on the computer)
 
-## BOX BASICS
+### FEATURE IDEAS
+
+- app: filter for genres (or other metadata ...)
+- app: appMsg.confirm -> place dialog in the middle (bit more above ...)
+- app: volume doesn't work with iOS / Safari yet -> HTML5 audio processing?
+- server: save position when played last time
+- server: understandable return message in API response (even if successful)
+- server: import / export connection between card and albums, lists and streams as json
+- server: save presets in database and e.g. prefered device, start with last song played before switched off
+- server: run mboxDB and mboxServer outside of a container (? faster start up)
+- server: check and show voltage ... "vcgencmd measure_volts core" ... sdram_i, sdram_p, sdram_c (problem, when recharging the battery)
+
+## Done
+
+### BOX BASICS
 
 * OK - Pi, Battery & Speaker in Box are installed
 * OK - Wifi connected to JC-WIFI
@@ -42,7 +52,7 @@ IN PROGRESS - BUG app - deletion of card connection doesn't work (at least, if a
   http://www.raspberryconnect.com/projects/65-raspberrypi-hotspot-accesspoints/158-raspberry-pi-auto-wifi-hotspot-switch-direct-connection
 
 
-# BOX ENHANCEMENTS
+### BOX ENHANCEMENTS
 
 * OK - RFID Reader to trigger playback of a playlist
 * OK - detect "other cards" ... (13,56 MHz required)
@@ -59,8 +69,9 @@ IN PROGRESS - BUG app - deletion of card connection doesn't work (at least, if a
 
 * DECLINED - Display for status (connection)
 * DECLINED - ...     for track title ....
+* DECLINED - server: check if connected to the internet in the background (in a thread) - optimized autohotspot configuration + bugfix dns-server
 
-## SERVER
+### SERVER
 
 * OK - Install PYGAME to play audio
 * OK - Play single audio file by REST-Request
@@ -160,21 +171,14 @@ IN PROGRESS - BUG app - deletion of card connection doesn't work (at least, if a
 * OK - BUG - connecting to cards doesn't work anymore
 * OK - API command to re-read data to cache, periodic re-read (not only on specific data changes - or ensure, no data change is forgotten)
 * OK - BUG server - if card is not connect (wrong connected/connected with album which cannot be found?) -> error; after that no card is loaded any more:
-
-#--------------------------------
-
-- speaking return message in API response (even if successful)
-- check if connected in the background (in a thread)
-- import / export connection between card and albums, lists and streams as json
-- reconnect tracks / albums when reloading based on path/file or albumpath (mbox_load)
-- save presets in database and e.g. prefered device, start with last song played before switched off
-- check and show voltage ... "vcgencmd measure_volts core" ... sdram_i, sdram_p, sdram_c (problem, when recharging the battery)
+* OK - if card not connected or wrong connected, speak message!
+* OK - restart mboxServer and start autohotspot, if internet connection changes (autohotspot)
 
 * DECLINED - Play the whole song, not only parts // not seen any more
 * DECLINED - dont delete playlist when stop: don't unload playlist/title if stop - just rewind to first position, but display now reflects situation
 
 
-## CLIENT
+### CLIENT
 
 * OK - send request to play an audio file
 * OK - send request to stop playback
@@ -302,9 +306,6 @@ IN PROGRESS - BUG app - deletion of card connection doesn't work (at least, if a
 * OK - Queue for jcApp.requestAPI
 * OK - BUG app - callback functions overwriten by second call?
 * OK - timeout for API Request and reaction to the timeout (show error message) - required e.g. if parallel processes like a system update is running on the raspberry
-
-- filter for genres (or other metadata ...)
-- appMsg.confirm -> place dialog in the middle (bit more above ...)
-- reload control panel whenever pressed button (show new title and new buttons immedatley)
+* OK - BUG app - displayed order of tracks in playlist is not correct (playback order is OK)
 
 

@@ -163,7 +163,9 @@ function mboxPlaylistOne(data) {
 		if (track_list[i].includes("t_"))	{ track_list_complete.push( track_list[i] ); }
 		else if (track_list[i].includes("a_"))	{ 
 			if (data["DATA"]["album_info"][track_list[i]]) {
+			
 				album_tracks = data["DATA"]["album_info"][track_list[i]]["tracks"];
+// SORT ???
 				for (var j=0;j<album_tracks.length;j++) {
 					track_list_complete.push( album_tracks[j] );
 					}
@@ -284,11 +286,16 @@ function mboxPlaylistOne(data) {
 					mboxPlaylistTrackLine(split,color);
 					mboxPlaylistTrackRow(data,track_list[i],split,uuid,(color+1));
 					mboxPlaylistTrackLine(split,color);
-					tracks_album = track_list_album[track_list[i]];
-					for (var j=0;j<tracks_album.length;j++) {
+					var tracks_album1  = track_list_album[track_list[i]];
+					var tracks_album2  = mboxAlbumSortTracks(tracks_album1,data["DATA"]["tracks"]);
+console.error(data["DATA"]["tracks"]);
+console.error(tracks_album1);
+console.error(tracks_album2);
+
+					for (var j=0;j<tracks_album2.length;j++) {
 						//console.error(tracks_album[j]);
 						if (k >= Math.round(title_num/2)) { split = true; } // split if half of the list
-						mboxPlaylistTrackRow(data,tracks_album[j],split,uuid);//,(color+1));
+						mboxPlaylistTrackRow(data,tracks_album2[j],split,uuid);//,(color+1));
 						k += 1;
 						}
 					mboxPlaylistTrackLine(split,color);

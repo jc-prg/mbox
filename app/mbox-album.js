@@ -285,6 +285,55 @@ function mboxAlbumList_load(i,uuid) {
 	}
 
 
+// sort list of albums tracks by track number, if every track has a number
+//--------------------------------------
+
+function mboxAlbumSortTracks(track_list,track_info) {
+
+	var a = 0;
+	for (var i=0;i<track_list.length;i++) {
+		
+		if (track_info[track_list[i]]["track_num"][0]) { a++; }
+		}
+		
+	if (a == track_list.length) {
+	
+		// sort by "track_num"
+		var sort_tracks   = [];
+		var sorted_tracks = [];
+		var album         = {};
+		
+		for (var x in track_info) {
+			if (track_list.includes(x)) {
+				var mykey = track_info[x]["track_num"][0];
+				sort_tracks.push(mykey);
+				album[mykey] = track_info[x]["uuid"];
+			}	}
+
+		sort_tracks.sort(sortNumber);
+		
+		for (var i=0;i<sort_tracks.length;i++) {
+			if (album[sort_tracks[i]]) {
+				sorted_tracks.push(album[sort_tracks[i]]);
+			}	}
+			
+		if (sorted_tracks.length == track_list.length)  {
+			console.debug("...1"); 
+			return sorted_tracks;
+			}
+		else						{ 
+			console.debug("...2: "+sorted_tracks.length+"/"+track_list.length); 
+			return track_list;
+			}
+ 		}
+	else {
+		// return unsorted list
+		console.debug("...3: "+a+"/"+track_list.length); 
+		return track_list;
+		}
+	}
+
+
 // List albums tracks of an album
 //--------------------------------------
 
@@ -380,7 +429,24 @@ function mboxAlbumList(data) {
 
 	// check, if compilation ... than show artist in row
 	if (artist == "Compilation") { withartist = true; }
-
+	
+	var sorted_tracks	= mboxAlbumSortTracks( albums["tracks"], track_list );
+	var show_num		= true;
+	var count		= 0;
+	
+	for (var i=0;i<sorted_tracks.length;i++) {
+		count++;
+		text += mboxAlbumTrackRow(sorted_tracks[i],track_list,show_num,withartist,count-1);
+		if (count == Math.round(max/2)) { text += "</div><div class=\"album_tracks\">"; }
+		}
+		
+		
+//	console.error(albums["tracks"]);
+//	console.error(sorted_tracks);	
+	
+	
+/* ---- */
+/*
 	// count tracks with order number
 	for (var key in albums["tracks"]) {
 		//console.log(albums["tracks"][key])
@@ -420,6 +486,7 @@ function mboxAlbumList(data) {
 			}
 
 		}
+*/
 
 	text += "</div>";
 	text += "</div>";

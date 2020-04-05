@@ -11,6 +11,7 @@ function mboxAlbumAll_album(count,uuid,title,description,cover,cmd_open,cmd_play
 function mboxAlbumFilterPath(data,selected)
 function mboxAlbumFilterArtist(data,selected)
 function mboxAlbumList_load(i,uuid)
+function mboxAlbumSortTracks(track_list,track_info)
 function mboxAlbumList(data)
 function mboxAlbumInfo_load(uuid)
 function mboxAlbumInfo_close()

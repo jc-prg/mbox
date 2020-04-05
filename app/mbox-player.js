@@ -106,6 +106,28 @@ function mboxPlayerRemote(song,uuid,playing) {
 		}
 	return text;
 	}
+	
+	
+// control buttons for playlist - advanced
+//--------------------------------------
+
+function mboxPlayerControlPlaylist_advanced(uuid) {
+	var text = "";
+
+	text += mboxPlayerButtonText("-4", "mboxApp.requestAPI('GET', ['play_last','4'],  '', mboxControl);",   "blue");
+	text += mboxPlayerButton("back",   "mboxApp.requestAPI('GET', ['play_last','1'],  '', mboxControl);",   "blue");
+	text += mboxPlayerButton("play",   "mboxApp.requestAPI('GET', ['play','"+uuid+"'],'', mboxControl);",   "blue");
+	text += mboxPlayerButton("next",   "mboxApp.requestAPI('GET', ['play_next','1'],  '', mboxControl);",   "blue");
+	text += mboxPlayerButtonText("+4", "mboxApp.requestAPI('GET', ['play_next','4'],  '', mboxControl);",   "blue");
+	text += mboxPlayerButton("empty");
+	text += mboxPlayerButton("pause","mboxApp.requestAPI('GET', ['pause'], 		'', mboxControl);",                    		"blue");
+	text += mboxPlayerButton("stop", "mboxApp.requestAPI('GET', ['stop'],  		'', mboxControl); mboxControlPanel_toggle();",	"blue");
+	text += mboxPlayerButton("empty");
+	text += mboxPlayerButton("goto", "mboxControlShowUUID('"+uuid+"');", "blue");
+
+	appMsg.confirm( text, "", 260);
+	}
+
 
 // control buttons for playlist
 //--------------------------------------
@@ -113,14 +135,17 @@ function mboxPlayerRemote(song,uuid,playing) {
 function mboxPlayerControlPlaylist(uuid) {
 	var text = "";
 
+	text += mboxPlayerButtonText("&nbsp;-5", "mboxApp.requestAPI('GET', ['play_last','5'],  '', mboxControl);",   "blue");
 	text += mboxPlayerButton("back", "mboxApp.requestAPI('GET', ['play_last','1'],  '', mboxControl);",   "blue");
 	text += mboxPlayerButton("play", "mboxApp.requestAPI('GET', ['play','"+uuid+"'],'', mboxControl);",   "blue");
 	text += mboxPlayerButton("next", "mboxApp.requestAPI('GET', ['play_next','1'],  '', mboxControl);",   "blue");
+	text += mboxPlayerButtonText("+5", "mboxApp.requestAPI('GET', ['play_next','5'],  '', mboxControl);",   "blue");
 	text += mboxPlayerButton("empty");
 	text += mboxPlayerButton("pause","mboxApp.requestAPI('GET', ['pause'], 		'', mboxControl);",                    		"blue");
 	text += mboxPlayerButton("stop", "mboxApp.requestAPI('GET', ['stop'],  		'', mboxControl); mboxControlPanel_toggle();",	"blue");
 	text += mboxPlayerButton("empty");
 	text += mboxPlayerButton("goto", "mboxControlShowUUID('"+uuid+"');", "blue");
+//	text += mboxPlayerButton("goto", "mboxPlayerControlPlaylist_advanced('"+uuid+"');", "green");
 
 	return text;
 	}
@@ -263,8 +288,24 @@ function mboxPlayerButton( button, cmd="", color="blue", small="", display="bloc
                 text +=   "<div class=\"player_button "+color+" "+small+"\" onclick=\"javascript:"+cmd+"\" style=\"display:"+display+";\">";
                 text +=   "<img src=\"icon/"+button+".png\" class=\"player_image "+small+"\"></div>";
                 }
-        else {
-                text +=   "<div class=\"player_button empty "+small+"\"></div>";
+        else {  text +=   "<div class=\"player_button empty "+small+"\"></div>";
+                }
+
+        return text;
+        }
+
+
+//--------------------------------------
+
+function mboxPlayerButtonText( button, cmd="", color="blue", small="", display="block" ) {
+
+        var text  = "";
+
+        if (button != "empty") {
+                text +=   "<div class=\"player_button "+color+" "+small+"\" onclick=\"javascript:"+cmd+"\" style=\"display:"+display+";align:center;\">";
+                text +=   "<div style=\"color:black;margin:3px;margin-top:5px;\">"+button+"</div></div>";
+                }
+        else {  text +=   "<div class=\"player_button empty "+small+"\"></div>";
                 }
 
         return text;

@@ -31,7 +31,7 @@ function appMenuDefinition(name, menu, title)
 ./config_stage.js (-1)
 ----------------------------
 ----------------------------
-./mbox-album.js (670)
+./mbox-album.js (737)
 ----------------------------
 function mboxAlbumAll_load(filter="",uuid="")
 function mboxAlbumAll(data)
@@ -40,6 +40,7 @@ function mboxAlbumAll_album(count,uuid,title,description,cover,cmd_open,cmd_play
 function mboxAlbumFilterPath(data,selected)
 function mboxAlbumFilterArtist(data,selected)
 function mboxAlbumList_load(i,uuid)
+function mboxAlbumSortTracks(track_list,track_info)
 function mboxAlbumList(data)
 function mboxAlbumInfo_load(uuid)
 function mboxAlbumInfo_close()
@@ -101,7 +102,7 @@ function mboxDataReturnMsg(data)
 function mboxDataEdit(data,callback)
 function mboxDataEditExecute(uuid, key_list, type)
 ----------------------------
-./mbox-html-elements.js (262)
+./mbox-html-elements.js (263)
 ----------------------------
 function image(file)
 function dict_size(d)
@@ -123,10 +124,11 @@ function mboxHtmlShowLoading(data)
 function mboxHtmlShowDataObject(data)
 function mboxHtmlShowJson(data)
 ----------------------------
-./mbox-player.js (277)
+./mbox-player.js (317)
 ----------------------------
 function mboxPlayerLocal(position=0, play=true)
 function mboxPlayerRemote(song,uuid,playing)
+function mboxPlayerControlPlaylist_advanced(uuid)
 function mboxPlayerControlPlaylist(uuid)
 function mboxPlayerControlStream(uuid)
 function mboxPlayerProgress()
@@ -135,8 +137,9 @@ function mboxPlayerProgressTime()
 function mboxPlayerProgressSet( status, song_length, song_left, song_left_s )
 function mboxPlayerJumpToPosition(e)
 function mboxPlayerButton( button, cmd="", color="blue", small="", display="block" )
+function mboxPlayerButtonText( button, cmd="", color="blue", small="", display="block" )
 ----------------------------
-./mbox-playlist.js (719)
+./mbox-playlist.js (724)
 ----------------------------
 function mboxPlaylistAll_load(filter="",uuid="")
 function mboxPlaylistAll(data)
@@ -168,7 +171,7 @@ function mboxPlaylistAdd()
 function mboxPlaylistAdd_dialog(i)
 function mboxPlaylistAdd_msg(data)
 ----------------------------
-./mbox-rfid.js (315)
+./mbox-rfid.js (316)
 ----------------------------
 function mboxCardWriteRFID(data)
 function mboxCardEditLink(uuid)
@@ -242,10 +245,11 @@ function mboxUploadImageWrite(params)
   2 - mboxAlbumList
   4 - mboxAlbumList_load
   2 - mboxAlbumShowTriangle
+  3 - mboxAlbumSortTracks
   2 - mboxAlbumTrackInfo
   2 - mboxAlbumTrackInfo_load
   4 - mboxAlbumWriteBelow
-  2 - mboxCardDelete
+  3 - mboxCardDelete
   1 - mboxCardDelete_exec
   1 - mboxCardDelete_msg
   1 - mboxCardEditDialog
@@ -261,11 +265,11 @@ function mboxUploadImageWrite(params)
   2 - mboxControlCheckStatus
   3 - mboxControlGroups
   2 - mboxControlPanel_close
-  9 - mboxControlPanel_toggle
+ 10 - mboxControlPanel_toggle
   4 - mboxControlPlaying_delete
-  3 - mboxControlPlaying_show
+  2 - mboxControlPlaying_show
   5 - mboxControlSetStatus
-  2 - mboxControlShowUUID
+  3 - mboxControlShowUUID
   2 - mboxControlToggleDevice
   2 - mboxControlToggleFilter
   2 - mboxControlToggleFilter_show
@@ -296,7 +300,8 @@ function mboxUploadImageWrite(params)
   1 - mboxHtmlShowLoading
   2 - mboxHtmlToolTipLeft
   2 - mboxPlayerControlPlaylist
-  2 - mboxPlayerControlStream
+  2 - mboxPlayerControlPlaylist_advanced
+  1 - mboxPlayerControlStream
   1 - mboxPlayerJumpToPosition
   3 - mboxPlayerProgress
   2 - mboxPlayerProgressPrint

@@ -33,6 +33,7 @@ mbox_playlist_queue["tracks"]	= [
 /* INDEX:
 function mboxPlayerLocal(position=0, play=true)
 function mboxPlayerRemote(song,uuid,playing)
+function mboxPlayerControlPlaylist_advanced(uuid)
 function mboxPlayerControlPlaylist(uuid)
 function mboxPlayerControlStream(uuid)
 function mboxPlayerProgress()
@@ -41,6 +42,7 @@ function mboxPlayerProgressTime()
 function mboxPlayerProgressSet( status, song_length, song_left, song_left_s )
 function mboxPlayerJumpToPosition(e)
 function mboxPlayerButton( button, cmd="", color="blue", small="", display="block" )
+function mboxPlayerButtonText( button, cmd="", color="blue", small="", display="block" )
 */
 //--------------------------------------
 

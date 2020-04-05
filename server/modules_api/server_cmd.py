@@ -185,8 +185,8 @@ def mboxAPI_setCard(cardUID):
        param = cardUID
        data  = mboxAPI_start("setCard","setCard","",param,"")
 
-       if param == "no_card": mbox.rfid_ctrl["cardUID"] = ""
-       else:                  mbox.rfid_ctrl["cardUID"] = param
+       if param == "no_card" or param == "-": mbox.rfid_ctrl["cardUID"] = ""
+       else:                                  mbox.rfid_ctrl["cardUID"] = param
 
        data = mboxAPI_end(data)
        return(data)

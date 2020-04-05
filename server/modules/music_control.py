@@ -65,6 +65,8 @@ class musicThread (threading.Thread):
       self.player       = self.instance.media_player_new()
       self.player.audio_set_volume(int(self.music_ctrl["volume"]*100))
       self.player.audio_set_mute(False)
+      
+      self.last_card_identified = ""
 
       # init mixer
       #global music_plays, music_loaded, music_ctrl
@@ -233,7 +235,7 @@ def musicLoadRfidList(thread):
     '''load list connected to rfid'''
 
     if "cardUID" in mbox.rfid_ctrl:
-      logging.info("#################### " + mbox.rfid_ctrl["cardUID"])
+      logging.debug("#################### " + mbox.rfid_ctrl["cardUID"])
       cardDB = thread.music_database.read_cache("cards")
 
       # check if card detected ...
@@ -254,10 +256,17 @@ def musicLoadRfidList(thread):
 
         # else stop playing
         else:
-          logging.info("No Playlist connected.")
           thread.music_ctrl["LastCard"]       = ""
           thread.music_ctrl["playlist_uuid"]  = ""
           thread.player.stop()
+          if mbox.rfid_ctrl["cardUID"] != thread.last_card_identified:
+             logging.info("No Entry connected.")
+             thread.last_card_identified = mbox.rfid_ctrl["cardUID"]
+          
+             if mbox.rfid_ctrl["cardUID"] not in cardDB: 
+                thread.speek.speek_message("NO-MUSIC-CONNECTED-TO-CARD")
+             
+#          if not "r_" in cardDB[rfid_ctrl["cardUID"]][0]:  thread.speek.speek_message("NO-MUSIC-CONNECTED-TO-CARD")
 
 #------------------
 
@@ -447,7 +456,7 @@ def musicGetTracks(thread,album_uuid):
        track_list = tracks
        
     else:
-       self.speek.speek_message("UNVALID-ENTRY-CONNECTED-TO-CARD")
+       thread.speek.speek_message("UNVALID-ENTRY-CONNECTED-TO-CARD")
 
     return track_list
 

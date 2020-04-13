@@ -302,10 +302,11 @@ IN PROGRESS - server: create HASH from files to reconnect (? additionally to fil
 * OK - cleaned code (readable functions, sorted into the right files)
 * OK - BUG app - local player also for playlists (tracks & albums to be loaded)
 * OK - BUG app - local player of streams doesn't work (plays last loaded album instead)
-* Button for filter
+* OK - Button for filter
 * OK - Queue for jcApp.requestAPI
 * OK - BUG app - callback functions overwriten by second call?
 * OK - timeout for API Request and reaction to the timeout (show error message) - required e.g. if parallel processes like a system update is running on the raspberry
 * OK - BUG app - displayed order of tracks in playlist is not correct (playback order is OK)
+* OK - app: jump +5 / -5 tracks
 
 

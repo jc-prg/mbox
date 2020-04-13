@@ -13,6 +13,7 @@
 	float:left;
 	height:60px;
 	width:355px;
+	max-width:355px;
 	overflow:hidden;
 	text-align:left;
 	padding:5px;

@@ -262,7 +262,7 @@ function mboxCardList(data) {
 		else					{ color = "red";    }
 
                 text += div2; // + "<div style=\"margin:px;\">";
-                text += mboxHtmlButton("delete","mboxCardDelete('" + card + "','" + cards[card][1] + "')",color);
+//                text += mboxHtmlButton("delete","mboxCardDelete('" + card + "','" + cards[card][1] + "')",color);
                 text += mboxHtmlButton("delete","appMsg.confirm('<br/>Zuordnung zwischen Karte &quot;" + card  + "&quot; und Album &quot;" + title + "&quot; löschen?','mboxCardDelete(#" + card + "#,#" + cards[card][0] + "#)',150)",color);
 		text += divE; // + divE;
 

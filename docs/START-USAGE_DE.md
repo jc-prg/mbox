@@ -7,7 +7,7 @@ Nun kann Musik über ggf. vorbelegte RFID-Karten gestartet werden. Um weitere Ka
 sind ein paar weitere Schritte nötig:
 
 1. Mit dem WLAN der Box verbinden, die Standard-SSID ist "JCmbox" (Standard-Passwort: "012345689").
-2. Die App ist anschließend erreichbar über *http://10.0.0.5/* und kann als WebApp auf dem Smartphone verwendet werden. Die App ist derzeit auf iPhone 5c/SE und iPhone XS hin optimiert.
+2. Die App ist anschließend erreichbar über *http://music-box/* (http://10.0.0.5/) und kann als WebApp auf dem Smartphone verwendet werden. Die App ist derzeit auf iPhone 5c/SE und iPhone XS hin optimiert.
 3. Für die weitere Konfiguration der Box via ssh verbinden, Standard ist:
 
 ```bash
@@ -64,7 +64,7 @@ $ sudo ./start_mbox docker
    Wurden nur weitere Musik-Dateien hinzugefügt, können die neuen Dateien geladen werden (LOAD NEW DATA).
 
 10. Das Verknüpfen von **RFID-Karten** erfolgt, indem die Karten auf die Box gelegt wird (blaue LED leuchtet) und das dann erscheinende Symbol mit der Karte in der App.
-   Um die Cover ausdrucken und auf die Karten zu kleben, gibt es im Menü den Punkt "Cover Bilder". Ein Screenshot von 6 Covern ausgedruck als Foto im Format 9 cm x 13 cm erzeugt Cover-Bilder in der richtigen Größe.
+   Um die Cover ausdrucken und auf die Karten zu kleben, gibt es im Menü den Punkt "Cover Bilder". Ein Screenshot von 6 Covern ausgedruckt als Foto im Format 9 cm x 13 cm erzeugt Cover-Bilder in der richtigen Größe.
    
 11. Das Hinzufügen von Web-Streams und Playlisten ist hoffentlich intuitiv genug ;-).
    

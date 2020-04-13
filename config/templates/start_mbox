@@ -3,6 +3,8 @@
 option=${DOLLAR}1
 is_rpi="${MBOX_WITH_RPI}"
 hardware="${MBOX_WITH_HARDWARE}"
+usb_dev="${MBOX_MOUNT_USB}"
+usb_mount="${MBOX_MOUNT_DATA}"
 
 echo
 echo "-------------------------------------"
@@ -99,7 +101,7 @@ check_dns() {
 if [ ${DOLLAR}option == "docker" ]; then
 
   echo "... mount usb if available and not done already."
-  mount /dev/sda1 /media/usb/
+  mount ${DOLLAR}usb_dev ${DOLLAR}usb_mount
   
   if [ ${DOLLAR}is_rpi == "yes" ]; then
     if [ ${DOLLAR}hardware == "yes" ]; then
@@ -182,7 +184,7 @@ elif [ ${DOLLAR}option == "server" ]; then
 
   echo "... IMPLEMENTATION NOT READY YET!"
   echo "... mount usb if available and not done already."
-  mount /dev/sda1 /media/usb/
+  mount ${DOLLAR}usb_dev ${DOLLAR}usb_mount
   
   echo "... start server"
   ${MBOX_DIR}/server/server.py &

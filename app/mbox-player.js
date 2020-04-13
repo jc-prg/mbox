@@ -112,15 +112,21 @@ function mboxPlayerRemote(song,uuid,playing) {
 	
 // control buttons for playlist - advanced
 //--------------------------------------
+// idea ...
 
 function mboxPlayerControlPlaylist_advanced(uuid) {
 	var text = "";
 
-	text += mboxPlayerButtonText("-4", "mboxApp.requestAPI('GET', ['play_last','4'],  '', mboxControl);",   "blue");
+	// images / text not placed in the middle ...
+
+	text += mboxPlayerButtonText("-10","mboxApp.requestAPI('GET', ['play_last','10'],  '', mboxControl);",  "blue");
+	text += mboxPlayerButtonText("-5", "mboxApp.requestAPI('GET', ['play_last','5'],  '', mboxControl);",   "blue");
 	text += mboxPlayerButton("back",   "mboxApp.requestAPI('GET', ['play_last','1'],  '', mboxControl);",   "blue");
 	text += mboxPlayerButton("play",   "mboxApp.requestAPI('GET', ['play','"+uuid+"'],'', mboxControl);",   "blue");
 	text += mboxPlayerButton("next",   "mboxApp.requestAPI('GET', ['play_next','1'],  '', mboxControl);",   "blue");
-	text += mboxPlayerButtonText("+4", "mboxApp.requestAPI('GET', ['play_next','4'],  '', mboxControl);",   "blue");
+	text += mboxPlayerButtonText("+5", "mboxApp.requestAPI('GET', ['play_next','5'],  '', mboxControl);",   "blue");
+	text += mboxPlayerButtonText("+10","mboxApp.requestAPI('GET', ['play_next','10'],  '', mboxControl);",  "blue");
+	
 	text += mboxPlayerButton("empty");
 	text += mboxPlayerButton("pause","mboxApp.requestAPI('GET', ['pause'], 		'', mboxControl);",                    		"blue");
 	text += mboxPlayerButton("stop", "mboxApp.requestAPI('GET', ['stop'],  		'', mboxControl); mboxControlPanel_toggle();",	"blue");
@@ -305,7 +311,7 @@ function mboxPlayerButtonText( button, cmd="", color="blue", small="", display="
 
         if (button != "empty") {
                 text +=   "<div class=\"player_button "+color+" "+small+"\" onclick=\"javascript:"+cmd+"\" style=\"display:"+display+";align:center;\">";
-                text +=   "<div style=\"color:black;margin:3px;margin-top:5px;\">"+button+"</div></div>";
+                text +=   "<div style=\"color:black;margin:3px;margin-top:5px;\"><b>"+button+"</b></div></div>";
                 }
         else {  text +=   "<div class=\"player_button empty "+small+"\"></div>";
                 }

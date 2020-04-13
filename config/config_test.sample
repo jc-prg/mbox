@@ -63,9 +63,11 @@ export MBOX_DIR_DOCKERCOMPOSE="/usr/local/bin"
 if [ $MBOX_DATA_USB == "yes" ]; then
   export MBOX_MOUNT_SYSTEM="/"
   export MBOX_MOUNT_DATA="/media/usb"
+  export MBOX_MOUNT_USB="/dev/sda1"
 else
   export MBOX_MOUNT_SYSTEM="/"
   export MBOX_MOUNT_DATA="/"
+  export MBOX_MOUNT_USB=""
 fi
 
 # Docker Images

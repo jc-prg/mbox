@@ -543,9 +543,16 @@ function mboxAlbumInfo(data) {
 	else {	cover += lang("DATA_OLD_FORMAT");
 		}
 
-	var edit = "";
-        edit += mboxHtmlButton("image_add",  "mboxUploadImage('"+uuid+"','album','"+album["album"]+"');",                "red");
-        edit += mboxHtmlButton("delete", "mboxAlbumDelete('"+album["artist"]+": "+album["album"]+"','"+uuid+"');", 	"red");
+	var title  = album["album"];
+	title      = title.replace( /\'/g, " " );
+	title      = title.replace( /\"/g, "&quot;" );
+	var artist = album["artist"];
+	artist     = artist.replace( /\#/g, " " );
+	artist     = artist.replace( /\"/g, "&quot;" );
+
+	var edit  = "";
+        edit += mboxHtmlButton("image_add",  "mboxUploadImage('"+uuid+"','album','"+title+"');",                "red");
+        edit += mboxHtmlButton("delete",     "mboxAlbumDelete('"+artist+": "+title+"','"+uuid+"');", 	"red");
 
 	text += "<b>" + lang("ALBUM") + " " + lang("INFORMATION") + "</b><br/>";
 

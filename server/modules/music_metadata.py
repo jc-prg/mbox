@@ -37,8 +37,9 @@ def readMetadata(path_to_file):
 
     if   ".mp3" in filename.lower():  
        tags = readID3(path_to_file)
-       if "artist" not in tags and "album" not in tags:   tags  = readMutagen(path_to_file,"mp3")
-       if tags["artist"] == "" and tags["album"] == "":   tags  = readMutagen(path_to_file,"mp3")       
+       #logging.info(tags)
+       if "artist" not in tags and "album" not in tags:     tags  = readMutagen(path_to_file,"mp3")
+       elif tags["artist"] == "" and tags["album"] == "":   tags  = readMutagen(path_to_file,"mp3")       
        
     elif ".m4a" in filename.lower():
       tags = readMutagen(path_to_file,"mp4")
@@ -67,14 +68,14 @@ def readMetadata(path_to_file):
 
 #------------------------------------
 
-def readMutagen(file,type="mp4"):
+def readMutagen(file,ftype="mp4"):
 
     global music_dir
 
     relevant_tags = {}
     data          = {}
 
-    if type == "mp4":
+    if ftype == "mp4":
       relevant_tags = {                  # https://mutagen.readthedocs.io/en/latest/api/mp4.html
 	"album"          : "\xa9alb",
 	"title"          : "\xa9nam",
@@ -99,7 +100,7 @@ def readMutagen(file,type="mp4"):
         tags          = {}
         data["error"] = "File is empty"
 
-    elif type == "mp3":
+    elif ftype == "mp3":			 # https://en.wikipedia.org/wiki/ID3
       relevant_tags = {                  # https://mutagen.readthedocs.io/en/latest/api/id3.html
 	"album"          : "TALB",
 	"title"          : "TIT2",
@@ -107,7 +108,10 @@ def readMutagen(file,type="mp4"):
 	"artist"         : "TPE1",
 	"album artist"   : "TPE2",
 	"composer"       : "TCOM",
-	"track_no"       : "TRCK"
+	"length"         : "TLEN",
+	"track_no"       : "TRCK",
+	"disc_no"        : "TPOS",
+	"album_no"       : "TSOA"
 	}
       # img = "APIC"
       if os.path.getsize(file) > 0:
@@ -129,16 +133,26 @@ def readMutagen(file,type="mp4"):
           value = tags[f_tag]
           data[r_tag] = value[0]
 
-    if type == "mp4" and "track_no" in data:
+    if ftype == "mp4" and "track_no" in data:
       track_no = str(data["track_no"])
       track_no = track_no.replace("(","")
       track_no = track_no.replace(")","")
       data["track_num"]    = track_no.split(",")
-      data["length"]       = MP4(file).info.length
+      data["length"]       = MP4(file).info.length      
 
-    if type == "mp3" and "track_no" in data:
-      data["track_num"]    = data["track_no"].split(",")
-      data["length"]       = MP3(file).info.length
+    if ftype == "mp3" and "track_no" in data:
+      if "/" in data["track_no"]:    data["track_num"]    = data["track_no"].split("/")
+      if "," in data["track_no"]:    data["track_num"]    = data["track_no"].split(",")
+      
+      if "disc_no" in data and "/" in data["disc_no"]:     data["disc_num"]     = data["disc_no"].split("/")[0]
+      elif "disc_no" in data:                              data["disc_num"]     = data["disc_no"]
+      
+      if not "length" in data:
+#        try:
+          data["length"]       = MP3(file).info.length
+#        except:
+#          data["length"]       = -1
+#          logging.warn("Could not read file length: "+file)
 
 
     data["file"]         = file.replace(music_dir,"")
@@ -148,22 +162,23 @@ def readMutagen(file,type="mp4"):
     data["cover_images"] = {}
     data["cover_images"]["track"] = []
 
-    ########################## problem bei umstellung auf python3 ###
+    for tag in tags:    
+      if "covr" in tag:
+        data["cover_images"]["track"]  = [ writeImage(data["uuid"]+"_0",tags[tag]).replace(music_cover,"") ]
+        data["cover_images"]["active"] = "track"
 
-    if "covr" in tags and len(tags["covr"]) > 0:
-      data["cover_images"]["track"]  = [ writeImage(data["uuid"]+"_0",tags["covr"][0]).replace(music_cover,"") ]
-      data["cover_images"]["active"] = "track"
+      if "APIC" in tag:
+        data["cover_images"]["track"]  = [ writeImage(data["uuid"]+"_0",tags[tag]).replace(music_cover,"") ]
+        data["cover_images"]["active"] = "track"
 
-    if "APIC" in tags and len(tags["APIC"]) > 0:
-      data["cover_images"]["track"]  = [ writeImage(data["uuid"]+"_0",tags["APIC"][0]).replace(music_cover,"") ]
-      data["cover_images"]["active"] = "track"
+    data["ID3_reader"] = "mutagen:"+ftype
 
     return data
 
 
 #------------------------------------
 
-def readID3(file):
+def readID3(file,album_id="",album_nr=""):
     ''' read data from mp3 file, for available tags see https://eyed3.readthedocs.io/en/latest/eyed3.id3.html?highlight=images#eyed3.id3.tag.Tag.images '''
     global music_dir
 
@@ -191,10 +206,18 @@ def readID3(file):
         tags["album_dir"]    = albumdir
         tags["album_artist"] = audiofile.tag.album_artist
         tags["track_num"]    = audiofile.tag.track_num
+        tags["track_total"]  = audiofile.tag.track_total
         tags["compliation"]  = 0
         tags["filesize"]     = filesize
         tags["length"]       = filelength
 
+        try:
+          tags["disc_num"]     = audiofile.tag.disc	     # disc number
+          tabs["disc_total"]   = audiofile.tag.disc_total    # the total number of discs
+          
+        except:
+           logging.debug("No Disc Info")
+        
         try:
           tags["genre"]        = str(audiofile.tag.genre)
           tags["genre"]        = tags["genre"] #.encode('utf-8')
@@ -249,14 +272,21 @@ def readID3(file):
     if filesize == 0:
       tags["error"] = "File is empty (ID3)."
 
+    tags["ID3_reader"] = "eyed3"
     return tags
 
 #------------------------------------
 
-def writeImage(name,data):
+def writeImage(name,idata):
     ''' write image data to file '''
- 
-    filename = mbox.music_cover + name + ".jpg"
+    
+    dtype = type(idata)
+    if "id3.APIC" in str(dtype):      # <class 'mutagen.id3.APIC'>
+      data = idata.data
+    else:                             # byte object in array
+      data = idata[0]
+
+    filename = mbox.music_cover + name + ".jpg" 
     file = open(filename,"wb")
     file.write(data)
     file.close()

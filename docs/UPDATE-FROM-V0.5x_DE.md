@@ -58,26 +58,22 @@ $ ./start
 * Update crontab
 ```bash
 $ crontab -e
-```
 
-* Füge folgende Zeilen hinzu bzw. ersetze die vorhandenen:
-```bash
+# Füge folgende Zeilen hinzu bzw. ersetze die vorhandenen:
 * * * * * sudo /usr/bin/autohotspot >/dev/null 2>&1
 * * * * * /projects/prod/mbox/start check-dns >/dev/null 2>&1
 ```
 
-* Update rc.local (autostart)
+7. Update rc.local (autostart)
 ```bash
 $ nano /etc/rc.local
-```
 
-* Füge folgende Zeilen hinzu bzw. ersetze die vorhandenen:
-```bash
+# Füge folgende Zeilen hinzu bzw. ersetze die vorhandenen:
 /usr/bin/autohotspot 1
 /projects/prod/mbox/start docker
 ```
 
-* Update autohotspot
+8. Update autohotspot script
 ```bash
 $ cd /project/prod/mbox/config/autohotspot
 $ ./install-wifi

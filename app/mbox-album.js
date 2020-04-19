@@ -291,12 +291,20 @@ function mboxAlbumList_load(i,uuid) {
 
 function mboxAlbumSortTracks(track_list,track_info) {
 
-	var a = 0;
+	var a         = 0;
+	var b         = 0;
+	var dont_sort = false;
+	var use_disc  = false;
+	
 	for (var i=0;i<track_list.length;i++) {
-		
+	
 		if (track_info[track_list[i]]["track_num"][0]) { a++; }
+		if (track_info[track_list[i]]["disc_num"])     { b++; }
 		}
 		
+	if (a != track_list.length) 	{ dont_sort = true; }
+	if (b > 0)			{ use_disc = true; }
+
 	if (a == track_list.length) {
 	
 		// sort by "track_num"
@@ -306,9 +314,14 @@ function mboxAlbumSortTracks(track_list,track_info) {
 		
 		for (var x in track_info) {
 			if (track_list.includes(x)) {
-				var mykey = track_info[x]["track_num"][0];
+				var mykey;
+				
+				if (use_disc)	{ mykey = (track_info[x]["disc_num"] * 100) + track_info[x]["track_num"][0]; }
+				else		{ mykey = track_info[x]["track_num"][0]; }
+				
 				sort_tracks.push(mykey);
-				album[mykey] = track_info[x]["uuid"];
+				if (album[mykey] != undefined)	{ dont_sort = true; }
+				else				{ album[mykey] = track_info[x]["uuid"]; } 
 			}	}
 
 		sort_tracks.sort(sortNumber);
@@ -318,16 +331,17 @@ function mboxAlbumSortTracks(track_list,track_info) {
 				sorted_tracks.push(album[sort_tracks[i]]);
 			}	}
 			
-		if (sorted_tracks.length == track_list.length)  {
+		if (sorted_tracks.length == track_list.length && dont_sort == false)  {
 			console.debug("...1"); 
 			return sorted_tracks;
 			}
 		else						{ 
+			// return unsorted list		
 			console.debug("...2: "+sorted_tracks.length+"/"+track_list.length); 
 			return track_list;
 			}
  		}
-	else {
+	if (dont_sort) {
 		// return unsorted list
 		console.debug("...3: "+a+"/"+track_list.length); 
 		return track_list;
@@ -532,7 +546,6 @@ function mboxAlbumInfo(data) {
         edit += mboxHtmlButton("image_add",  "mboxUploadImage('"+uuid+"','album','"+album["album"]+"');",                "red");
         edit += mboxHtmlButton("delete", "mboxAlbumDelete('"+album["artist"]+": "+album["album"]+"','"+uuid+"');", 	"red");
 
-
 	text += "<b>" + lang("ALBUM") + " " + lang("INFORMATION") + "</b><br/>";
 
 	text += mboxHtmlTableNew("start");
@@ -541,9 +554,9 @@ function mboxAlbumInfo(data) {
 	text += mboxHtmlTableNew(["<i>" + lang("BAND_ARTIST") + ":", 	album["artist"] ] );
 	text += mboxHtmlTableNew(["<i>" + lang("GENRE") + ":", 		album["genres"] ] );
 	text += mboxHtmlTableNew(["<i>" + lang("SIZE") + ":", 		size + " MByte / " + length + " min" ] );
-	text += mboxHtmlTableNew(["<i>" + lang("ALBUM") + " Dir:", 		path ] );
-	text += mboxHtmlTableNew(["<i>" + lang("ALBUM") + " UUID:",	 	"<a href='" + url + uuid + "/-/' target='_blank'>" + uuid + "</a>" ] );
-	text += mboxHtmlTableNew(["<i>" + lang("CARD_ID") + ":",		cardid ] );
+	text += mboxHtmlTableNew(["<i>" + lang("ALBUM") + " Dir:", 	path ] );
+	text += mboxHtmlTableNew(["<i>" + lang("ALBUM") + " UUID:",	"<a href='" + url + uuid + "/-/' target='_blank'>" + uuid + "</a>" ] );
+	text += mboxHtmlTableNew(["<i>" + lang("CARD_ID") + ":",	cardid ] );
 	if ("error" in album) {
 		text += mboxHtmlTableNew(["<i><font color='red'>Error:</font><i>", "<i><font color='red'>"+album["error"].length + " Errors - first: " + album["error"][0]+"</font></i>" ] );
 		}
@@ -652,6 +665,10 @@ function mboxAlbumTrackRow(id,dataTracks,album=true,artist=false,count=0) {
 	// if track in album
 	if (album) {
 		text += "<table><tr><td style='width:20px;vertical-align:top;padding:0px'>";
+		if ("disc_num" in track) {
+			if (track["disc_num"] > 0) {
+				length = "<font color='gray'>CD " + track["disc_num"] + "&nbsp; </font>" + length;
+			}	}
 		if ("track_num" in track) {
 			if (track["track_num"][0] > 0) {
 				text += track["track_num"][0] + ". ";

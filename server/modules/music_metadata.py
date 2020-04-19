@@ -142,7 +142,8 @@ def readMutagen(file,ftype="mp4"):
 
     if ftype == "mp3" and "track_no" in data:
       if "/" in data["track_no"]:    data["track_num"]    = data["track_no"].split("/")
-      if "," in data["track_no"]:    data["track_num"]    = data["track_no"].split(",")
+      elif "," in data["track_no"]:  data["track_num"]    = data["track_no"].split(",")
+      else:                          data["track_num"]    = [ data["track_no"] ]
       
       if "disc_no" in data and "/" in data["disc_no"]:     data["disc_num"]     = data["disc_no"].split("/")[0]
       elif "disc_no" in data:                              data["disc_num"]     = data["disc_no"]

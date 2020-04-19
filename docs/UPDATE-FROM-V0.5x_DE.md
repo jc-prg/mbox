@@ -1,7 +1,7 @@
 # jc://music-box
 
 Mit der Version v0.5.x gestartet? Aktuell ist die Version v0.7.x. Es wird Zeit für ein größeres Update in dem sich vor 
-allem in Punkte Stabilität und Wartbarkeit aber auch ein wenig in der Funktionalität getan hat.
+allem in Punkto Stabilität und Wartbarkeit aber auch ein wenig in der Funktionalität getan hat.
 Dazu sind ein paar mehr Handgriffe nötig, damit im Anschluss auch Updates einfacher werden:
 
 1. Einloggen und Software stoppen:
@@ -22,7 +22,7 @@ $ docker-compose -f docker-compose-rpi.yml stop
 ```bash
 $ git pull
 
-# if error occurs stash changes and pull update again
+# if error occurs stash changes and pull update again, else move to 3.
 $ git stash
 $ git pull
 ```
@@ -38,8 +38,9 @@ $ nano config_prod
 
 4. Konfigurationsdatei bearbeiten: Die Standard-Konfiguration tut meist direkt ihren Dienst. Geändert werden sollte:
 
-   * Sprache (MBOX_LANGUAGE)
+   * Sprache für App und gesprochene Meldungen (MBOX_LANGUAGE)
    * ID der Demokarte / des blauen Chips (MBOX_RFID_DEMOCARD)
+   * ggf. Partition für Daten auf USB Stick (MBOX_MOUNT_USB)
    
 5. Konfiguration aktivieren und Software starten (hier können künftig auch Updates gestartet werden):
 
@@ -59,7 +60,7 @@ $ ./start
 $ crontab -e
 ```
 
-* Füge folgende Zeilen hin bzw. ersetze die vorhandenen:
+* Füge folgende Zeilen hinzu bzw. ersetze die vorhandenen:
 ```bash
 * * * * * sudo /usr/bin/autohotspot >/dev/null 2>&1
 * * * * * /projects/prod/mbox/start check-dns >/dev/null 2>&1
@@ -70,7 +71,7 @@ $ crontab -e
 $ nano /etc/rc.local
 ```
 
-* Füge folgende Zeilen hin bzw. ersetze die vorhandenen:
+* Füge folgende Zeilen hinzu bzw. ersetze die vorhandenen:
 ```bash
 /usr/bin/autohotspot 1
 /projects/prod/mbox/start docker

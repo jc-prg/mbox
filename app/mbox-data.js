@@ -30,10 +30,6 @@ function mboxDataReturnMsg(data={},success="",error="") {
 		}
 	}
 
-function mboxDataReturnMsg(data) {
-	mboxDataReturnMsg(data);
-	}
-
 //--------------------------------------
 
 function mboxDataEdit(data,callback) {

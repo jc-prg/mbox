@@ -47,7 +47,6 @@ var reload      = true;
 //--------------------------------
 
 var mboxSlider  = new jcSlider( name="mboxSlider", container="audio_slider");
-//mboxSlider.setPosition(false,"200px",false,"200px");
 mboxSlider.setPosition(top="45px",bottom=false,left=false,right="10px");
 mboxSlider.init(0,100,mbox_device);
 mboxSlider.setOnChange(mboxControlVolumeSet);

@@ -85,6 +85,7 @@ function appPrintMenu() {
         appMenu.add_script( "mboxCoverTogglePrint();", lang("COVER_IMAGES"));
         
         appMenu.set_title( appTitle + mbox_mode );
+        appMenu.menu_height();
 
 	mboxSlider.init(0,100,mbox_device);
 	}

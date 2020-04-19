@@ -118,6 +118,9 @@ nav > ul > li > ul {
     border-radius: 5px;
   box-shadow : 3px 3px 3px rgba(0, 0, 0, 0.25);
   min-width  : 140px;
+  
+  overflow-x		: hidden;
+  overflow-y		: auto;
 }
 
 nav > ul > li > ul > li {
@@ -160,18 +163,6 @@ nav li > a:only-child:after {
 
 /* show menu if min width */
 
-@media (min-width: 910px) {
-   nav > ul > li > ul {
-      visibility : visible;
-      width      : 100px;
-      top        : 50px;
-      left       : 10px;
-   }
-   .remote_nav {
-      display: block;
-   }
-}
-
 /* AUDIO INFO */
 
 nav-info {
@@ -190,13 +181,14 @@ nav-info {
 /* -------------------------------------------- */
 
 .remote_nav {
-   float   :  left;
-   display :  none;
-   width   : 150px;
-   height  : 100vh;
+   float   	:  left;
+   display 	:  none;
+   width   	: 155px;
+   height  	: 2000px;
+   padding 	: 0px;
 }
 
-@media (min-width: 855px) {
+@media (min-width: 890px) {
 
    .remote_nav { display: block; }
    #navi-click { display: none; }
@@ -273,6 +265,9 @@ nav-b > ul > li > ul {
   border-radius: 5px;
   box-shadow : 3px 3px 3px rgba(0, 0, 0, 0.25);
   min-width  : 130px;
+  
+  overflow-x		: hidden;
+  overflow-y		: auto;
 }
 
 nav-b > ul > li > ul > li {

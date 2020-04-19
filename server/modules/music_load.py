@@ -320,8 +320,8 @@ def reloadMusic(data,all=True,thread=""):
         if os.path.isfile(file) and checkIfSupported(thread.supported_img,file) == True:
 
             data_h[albumPath]["cover_image"] = file.replace(music_dir,"")
-            if "cover_images" not in data_h[albumPath]: data_h[albumPath]["cover_images"] = {}
-            if "dir" not in data_h[albumPath]["cover_images"]: data_h[albumPath]["cover_images"]["dir"] = []
+            if "cover_images" not in data_h[albumPath]:         data_h[albumPath]["cover_images"] = {}
+            if "dir" not in data_h[albumPath]["cover_images"]:  data_h[albumPath]["cover_images"]["dir"] = []
             data_h[albumPath]["cover_images"]["dir"].append( file.replace(music_dir,"") )
 
 

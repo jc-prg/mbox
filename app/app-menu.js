@@ -42,7 +42,28 @@ function appMenuDefinition(name, menu, title) {
                 	}
 
     		this.empty();
+
+    		// define variable menu size (scroll bars defined in app-menu.css)
+    		window.onresize = function(event) {
+    			height = (window.innerHeight - 70);
+    			document.getElementById("menuItems").style.maxHeight  = height + "px"; 
+    			document.getElementById("menuItems2").style.maxHeight = height + "px"; 
+    			appMenu.menu_height();	
+			}
+
+		height = (window.innerHeight - 70);
+		document.getElementById("menuItems").style.maxHeight   = height + "px"; 
+		document.getElementById("menuItems2").style.maxHeight  = height + "px";
+		this.menu_height();	
                 }
+
+        this.menu_height	  = function() {
+   		document.getElementById("remote_nav").style.maxHeight = "100px"; // window.innerHeight + "px"; // 
+	        var height = pageHeight();
+	        height    -= 50;
+   		document.getElementById("remote_nav").style.maxHeight = height+ "px"; // window.innerHeight + "px"; // 
+   		console.error(height);
+        	}
 
         // load data with devices (deviceConfig["devices"])
         this.empty 		= function() {

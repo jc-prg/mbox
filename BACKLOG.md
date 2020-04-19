@@ -12,6 +12,7 @@ IN PROGRESS - server: create HASH from files to reconnect (? additionally to fil
 ### KNOWN BUGS
 
 - BUG box - blue LED doesn't work correctly
+- BUG server - after connecting card to album the message "invalid entry connected" is spoken -> move all data to cache directly
 - BUG server - Start with STREAM and card laying on the RFID sensor leads to an error -> remove card_id, until connection is OK
 - BUG app/server - if playlist with the same title already exists, two lists with the same tracks, id, and image are displayed => check server side?
 - BUG server - reconnect Cards when reloading data doesn't work
@@ -21,8 +22,12 @@ IN PROGRESS - server: create HASH from files to reconnect (? additionally to fil
 
 ### FEATURE IDEAS
 
+- server: if data dir is not available ... error message (from LED / RFI / BUTTONS server ...)
+- server: when LED / RFID / BUTTONS -> message speak "startig the music box" out of this script (earlier ...)
 - app: filter for genres (or other metadata ...)
-- app: appMsg.confirm -> place dialog in the middle (bit more above ...)
+- app: appMsg.confirm 
+   -> place dialog in the middle depending on screen and dialog size (bit more above ...)
+   -> if text bigger than box, scroll automatically
 - app: volume doesn't work with iOS / Safari yet -> HTML5 audio processing?
 - server: save position when played last time
 - server: understandable return message in API response (even if successful)
@@ -173,6 +178,7 @@ IN PROGRESS - server: create HASH from files to reconnect (? additionally to fil
 * OK - BUG server - if card is not connect (wrong connected/connected with album which cannot be found?) -> error; after that no card is loaded any more:
 * OK - if card not connected or wrong connected, speak message!
 * OK - restart mboxServer and start autohotspot, if internet connection changes (autohotspot)
+* OK - BUG fix extract images (mutagen API changed?)
 
 * DECLINED - Play the whole song, not only parts // not seen any more
 * DECLINED - dont delete playlist when stop: don't unload playlist/title if stop - just rewind to first position, but display now reflects situation
@@ -308,5 +314,5 @@ IN PROGRESS - server: create HASH from files to reconnect (? additionally to fil
 * OK - timeout for API Request and reaction to the timeout (show error message) - required e.g. if parallel processes like a system update is running on the raspberry
 * OK - BUG app - displayed order of tracks in playlist is not correct (playback order is OK)
 * OK - app: jump +5 / -5 tracks
-
+* OK - sort including disc numbers
 

@@ -297,9 +297,10 @@ function mboxAlbumSortTracks(track_list,track_info) {
 	var use_disc  = false;
 	
 	for (var i=0;i<track_list.length;i++) {
-	
-		if (track_info[track_list[i]]["track_num"][0]) { a++; }
-		if (track_info[track_list[i]]["disc_num"])     { b++; }
+		if ("track_num" in track_info[track_list[i]]) {
+			if (track_info[track_list[i]]["track_num"][0]) { a++; }
+			if (track_info[track_list[i]]["disc_num"])     { b++; }
+			}
 		}
 		
 	if (a != track_list.length) 	{ dont_sort = true; }
@@ -683,7 +684,7 @@ function mboxAlbumTrackRow(id,dataTracks,album=true,artist=false,count=0) {
 	else {
 		text += "<b>" +track["title"] + "</b>" + length + "<br/>";
 		text += track["artist"] + "/";
-		text += track["album"];
+		text += track["album"] + "<br/>";
 		}
 	text += "</div>";
 	text += cmd;

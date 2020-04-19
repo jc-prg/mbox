@@ -100,7 +100,7 @@ def readMutagen(file,ftype="mp4"):
         tags          = {}
         data["error"] = "File is empty"
 
-    elif ftype == "mp3":			 # https://en.wikipedia.org/wiki/ID3
+    elif ftype == "mp3":	         # https://en.wikipedia.org/wiki/ID3
       relevant_tags = {                  # https://mutagen.readthedocs.io/en/latest/api/id3.html
 	"album"          : "TALB",
 	"title"          : "TIT2",
@@ -149,11 +149,11 @@ def readMutagen(file,ftype="mp4"):
       elif "disc_no" in data:                              data["disc_num"]     = data["disc_no"]
       
       if not "length" in data:
-#        try:
+        try:
           data["length"]       = MP3(file).info.length
-#        except:
-#          data["length"]       = -1
-#          logging.warn("Could not read file length: "+file)
+        except:
+          data["length"]       = -1
+          logging.warn("Could not read file length: "+file)
 
 
     data["file"]         = file.replace(music_dir,"")

@@ -1,15 +1,17 @@
 # jc://music-box/ - Release Notes
 
-## Summary v0.6.x
+## Summary v0.7
 
 * Stabilized API calls
 * Playlist editing optimized
 * New volume slider
 * Local playback via browser for playlists and streams
-* Introduced language configuration file
+* Extended ID3 metadata
+* Improved playlist editing
+* Introduced language configuration file (in progress)
 * Automatic update via start script
 
-## Summary v0.5.x
+## Summary till v0.6
 
 The following list summarizes the main functionality of the jc://music-box/:
 

@@ -8,6 +8,7 @@
 * Local playback via browser for playlists and streams
 * Extended ID3 metadata
 * Improved playlist editing
+* Improved RFID card connection
 * Introduced language configuration file (in progress)
 * Automatic update via start script
 

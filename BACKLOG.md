@@ -12,7 +12,6 @@ IN PROGRESS - server: create HASH from files to reconnect (? additionally to fil
 ### KNOWN BUGS
 
 - BUG add image / delete - update list of albums
-- BUG box - blue LED doesn't work correctly
 - BUG server - after connecting card to album the message "invalid entry connected" is spoken -> move all data to cache directly
 - BUG server - Start with STREAM and card laying on the RFID sensor leads to an error -> remove card_id, until connection is OK
 - BUG app/server - if playlist with the same title already exists, two lists with the same tracks, id, and image are displayed => check server side?
@@ -20,6 +19,7 @@ IN PROGRESS - server: create HASH from files to reconnect (? additionally to fil
 - BUG server - if playing and press play in a playlist, start with first song instead of actuall running song (PlaySong -> start file, not list without loading list again)
 - UNSTABLE app/server - Delete RFID Cards doesn't work the 2nd time {Error: mbox - GET / http://music-box:5005/api/cards/-/ (not available/4/500).}
 - UNSTABLE app - loading albums and tracks to edit playlist doesnt work every time (on the box more often than on the computer)
+- BUG box - blue LED doesn't work correctly
 
 ### FEATURE IDEAS
 

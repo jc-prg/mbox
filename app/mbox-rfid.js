@@ -4,12 +4,16 @@
 // list and edit rfid card infos
 //--------------------------------------
 /* INDEX:
-function mboxCardWriteRFID(data)
+function mboxCardWriteRFID(data,known="",list={})
+function mboxCardConnect(card,list={})
+function mboxCardConnect_exe(rfid)
+function mboxCardConnect_select(id, select, visible="block", onchange="")
+function mboxCardConnect_selectVisible(change)
 function mboxCardEditLink(uuid)
 function mboxCardEditDialog_load1(uuid)
 function mboxCardEditDialog_load2(data)
 function mboxCardEditDialog(data)
-function mboxCardList_load()
+function mboxCardList_load(card_id="-")
 function mboxCardList(data)
 function mboxCardDelete(card_id,title)
 function mboxCardDelete_exec(uuid,title)

@@ -6,6 +6,8 @@
 /* INDEX:
 function appMenuDefinition(name, menu, title)
         this.init 		= function(data=[])
+    		window.onresize = function(event)
+        this.menu_height	  = function()
         this.empty 		= function()
 	this.add_script 	= function(script,label)
 	this.add_line 		= function()

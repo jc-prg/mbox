@@ -2,7 +2,7 @@
 ./app-conf.js (-1)
 ----------------------------
 ----------------------------
-./app-main.js (161)
+./app-main.js (163)
 ----------------------------
 function appPrintMenu()
 function appPrintStatus_load()
@@ -10,10 +10,12 @@ function appPrintStatus(data)
 function appCheckUpdates_msg(data)
 function appCheckUpdates()
 ----------------------------
-./app-menu.js (124)
+./app-menu.js (145)
 ----------------------------
 function appMenuDefinition(name, menu, title)
         this.init 		= function(data=[])
+    		window.onresize = function(event)
+        this.menu_height	  = function()
         this.empty 		= function()
 	this.add_script 	= function(script,label)
 	this.add_line 		= function()
@@ -31,7 +33,7 @@ function appMenuDefinition(name, menu, title)
 ./config_stage.js (-1)
 ----------------------------
 ----------------------------
-./mbox-album.js (737)
+./mbox-album.js (766)
 ----------------------------
 function mboxAlbumAll_load(filter="",uuid="")
 function mboxAlbumAll(data)
@@ -95,10 +97,9 @@ function mboxCoverListEnd()
 function mboxCoverListEntry(id,cover)
 function mboxCoverSeparator( content, cmd )
 ----------------------------
-./mbox-data.js (99)
+./mbox-data.js (95)
 ----------------------------
 function mboxDataReturnMsg(data={},success="",error="")
-function mboxDataReturnMsg(data)
 function mboxDataEdit(data,callback)
 function mboxDataEditExecute(uuid, key_list, type)
 ----------------------------
@@ -124,7 +125,7 @@ function mboxHtmlShowLoading(data)
 function mboxHtmlShowDataObject(data)
 function mboxHtmlShowJson(data)
 ----------------------------
-./mbox-player.js (317)
+./mbox-player.js (325)
 ----------------------------
 function mboxPlayerLocal(position=0, play=true)
 function mboxPlayerRemote(song,uuid,playing)
@@ -171,14 +172,18 @@ function mboxPlaylistAdd()
 function mboxPlaylistAdd_dialog(i)
 function mboxPlaylistAdd_msg(data)
 ----------------------------
-./mbox-rfid.js (316)
+./mbox-rfid.js (363)
 ----------------------------
-function mboxCardWriteRFID(data)
+function mboxCardWriteRFID(data,known="",list={})
+function mboxCardConnect(card,list={})
+function mboxCardConnect_exe(rfid)
+function mboxCardConnect_select(id, select, visible="block", onchange="")
+function mboxCardConnect_selectVisible(change)
 function mboxCardEditLink(uuid)
 function mboxCardEditDialog_load1(uuid)
 function mboxCardEditDialog_load2(data)
 function mboxCardEditDialog(data)
-function mboxCardList_load()
+function mboxCardList_load(card_id="-")
 function mboxCardList(data)
 function mboxCardDelete(card_id,title)
 function mboxCardDelete_exec(uuid,title)
@@ -249,7 +254,9 @@ function mboxUploadImageWrite(params)
   2 - mboxAlbumTrackInfo
   2 - mboxAlbumTrackInfo_load
   4 - mboxAlbumWriteBelow
-  3 - mboxCardDelete
+  2 - mboxCardConnect_exe
+  2 - mboxCardConnect_selectVisible
+  2 - mboxCardDelete
   1 - mboxCardDelete_exec
   1 - mboxCardDelete_msg
   1 - mboxCardEditDialog
@@ -258,8 +265,6 @@ function mboxUploadImageWrite(params)
   7 - mboxCardEditLink
   2 - mboxCardEdit_save
   1 - mboxCardList
-  5 - mboxCardList_load
-  3 - mboxCardWriteRFID
   4 - mboxControl
   2 - mboxControlCheckLoading
   2 - mboxControlCheckStatus
@@ -268,7 +273,7 @@ function mboxUploadImageWrite(params)
  10 - mboxControlPanel_toggle
   4 - mboxControlPlaying_delete
   2 - mboxControlPlaying_show
-  5 - mboxControlSetStatus
+  6 - mboxControlSetStatus
   3 - mboxControlShowUUID
   2 - mboxControlToggleDevice
   2 - mboxControlToggleFilter
@@ -289,7 +294,6 @@ function mboxUploadImageWrite(params)
   5 - mboxCoverTogglePrint
   3 - mboxDataEdit
   2 - mboxDataEditExecute
- 10 - mboxDataReturnMsg
   1 - mboxHtmlButton2
   6 - mboxHtmlEntryDetail
   3 - mboxHtmlInputElement

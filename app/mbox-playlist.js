@@ -633,7 +633,7 @@ function mboxPlaylistInfo(data) {
         text += mboxHtmlTableNew(["<i>"+lang("DESCRIPTION")+":",  album["description"] ] );
         text += mboxHtmlTableNew(["<i>Tracks:",	       			album["tracks"].length ] );
         text += mboxHtmlTableNew(["<i>UUID:",               "<a href='" + url + "/' target='_blank'>" + uuid + "</a>" ] );
-        text += mboxHtmlTableNew(["<i>Card ID:",            "<a style='cursor:pointer;' onclick='mboxCardList_load();'>"    + cardid + "</a>" ] );
+        text += mboxHtmlTableNew(["<i>Card ID:",            "<a style='cursor:pointer;' onclick='mboxCardList_load(\""+cardid+"\");'>"    + cardid + "</a>" ] );
         text += mboxHtmlTableNew(["<i>"+lang("COVER_AVAILABLE")+":",      cover ] );
         text += "<tr><td colspan='2'><hr></td></tr>";
         text += mboxHtmlTableNew(["<i>"+lang("EDIT")+":",         edit ] );

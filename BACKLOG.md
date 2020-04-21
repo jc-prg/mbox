@@ -11,6 +11,7 @@ IN PROGRESS - server: create HASH from files to reconnect (? additionally to fil
 
 ### KNOWN BUGS
 
+- BUG add image / delete - update list of albums
 - BUG box - blue LED doesn't work correctly
 - BUG server - after connecting card to album the message "invalid entry connected" is spoken -> move all data to cache directly
 - BUG server - Start with STREAM and card laying on the RFID sensor leads to an error -> remove card_id, until connection is OK
@@ -315,4 +316,5 @@ IN PROGRESS - server: create HASH from files to reconnect (? additionally to fil
 * OK - BUG app - displayed order of tracks in playlist is not correct (playback order is OK)
 * OK - app: jump +5 / -5 tracks
 * OK - sort including disc numbers
+* OK - if unknown card detect offer dialog to connect item
 

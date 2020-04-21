@@ -531,8 +531,11 @@ function mboxAlbumInfo(data) {
 	var url2   = RESTurl + "api/data/";
 	var size   = Math.round(album["albumsize"]/1024/1024*100)/100;
 	var length = convert_second2time(Math.round(album["albumlength"]));
-	var cardid = album["card_id"]; if (!cardid) { cardid = lang("CARD_NOT_CONNECTED"); } else { cardid =  "<a href='" + url2 + cardid + "/' target='_blank'>" + cardid + "</a>" ; }
 	var path   = album["albumpath"].replace(/\_/gi,"/");
+	var cardid = album["card_id"]; 
+	
+	if (!cardid) { cardid = lang("CARD_NOT_CONNECTED"); } 
+	else { cardid =  "<div onclick='mboxCardList_load(\""+cardid+"\");' style='cursor:pointer;'>" + cardid + "</a>" ; }
 
 	var cover = "";
 	if (album["cover_images"]) {
@@ -543,9 +546,16 @@ function mboxAlbumInfo(data) {
 	else {	cover += lang("DATA_OLD_FORMAT");
 		}
 
-	var edit = "";
-        edit += mboxHtmlButton("image_add",  "mboxUploadImage('"+uuid+"','album','"+album["album"]+"');",                "red");
-        edit += mboxHtmlButton("delete", "mboxAlbumDelete('"+album["artist"]+": "+album["album"]+"','"+uuid+"');", 	"red");
+	var title  = album["album"];
+	title      = title.replace( /\'/g, " " );
+	title      = title.replace( /\"/g, "&quot;" );
+	var artist = album["artist"];
+	artist     = artist.replace( /\#/g, " " );
+	artist     = artist.replace( /\"/g, "&quot;" );
+
+	var edit  = "";
+        edit += mboxHtmlButton("image_add",  "mboxUploadImage('"+uuid+"','album','"+title+"');",                "red");
+        edit += mboxHtmlButton("delete",     "mboxAlbumDelete('"+artist+": "+title+"','"+uuid+"');", 	"red");
 
 	text += "<b>" + lang("ALBUM") + " " + lang("INFORMATION") + "</b><br/>";
 
@@ -556,7 +566,7 @@ function mboxAlbumInfo(data) {
 	text += mboxHtmlTableNew(["<i>" + lang("GENRE") + ":", 		album["genres"] ] );
 	text += mboxHtmlTableNew(["<i>" + lang("SIZE") + ":", 		size + " MByte / " + length + " min" ] );
 	text += mboxHtmlTableNew(["<i>" + lang("ALBUM") + " Dir:", 	path ] );
-	text += mboxHtmlTableNew(["<i>" + lang("ALBUM") + " UUID:",	"<a href='" + url + uuid + "/-/' target='_blank'>" + uuid + "</a>" ] );
+//	text += mboxHtmlTableNew(["<i>" + lang("ALBUM") + " UUID:",	"<a href='" + url + uuid + "/-/' target='_blank'>" + uuid + "</a>" ] );
 	text += mboxHtmlTableNew(["<i>" + lang("CARD_ID") + ":",	cardid ] );
 	if ("error" in album) {
 		text += mboxHtmlTableNew(["<i><font color='red'>Error:</font><i>", "<i><font color='red'>"+album["error"].length + " Errors - first: " + album["error"][0]+"</font></i>" ] );

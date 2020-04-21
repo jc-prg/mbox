@@ -248,7 +248,7 @@ function mboxStreamInfo(data) {
         text += mboxHtmlTableNew(["<i>"+lang("INFORMATION")+":",        "<a href=\"" + album["stream_info"] + "\" target=\"_blank\">" + album["stream_info"] + "</a>" ] );
         text += mboxHtmlTableNew(["<i>"+lang("STREAM")+" URL:",        	"<a href=\"" + album["stream_url"] + "\" target=\"_blank\">" + album["stream_url"] + "</a>" ] );
         text += mboxHtmlTableNew(["<i>"+lang("STREAM")+" UUID:",	"<a href='" + url + "/' target='_blank'>" + uuid + "</a>" ] );
-        text += mboxHtmlTableNew(["<i>"+lang("CARD_ID")+":",         	"<a style='cursor:pointer;' onclick='mboxCardList_load();'>"    + cardid + "</a>" ] );
+        text += mboxHtmlTableNew(["<i>"+lang("CARD_ID")+":",         	"<a style='cursor:pointer;' onclick='mboxCardList_load(\""+cardid+"\");'>"    + cardid + "</a>" ] );
         text += mboxHtmlTableNew(["<i>"+lang("COVER_AVAILABLE")+":", 	cover ] );
         text += "<tr><td colspan='2'><hr></td></tr>";
         text += mboxHtmlTableNew(["<i>"+lang("EDIT")+":",       	edit ] );

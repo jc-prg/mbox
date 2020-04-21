@@ -5,7 +5,6 @@
 //--------------------------------------
 /* INDEX:
 function mboxDataReturnMsg(data={},success="",error="")
-function mboxDataReturnMsg(data)
 function mboxDataEdit(data,callback)
 function mboxDataEditExecute(uuid, key_list, type)
 */

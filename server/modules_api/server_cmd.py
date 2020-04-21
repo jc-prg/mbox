@@ -59,6 +59,23 @@ def diskSpace(init=False):
 # NEXT GEN: generic class start and end
 #-------------------------------------------------
 
+def mboxAPI_error(data,error):
+    if "error" in data["REQUEST"]:   data["REQUEST"]["error"] += ", "+error
+    else:                            data["REQUEST"]["error"] = error
+    logging.info("mBox " + data["REQUEST"]["c-name"] + " ERROR:" + error)
+    return data
+
+# ---
+
+def mboxAPI_filter(data,db_filter=""):
+    if "db_filter" in data["REQUEST"] and db_filter:   data["REQUEST"]["db_filter"] += "||"+db_filter
+    elif db_filter:	                               data["REQUEST"]["db_filter"] = db_filter
+    return data
+
+#-------------------------------------------------
+# NEXT GEN: generic class start and end
+#-------------------------------------------------
+
 def mboxAPI_start(cName, cmd1, cmd2, param1, param2):
 
     logging.debug("mBox " + cName + " START ...")
@@ -75,29 +92,16 @@ def mboxAPI_start(cName, cmd1, cmd2, param1, param2):
 
     data["STATUS"]                  = {}
     data["DATA"]                    = {}
+    data["DATA"]["SHORT"]           = {}
 
     data["LOAD"]                    = {}
     data["LOAD"]["UUID"]            = ""
     data["LOAD"]["RFID"]            = ""
+    
+    if "cardUID"  in mbox.rfid_ctrl: data["LOAD"]["RFID"]    = mbox.rfid_ctrl["cardUID"]
+    if "buttonID" in mbox.rfid_ctrl: data["LOAD"]["BUTTON"]  = mbox.rfid_ctrl["buttonID"]
+    if "_" in str(param1):           data["LOAD"]["UUID"]    = param1
 
-    if "_" in str(param1):
-        data["LOAD"]["UUID"]        = param1
-
-    return data
-
-# ---
-
-def mboxAPI_error(data,error):
-    if "error" in data["REQUEST"]:   data["REQUEST"]["error"] += ", "+error
-    else:                            data["REQUEST"]["error"] = error
-    logging.info("mBox " + data["REQUEST"]["c-name"] + " ERROR:" + error)
-    return data
-
-# ---
-
-def mboxAPI_filter(data,db_filter=""):
-    if "db_filter" in data["REQUEST"] and db_filter:   data["REQUEST"]["db_filter"] += "||"+db_filter
-    elif db_filter:	                               data["REQUEST"]["db_filter"] = db_filter
     return data
 
 # ---
@@ -105,9 +109,6 @@ def mboxAPI_filter(data,db_filter=""):
 def mboxAPI_end(data,reduce_data=[]):
 
     data["REQUEST"]["load-time"] = time.time() - data["REQUEST"]["start-time"]
-
-    if "cardUID"  in mbox.rfid_ctrl: data["LOAD"]["RFID"]    = mbox.rfid_ctrl["cardUID"]
-    if "buttonID" in mbox.rfid_ctrl: data["LOAD"]["BUTTON"]  = mbox.rfid_ctrl["buttonID"]
 
     out = diskSpace()
 
@@ -152,7 +153,34 @@ def mboxAPI_end(data,reduce_data=[]):
 
     return data
 
+#-------------------------------------------------
+# NEXT GEN: DATA functions
+#-------------------------------------------------
 
+def mboxDATA_checkActiveCard(data):
+       '''
+       check if card already is connected, otherwise return signal and list of available items ...
+       '''
+       
+       if data["LOAD"]["RFID"] == "": return data
+       else:                          card = data["LOAD"]["RFID"]
+       
+       cards   = couch.read_cache("cards")
+       if card not in cards:
+          data["LOAD"]["CARD"] = "unknown"
+          db_list = ["album_info","playlists","radio"]
+          for db in db_list:
+             temp_db = couch.read_cache(db)
+             data["DATA"]["SHORT"][db] = {}
+             for entry in temp_db:
+                if "title" in temp_db[entry]:   data["DATA"]["SHORT"][db][entry] = temp_db[entry]["title"]
+                elif "album" in temp_db[entry]: data["DATA"]["SHORT"][db][entry] = temp_db[entry]["album"] + " (" + temp_db[entry]["artist"] +")"
+       else:
+          data["LOAD"]["CARD"] = "known"
+       
+       return data
+          
+          
 #-------------------------------------------------
 # NEXT GEN: Maintain server / database
 #-------------------------------------------------
@@ -174,6 +202,7 @@ def mboxAPI_status():
        '''return system and playback status'''
 
        data = mboxAPI_start("status","status","","","")
+       data = mboxDATA_checkActiveCard(data)
        data = mboxAPI_end(data)
        return (data)
 
@@ -276,6 +305,7 @@ def mboxAPI_checkVersion(APPversion):
 #-------------------------------------------------
 
 def mboxAPI_readDB(databases,db_filter=""):
+
        global couch
        param     = databases
 
@@ -356,10 +386,16 @@ def mboxAPI_readEntry(uuid,db_filter=""):
            if "main" in couch.database[database]:
                temp = couch.read_cache(database)
                if uuid in temp:
-                   data["DATA"]["_selected_uuid"]        = uuid
-                   data["DATA"]["_selected_db"]          = database
-                   data["DATA"]["_selected"]             = temp[uuid]
-
+                   data["DATA"]["_selected_uuid"]            = uuid
+                   data["DATA"]["_selected_db"]              = database
+                   
+                   # check if rfid card (array instead of dict)
+                   if not isinstance(temp[uuid],list):
+                      data["DATA"]["_selected"]              = temp[uuid]
+                   else:
+                      data["DATA"]["_selected"]              = {}
+                      data["DATA"]["_selected"]["card_info"] = temp[uuid]
+                   
                    if not "tracks" in data["DATA"]["_selected"]:
                       data["DATA"]["_selected"]["tracks"]   = {}
 
@@ -748,7 +784,10 @@ def mboxAPI_cardInfos(filter):
 
        for name in databases:
            if filter in db_entries[name]: data["DATA"][name][filter] = db_entries[name][filter]
-
+           
+       if "," in filter:        data["DATA"]["_selected_uuid"]   = filter
+       elif not "_" in filter:  data["DATA"]["_selected_filter"] = filter
+          
        data = mboxAPI_end(data,["no-statistic","no-playback","no-system"])
        return(data)
 
@@ -798,7 +837,7 @@ def mboxAPI_cards(uuid,param):
            else:
                data = mboxAPI_error(data, "Stream to connect not found: "+uuid+"/"+param)
                logging.warn("Stream to connect not found (" + uuid + ")")
-
+               
        # write change data to DB
        for name in databases: couch.write(name, db_entries[name])
 

@@ -18,28 +18,83 @@ function mboxCardEdit_save(data)
 */
 //--------------------------------------
 
-mboxCardUUID = "";
-mboxCardCID = "";
+mboxCardUUID     = "";
+mboxCardCID      = "";
+mboxCardDetected = "";
 
 // show / hide info in <div id="edit_card">
 //---------------------------------
 
-function mboxCardWriteRFID(data) {
+function mboxCardWriteRFID(data,known="",list={}) {
 	var text = "";
-	if (!data) { return ""; }
 	var rfid = data;
 
+	if (!data) { return ""; }
 	if (rfid && rfid != "") {
 		text += "<br/>Karte erkannt: " + rfid;
+		
+		if (known == "unknown" && mboxCardDetected != rfid) { mboxCardConnect(rfid,list); }
+		
 		if (document.getElementById("edit_card")) { document.getElementById("edit_card").style.display = "block"; }
 		if (document.getElementById("show_card")) { document.getElementById("show_card").style.display = "none"; }
+
+		mboxControlSetStatus("blue");
+		mboxCardDetected = rfid;
 		}
 	else {
 		if (document.getElementById("edit_card")) { document.getElementById("edit_card").style.display = "note"; }
 		if (document.getElementById("show_card")) { document.getElementById("show_card").style.display = "block"; }
+
+		mboxControlSetStatus("gray");
 		}
 
 	return text;
+	}
+
+// funct. for cards ....
+//--------------------------------------
+
+function mboxCardConnect(card,list={}) {
+	var dialog   = "<b>"+lang("RFID_NEW_CARD") +":</b> " + card + "<br/>";
+	dialog	    += lang("CARD_SELECT_TO_CONNECT") + "<br/>&nbsp;<br/>.";
+	dialog      += "<input id='mbox_select_connect' style='display:none' value='album_info'>";
+	var cmd      = "mboxCardConnect_exe('"+card+"');";
+	var onchange = "select_x=document.getElementById(\"mbox_select_type\").value;mboxCardConnect_selectVisible(select_x);";
+
+	var select = {};
+	console.error(list);
+	for (var key in list) { select = { "album_info" : lang("ALBUMS"), "radio" : lang("STREAMS"), "playlists" : lang("PLAYLISTS") }; }
+	dialog += mboxCardConnect_select("mbox_select_type", select, "block", onchange);	
+	
+	dialog += mboxCardConnect_select("mbox_select_album_info",    list["album_info"],	"block");
+	dialog += mboxCardConnect_select("mbox_select_playlists",     list["playlists"],	"none");	
+	dialog += mboxCardConnect_select("mbox_select_radio",         list["radio"],		"none");	
+	
+	appMsg.confirm(dialog,cmd,250);
+	}
+	
+function mboxCardConnect_exe(rfid) {
+	type = getValueById('mbox_select_connect');
+	uuid = getValueById('mbox_select_'+type);
+	mboxApp.requestAPI('PUT', ['cards', uuid, rfid ],'', mboxDataReturnMsg )
+	}
+	
+	
+function mboxCardConnect_select(id, select, visible="block", onchange="") {
+	var text = "<div id='"+id+"_div' style='display:"+visible+"'><select id='"+id+"' style='width:200px;' onchange='"+onchange+"'>";
+	for (var key in select) {
+		text += "<option value='"+key+"'>"+select[key]+"</option>";
+		}
+	text += "</select><br/>&nbsp;</div>";
+	return text;
+	}
+	
+function mboxCardConnect_selectVisible(change) {
+	var lists = ["album_info","playlists","radio"];
+	for (var i=0;i<lists.length;i++) {
+		if (lists[i] == change) { elementVisible("mbox_select_"+change+"_div");  setValueById('mbox_select_connect',change); }
+		else			{ elementHidden("mbox_select_"+lists[i]+"_div"); }
+		}
 	}
 
 // funct. for cards ....
@@ -58,7 +113,7 @@ function mboxCardEditLink(uuid) {
 // edit dialog ... // OFFEN -> RADIO
 //---------------------------------
 
-function mboxCardEditDialog_load1(uuid) 	{ mboxCardUUID = uuid; 			mboxApp.requestAPI("GET",["status"],                "", mboxCardEditDialog_load2); }
+function mboxCardEditDialog_load1(uuid) { mboxCardUUID = uuid; 			mboxApp.requestAPI("GET",["status"],                "", mboxCardEditDialog_load2); }
 function mboxCardEditDialog_load2(data)	{ mboxCardCID = data["LOAD"]["RFID"]; 	mboxApp.requestAPI("GET",["cards", mboxCardUUID],   "", mboxCardEditDialog); }
 function mboxCardEditDialog(data) {
 
@@ -174,7 +229,7 @@ function mboxCardEditDialog(data) {
 // Show all defined RFID Cards ... later edit
 //---------------------------------
 
-function mboxCardList_load() { mboxApp.requestAPI("GET",["cards","-"], "", mboxCardList); console.log("Load list of RFID-Cards..."); }
+function mboxCardList_load(card_id="-") { mboxApp.requestAPI("GET",["cards",card_id], "", mboxCardList); console.log("Load list of RFID-Cards..."); }
 function mboxCardList(data) {
 
 	console.log("Load list of RFID-Cards... DATA LOADED");
@@ -184,7 +239,10 @@ function mboxCardList(data) {
         var album    = data["DATA"]["album_info"];
         var playlist = data["DATA"]["playlists"];
         var radio    = data["DATA"]["radio"];
-
+        
+        try { selected = data["DATA"]["_selected_uuid"]; }   catch(e) { selected = ""; }
+        try { filter   = data["DATA"]["_selected_filter"]; } catch(e) { filter   = ""; }
+        
 	var div0     = "<div class=\"rfid_list\">";
 	var div1     = "<div class=\"rfid_entry\">";
 	var div2     = "<div class=\"rfid_xxx\">";
@@ -193,37 +251,25 @@ function mboxCardList(data) {
         var text = "<center><b>Manage RIFD Cards:</b><hr/>";
         text += div0;
 
-	if (! typeof cards) {
-		console.log("test");
-		console.log(data["DATA"]);
-		//return;
-		}
-
-
 	if (typeof cards != "string" && Object.keys(cards).length > 0) {
            for (var card in cards) {
-		text += div2; //"<div style=\"float:left;height:70px;\">";
-                //text += "<div style=\"height:70px;width:30px;float:left;margin:2px;\">";
-                //text += mboxHtmlButton("rfid","","yellow");
-		//text += "</div>";
-
+		
                 var aa      = cards[card][0];
 		var onclick = "";
+		var type    = "";
 
-                if (aa.indexOf("a_")>-1)   	{ //album
-			text += div2 + "<img src=\""+mbox_icons["album_bw"]+"\" style=\"width:30px;height:30px;\"/>" + divE;
-			}
-                if (aa.indexOf("p_")>-1)   	{ //playlist
-			text += div2 + "<img src=\""+mbox_icons["playlist_bw"]+"\" style=\"width:30px;height:30px;\"/>" + divE;
-			}
-                if (aa.indexOf("r_")>-1)   	{ //radio/webstream
-			text += div2 + "<img src=\""+mbox_icons["radio_bw"]+"\" style=\"width:30px;height:30px;\"/>" + divE;
-			}
+                if (aa.indexOf("a_")>-1)  { img = div2 + "<img src=\""+mbox_icons["album_bw"]+"\" style=\"width:30px;height:30px;\"/>" + divE; 		type = "album"; } //album
+                if (aa.indexOf("p_")>-1)  { img = div2 + "<img src=\""+mbox_icons["playlist_bw"]+"\" style=\"width:30px;height:30px;\"/>" + divE;	type = "playlist"; } //playlist
+                if (aa.indexOf("r_")>-1)  { img = div2 + "<img src=\""+mbox_icons["radio_bw"]+"\" style=\"width:30px;height:30px;\"/>" + divE; 		type = "radio"; } //radio/webstream
 
-		console.log(aa);
+		if (selected && selected != "" && card != selected) { continue; }
+//		if (filter   && filter != "" && filter != type)	  { continue; }
+
+		text += div2; 
+		text += img;
 
 		text    += div1; //"<div style=\"float:left;height:70px;\">";
-                text    += card + "<br/><b>";
+                text    += "<a href='"+ RESTurl + "api/data/"+card+"/-/' target='_blank'>" +card + "</a><br/><b>";
 		notfound = "<font color=\"red\">NOT FOUND ...</b></font><br/>("+aa+" / "+cards[card][1]+")";
 
                 if (aa.indexOf("a_")>-1)   	{
@@ -262,7 +308,6 @@ function mboxCardList(data) {
 		else					{ color = "red";    }
 
                 text += div2; // + "<div style=\"margin:px;\">";
-//                text += mboxHtmlButton("delete","mboxCardDelete('" + card + "','" + cards[card][1] + "')",color);
                 text += mboxHtmlButton("delete","appMsg.confirm('<br/>Zuordnung zwischen Karte &quot;" + card  + "&quot; und Album &quot;" + title + "&quot; löschen?','mboxCardDelete(#" + card + "#,#" + cards[card][0] + "#)',150)",color);
 		text += divE; // + divE;
 
@@ -279,9 +324,11 @@ function mboxCardList(data) {
 		if (data["LOAD"]["RFID"]) { text += "Card detected: "+data["LOAD"]["RFID"]; }
 		}
 	text += divE + "</center>";
+	text += "<button onclick='mboxCardList_load();'>delete filter</button>";
 	//text += data["LOAD"]["RFID"];
 
-	appMsg.confirm(text,"",400);
+	if (selected && selected != "") { appMsg.confirm(text,"mboxCardList_load();",400); }
+	else				{ appMsg.confirm(text,"",400); }
         //setTextById("remote1",text);
         }
 

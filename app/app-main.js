@@ -101,11 +101,13 @@ function appPrintStatus(data) {
 	// print menu
 	appPrintMenu();
 
+	// check if RFID card detected
+	detected_card = mboxCardWriteRFID(data["LOAD"]["RFID"],data["LOAD"]["CARD"],data["DATA"]["SHORT"]);
+
 	// initial app data ...
 	setTextById("remote3",  appTitle + " (" + data["API"]["name"] + ": " + data["API"]["version"] + " / " + 
-				data["STATUS"]["active_device"] + ") " + mboxCardWriteRFID(data["LOAD"]["RFID"]) );
+				data["STATUS"]["active_device"] + ") " + detected_card );
 
-	if (mboxCardWriteRFID(data["LOAD"]["RFID"]) != "") { mboxControlSetStatus("blue"); }
 
 	// write icon menu and lists
 	if (reload) {

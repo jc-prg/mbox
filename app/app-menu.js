@@ -64,7 +64,6 @@ function appMenuDefinition(name, menu, title) {
 	        var height = pageHeight();
 	        height    -= 50;
    		document.getElementById("remote_nav").style.maxHeight = height+ "px"; // window.innerHeight + "px"; // 
-   		console.error(height);
         	}
 
         // load data with devices (deviceConfig["devices"])

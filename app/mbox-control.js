@@ -419,9 +419,9 @@ function mboxControlSetStatus (color) {
 //--------------------------------------
 
 function mboxControlToggleMode() {
-	if (mbox_mode == "Album")         { mbox_mode = "Playlist"; }
-	else if (mbox_mode == "Playlist") { mbox_mode = "Radio"; }
-	else                              { mbox_mode = "Album"; }
+	if (mbox_mode == "Album")         	{ mbox_mode = "Playlist"; }
+	else if (mbox_mode == "Playlist") 	{ mbox_mode = "Radio"; }
+	else                              	{ mbox_mode = "Album"; }
 
 	//appMenu.set_title( appTitle + "/" + mbox_mode );
 	}
@@ -448,8 +448,8 @@ function mboxControlToggleDevice () {
 function mboxControlToggleFilter () {
 	// switch next device setting
 
-	if (mbox_filter) 		{ mbox_filter = false;  document.getElementById("remote4").style.display="none"; }
-	else				{ mbox_filter = true;   document.getElementById("remote4").style.display="block"; }
+	if (mbox_filter) 			{ mbox_filter = false;  document.getElementById("remote4").style.display="none"; }
+	else					{ mbox_filter = true;   document.getElementById("remote4").style.display="block"; }
 	}
 	
 //--------------------------------------

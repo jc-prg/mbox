@@ -251,8 +251,12 @@ function mboxCardList(data) {
 	var div1     = "<div class=\"rfid_entry\">";
 	var div2     = "<div class=\"rfid_xxx\">";
 	var divE     = "</div>";
+	
+	if (selected != "" || filter != "")	{ var filter_txt = " &nbsp;(<a onclick='mboxCardList_load();'>delete filter</a>)"; }
+	else					{ var filter_txt = ""; }
 
-        var text = "<center><b>Manage RIFD Cards:</b><hr/>";
+
+        var text = "<center><b>Manage RIFD Cards:</b>"+filter_txt+"<hr/>";
         text += div0;
 
 	if (typeof cards != "string" && Object.keys(cards).length > 0) {
@@ -328,7 +332,6 @@ function mboxCardList(data) {
 		if (data["LOAD"]["RFID"]) { text += "Card detected: "+data["LOAD"]["RFID"]; }
 		}
 	text += divE + "</center>";
-	text += "<button onclick='mboxCardList_load();'>delete filter</button>";
 	//text += data["LOAD"]["RFID"];
 
 	if (selected && selected != "") { appMsg.confirm(text,"mboxCardList_load();",400); }

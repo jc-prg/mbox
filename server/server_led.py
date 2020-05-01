@@ -93,9 +93,12 @@ def loop():
     first_run    = 1
     last_active  = ""
     act_active   = ""
+    
     light_error  = "0"
     light_stage  = "1"
     light_rfid   = "0"
+    light_play   = "0"
+    light_wifi   = "0"
 
     light.other  = "000000"
     light.volume = 0
@@ -127,8 +130,8 @@ def loop():
             first_run = 0
 
         else:
-            # set status lights
-            light.other = str(light_error) + "111" + str(light_stage) + str(light_rfid)
+            # set status lights | RED - N/A - YELLOW - GREEN - WHITE - BLUE
+            light.other = str(light_error) + "1" + str(light_wifi) + str(light_play) + str(light_stage) + str(light_rfid)
 
             # reduce requests
             time.sleep(wait)

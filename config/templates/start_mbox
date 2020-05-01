@@ -17,11 +17,13 @@ if [ ! ${DOLLAR}option ]; then
   echo
   echo "Press key - your options:"
   echo " 'q' - exit"
-  echo " 'd' - docker start"
-  echo " 'r' - docker restart"
-  echo " 'c' - install crontab"
-  echo " 'u' - update from GitHub"
-  echo " 's' - server (in progress)"
+  echo " 'd' - docker start           [docker]"
+  echo " 'r' - docker restart         [restart]"
+  echo " 'c' - install crontab        [cron]"
+  echo " 'u' - update from GitHub     [update]"
+  echo " 's' - server (in progress)   [server]"
+  echo
+  echo " ... additional parameter:    [check-dns]"
   count=0
   while : ; do
     read -n 1 k <&1

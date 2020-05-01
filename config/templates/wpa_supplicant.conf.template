@@ -1,16 +1,9 @@
 #/etc/wpa_supplicant/wpa_supplicant.conf
 #----------------------------------------
-# create encrypted pwd:
-# wpa_passphrase <YOUR_SSID> [YOUR_PASSWORD]
-# -> created via 00-ensubst
 
 ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
 update_config=1
 country=${WLAN_COUNTRY}
 
-#network={
-#	ssid="WIFI_SSID"
-#	psk="WIFI_PWD"
-#	key_mgmt=WPA-PSK
-#}
+# network added via "wpa_passphrase <YOUR_SSID> [YOUR_PASSWORD]" in script 00-ensubst (jc://mbox/)
 

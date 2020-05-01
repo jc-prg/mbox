@@ -1,6 +1,7 @@
 import logging
 import uuid
 import urllib.parse
+from os import path
 
 import modules.config_stage   as stage
 import modules.config_mbox    as mbox
@@ -54,6 +55,25 @@ def diskSpace(init=False):
         mbox.checkdisk = out
 
     return out
+
+#-------------------------------------------------
+
+def connectionStatus():
+    '''
+    read log files with connection status
+    '''
+    
+    try:
+      with open(mbox.log_connection) as f:
+              content1 = f.readlines()
+    except:   content1 = [ "Connection not checked yet" ]
+
+    try:
+      with open(mbox.log_autohotspot) as f:
+              content2 = f.readlines()
+    except:   content2 = [ "Autohotspot not activated" ]
+      
+    return { "CONNECT" : content1[0], "TYPE" : content2[0] }
 
 #-------------------------------------------------
 # NEXT GEN: generic class start and end
@@ -127,7 +147,8 @@ def mboxAPI_end(data,reduce_data=[]):
         "space_main_mount"      :  stage.mount_system,
         "server_start"          :  mbox.start_time,
         "server_start_duration" :  mbox.start_duration,
-        "server_running"        :  time.time() - mbox.start_time
+        "server_running"        :  time.time() - mbox.start_time,
+        "server_connection"     :  connectionStatus()
         }
     data["STATUS"]["load_data"]     = {
         "reload_new"            : thread_music_load.reload_new,

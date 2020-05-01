@@ -51,6 +51,9 @@ music_cover_upload   = stage.data_dir+"/cover_upload/"
 errormsg_dir         = "audio/"
 errormsg_test        = "DE_STARTING.mp3"
 
+log_connection       = "/log/internet_connect"
+log_autohotspot      = "/log/autohotspot.status"
+
 # ---------------------------------
 
 databases  = { "radio" : [ "radio" ], 

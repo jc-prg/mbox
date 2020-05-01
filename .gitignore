@@ -51,3 +51,5 @@ log/internet_connect
 log/
 
 app.zip
+
+config/autohotspot/templates/autohotspot

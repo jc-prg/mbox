@@ -15,6 +15,10 @@ envsubst < "templates/config_stage.js" > "../app/config_stage.js"
 rm -rf ../server/modules/config_stage.py
 envsubst < "templates/config_stage.py" > "../server/modules/config_stage.py"
 
+rm -rf autohotspot/templates/autohotspot
+envsubst < "templates/autohotspot.template" > "autohotspot/templates/autohotspot"
+chmod 755 autohotspot/templates/autohotspot
+
 mkdir ../log
 
 rm -rf ../start

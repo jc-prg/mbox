@@ -11,6 +11,7 @@ echo " >>> START AUTOHOTSPOT (${DOLLAR}tryX) >>>"
 
 logfile="${MBOX_DIR}/log/autohotspot.log"
 logdate=`date`
+statusfile="${MBOX_DIR}/log/autohotspot.status"
 
 #You may share this script on the condition a reference to RaspberryConnect.com 
 #must be included in copies or derivatives of this script. 
@@ -55,6 +56,7 @@ createAdHocNetwork()
     systemctl start dnsmasq
     systemctl start hostapd
     echo "${DOLLAR}logdate createAdHocNetwork" >> ${DOLLAR}logfile
+    echo "HOTSPOT ${DOLLAR}logdate" > ${DOLLAR}statusfile
 }
 
 KillHotspot()
@@ -66,7 +68,9 @@ KillHotspot()
     ip addr flush dev "${DOLLAR}wifidev"
     ip link set dev "${DOLLAR}wifidev" up
     dhcpcd  -n "${DOLLAR}wifidev" >/dev/null 2>&1
-}
+    echo "KILLED HOTSPOT ${DOLLAR}logdate" > ${DOLLAR}statusfile
+}    
+
 
 ChkWifiUp()
 {
@@ -81,6 +85,7 @@ ChkWifiUp()
 	       createAdHocNetwork
         else
                echo "${DOLLAR}logdate chkWifiUp" >> ${DOLLAR}logfile
+               echo "WIFI ${DOLLAR}logdate" > ${DOLLAR}statusfile
 	fi
 }
 
@@ -104,24 +109,32 @@ do
 
 	elif echo "${DOLLAR}ssidreply" | grep "No such device (-19)" >/dev/null 2>&1; then
                 echo "No Device Reported, try " ${DOLLAR}j
+                echo "${DOLLAR}logdate No Device Reported" >> ${DOLLAR}logfile
+                echo "ERROR ${DOLLAR}logdate" > ${DOLLAR}statusfile
 		NoDevice
 
         elif echo "${DOLLAR}ssidreply" | grep "Network is down (-100)" >/dev/null 2>&1 ; then
                 echo "Network Not available, trying again" ${DOLLAR}j
+                echo "${DOLLAR}logdate Network Not available, trying again" >> ${DOLLAR}logfile
+                echo "ERROR ${DOLLAR}logdate" > ${DOLLAR}statusfile
                 j=${DOLLAR}((j + 1))
                 sleep 2
 
 	elif echo "${DOLLAR}ssidreply" | grep "Read-only file system (-30)" >/dev/null 2>&1 ; then
 		echo "Temporary Read only file system, trying again"
+                echo "${DOLLAR}logdate Temporary Read only file system, trying again" >> ${DOLLAR}logfile
+                echo "ERROR ${DOLLAR}logdate" > ${DOLLAR}statusfile
 		j=${DOLLAR}((j + 1))
 		sleep 2
 
 	elif ! echo "${DOLLAR}ssidreply" | grep "resource busy (-16)"  >/dev/null 2>&1 ; then
                echo "Device Available, checking SSid Results"
-		i=1
+               i=1
 
 	else #see if device not busy in 2 seconds
                 echo "Device unavailable checking again, try " ${DOLLAR}j
+                echo "${DOLLAR}logdate Device unavailable checking again" >> ${DOLLAR}logfile
+                echo "ERROR ${DOLLAR}logdate" > ${DOLLAR}statusfile
 		j=${DOLLAR}((j + 1))
 		sleep 2
 	fi

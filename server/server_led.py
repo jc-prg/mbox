@@ -89,7 +89,8 @@ def loop():
 
     global light, ProcessRunning, other
 
-    i            = 0
+    i            = 0 # blinking stage info
+    j            = 0 # blinking wifi info
     first_run    = 1
     last_active  = ""
     act_active   = ""
@@ -145,14 +146,41 @@ def loop():
 
                 if "API" in data: logging.debug(str(data["API"]))
 
-                if i == 0:
-                    i = 1
-                    if this_stage == "test": light_stage = "1"
-                    else:                    light_stage = "1"
-                else     :
-                    i = 0
-                    if this_stage == "test": light_stage = "0"
-                    else:                    light_stage = "1"
+                # check stage
+                if this_stage == "test":             # blinking LED
+                    if i == 0:   i = 1
+                    else:        i = 0
+                    if i == 1:   light_stage = "1"
+                    else:        light_stage = "0"
+                else:            light_stage = "1"   # constant LED
+                    
+                # check wifi status
+                if "STATUS" in data and "system" in data["STATUS"] and "server_connection" in data["STATUS"]["system"]:
+                
+                  check_data = data["STATUS"]["system"]
+                  if "WIFI" in check_data["TYPE"]:
+                     logging.debug(check_data["TYPE"])
+                     light_wifi = "1"
+                     
+                  elif "HOTSPOT" in check_data["TYPE"]:
+                     logging.debug(check_data["TYPE"])
+                     if j == 0:    light_wifi = "1"
+                     elif j == 1:  light_wifi = "1"
+                     else:         light_wifi = "0"
+                     
+                  else:
+                     logging.debug(check_data["TYPE"])
+                     if j == 0:    light_wifi = "1"
+                     elif j == 1:  light_wifi = "0"
+                     elif j == 2:  light_wifi = "1"
+                     else:         light_wifi = "0"
+                     
+                if j < 3: j += 1
+                else:     j  = 0
+
+                # check playing status
+                
+                     # ... to be implemented
 
                 # if card is detected ...
                 if "LOAD" in data:

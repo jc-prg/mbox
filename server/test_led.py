@@ -40,34 +40,16 @@ else:
 # init
 #-----------------------------------
 
-cmd              = {}
-cmd["status"]    = url+"status/"
-
 wait             = 0.5
-
 ProcessRunning   = True
 ServerRunning    = False
 
 #----------------------
 
-def call_api(command):
-    data1 = {}
-    logging.debug("Read API: " + command)
-
-    try:
-      response = requests.get(cmd[command])
-      data1    = response.json()
-    except requests.exceptions.RequestException as e:
-      logging.info("Error connecting to API: " + str(e))
-      data1     = {}
-
-    return data1
-
 def loop():
     '''read volume and switch on LED to show level'''
 
     global light, ProcessRunning, other
-    
     test = [
           ["00000000","00000000"],
           ["00000000","00000001"],
@@ -112,7 +94,7 @@ def loop():
         light.write_string(test[a])
         logging.info(str(test[a]))
         
-        if a < 34:  a += 1
+        if a < 33:  a += 1
         else:       a =  0
 
 
@@ -140,9 +122,10 @@ logging.info("Start LED control ...")
 
 if __name__ == '__main__':
 
-   light = led.lightThread(3,"Thread LED Control",1,this_stage)
-   light.start()
-   light.destroy
+   light = led.lightThread(3,"Thread LED Control",1,stage.rollout)
+   light.start_gpio()
+#   light.start()
+#   light.destroy
 
    loop()
 

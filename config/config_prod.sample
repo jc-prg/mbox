@@ -12,6 +12,25 @@ export MBOX_DATA_USB="yes"       # options: "yes" if music data on usb stick - d
 export MBOX_SPEEK_MSG="yes"      # options: "yes" if the box should speek during startup and on errors, "no" if not
 export MBOX_SPEEK_ASK_WHOM="DAD" # options: who should be asked, if the box doesn't work correctly: "DAD", "MUM, "THE-ADMIN"
 
+# Stage
+export MBOX_CURRENT_STAGE="prod"
+export MBOX_ACTIVE_STAGE="$MBOX_CURRENT_STAGE"
+export MBOX_IS_TEST="False"
+
+# Settings
+export WLAN_COUNTRY="DE"
+export WLAN_DEVICE="wlan0"
+
+# Wifi Data
+export WIFI_SSID="YourWifi"            # default network to connect to ...
+export WIFI_PWD=""                     # pwd for default network ... use "\$" instead of "$"
+
+# Hotspot Data
+export HOTSPOT_SSID="JCmbox"
+export HOTSPOT_PWD="0123456789"        # must have at least 8 characters ...
+
+#---------------------------------------------
+
 # Network Devices 
 export WLAN="wlan0"
 export ETH="eth0"
@@ -19,11 +38,6 @@ export ETH="eth0"
 # Identify device IP addresses
 export WLAN0_IP=`/sbin/ip -o -4 addr list $WLAN | awk '{print $4}' | cut -d/ -f1`
 export ETH0_IP=`/sbin/ip -o -4 addr list $ETH | awk '{print $4}' | cut -d/ -f1`
-
-# Stage
-export MBOX_CURRENT_STAGE="prod"
-export MBOX_ACTIVE_STAGE="$MBOX_CURRENT_STAGE"
-export MBOX_IS_TEST="False"
 
 # Ports
 export MBOX_CLIENT_PORT=80

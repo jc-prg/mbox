@@ -53,3 +53,7 @@ log/
 app.zip
 
 config/autohotspot/templates/autohotspot
+
+config/autohotspot/templates/hostapd.conf
+
+config/autohotspot/templates/wpa_supplicant.conf

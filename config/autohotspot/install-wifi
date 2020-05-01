@@ -99,9 +99,7 @@ hotspot_install_script() {
   cp /usr/bin/autohotspot 			templates/backup_install/autohotspot$test$date
   
   cat templates/autohotspot.service  		> /etc/systemd/system/autohotspot.service$test
-#  cat templates/autohotspot          		> /usr/bin/autohotspot$test
-  envsubst < "templates/autohotspot.template"  > "/usr/bin/autohotspot$test"
-
+  cp templates/autohotspot.template               /usr/bin/autohotspot$test
   
   sudo chmod +x /usr/bin/autohotspot$test
 }
@@ -132,8 +130,8 @@ hotspot_config_off_dnsmasq() {
 
 hotspot_config_on_hostapd() {
   cp /etc/hostapd/hostapd.conf 			templates/backup_install/hostapd.conf$test$date
-  
-  envsubst < "templates/hostapd.conf.template"  > "/etc/hostapd/hostapd.conf$test"
+  cp templates/hostapd.conf			/etc/hostapd/hostapd.conf$test
+  #envsubst < "templates/hostapd.conf.template"  > "/etc/hostapd/hostapd.conf$test"
 
   file_name="/etc/default/hostapd"
 
@@ -207,7 +205,8 @@ hotspot_config_off_interfaces() {
 
 hotspot_config_on_wpa() {
   cp /etc/wpa_supplicant/wpa_supplicant.conf 		templates/backup_install/wpa_supplicant.conf$test$date
-  envsubst < "templates/wpa_supplicant.conf.template" > "/etc/wpa_supplicant/wpa_supplicant.conf$test"
+  cp templates/wpa_supplicant.conf                      /etc/wpa_supplicant/wpa_supplicant.conf$test
+#  envsubst < "templates/wpa_supplicant.conf.template" > "/etc/wpa_supplicant/wpa_supplicant.conf$test"
 }
 
 hotspot_config_off_wpa() {

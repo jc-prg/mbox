@@ -15,9 +15,20 @@ envsubst < "templates/config_stage.js" > "../app/config_stage.js"
 rm -rf ../server/modules/config_stage.py
 envsubst < "templates/config_stage.py" > "../server/modules/config_stage.py"
 
+# autohotspot
+
 rm -rf autohotspot/templates/autohotspot
 envsubst < "templates/autohotspot.template" > "autohotspot/templates/autohotspot"
 chmod 755 autohotspot/templates/autohotspot
+
+rm -rf autohotspot/templates/wpa_supplicant.conf
+envsubst < "templates/wpa_supplicant.conf.template" > "autohotspot/templates/wpa_supplicant.conf"
+wpa_passphrase $WIFI_SSID $WIFI_PWD >> autohotspot/templates/wpa_supplicant.conf
+
+rm -rf autohotspot/templates/hostapd.conf
+envsubst < "templates/hostapd.conf.template" > "autohotspot/templates/hostapd.conf"
+
+# log and start script
 
 mkdir ../log
 

@@ -157,7 +157,7 @@ def loop():
                 # check wifi status
                 if "STATUS" in data and "system" in data["STATUS"] and "server_connection" in data["STATUS"]["system"]:
                 
-                  check_data = data["STATUS"]["system"]["server_connection"]:
+                  check_data = data["STATUS"]["system"]["server_connection"]
                   if "WIFI" in check_data["TYPE"] and "CONNECTED" in check_data["CONNECT"]:
                      logging.debug(check_data["TYPE"])
                      light_wifi = "1"

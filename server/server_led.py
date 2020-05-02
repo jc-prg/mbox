@@ -203,7 +203,7 @@ def loop():
                 if last_play_act:
                    if m > 9 and i == 0: m  = 0
                    elif i == 0:         m += 1
-                   light.volume       = m+10
+                   light.volume       = m+11
                 
                 # if card is detected ...
                 if "LOAD" in data:

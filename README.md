@@ -122,7 +122,7 @@ $ ./create_prod
   * *exclude directories from scanning:*
     * create a file ".dont-scan" in the directories you want to exclude
 
-  To install create this structure, use the install script:
+  To create this structure, use the install script:
 
 ```bash
 $ cd install

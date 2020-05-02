@@ -165,8 +165,7 @@ def loop():
                      
                   elif "HOTSPOT" in check_data["TYPE"]:
                      logging.debug(check_data["TYPE"])
-                     if j == 0:    light_wifi = "1"
-                     elif j == 1:  light_wifi = "1"
+                     if j < 3:     light_wifi = "1"
                      else:         light_wifi = "0"
                      
                   else:
@@ -174,9 +173,11 @@ def loop():
                      if j == 0:    light_wifi = "1"
                      elif j == 1:  light_wifi = "0"
                      elif j == 2:  light_wifi = "1"
+                     elif j == 3:  light_wifi = "0"
+                     elif j == 4:  light_wifi = "1"
                      else:         light_wifi = "0"
                      
-                if j < 3: j += 1
+                if j < 6: j += 1
                 else:     j  = 0
 
                 # check playing status

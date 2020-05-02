@@ -239,8 +239,8 @@ def loop():
                         light.volume = 0
                     logging.debug("Volume: ERROR")
                     
-                 if i == 0: i = 1
-                 else:      i = 0
+                if i == 0: i = 1
+                else:      i = 0
 
 def end_all(end1,end2):
     global light, ProcessRunning

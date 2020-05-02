@@ -179,9 +179,11 @@ def loop():
                 else:     j  = 0
 
                 # check playing status
+                if "STATUS" in data and "playback" in data["STATUS"] and "playing" in data["STATUS"]["playback"]:
                 
-                     # ... to be implemented
-
+                   if data["STATUS"]["playback"]["playing"] == 1:  light_play = "1"
+                   else:                                           light_play = "0"
+                
                 # if card is detected ...
                 if "LOAD" in data:
                   if "RFID" in data["LOAD"]:

@@ -89,8 +89,9 @@ def loop():
 
     global light, ProcessRunning, other
 
-    i            = 0 # blinking stage info
+    i            = 0 # blinking error
     j            = 0 # blinking wifi info
+    k            = 0 # blinking stage info
     first_run    = 1
     last_active  = ""
     act_active   = ""
@@ -148,9 +149,9 @@ def loop():
 
                 # check stage
                 if this_stage == "test":             # blinking LED
-                    if i == 0:   i = 1
-                    else:        i = 0
-                    if i == 1:   light_stage = "1"
+                    if k == 0:   k = 1
+                    else:        k = 0
+                    if k == 1:   light_stage = "1"
                     else:        light_stage = "0"
                 else:            light_stage = "1"   # constant LED
                     

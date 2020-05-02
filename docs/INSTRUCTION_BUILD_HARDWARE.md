@@ -80,8 +80,6 @@
 ![prepare the lid 02](images/mbox_lid02.JPG)
 ![prepare the lid 03](images/mbox_lid03.JPG)
 
-*further images will follow ...*
-
 ## Integrate IT Components
 
 The IT components are connected via GPIO with the Raspberry Pi. A documentation can be found here: [https://www.raspberrypi.org/documentation/usage/gpio/](https://www.raspberrypi.org/documentation/usage/gpio/).

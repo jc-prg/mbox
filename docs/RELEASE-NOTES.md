@@ -1,5 +1,10 @@
 # jc://music-box/ - Release Notes
 
+## Summary v0.7.x (in progress)
+
+* additional LED for Wifi and playback status
+* optimized autohotspot installation incl. encrypted wifi password
+
 ## Summary v0.7
 
 * Stabilized API calls

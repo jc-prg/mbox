@@ -214,9 +214,11 @@ def loop():
                     if i == 0:
                         light_error = "0"
                         light.volume = 0
+                        i = 1
                     else:
                         light_error = "1"
                         light.volume = 0
+                        i = 0
                     logging.debug("Volume: ERROR")
 
 

@@ -99,7 +99,7 @@ def loop():
     last_active    = ""
 
     last_play      = time.time()
-    last_play_wait = 10
+    last_play_wait = 180
     last_play_act  = False
     
     light_error    = "0"
@@ -201,9 +201,9 @@ def loop():
                 else:                                          last_play_act = False
                 
                 if last_play_act:
-                   if k > 10:     k  = 0
-                   else:          k += 1
-                   light.volume = k
+                   if m > 9 and i == 0: m  = 0
+                   elif i == 0:         m += 1
+                   light.volume       = m+10
                 
                 # if card is detected ...
                 if "LOAD" in data:
@@ -224,7 +224,7 @@ def loop():
                         #logging.info(this_stage+":Volume: "+str(light.volume))
 
                     # else blink with 1 LED
-                    else:
+                    elif last_play_act == False:
                         if i == 0: light.volume = 0
                         else:      light.volume = 1
                         logging.debug("Volume: MUTE")
@@ -234,13 +234,13 @@ def loop():
                     if i == 0:
                         light_error = "0"
                         light.volume = 0
-                        i = 1
                     else:
                         light_error = "1"
                         light.volume = 0
-                        i = 0
                     logging.debug("Volume: ERROR")
-
+                    
+                 if i == 0: i = 1
+                 else:      i = 0
 
 def end_all(end1,end2):
     global light, ProcessRunning

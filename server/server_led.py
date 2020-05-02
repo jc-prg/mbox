@@ -89,27 +89,34 @@ def loop():
 
     global light, ProcessRunning, other
 
-    i            = 0 # blinking error
-    j            = 0 # blinking wifi info
-    k            = 0 # blinking stage info
-    first_run    = 1
-    last_active  = ""
-    act_active   = ""
+    i              = 0 # blinking error
+    j              = 0 # blinking wifi info
+    k              = 0 # blinking stage info
+    m              = 0 # no playback for a while ...
     
-    light_error  = "0"
-    light_stage  = "1"
-    light_rfid   = "0"
-    light_play   = "0"
-    light_wifi   = "0"
+    first_run      = 1
+    act_active     = ""
+    last_active    = ""
 
-    light.other  = "000000"
-    light.volume = 0
+    last_play      = time.time()
+    last_play_wait = 10
+    last_play_act  = False
+    
+    light_error    = "0"
+    light_stage    = "1"
+    light_rfid     = "0"
+    light_play     = "0"
+    light_wifi     = "0"
+
+    light.other    = "000000"
+    light.volume   = 0
 
     while ProcessRunning:
 
         # switch on/off
         act_active = get_active_stage()
         #logging.info("STAGE..."+act_active+"/"+last_active+"//"+this_stage)
+        
         if (act_active == "" or act_active != last_active):
             logging.info("STAGE...DIFFERENT ("+act_active+")" )
             if (act_active == this_stage):  light.start_gpio()
@@ -183,8 +190,20 @@ def loop():
                 # check playing status
                 if "STATUS" in data and "playback" in data["STATUS"] and "playing" in data["STATUS"]["playback"]:
                 
-                   if data["STATUS"]["playback"]["playing"] == 1:  light_play = "1"
-                   else:                                           light_play = "0"
+                   if data["STATUS"]["playback"]["playing"] == 1:  
+                      light_play = "1"
+                      last_play  = time.time()
+                   else:                                           
+                      light_play = "0"
+                      
+                # LED Saver ... ;-)
+                if time.time() > last_play + last_play_wait:   last_play_act = True
+                else:                                          last_play_act = False
+                
+                if last_play_act:
+                   if k > 10:     k  = 0
+                   else:          k += 1
+                   light.volume = k
                 
                 # if card is detected ...
                 if "LOAD" in data:
@@ -199,7 +218,7 @@ def loop():
 
                 # if not mute show volume level
                 if "STATUS" in data:
-                    if (data["STATUS"]["playback"]["mute"] == 0):
+                    if (data["STATUS"]["playback"]["mute"] == 0) and last_play_act == False:
                         light.volume = round(data["STATUS"]["playback"]["volume"]*10)
                         logging.debug("Volume: "+str(light.volume))
                         #logging.info(this_stage+":Volume: "+str(light.volume))

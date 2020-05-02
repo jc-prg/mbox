@@ -42,9 +42,10 @@
 * Plastic plates (~5mm thick)
 
 *Computer:*
-* 1x Raspberry Pi 3B+
+* 1x Raspberry Pi 3B+ (or Raspberry Pi 4B)
 * 1x 16GB microSDHC Card
-* 1x 32GB USB Stick (e.g. Intenseo Micro Line)* 1x Transparent case for the Raspberry Pi
+* 1x 32GB USB Stick (e.g. Intenseo Micro Line)
+* 1x Transparent case for the Raspberry Pi
 * 1x USB Speaker (e.g. Hama PC Speaker Sonic Mobil 181)
 * 1x USB Power bank (recommended with 20.000 mAh)
 * 2x USB Power extension cable (Type A Male / Micro USB Male)
@@ -54,7 +55,7 @@
 * Several breakaway connector bridges (female)
 * 5x perforated grid board (Lochrasterplatte)
 * 2x 74HC595 8-bit shift register
-* Several LED (e.g. 6x green, 2x yellow, 3x red, 1x white, 1x blue)
+* Several LED (e.g. 6x green, 3x yellow, 4x red, 1x white, 1x blue)
 * Several electrical resistors (e.g. 1 kOhm)
 * 6x colored push-buttons
 * 1x LED Power Switch
@@ -79,8 +80,6 @@
 ![prepare the lid 02](images/mbox_lid02.JPG)
 ![prepare the lid 03](images/mbox_lid03.JPG)
 
-*further images will follow ...*
-
 ## Integrate IT Components
 
 The IT components are connected via GPIO with the Raspberry Pi. A documentation can be found here: [https://www.raspberrypi.org/documentation/usage/gpio/](https://www.raspberrypi.org/documentation/usage/gpio/).
@@ -98,7 +97,7 @@ To integrate a power switch I used a LED Power Switch. Additionally you need a g
 
 ![integrate the power-sitch](images/mbox_power-switch.JPG)
 
-### Integrate RFID Kit RC533
+### Integrate RFID Kit RC522
 
 The integration of the RFID Kit RC522 is relatively easy. The cabling is described here: [https://tutorial.cytron.io/2018/08/15/reading-rfid-tag-using-mifare-rc522-raspberry-pi/](https://tutorial.cytron.io/2018/08/15/reading-rfid-tag-using-mifare-rc522-raspberry-pi/).
 Additionally the cabeling is documented (not configured) in the file [./server/modules_gpio/config.py](../server/modules_gpio/config.py).
@@ -126,12 +125,12 @@ This part is (at least for me) the most difficult part as you've to solder a lot
 
 ![led bar for volume visualization](images/mbox_led-bar.JPG)
 ![led shift register](images/mbox_register.JPG)
-![wiring led](images/mbox-wiring-03.png)
+![wiring led](images/mbox-wiring-06.png)
 
 ## Overview Wiring
 
 ![prepare the lid 06](images/mbox_lid06.JPG)
-![wiring overview](images/mbox-wiring-01.png)
+![wiring overview](images/mbox-wiring-05.png)
 
 ## Back to README
 

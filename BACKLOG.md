@@ -6,7 +6,6 @@ Here you'll find a history of features implemented into hardware and software as
 
 ### IN PROGRESS
 
-IN PROGRESS - BUG app - deletion of card connection doesn't work (at least, if album not found ...)
 IN PROGRESS - server: create HASH from files to reconnect (? additionally to filename ?)
 
 ### KNOWN BUGS
@@ -19,21 +18,15 @@ IN PROGRESS - server: create HASH from files to reconnect (? additionally to fil
 - BUG server - if playing and press play in a playlist, start with first song instead of actuall running song (PlaySong -> start file, not list without loading list again)
 - UNSTABLE app/server - Delete RFID Cards doesn't work the 2nd time {Error: mbox - GET / http://music-box:5005/api/cards/-/ (not available/4/500).}
 - UNSTABLE app - loading albums and tracks to edit playlist doesnt work every time (on the box more often than on the computer)
-- BUG box - blue LED doesn't work correctly
 
 ### FEATURE IDEAS
 
 - server: if data dir is not available ... error message (from LED / RFI / BUTTONS server ...)
-- server: when LED / RFID / BUTTONS -> message speak "startig the music box" out of this script (earlier ...)
 - app: filter for genres (or other metadata ...)
-- app: appMsg.confirm 
-   -> place dialog in the middle depending on screen and dialog size (bit more above ...)
-   -> if text bigger than box, scroll automatically
 - app: volume doesn't work with iOS / Safari yet -> HTML5 audio processing?
-- server: save position when played last time
+- server: save presets in database and e.g. prefered device, start with last song played before switched off
 - server: understandable return message in API response (even if successful)
 - server: import / export connection between card and albums, lists and streams as json
-- server: save presets in database and e.g. prefered device, start with last song played before switched off
 - server: run mboxDB and mboxServer outside of a container (? faster start up)
 - server: check and show voltage ... "vcgencmd measure_volts core" ... sdram_i, sdram_p, sdram_c (problem, when recharging the battery)
 
@@ -53,10 +46,8 @@ IN PROGRESS - server: create HASH from files to reconnect (? additionally to fil
 * OK - Container for intranet running
 * OK - prod stage ... rollout script is working
 * OK - server in docker container working
-
-- Own wifi for the box & iphone or PC connected: 
-  http://www.raspberryconnect.com/projects/65-raspberrypi-hotspot-accesspoints/158-raspberry-pi-auto-wifi-hotspot-switch-direct-connection
-
+* OK - BUG box - blue LED doesn't work correctly
+* OK - Autohotspot
 
 ### BOX ENHANCEMENTS
 
@@ -70,6 +61,7 @@ IN PROGRESS - server: create HASH from files to reconnect (? additionally to fil
 * OK - Buttons for "Play Next", "Play last", "Pause/Play"
 * OK - LED for server status (Docker is running, server is running, microservices are running, ...)
 * OK - LED for "card detected"
+* OK - LED for WiFi connection & Playback status
 
 - cover for "deckel" inside
 
@@ -317,4 +309,9 @@ IN PROGRESS - server: create HASH from files to reconnect (? additionally to fil
 * OK - app: jump +5 / -5 tracks
 * OK - sort including disc numbers
 * OK - if unknown card detect offer dialog to connect item
+* OK - app: appMsg.confirm 
+   * OK - place dialog in the middle depending on screen and dialog size (bit more above ...)
+   * OK - if text bigger than box, scroll automatically
+* OK - BUG app - deletion of card connection doesn't work (at least, if album not found ...)
+
 

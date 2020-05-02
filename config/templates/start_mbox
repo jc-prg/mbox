@@ -165,10 +165,10 @@ elif [ ${DOLLAR}option == "update" ]; then
     cd ..
     
     echo "Restart docker"
-    ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose.yml up -d
     if [ ${DOLLAR}hardware == "yes" ]; then
-      ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose-rpi.yml up -d
+      ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose-rpi.yml up -d #--remove-orphans
     fi
+    ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose.yml up -d #--remove-orphans
 
 # install cron and automatic start
 elif [ ${DOLLAR}option == "cron" ]; then

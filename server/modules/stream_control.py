@@ -54,28 +54,27 @@ class radioThread (threading.Thread):
       
       self.speek = speek.speekThread(4, "Thread Speek", 1, "")  #  jcJSON.read("music"), jcJSON.read("radio"))
       self.speek.start()
-      #self.connected()
-      
       self.last_card_identified = ""
 
 
    def run(self):
+      i = 0
       logging.info( "Starting " + self.name )
 
       while self.stopProcess == False:
          self.music_ctrl["volume"] = self.volume/100
          self.music_ctrl["mute"]   = self.mute
-         #self.volume = self.music_ctrl["volume"]
-         #self.mute   = self.music_ctrl["mute"]
 
-         if (self.mute == 0):
-           self.set_volume(self.volume)
-         else:
-           self.set_volume(0)
+         if (self.mute == 0): self.set_volume(self.volume)
+         else:                self.set_volume(0)
 
          self.load_if_rfid()
-         #self.music_ctrl["channel_info"]  = self.current_play()
          time.sleep(2)
+         
+         # check internet connection from time to time
+         if i == 60: i = 0
+         if i == 0:  self.connected()
+         i += 1
 
       logging.info( "Exiting " + self.name )
 

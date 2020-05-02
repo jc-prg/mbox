@@ -105,11 +105,6 @@ $ ./create_prod
 
   The tested directory structure is:
 
-```bash
-$ cd install
-$ ./install-datadir           # create required sub-directories in data-dir, chmod 777 for cover_upload
-```
-
   * *data directories:*
     * /projects_data/test/
     * /projects_data/prod/
@@ -127,6 +122,12 @@ $ ./install-datadir           # create required sub-directories in data-dir, chm
   * *exclude directories from scanning:*
     * create a file ".dont-scan" in the directories you want to exclude
 
+  To create this structure, use the install script:
+
+```bash
+$ cd install
+$ ./install-datadir          
+```
 
 **6. Set the maximum loudness of the Raspberry to 100% (per default it's too low):**
 
@@ -168,7 +169,7 @@ $ ./start start
 
    Relevant default URLs are (the ports can be changed in the config file):
 
-  * http://localhost:85/          - Client
+  * http://localhost:80/          - Client
   * http://localhost:5005/api/ui  - Swagger UI API description
   * http://localhost:5105/_utils  - Fauxton CouchDB access (default user:mbox; pwd:mbox)
 
@@ -228,6 +229,7 @@ The following packages are used within this software (thanks to the authors):
 * VLC: https://www.videolan.org/
 * MFRC522: https://github.com/mxgxw/MFRC522-python
 * Autohotspot: https://www.raspberryconnect.com/
+* Mutagen and Eye3D
 * ...
 
 ## Disclaimer

@@ -1,0 +1,59 @@
+#--------------------------------------------
+# MBOX Client and Database
+#----------------------------------------
+# Please edit not here, but the orginial configuration file. This files is created using a template.
+#----------------------------------------
+
+version: "3"
+services:
+
+#  client_test:
+#    image: php:7.1-apache
+#    ports:
+#      - 86:5006
+#    volumes:
+#      - /projects/git/mbox/app:/var/www/html/app
+#      - ./config/apache2/php.ini:/usr/local/etc/php/conf.d/php.ini
+#      - ./config/apache2/www-app.conf:/etc/apache2/sites-enabled/www-app.conf
+#
+#      - /projects/git/data/test/data:/var/www/html/app/server/data
+#      - /projects/git/data/test/music:/var/www/html/app/mbox_music
+#      - /projects/git/data/test/cover:/var/www/html/app/cover
+#      - /projects/git/data/test/cover_upload:/var/www/html/app/cover_upload
+#
+#      - /projects/git/modules:/var/www/html/app/apps
+
+
+# CouchDB 
+#--------------------
+
+#  db_test:
+#    image: apache/couchdb:latest
+#    ports:
+#      - 5106:5984
+#    volumes:
+#      - /projects/git/data/test/couchdb:/opt/couchdb/data
+#    environment:
+#      - 'COUCHDB_USER=mbox'
+#      - 'COUCHDB_PASSWORD=mbox'
+
+
+# main server component (tested with docker-compose under Ubuntu)
+#----------------------------------------
+
+  server_test:
+    build: ./config/container/srv
+    privileged: true
+    volumes:
+      - /projects/git/mbox/server:/usr/src/app/server
+      - /projects/git/mbox/server/audio:/usr/src/app/audio
+      - /projects/git/data/test:/projects/git/data/test
+      - /projects/git/data/test/music:/projects/git/data/test/music
+      - /projects/git/data/test/cover:/projects/git/data/test/cover
+      - /home/jean/Musik_Neu:/home/jean/Musik_Neu
+      - /home/jean/Musik:/home/jean/Musik
+      - /tmp:/tmp
+      - ./log:/log
+    ports:
+      - 5006:5006
+

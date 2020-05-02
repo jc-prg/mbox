@@ -89,26 +89,34 @@ def loop():
 
     global light, ProcessRunning, other
 
-    i            = 0 # blinking stage info
-    j            = 0 # blinking wifi info
-    first_run    = 1
-    last_active  = ""
-    act_active   = ""
+    i              = 0 # blinking error
+    j              = 0 # blinking wifi info
+    k              = 0 # blinking stage info
+    m              = 0 # no playback for a while ...
     
-    light_error  = "0"
-    light_stage  = "1"
-    light_rfid   = "0"
-    light_play   = "0"
-    light_wifi   = "0"
+    first_run      = 1
+    act_active     = ""
+    last_active    = ""
 
-    light.other  = "000000"
-    light.volume = 0
+    last_play      = time.time()
+    last_play_wait = 180
+    last_play_act  = False
+    
+    light_error    = "0"
+    light_stage    = "1"
+    light_rfid     = "0"
+    light_play     = "0"
+    light_wifi     = "0"
+
+    light.other    = "000000"
+    light.volume   = 0
 
     while ProcessRunning:
 
         # switch on/off
         act_active = get_active_stage()
         #logging.info("STAGE..."+act_active+"/"+last_active+"//"+this_stage)
+        
         if (act_active == "" or act_active != last_active):
             logging.info("STAGE...DIFFERENT ("+act_active+")" )
             if (act_active == this_stage):  light.start_gpio()
@@ -148,24 +156,23 @@ def loop():
 
                 # check stage
                 if this_stage == "test":             # blinking LED
-                    if i == 0:   i = 1
-                    else:        i = 0
-                    if i == 1:   light_stage = "1"
+                    if k == 0:   k = 1
+                    else:        k = 0
+                    if k == 1:   light_stage = "1"
                     else:        light_stage = "0"
                 else:            light_stage = "1"   # constant LED
                     
                 # check wifi status
                 if "STATUS" in data and "system" in data["STATUS"] and "server_connection" in data["STATUS"]["system"]:
                 
-                  check_data = data["STATUS"]["system"]
-                  if "WIFI" in check_data["TYPE"]:
+                  check_data = data["STATUS"]["system"]["server_connection"]
+                  if "WIFI" in check_data["TYPE"] and "CONNECTED" in check_data["CONNECT"]:
                      logging.debug(check_data["TYPE"])
                      light_wifi = "1"
                      
                   elif "HOTSPOT" in check_data["TYPE"]:
                      logging.debug(check_data["TYPE"])
-                     if j == 0:    light_wifi = "1"
-                     elif j == 1:  light_wifi = "1"
+                     if j < 3:     light_wifi = "1"
                      else:         light_wifi = "0"
                      
                   else:
@@ -173,15 +180,31 @@ def loop():
                      if j == 0:    light_wifi = "1"
                      elif j == 1:  light_wifi = "0"
                      elif j == 2:  light_wifi = "1"
+                     elif j == 3:  light_wifi = "0"
+                     elif j == 4:  light_wifi = "1"
                      else:         light_wifi = "0"
                      
-                if j < 3: j += 1
+                if j < 6: j += 1
                 else:     j  = 0
 
                 # check playing status
+                if "STATUS" in data and "playback" in data["STATUS"] and "playing" in data["STATUS"]["playback"]:
                 
-                     # ... to be implemented
-
+                   if data["STATUS"]["playback"]["playing"] == 1:  
+                      light_play = "1"
+                      last_play  = time.time()
+                   else:                                           
+                      light_play = "0"
+                      
+                # LED Saver ... ;-)
+                if time.time() > last_play + last_play_wait:   last_play_act = True
+                else:                                          last_play_act = False
+                
+                if last_play_act:
+                   if m > 9 and i == 0: m  = 0
+                   elif i == 0:         m += 1
+                   light.volume       = m+11
+                
                 # if card is detected ...
                 if "LOAD" in data:
                   if "RFID" in data["LOAD"]:
@@ -195,13 +218,13 @@ def loop():
 
                 # if not mute show volume level
                 if "STATUS" in data:
-                    if (data["STATUS"]["playback"]["mute"] == 0):
+                    if (data["STATUS"]["playback"]["mute"] == 0) and last_play_act == False:
                         light.volume = round(data["STATUS"]["playback"]["volume"]*10)
                         logging.debug("Volume: "+str(light.volume))
                         #logging.info(this_stage+":Volume: "+str(light.volume))
 
                     # else blink with 1 LED
-                    else:
+                    elif last_play_act == False:
                         if i == 0: light.volume = 0
                         else:      light.volume = 1
                         logging.debug("Volume: MUTE")
@@ -215,7 +238,9 @@ def loop():
                         light_error = "1"
                         light.volume = 0
                     logging.debug("Volume: ERROR")
-
+                    
+                if i == 0: i = 1
+                else:      i = 0
 
 def end_all(end1,end2):
     global light, ProcessRunning

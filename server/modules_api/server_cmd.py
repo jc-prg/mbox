@@ -905,6 +905,21 @@ def mboxAPI_volume(param):
 
 # ---
 
+def mboxAPI_play_position(uuid,position):
+
+       data = mboxAPI_play(uuid)
+       
+       if mbox.active_device == "music_box":   
+            thread_music_ctrl.playlist_next(int(position))
+            
+       else:
+            data = mboxAPI_error(data, "Command only for music_box: "+mbox.active_device+"/"+str(position))
+            logging.warn("Command only for music_box: "+mbox.active_device+"/"+str(position))   
+
+       return(data)
+
+# ---
+
 def mboxAPI_play(uuid):
 
        global couch

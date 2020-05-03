@@ -482,6 +482,36 @@ paths:
               STATUS:
                 $ref: "#/definitions/STATUS"
 
+  /play_position/{uuid}/{position}/:
+    get:
+      operationId: modules_api.server_cmd.mboxAPI_play_position
+      tags:
+        - playback
+      summary: play item and jump to a position
+      description: play track, album, playlist or web-stream
+      parameters:
+        - name: uuid
+          in: path
+          type: string
+          required: true
+        - name: position
+          in: path
+          type: string
+          required: true
+      responses:
+        200:
+          description: Successfully started playback
+          schema:
+            properties:
+              API:
+                $ref: "#/definitions/API"
+              REQUEST:
+                $ref: "#/definitions/REQUEST"
+              LOAD:
+                $ref: "#/definitions/LOAD"
+              STATUS:
+                $ref: "#/definitions/STATUS"
+
   /play_next/{step}/:
     get:
       operationId: modules_api.server_cmd.mboxAPI_next

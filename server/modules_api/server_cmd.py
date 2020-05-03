@@ -818,9 +818,10 @@ def mboxAPI_cardInfos(filter):
 def mboxAPI_cards(uuid,param):
 
        global couch
-       db_entries = {}
-       data       = mboxAPI_start("cards","cards","",uuid,param)
-       databases  = ["cards","album_info","playlists","radio"]
+       db_entries  = {}
+       data        = mboxAPI_start("cards","cards","",uuid,param)
+       databases   = ["cards","album_info","playlists","radio"]
+       update_time = time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
 
        # read all data from DB
        for name in databases: db_entries[name] = couch.read(name)
@@ -835,7 +836,7 @@ def mboxAPI_cards(uuid,param):
        if "a_" in uuid:
            if uuid in db_entries["album_info"]:
                db_entries["album_info"][uuid]["card_id"]   = param
-               db_entries["cards"][param]                  = [uuid,db_entries["album_info"][uuid]["album"],db_entries["album_info"][uuid]["artist"]]                   
+               db_entries["cards"][param]                  = [uuid,db_entries["album_info"][uuid]["album"],db_entries["album_info"][uuid]["artist"],update_time]                   
            else:
                data = mboxAPI_error(data, "Album to connect not found: "+uuid+"/"+param)
                logging.warn("Album to connect not found (" + uuid + ")")
@@ -844,7 +845,7 @@ def mboxAPI_cards(uuid,param):
        elif "p_" in uuid:
            if uuid in db_entries["playlists"]:
                db_entries["playlists"][uuid]["card_id"]    = param
-               db_entries["cards"][param]                  = [uuid,db_entries["playlists"][uuid]["title"]]
+               db_entries["cards"][param]                  = [uuid,db_entries["playlists"][uuid]["title"],"",update_time]
            else:
                data = mboxAPI_error(data, "Playlist to connect not found: "+uuid+"/"+param)
                logging.warn("Playlist to connect not found (" + uuid + ")")
@@ -853,7 +854,7 @@ def mboxAPI_cards(uuid,param):
        elif "r_" in uuid:
            if uuid in db_entries["radio"]:
                db_entries["radio"][uuid]["card_id"]        = param
-               db_entries["cards"][param]                    = [uuid,db_entries["radio"][uuid]["title"]]
+               db_entries["cards"][param]                  = [uuid,db_entries["radio"][uuid]["title"],"",update_time]
                #logging.warn("TEST - "+uuid+"|"+param+" ... ")
            else:
                data = mboxAPI_error(data, "Stream to connect not found: "+uuid+"/"+param)

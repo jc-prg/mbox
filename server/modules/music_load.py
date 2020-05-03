@@ -178,15 +178,20 @@ def AlbumByPath(file):
 def checkIfCardExists(data_cards,album,artist,uuid):
     '''Check for JPG files in the folder again without reloading the music'''
 
+    update_time = time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
     for card_id in data_cards:
     
       # check if card
-      if "," in data_cards[card_id]:
+      if "," in card_id:
       
         # check if album and artist exist
         if data_cards[card_id][1] == album and data_cards[card_id][2] == artist:
         
-          data_cards[card_id][0] = uuid     # replace old UUID by current UUID
+          data_cards[card_id][0] = uuid                                                       # replace old UUID by current UUID
+          
+          if len(data_cards[card_id]) > 3:  data_cards[card_id][3] = update_time              # add date when replaced UUID last time
+          else:                             data_cards[card_id].append(update_time)
+            
           return data_cards, card_id	    # return data and card_id
 
     return data_cards, ""
@@ -262,10 +267,7 @@ def reloadMusic(data,all=True,thread=""):
 
     # delete old cover files (as not required after reload)
     if all:                                                 # if all files / db entries should be reloaded (else: add only new entries)
-      files = readFiles(music_cover)
-      for x in files:
-        if os.path.isfile(x):
-          os.remove(x)
+      image_files = readFiles(music_cover)                  # read all filenames and delete @ the end of this function
 
     # if not all, copy existing entries to vars
     else:
@@ -436,6 +438,7 @@ def reloadMusic(data,all=True,thread=""):
          data_album_info[a_uuid]["cover_images"]["track"] = []
 
          # consolidate data from tracks
+         # -------------------------         
          for t_key in data_album_info[a_uuid]["tracks"]:
 
            # calculate album size in bytes
@@ -455,14 +458,23 @@ def reloadMusic(data,all=True,thread=""):
            data_tracks[t_key]["uuid_album"] = a_uuid
 
 
-         # -------------------------
          # check if already a rfid card is connected ???
-         data["cards"], data_album_info[a_uuid]["card_id"] = checkIfCardExists(data["cards"],data_album_info[a_uuid]["album"],data_album_info[a_uuid]["artist"],a_uuid)
+         # -------------------------         
+         # def checkIfCardExists(data_cards,album,artist,uuid):
+         if "cards" in data:
+         
+            x_cards   = data["cards"]
+            x_album   = data_album_info[a_uuid]["album"]
+            x_artist  = data_album_info[a_uuid]["artist"]
+            x_uuid    = a_uuid
 
-         # -------------------------
+            x_cards, x_card_id = checkIfCardExists(x_cards,x_album,x_artist,x_uuid)
 
+            data_album_info[a_uuid]["card_id"] = x_card_id
+            data["cards"]                      = x_cards
 
          # set image information for album
+         # -------------------------
          if key+"_image" in data_i:
              data_album_info[a_uuid]["cover_images"]         = data_i[key+"_image"] # images extracted from audio file
 
@@ -491,8 +503,13 @@ def reloadMusic(data,all=True,thread=""):
     if "playlists" not in data:   data["playlists"] = {}
     if "cards" not in data:       data["cards"]     = {}
       
-    logging.info("Finished reloading music data: " + music_dir + " | all=" + str(all) + " | albums=" + str(len(data["albums"])))
+    # delete old cover files, if all entries should be reloaded (and reload was successful)
+    if all:
+      for x in image_files:
+        if os.path.isfile(x):
+          os.remove(x)
 
+    logging.info("Finished reloading music data: " + music_dir + " | all=" + str(all) + " | albums=" + str(len(data["albums"])))
     return data
 
 #---------------------------------------

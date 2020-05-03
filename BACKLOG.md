@@ -14,7 +14,6 @@ IN PROGRESS - server: create HASH from files to reconnect (? additionally to fil
 - BUG server - after connecting card to album the message "invalid entry connected" is spoken -> move all data to cache directly
 - BUG server - Start with STREAM and card laying on the RFID sensor leads to an error -> remove card_id, until connection is OK
 - BUG app/server - if playlist with the same title already exists, two lists with the same tracks, id, and image are displayed => check server side?
-- BUG server - reconnect Cards when reloading data doesn't work
 - BUG server - if playing and press play in a playlist, start with first song instead of actuall running song (PlaySong -> start file, not list without loading list again)
 - UNSTABLE app/server - Delete RFID Cards doesn't work the 2nd time {Error: mbox - GET / http://music-box:5005/api/cards/-/ (not available/4/500).}
 - UNSTABLE app - loading albums and tracks to edit playlist doesnt work every time (on the box more often than on the computer)
@@ -172,6 +171,7 @@ IN PROGRESS - server: create HASH from files to reconnect (? additionally to fil
 * OK - if card not connected or wrong connected, speak message!
 * OK - restart mboxServer and start autohotspot, if internet connection changes (autohotspot)
 * OK - BUG fix extract images (mutagen API changed?)
+* OK - BUG server - reconnect Cards when reloading data doesn't work
 
 * DECLINED - Play the whole song, not only parts // not seen any more
 * DECLINED - dont delete playlist when stop: don't unload playlist/title if stop - just rewind to first position, but display now reflects situation

@@ -86,6 +86,7 @@ function mboxCardConnect_exe(rfid) {
 	
 function mboxCardConnect_select(id, select, visible="block", onchange="") {
 	var text = "<div id='"+id+"_div' style='display:"+visible+"'><select id='"+id+"' style='width:200px;' onchange='"+onchange+"'>";
+	select.sort();
 	for (var key in select) {
 		text += "<option value='"+key+"'>"+select[key]+"</option>";
 		}

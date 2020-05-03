@@ -456,54 +456,6 @@ function mboxAlbumList(data) {
 		if (count == Math.round(max/2)) { text += "</div><div class=\"album_tracks\">"; }
 		}
 		
-		
-//	console.error(albums["tracks"]);
-//	console.error(sorted_tracks);	
-	
-	
-/* ---- */
-/*
-	// count tracks with order number
-	for (var key in albums["tracks"]) {
-		//console.log(albums["tracks"][key])
-		tracks[key] = track_list[albums["tracks"][key]];
-		a++;
-		if ("track_num" in tracks[key]) {
-			if (tracks[key]["track_num"][0]) { i++; }
-			}
-		}
-
-	// if not so much order numbers as entries, dont sort
-	if (i != a) {
-		var count = 0;
-		for (var key in albums["tracks"]) {
-			count++;
-			text += mboxAlbumTrackRow(albums["tracks"][key],track_list,true,withartist,count-1);
-			if (count == Math.round(max/2)) { text += "</div><div class=\"album_tracks\">"; }
-			}
-		}
-
-	// else sort titles
-	else {
-		var sort_t = [];
-		var album  = {};
-		for (var x in tracks) {
-			//console.log(tracks[x]["track_num"][0] + "_" + tracks[x]["uuid"]);
-			var mykey = tracks[x]["track_num"][0];
-			sort_t.push(mykey);
-			album[mykey] = tracks[x]["uuid"];
-			}
-		sort_t.sort(sortNumber);
-		count = 0;
-		for (var key in sort_t) {
-			count++;
-			text += mboxAlbumTrackRow(album[sort_t[key]],track_list,true,withartist,count-1);
-			if (count == Math.round(max/2)) { text += "</div><div class=\"album_tracks\">"; }
-			}
-
-		}
-*/
-
 	text += "</div>";
 	text += "</div>";
 
@@ -648,9 +600,10 @@ function mboxAlbumTrackInfo(data) {
 //--------------------------------------
 
 function mboxAlbumTrackRow(id,dataTracks,album=true,artist=false,count=0) {
-	var track  = dataTracks[id];
-	var text   = "";
-	var cmd    = "";
+	var track    = dataTracks[id];
+	var text     = "";
+	var cmd      = "";
+	var album_id = track["uuid_album"];
 
 	var length = "";
 	if (track["length"]) {
@@ -666,7 +619,8 @@ function mboxAlbumTrackRow(id,dataTracks,album=true,artist=false,count=0) {
 		cmd += mboxHtmlButton("play",  "mboxPlayerLocal(" + count + ");", "green",   "small right"); 
 		}
 	if (mbox_device != "local") 	{
-		cmd += mboxHtmlButton("play",  "mboxApp.requestAPI('GET',['play', '"+id+"'],'',mboxControl);", "blue", "small right");
+		//cmd += mboxHtmlButton("play",  "mboxApp.requestAPI('GET',['play', '"+id+"'],'',mboxControl);", "blue", "small right");
+		cmd += mboxHtmlButton("play",  "mboxApp.requestAPI('GET',['play_position', '"+album_id+"', '"+count+"'],'',mboxControl);", "blue", "small right");
 		cmd += "<div class=\"player_active right\" id=\"playing3_"+id+"\" style=\"display:none;\"><img src=\""+mbox_icons["playing"]+"\" style=\"width:10px;height:10px;margin:2px;\"></div>";
 		}
 	cmd  += "</div>";

@@ -50,7 +50,6 @@ function mboxCoverAlbumInfo(nr,url_list,act,uuid) {
 	else {
 		}
 
-
 	//img = "<a href='" + url + "' target='_blank'>" + img + "</a>";
 	return img;
 	}
@@ -73,7 +72,7 @@ function mboxCoverAlbum(artist,album) {
 		}
 	return cover;
 	}
-
+	
 // return cover for list and detail view
 //--------------------------------------
 
@@ -107,6 +106,13 @@ function mboxCoverAlbum_new(id,data) {
 	else { return cover; }
 	}
 	
+//--------------------------------------
+
+function mboxCoverAlbum_alert(cover) {
+	var img   = "<img src='"+cover+"' width='300px' height='300px'>";
+	appMsg.confirm(img,"",380);
+	}
+
 //--------------------------------------
 
 function mboxCoverAlbum_checkFile(image_url) {

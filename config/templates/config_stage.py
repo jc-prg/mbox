@@ -20,8 +20,8 @@ mount_data     = "${MBOX_MOUNT_DATA}"
 demo_card      = "${MBOX_RFID_DEMOCARD}"
 
 language       = "${MBOX_LANGUAGE}"
-speek_msg      = "${MBOX_SPEEK_MSG}"
-speek_ask_whom = "ASK-${MBOX_SPEEK_ASK_WHOM}-FOR-HELP"
+speak_msg      = "${MBOX_SPEEK_MSG}"
+speak_ask_whom = "ASK-${MBOX_SPEEK_ASK_WHOM}-FOR-HELP"
 
 server_port    = ${MBOX_SERVER_PORT}
 server_ip      = "${MBOX_DATABASE_SERVER}"

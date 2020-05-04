@@ -87,6 +87,9 @@ class musicThread (threading.Thread):
    #-------------------------
 
    def load_list(self,list):
+      '''
+      load playlist by list of filenames
+      '''
       logging.info( "Load list: " + str(len(list)) )
       test = self.return_list(list)
       musicStartList(self,test)
@@ -94,6 +97,9 @@ class musicThread (threading.Thread):
 
 
    def load_list_uuid(self,list):
+      '''
+      load playlist by UUID
+      '''
       if ("r_" not in list):
         logging.info( "Load playlist uuid: " + list )
         test = musicGetTracks(self,list)    # veraendert die reihenfolge?
@@ -101,9 +107,6 @@ class musicThread (threading.Thread):
         musicStartList(self,test)
         self.music_ctrl["playlist_uuid"] = list
         self.music_loaded = 1
-      else:
-        return
-
 
    def return_list(self,list):
       list2 = []
@@ -113,15 +116,17 @@ class musicThread (threading.Thread):
 
 
    def stop_playback(self):
-      '''stop running song'''
-
+      '''
+      stop running song
+      '''
       self.player.stop()
       self.music_ctrl["playing"] = 0
 
 
    def pause_playback(self):
-      '''pause / unpause running song'''
-
+      '''
+      pause / unpause running song
+      '''
       logging.info("PAUSE: "+self.music_ctrl["state"])
 
       if (self.music_ctrl["state"] == "State.Playing"):
@@ -138,8 +143,9 @@ class musicThread (threading.Thread):
 
 
    def music_vol(self,up):
-      '''control volume ...'''
-
+      '''
+      control volume ...
+      '''
       vol = float(self.music_ctrl["volume"])
       logging.info("MUSIC VOL: "+str(vol)+"/"+str(self.vol_factor)+"//"+str(up))
 
@@ -165,8 +171,9 @@ class musicThread (threading.Thread):
 
 
    def music_mute(self):
-      '''set to mute'''
-
+      '''
+      set to mute / unmute
+      '''
       if self.music_ctrl["mute"] == 0:
           self.music_ctrl["mute"] = 1
           self.player.audio_set_volume(0)
@@ -177,8 +184,9 @@ class musicThread (threading.Thread):
 
 
    def playlist_next(self,step):
-      '''step back (-1) or forward (1)'''
-
+      '''
+      step back (-1) or forward (1)
+      '''
       logging.debug("Next song: "+str(step)+"+"+str(self.music_list_p)+" ("+str(len(self.music_list))+")" )
 
       # back // if position > 0
@@ -204,6 +212,9 @@ class musicThread (threading.Thread):
       return "not found"
       
    def playing_jump(self,percentage):
+      '''
+      jump to position in playing song
+      '''
       percentage = float(percentage)   
       if percentage >= 0 and percentage <= 100:
           self.player.set_position(percentage/100)
@@ -211,6 +222,9 @@ class musicThread (threading.Thread):
       return "not found"
       
    def play_file(self, filename):
+      '''
+      play file via filename
+      '''
       file = filename
       self.player.audio_set_volume(99)
       self.media = self.instance.media_new( file ) #str(file.encode('utf-8')) )
@@ -232,8 +246,9 @@ class musicThread (threading.Thread):
 #------------------
 
 def musicLoadRfidList(thread):
-    '''load list connected to rfid'''
-
+    '''
+    load list connected to rfid
+    '''
     if "cardUID" in mbox.rfid_ctrl:
       logging.debug("#################### " + mbox.rfid_ctrl["cardUID"])
       cardDB = thread.music_database.read_cache("cards")
@@ -274,7 +289,6 @@ def musicPlaying(thread):
         '''
         Translate playback status to 0/1
         '''
-
         old_state                     = thread.music_ctrl["state"]
         thread.music_ctrl["state"]    = str(thread.player.get_state())
 
@@ -293,7 +307,6 @@ def musicSaveStatus(thread):
     '''
     Save playback status in the database
     '''
-
     data  = thread.music_database.read("status")
     
     if not "_saved" in data or data["_saved"] + 3 < time.time():
@@ -309,8 +322,9 @@ def musicSaveStatus(thread):
 #------------------
 
 def musicPlayList(thread):
-    '''Play list, detect end of file and than play next'''
-
+    '''
+    Play list, detect end of file and than play next
+    '''
     wait_time = 0.5
     running   = True
     last_load = False  
@@ -409,8 +423,9 @@ def musicPlayList(thread):
 #------------------
 
 def musicStartList(thread,list):
-    '''Play Songs from List, if Songs in List'''
-
+    '''
+    Play Songs from List, if Songs in List
+    '''
     for x in list:
       logging.debug("Add 2 Playlist: " + x)
 
@@ -434,8 +449,9 @@ def musicStartList(thread,list):
 #------------------
 
 def musicGetInfoList(thread,file_list):
-    ''' get info for list of tracks based on filenames '''
-
+    '''
+    get info for list of tracks based on filenames
+    '''
     list_info  = []
     for x in file_list:
       file_info = musicGetInfo(thread,x)
@@ -445,8 +461,9 @@ def musicGetInfoList(thread,file_list):
 #------------------
 
 def musicGetInfo(thread,file):
-    ''' get info for a track based on filename '''
-
+    '''
+    get info for a track based on filename
+    '''
     file_info         = {}
     file_info["test"] = file
 
@@ -459,8 +476,9 @@ def musicGetInfo(thread,file):
 #------------------
 
 def musicGetTracks(thread,album_uuid):
-    '''return uuid form tracks for an album'''
-
+    '''
+    return uuid form tracks for an album
+    '''
     logging.debug("Read infos for album UUID: "  + album_uuid)
 
     # set vars
@@ -505,8 +523,9 @@ def musicGetTracks(thread,album_uuid):
 
 
 def sortAlbumTracks(tracks,track_info):
-     '''sort albums bei track number'''
-
+     '''
+     sort albums bei track number
+     '''
      track_order = {}
      track_list  = []
 
@@ -534,9 +553,9 @@ def sortAlbumTracks(tracks,track_info):
 #------------------
 
 def musicUuid2Files(thread,uuid_list):
-
-    ''' return filenames based on an uuid names for a list '''
-
+    '''
+    return filenames based on an uuid names for a list
+    '''
     file_list = []
     songs = thread.music_database.read_cache("tracks")
     for x in uuid_list:

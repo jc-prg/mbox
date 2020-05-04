@@ -2,6 +2,7 @@
 
 ## Summary v0.7.x (in progress)
 
+* restart playlist where switched off
 * additional LED for Wifi and playback status
 * optimized autohotspot installation incl. encrypted wifi password
 

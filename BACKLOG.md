@@ -6,7 +6,7 @@ Here you'll find a history of features implemented into hardware and software as
 
 ### IN PROGRESS
 
-IN PROGRESS - server: create HASH from files to reconnect (? additionally to filename ?)
+...
 
 ### KNOWN BUGS
 
@@ -23,10 +23,9 @@ IN PROGRESS - server: create HASH from files to reconnect (? additionally to fil
 - server: if data dir is not available ... error message (from LED / RFI / BUTTONS server ...)
 - app: filter for genres (or other metadata ...)
 - app: volume doesn't work with iOS / Safari yet -> HTML5 audio processing?
-- server: save presets in database and e.g. prefered device, start with last song played before switched off
 - server: understandable return message in API response (even if successful)
-- server: import / export connection between card and albums, lists and streams as json
 - server: run mboxDB and mboxServer outside of a container (? faster start up)
+- server: save presets in database and e.g. prefered device
 - server: check and show voltage ... "vcgencmd measure_volts core" ... sdram_i, sdram_p, sdram_c (problem, when recharging the battery)
 
 ## Done
@@ -172,6 +171,8 @@ IN PROGRESS - server: create HASH from files to reconnect (? additionally to fil
 * OK - restart mboxServer and start autohotspot, if internet connection changes (autohotspot)
 * OK - BUG fix extract images (mutagen API changed?)
 * OK - BUG server - reconnect Cards when reloading data doesn't work
+* OK - start with last song played before switched off
+* OK - create HASH from files to reconnect (? additionally to filename ?)
 
 * DECLINED - Play the whole song, not only parts // not seen any more
 * DECLINED - dont delete playlist when stop: don't unload playlist/title if stop - just rewind to first position, but display now reflects situation

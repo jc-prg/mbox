@@ -12,7 +12,7 @@ import modules.jcJson       as jcJSON
 import modules.jcCouchDB    as jcCouch
 import modules.config_stage as stage
 import modules.config_mbox  as mbox
-import modules.speekmsg     as speek
+import modules.speakmsg     as speak
 
 from modules.config_mbox import *
 from decimal             import *
@@ -53,8 +53,8 @@ class musicThread (threading.Thread):
       
       self.music_load_new   = False
 
-      self.speek = speek.speekThread(4, "Thread Speek", 1, "")  #  jcJSON.read("music"), jcJSON.read("radio"))
-      self.speek.start()
+      self.speak = speak.speakThread(4, "Thread speak", 1, "")  #  jcJSON.read("music"), jcJSON.read("radio"))
+      self.speak.start()
 
       self.relevant_db  = self.music_database.databases["music"] # ["albums","album_info","tracks","files","cards"]
       self.vol_factor   = 0.8 # factor to limit audio level (max = 1.0)
@@ -279,9 +279,9 @@ def musicLoadRfidList(thread):
              thread.last_card_identified = mbox.rfid_ctrl["cardUID"]
           
              if mbox.rfid_ctrl["cardUID"] not in cardDB: 
-                thread.speek.speek_message("NO-MUSIC-CONNECTED-TO-CARD")
+                thread.speak.speak_message("NO-MUSIC-CONNECTED-TO-CARD")
              
-#          if not "r_" in cardDB[rfid_ctrl["cardUID"]][0]:  thread.speek.speek_message("NO-MUSIC-CONNECTED-TO-CARD")
+#          if not "r_" in cardDB[rfid_ctrl["cardUID"]][0]:  thread.speak.speak_message("NO-MUSIC-CONNECTED-TO-CARD")
 
 #------------------
 
@@ -291,7 +291,7 @@ def musicPlaying(thread):
         '''
         old_state                     = thread.music_ctrl["state"]
         thread.music_ctrl["state"]    = str(thread.player.get_state())
-
+        
         if thread.music_ctrl["state"] == "State.Playing" or thread.music_ctrl["state"] == "State.Paused":
             thread.music_plays = 1
             logging.debug("Playing 01:"+thread.music_ctrl["state"]+"..."+str(thread.music_ctrl["playing"]))
@@ -518,7 +518,7 @@ def musicGetTracks(thread,album_uuid):
        track_list = tracks
        
     else:
-       thread.speek.speek_message("UNVALID-ENTRY-CONNECTED-TO-CARD")
+       thread.speak.speak_message("UNVALID-ENTRY-CONNECTED-TO-CARD")
 
     return track_list
 

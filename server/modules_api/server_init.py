@@ -8,7 +8,7 @@ import modules.jcCouchDB      as jcCouch
 import modules.music_load     as music_load
 import modules.music_control  as music_ctrl
 import modules.stream_control as radio_ctrl
-import modules.speekmsg       as speek
+import modules.speakmsg       as speak
 
 from modules.runcmd         import *
 
@@ -67,7 +67,7 @@ def dataInit():
 	}
     return d
     
-def speek_message(message):
+def speak_message(message):
    fname       = mbox.errormsg_dir + stage.language + "_" + message + ".mp3"
    fname_EN    = mbox.errormsg_dir + "EN_" + message + ".mp3"
    fname_UE    = mbox.errormsg_dir + stage.language + "_UNKNOWN-ERROR.mp3"
@@ -82,10 +82,10 @@ def speek_message(message):
 # Load DB and threads for playback control
 #-------------------------------------------------
 
-logging.info("Load Speek Messages ..." + time_since_start())
-thread_speek = speek.speekThread(4, "Thread Radio", 1, "")  #  jcJSON.read("music"), jcJSON.read("radio"))
-thread_speek.start()
-thread_speek.speek_message("STARTING")
+logging.info("Load Speak Messages ..." + time_since_start())
+thread_speak = speak.speakThread(4, "Thread Radio", 1, "")  #  jcJSON.read("music"), jcJSON.read("radio"))
+thread_speak.start()
+thread_speak.speak_message("STARTING")
 
 logging.info("Load CouchDB ..." + time_since_start())
 couch = jcCouch.jcCouchDB()

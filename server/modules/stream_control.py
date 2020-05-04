@@ -13,7 +13,7 @@ import urllib.request
 
 import modules.config_stage    as stage
 import modules.config_mbox     as mbox
-import modules.speekmsg        as speek
+import modules.speakmsg        as speak
 import modules.runcmd          as runcmd
 
 #-------------------------------------------
@@ -52,8 +52,8 @@ class radioThread (threading.Thread):
       self.player.audio_set_volume(self.volume)
       self.player.audio_set_mute(False)
       
-      self.speek = speek.speekThread(4, "Thread Speek", 1, "")  #  jcJSON.read("music"), jcJSON.read("radio"))
-      self.speek.start()
+      self.speak = speak.speakThread(4, "Thread speak", 1, "")  #  jcJSON.read("music"), jcJSON.read("radio"))
+      self.speak.start()
       self.last_card_identified = ""
 
 
@@ -88,15 +88,15 @@ class radioThread (threading.Thread):
       connected = self.connected()
       if connected == "DNS-ERROR":
 
-          self.speek.speek_message("CONNECTION-ERROR-RESTART-SHORTLY")
+          self.speak.speak_message("CONNECTION-ERROR-RESTART-SHORTLY")
           time.sleep(20)
           return
 
       elif connected != "CONNECTED":
 
-          self.speek.speek_message("NO-INTERNET-CONNECTION")
+          self.speak.speak_message("NO-INTERNET-CONNECTION")
           time.sleep(0.5)
-          self.speek.speek_message("TRY-AGAIN-IN-A-MINUTE")
+          self.speak.speak_message("TRY-AGAIN-IN-A-MINUTE")
           time.sleep(20)
           self.music_ctrl["LastCard"] = ""
           return
@@ -114,7 +114,7 @@ class radioThread (threading.Thread):
           error = 1
 
         if error == 1:
-          self.speek.speek_message("CANT-OPEN-STREAM")
+          self.speak.speak_message("CANT-OPEN-STREAM")
           return
  
         streams = streams.split("\n")

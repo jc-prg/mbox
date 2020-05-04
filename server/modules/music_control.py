@@ -341,7 +341,7 @@ def musicPlayList(thread):
          thread.music_list     = last_music["playlist_files"]
          thread.music_list_p   = last_music["playlist_pos"]
          thread.music_load_new = True
-         time.sleep(2)
+         time.sleep(4)
          
     while running and not thread.stopProcess:
 

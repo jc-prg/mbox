@@ -22,6 +22,7 @@ Here you'll find a history of features implemented into hardware and software as
 
 - server: if data dir is not available ... error message (from LED / RFI / BUTTONS server ...)
 - app: filter for genres (or other metadata ...)
+- app: filter with full text search ...
 - app: volume doesn't work with iOS / Safari yet -> HTML5 audio processing?
 - server: understandable return message in API response (even if successful)
 - server: run mboxDB and mboxServer outside of a container (? faster start up)

@@ -332,15 +332,16 @@ def musicPlayList(thread):
     
     if "_device" in last_run and last_run["_device"] == "music" and last_run["music"]["playing"] == 1:
       logging.info("Load playlist and song from last run ...")
-      last_load          = True
-      last_music         = last_run["music"]
-      thread.music_loaded = 1
+      last_load           = True
+      last_music          = last_run["music"]
       thread.music_ctrl   = last_music
+      thread.music_loaded = 1
       
       if "playlist_files" in last_music:
          thread.music_list     = last_music["playlist_files"]
          thread.music_list_p   = last_music["playlist_pos"]
          thread.music_load_new = True
+         time.sleep(2)
          
     while running and not thread.stopProcess:
 

@@ -271,6 +271,9 @@ def musicLoadRfidList(thread):
 #------------------
 
 def musicPlaying(thread):
+        '''
+        Translate playback status to 0/1
+        '''
 
         old_state                     = thread.music_ctrl["state"]
         thread.music_ctrl["state"]    = str(thread.player.get_state())
@@ -286,22 +289,54 @@ def musicPlaying(thread):
 
 #------------------
 
+def musicSaveStatus(thread):
+    '''
+    Save playback status in the database
+    '''
+
+    data  = thread.music_database.read("status")
+    
+    if not "_saved" in data or data["_saved"] + 3 < time.time():
+    
+      data["music"]  = thread.music_ctrl
+      data["_saved"] = time.time()
+
+      if thread.music_ctrl["state"] == "State.Playing" or thread.music_ctrl["state"] == "State.Paused": 
+        data["_device"] = "music"
+    
+      thread.music_database.write("status",data)
+
+#------------------
+
 def musicPlayList(thread):
     '''Play list, detect end of file and than play next'''
 
     wait_time = 0.5
     running   = True
+    last_load = False  
+    last_run  = thread.music_database.read("status")
+    
+    if "_device" in last_run and last_run["_device"] == "music" and last_run["music"]["playing"] == 1:
+      logging.info("Load playlist and song from last run ...")
+      last_load          = True
+      last_music         = last_run["music"]
+      thread.music_loaded = 1
+      thread.music_ctrl   = last_music
+      
+      if "playlist_files" in last_music:
+         thread.music_list     = last_music["playlist_files"]
+         thread.music_list_p   = last_music["playlist_pos"]
+         thread.music_load_new = True
+         
     while running and not thread.stopProcess:
 
       # wait a moment ...
       time.sleep(wait_time)
       logging.debug("List active: " + str(thread.music_load_new) + "; List: " + str(len(thread.music_list)) + "; Position: " + str(thread.music_list_p) )
 
-      # check if RFID card detected -> load playlist, if new
-      musicLoadRfidList(thread)
-
-      # check player state
-      musicPlaying(thread)
+      musicLoadRfidList(thread)     # check if RFID card detected -> load playlist, if new
+      musicPlaying(thread)          # check player state
+      musicSaveStatus(thread)       # save playback status to database
 
       # start playing a new song ?
       logging.debug("CHECK: " + str(len(thread.music_list)) + "/" + str(thread.music_load_new))
@@ -317,23 +352,31 @@ def musicPlayList(thread):
         thread.player.set_media(thread.media)
         thread.player.play()
         time.sleep(2)
+        
+        # Jump to position if first load ...
+        if last_load:
+           position = (thread.music_ctrl["position"] / thread.music_ctrl["length"]) * 100
+           thread.playing_jump(position)
+           last_load = False
 
+        # check player state
         musicPlaying(thread)
 
         # if music is still playing ... get playback status
         if thread.music_ctrl["playing"] != 0:
 
-           thread.music_ctrl["file"]         = file
-           thread.music_ctrl["song"]         = {}
-           thread.music_ctrl["song"]         = musicGetInfo(thread,file.replace(music_dir,""))
-           thread.music_ctrl["song"]["info"] = "Title loaded"
-           thread.music_ctrl["playlist"]     = musicGetInfoList(thread,thread.music_list)
-           thread.music_ctrl["playlist_pos"] = thread.music_list_p
-           thread.music_ctrl["playlist_len"] = len(thread.music_list)
-           thread.music_ctrl["status"]       = "play"
-           thread.music_ctrl["length"]       = float(thread.player.get_length()) / 1000
-           thread.music_ctrl["position"]     = float(thread.player.get_time()) / 1000
-           thread.music_load_new             = False
+           thread.music_ctrl["file"]             = file
+           thread.music_ctrl["song"]             = {}
+           thread.music_ctrl["song"]             = musicGetInfo(thread,file.replace(music_dir,""))
+           thread.music_ctrl["song"]["info"]     = "Title loaded"
+           thread.music_ctrl["playlist"]         = musicGetInfoList(thread,thread.music_list)
+           thread.music_ctrl["playlist_pos"]     = thread.music_list_p
+           thread.music_ctrl["playlist_len"]     = len(thread.music_list)
+           thread.music_ctrl["playlist_files"]   = thread.music_list           
+           thread.music_ctrl["status"]           = "play"
+           thread.music_ctrl["length"]           = float(thread.player.get_length()) / 1000
+           thread.music_ctrl["position"]         = float(thread.player.get_time()) / 1000
+           thread.music_load_new                 = False
 
         # if music is not playing
         else:

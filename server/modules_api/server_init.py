@@ -73,14 +73,10 @@ def speek_message(message):
    fname_UE    = mbox.errormsg_dir + stage.language + "_UNKNOWN-ERROR.mp3"
    fname_UE_EN = mbox.errormsg_dir + "EN_UNKNOWN-ERROR.mp3"
    
-   if os.path.isfile(fname):
-     thread_music_ctrl.play_file(fname)
-   elif os.path.isfile(fname_EN):
-     thread_music_ctrl.play_file(fname_EN)
-   elif os.path.isfile(fname_UE):
-     thread_music_ctrl.play_file(fname_UE)
-   else:
-     thread_music_ctrl.play_file(fname_UE)
+   if os.path.isfile(fname):       thread_music_ctrl.play_file(fname)
+   elif os.path.isfile(fname_EN):  thread_music_ctrl.play_file(fname_EN)
+   elif os.path.isfile(fname_UE):  thread_music_ctrl.play_file(fname_UE)
+   else:                           thread_music_ctrl.play_file(fname_UE)
 
 #-------------------------------------------------
 # Load DB and threads for playback control

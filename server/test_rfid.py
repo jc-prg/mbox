@@ -78,7 +78,7 @@ def loop_rfid_read():
 
            # If a card is found
            if status == MIFAREReader.MI_OK:
-               logging.info( "Card detected." )
+               logging.info( "Card detected ... " +str(status)  )
 
                # Get the UID of the card
                (status,uid) = MIFAREReader.MFRC522_Anticoll()
@@ -96,14 +96,14 @@ def loop_rfid_read():
 
            else:
                if card_id == "":
-                  logging.info( "waiting ..." )
+                  logging.info( "waiting ... " + str(status) )
 
                else:
                   card_id == ""
                   if i > 0:
                      i = 0
                   elif i != -1:
-                     call_api("setcard","no_card")
+                     #call_api("setcard","no_card")
                      i = -1
 
 

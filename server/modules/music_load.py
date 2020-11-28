@@ -185,7 +185,7 @@ def checkIfCardExists(data_cards,album,artist,uuid):
       if "," in card_id:
 
         # if data error
-        if len(data_cards[card_id] < 3: return data_cards, ""
+        if len(data_cards[card_id]) < 3: return data_cards, ""
 
         # check if album and artist exist
         if data_cards[card_id][1] == album and data_cards[card_id][2] == artist:

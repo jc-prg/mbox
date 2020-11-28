@@ -1,7 +1,7 @@
 import modules.jcJson          as jcJSON
 import modules.config_stage    as stage
 import modules.config_mbox     as mbox
-import modules.speekmsg        as speek
+import modules.speakmsg        as speak
 
 import logging, time, uuid
 import couchdb, requests, json
@@ -30,13 +30,13 @@ class jcCouchDB ():
       connects2db  = 0
       max_connects = 30
 
-      self.speek = speek.speekThread(4, "Thread Speek", 1, "")  #  jcJSON.read("music"), jcJSON.read("radio"))
-      self.speek.start()
+      self.speak = speak.speakThread(4, "Thread speak", 1, "")  #  jcJSON.read("music"), jcJSON.read("radio"))
+      self.speak.start()
 
       while connects2db < max_connects+1:
 
           if connects2db == 8 or connects2db == 15 or connects2db == 25:
-              self.speek.speek_message("WAITING-FOR-DB")
+              self.speak.speak_message("WAITING-FOR-DB")
 
           try:
               logging.info("Try to connect to CouchDB")
@@ -52,10 +52,10 @@ class jcCouchDB ():
 
           if connects2db == max_connects:
 
-              self.speek.speek_message("NO-DB-CONNECTION")
+              self.speak.speak_message("NO-DB-CONNECTION")
               time.sleep(1)
-              if stage.speek_ask_whom != "ASK--FOR-HELP":
-                 self.speek.speek_message(stage.speek_ask_whom)
+              if stage.speak_ask_whom != "ASK--FOR-HELP":
+                 self.speak.speak_message(stage.speak_ask_whom)
 
               logging.warning("Error connecting to CouchDB, give up.")
               sys.exit(1)  ### -> LEADS TO AN ERROR !!!
@@ -175,17 +175,14 @@ class jcCouchDB ():
            db = self.database[db_key]
            self.cache[db_key] = db
 
-           if entry_key == "":
-              return db["main"]["data"]
-
-           elif entry_key in db["main"]["data"]:
-              return db["main"]["data"][entry_key]
+           if entry_key == "":                    return db["main"]["data"]
+           elif entry_key in db["main"]["data"]:  return db["main"]["data"][entry_key]
 
        else:
            logging.warn("CouchDB ERROR read: " + db_key + " - " + str(int(start_time - time.time())) + "s")
            data = {}
-           self.create(db_key, data)
-           return
+           self.create(db_key) #, data)
+           return self.database[db_key]["main"]["data"]
 
 
    #--------------------------------------

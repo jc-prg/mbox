@@ -380,12 +380,13 @@ function mboxAlbumList(data) {
 	mbox_playlist_queue["tracks"]   = track_list;
 
 	// Check if Cover exists
-        var cover  = mboxCoverAlbum_new(uuid,albums);
+        var cover       = mboxCoverAlbum_new(uuid,albums);
         if (cover == "") { cover = default_cover; }
 
 	console.log("album-id: "+albums["uuid"]+"/"+uuid + " ("+cover+")");
 
 	// Write album cover
+        var onclick    = "mboxCoverAlbum_alert(\""+cover+"\");";
 	text += "<div id=\"scrollto2_"+uuid.replace(/-/g,"")+"\">";
 	text += "<div class=\"album_cover\" style=\"background:url("+cover+");background-size:contain;background-position:center;background-repeat:no-repeat;\" onclick='" + onclick + "'>";
 	text += "</div>";
@@ -551,7 +552,6 @@ function mboxAlbumDelete_msg(data,title) {
 	mboxDataReturnMsg(data,lang("ALBUM_DELETED")+"<br/><b>"+title,lang("ALBUM_DELETE_ERROR")+"<br/><b>"+title);
         mboxAlbumAll_load();
         }
-
 
 
 // track info as popup

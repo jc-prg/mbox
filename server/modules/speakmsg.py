@@ -20,7 +20,7 @@ from decimal             import *
 # ------------------------
 # THREADING CLASS
 
-class speekThread (threading.Thread):
+class speakThread (threading.Thread):
 
    def __init__(self, threadID, name, counter, database):
       '''set initial values to vars and start pygame.mixer'''
@@ -58,12 +58,12 @@ class speekThread (threading.Thread):
       return "Ended"
 
     
-   def speek_message(self, message):
+   def speak_message(self, message):
 
       self.player.audio_set_volume(self.default_volume)
       self.player.audio_set_mute(False)
 
-      if stage.speek_msg != "yes": return
+      if stage.speak_msg != "yes": return
    
       fname       = mbox.errormsg_dir + stage.language + "_" + message + ".mp3"
       fname_EN    = mbox.errormsg_dir + "EN_" + message + ".mp3"

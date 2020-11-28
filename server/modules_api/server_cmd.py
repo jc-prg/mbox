@@ -10,7 +10,7 @@ import modules.jcCouchDB      as jcCouch
 import modules.music_load     as music_load
 import modules.music_control  as music_ctrl
 import modules.stream_control as radio_ctrl
-import modules.speekmsg       as speek
+import modules.speakmsg       as speak
 
 from modules.runcmd           import *
 from modules_api.server_init  import *
@@ -243,12 +243,12 @@ def mboxAPI_setCard(cardUID):
 
 # ---
 
-def mboxAPI_speek(message):
+def mboxAPI_speak(message):
        '''set card UID by microservice to central var'''
 
-       data  = mboxAPI_start("speek","speek","",message,"")
+       data  = mboxAPI_start("speak","speak","",message,"")
 
-       thread_speek.speek_message(message)
+       thread_speak.speak_message(message)
 
        data = mboxAPI_end(data)
        return(data)

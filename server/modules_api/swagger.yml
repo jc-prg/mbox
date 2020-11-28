@@ -592,13 +592,13 @@ paths:
               STATUS:
                 $ref: "#/definitions/STATUS"
                 
-  /speek/{message}/:
+  /speak/{message}/:
     get:
-      operationId: modules_api.server_cmd.mboxAPI_speek
+      operationId: modules_api.server_cmd.mboxAPI_speak
       tags:
         - maintain
-      summary: speek message
-      description: speek message in the language, defined in the presets (has to exist, e.g. "LETS-GO")
+      summary: speak message
+      description: speak message in the language, defined in the presets (has to exist, e.g. "LETS-GO")
       parameters:
         - name: message
           in: path

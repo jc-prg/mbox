@@ -180,18 +180,21 @@ def checkIfCardExists(data_cards,album,artist,uuid):
 
     update_time = time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
     for card_id in data_cards:
-    
+
       # check if card
       if "," in card_id:
-      
+
+        # if data error
+        if len(data_cards[card_id] < 3: return data_cards, ""
+
         # check if album and artist exist
         if data_cards[card_id][1] == album and data_cards[card_id][2] == artist:
-        
+
           data_cards[card_id][0] = uuid                                                       # replace old UUID by current UUID
-          
+
           if len(data_cards[card_id]) > 3:  data_cards[card_id][3] = update_time              # add date when replaced UUID last time
           else:                             data_cards[card_id].append(update_time)
-            
+
           return data_cards, card_id	    # return data and card_id
 
     return data_cards, ""
@@ -444,7 +447,7 @@ def reloadMusic(data,all=True,thread=""):
            # calculate album size in bytes
            data_album_info[a_uuid]["albumsize"]       = data_album_info[a_uuid]["albumsize"]   + data_tracks[t_key]["filesize"]
            if "length" in data_tracks[t_key]: 
-             data_album_info[a_uuid]["albumlength"]   = str(data_album_info[a_uuid]["albumlength"]) + str(data_tracks[t_key]["length"])
+             data_album_info[a_uuid]["albumlength"]   = int(data_album_info[a_uuid]["albumlength"]) + int(data_tracks[t_key]["length"])
 
            # collect genre information from tracks
            if "genre" in data_tracks[t_key]:

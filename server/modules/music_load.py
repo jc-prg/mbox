@@ -444,7 +444,7 @@ def reloadMusic(data,all=True,thread=""):
            # calculate album size in bytes
            data_album_info[a_uuid]["albumsize"]       = data_album_info[a_uuid]["albumsize"]   + data_tracks[t_key]["filesize"]
            if "length" in data_tracks[t_key]: 
-             data_album_info[a_uuid]["albumlength"]   = data_album_info[a_uuid]["albumlength"] + data_tracks[t_key]["length"]
+             data_album_info[a_uuid]["albumlength"]   = str(data_album_info[a_uuid]["albumlength"]) + str(data_tracks[t_key]["length"])
 
            # collect genre information from tracks
            if "genre" in data_tracks[t_key]:

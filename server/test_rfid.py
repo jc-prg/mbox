@@ -57,16 +57,6 @@ def get_active_stage():
   settings = jcJSON.read("../../active")
   return settings["active_stage"]
 
-if stage.test == True:
-  logging.info("Start RFID module: TEST STAGE ("+get_active_stage()+")")
-  url  = "http://"+stage.server_ip+":"+str(stage.server_port)+"/api/"
-  this_stage = "test"
-else:
-  logging.info("Start RFID module: PROD STAGE ("+get_active_stage()+")")
-  url  = "http://"+stage.server_ip+":"+str(stage.server_port)+"/api/"
-  this_stage = "prod"
-
-
 #-----------------------------------
 
 cmd              = {}
@@ -138,7 +128,8 @@ def loop_rfid_read():
                   # Print UID
                   logging.info("Card read UID: "+str(uid[0])+","+str(uid[1])+","+str(uid[2])+","+str(uid[3]))
                   card_id = str(uid[0])+","+str(uid[1])+","+str(uid[2])+","+str(uid[3])
-                  call_api("setcard",card_id)
+                  #call_api("setcard",card_id)
+                  print(card_id)
                   time.sleep(int(wait*3))
                   i = 1
 

@@ -564,7 +564,8 @@ def musicUuid2Files(thread,uuid_list):
     songs = thread.music_database.read_cache("tracks")
     for x in uuid_list:
       #print songs[x]["file"]
-      file_list.append(songs[x]["file"])
+      if x in songs:
+        file_list.append(songs[x]["file"])
 
     return file_list
 

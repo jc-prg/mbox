@@ -60,8 +60,8 @@ def get_active_stage():
 #-----------------------------------
 
 cmd              = {}
-cmd["status"]    = url+"status/"
-cmd["setcard"]   = url+"set-card/" # + card_id
+cmd["status"]    = "" #url+"status/"
+cmd["setcard"]   = "" #url+"set-card/" # + card_id
 
 wait             = 0.5
 

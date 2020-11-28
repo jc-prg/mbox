@@ -73,6 +73,9 @@ def loop_rfid_read():
 
     while ProcessRunning:
 
+           # reset card_id for testing
+           card_id      = ""
+
            # Scan for card
            (status,TagType) = MIFAREReader.MFRC522_Request(MIFAREReader.PICC_REQIDL)
 

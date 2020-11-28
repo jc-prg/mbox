@@ -30,6 +30,10 @@ import RPi.GPIO             as GPIO
 import modules_gpio.config  as gpio
 import modules_rfid.MFRC522 as MFRC522
 
+#---------------------------------------------
+
+stage.test = True
+
 # start and configure logging
 #----------------------------------------------
 import logging
@@ -52,8 +56,6 @@ else:
 def get_active_stage():
   settings = jcJSON.read("../../active")
   return settings["active_stage"]
-
-stage.test = True
 
 if stage.test == True:
   logging.info("Start RFID module: TEST STAGE ("+get_active_stage()+")")

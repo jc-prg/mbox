@@ -52,37 +52,10 @@ else:
 # init
 #-----------------------------------
 
-# read from file, which stage should be use ... to switch between stages during runtime
-def get_active_stage():
-  settings = jcJSON.read("../../active")
-  return settings["active_stage"]
-
-#-----------------------------------
-
-cmd              = {}
-cmd["status"]    = "" #url+"status/"
-cmd["setcard"]   = "" #url+"set-card/" # + card_id
-
 wait             = 0.5
 
 ProcessRunning   = True
 ServerRunning    = False
-
-#----------------------
-
-def call_api(command,card_id):
-    data1 = {}
-    logging.info("Read API: " + command + ":" + card_id)
-
-    try:
-      response = requests.put(cmd[command] + card_id + "/")
-      data1     = response.json()
-
-    except requests.exceptions.RequestException as e:
-      logging.info("Error connecting to API: " + str(e))
-      data1     = {}
-
-    return data1
 
 #----------------------
 
@@ -99,18 +72,6 @@ def loop_rfid_read():
     logging.info("Start RFID detection ...")
 
     while ProcessRunning:
-
-        # switch on/off
-        act_active = get_active_stage()
-
-        #logging.info("STAGE..."+act_active+"/"+last_active+"//"+this_stage)
-        if (act_active == "" or act_active != last_active):
-
-            logging.info("STAGE...DIFFERENT ("+act_active+"/"+this_stage+")" )
-            last_active = act_active
-
-
-        if this_stage == act_active:
 
            # Scan for card
            (status,TagType) = MIFAREReader.MFRC522_Request(MIFAREReader.PICC_REQIDL)
@@ -154,8 +115,6 @@ def loop_rfid_read():
 def end_all(end1,end2):
     global ProcessRunning
     ProcessRunning = False
-    call_api("setcard","no_card")
-
 
 
 #-----------------------------------

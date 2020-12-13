@@ -48,20 +48,24 @@ def init_logging(string):
     if (log_level == "debug"): 
       logging.basicConfig(level=logging.DEBUG)       # DEBUG, INFO, WARNING, ERROR, CRITICAL
       logging.info("Start - Log-Level DEBUG ...")
-   
+      logging.info("--------------------------------")
+      logging.info(string)
+      logging.info("--------------------------------")       
+       
     elif (log_level == "info"): 
       logging.basicConfig(level=logging.INFO)       # DEBUG, INFO, WARNING, ERROR, CRITICAL
       logging.info("Start - Log-Level INFO ...")
+      logging.info("Start - Log-Level DEBUG ...")
+      logging.info("--------------------------------")
+      logging.info(string)
+      logging.info("--------------------------------")       
+    
    
     elif (log_level == "warning"): 
       logging.basicConfig(level=logging.WARNING)    # DEBUG, INFO, WARNING, ERROR, CRITICAL
-      logging.warning("Start - Log-Level WARNING ...")
+      logging.warning("Start ["+string+"] - Log-Level WARNING ...")
       
     else: 
       logging.basicConfig(level=logging.ERROR)    # DEBUG, INFO, WARNING, ERROR, CRITICAL
-      logging.error("Start - Log-Level ERROR ...")     
-   
-    logging.warning("--------------------------------")
-    logging.warning(string)
-    logging.warning("--------------------------------")    
+      logging.error("Start ["+string+"] Log-Level ERROR ...")
 

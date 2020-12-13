@@ -82,7 +82,7 @@ def init_logging(string,logfilename="",stage="test"):
       logging.warning("Start ["+string+"] - Log-Level WARNING ...")
       
     else: 
-      if (logfilename != ""):
+      if (logfilename != "" and stage != "test"):
          logging.basicConfig(filename=logfilename,
                        filemode='a',
                        format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',

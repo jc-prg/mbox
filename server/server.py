@@ -4,6 +4,7 @@
 # load basic modules and configuration
 #----------------------------------------------
 import time
+import logging
 import modules.config_stage    as stage
 import modules.config_mbox     as mbox
 

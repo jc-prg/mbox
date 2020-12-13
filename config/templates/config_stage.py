@@ -53,16 +53,8 @@ def init_logging(string,logfilename="",stage="test"):
       logging.info(string)
       logging.info("--------------------------------")       
        
-    elif (log_level == "info" and stage != "test"): 
-      if (logfilename != "" and stage != "test"):
-         logging.basicConfig(filename=logfilename,
-                       filemode='a',
-                       format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
-                       datefmt='%d.%m.%y %H:%M:%S',
-                       level=logging.INFO)    
-      else:
-         logging.basicConfig(level=logging.INFO)
-
+    elif (log_level == "info"): 
+      logging.basicConfig(level=logging.INFO)
       logging.info("Start - Log-Level INFO ...")
       logging.info("--------------------------------")
       logging.info(string)

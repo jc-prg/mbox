@@ -437,26 +437,26 @@ function mboxPlaylistEditTracks(data) {
 	var tracklist		= data["DATA"]["_selected"]["tracks"];
 	var trackinfo		= data["DATA"]["tracks"];
 	var albuminfo		= data["DATA"]["album_info"];
-	
+
 	// ALBUM LIST - add tracks to playlist
 	if (uuid.includes("a_")) {
 		if (tracklist.length > 0) {
 			var text_album	= "";
-			var onclick_add	=  "mboxApp.requestAPI('PUT',['playlist_items','add',   '"+filter+"','"+uuid+"'],'', mboxPlaylistAddTrackInfo);";			
-			
+			var onclick_add	=  "mboxApp.requestAPI('PUT',['playlist_items','add',   '"+filter+"','"+uuid+"'],'', mboxPlaylistAddTrackInfo);";
+
 			text_album	+= " <b class=\"album_edit_pl\"   onclick=\""+onclick_add+"\">(+)</b> &nbsp;"; 
 			text_album	+= "<b>"+lang("ALBUM_COMPLETE")+":</b> " + album["album"] + "<br/>";
-			
+
 			for (var i=0;i<tracklist.length;i++) {
-				var onclick_add    =  "mboxApp.requestAPI('PUT',['playlist_items','add',   '"+filter+"','"+tracklist[i]+"'],'', mboxPlaylistAddTrackInfo);";			
+				var onclick_add    =  "mboxApp.requestAPI('PUT',['playlist_items','add',   '"+filter+"','"+tracklist[i]+"'],'', mboxPlaylistAddTrackInfo);";
 				var onclick_delete =  "mboxApp.requestAPI('PUT',['playlist_items','delete','"+filter+"','"+tracklist[i]+"'],'', mboxPlaylistDeleteTrackInfo);";
-	
+
 				// text_album += " <b class=\"album_delete_pl\" onclick=\""+onclick_delete+"\">(-)</b> &nbsp;";
 				text_album += " <b class=\"album_edit_pl\"   onclick=\""+onclick_add+"\">(+)</b> &nbsp;"; 
-	
+
 				if (tracklist[i] in trackinfo) 		{ text_album += trackinfo[tracklist[i]]["title"]; }
 				else 					{ text_album += "<i>"+lang("NOT_FOUND")+": " + tracklist[i] + "</i>"; }
-				
+
 				text_album += "<br/>";
 				}
 			setTextById("selectTrack", text_album);

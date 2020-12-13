@@ -20,6 +20,7 @@ import modules.config_mbox  as mbox
 # set start time and write title/version/stage
 #----------------------------------------------
 mbox.start_time = time.time()
+
 print("--------------------------------")
 print(mbox.APIname_RFID + mbox.APIversion + "   (" + str(stage.rollout) + ")")
 print("--------------------------------")
@@ -32,17 +33,23 @@ import modules_rfid.MFRC522 as MFRC522
 
 # start and configure logging
 #----------------------------------------------
-import logging
-if stage.test:
-    if mbox.DEBUG:
-       logging.basicConfig(level=logging.DEBUG)  # DEBUG, INFO, WARNING, ERROR, CRITICAL
-       logging.info("Start - Log-Level DEBUG ...")
-    else:
-       logging.basicConfig(level=logging.INFO)   # DEBUG, INFO, WARNING, ERROR, CRITICAL
-       logging.info("Start - Log-Level INFO ...")
-else:
-   logging.basicConfig(level=logging.WARN)    # DEBUG, INFO, WARNING, ERROR, CRITICAL
-   logging.info("Start - Log-Level WARN ...")
+
+
+stage.init_logging( mbox.APIname_RFID + mbox.APIversion + "   (" + str(stage.rollout) + ")" )
+
+#logging.warning("--------------------------------")
+#logging.warning(mbox.APIname_RFID + mbox.APIversion + "   (" + str(stage.rollout) + ")")
+#logging.warning("--------------------------------")
+#if stage.test:
+#    if mbox.DEBUG:
+#       logging.basicConfig(level=logging.DEBUG)  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+#       logging.info("Start - Log-Level DEBUG ...")
+#    else:
+#       logging.basicConfig(level=logging.INFO)   # DEBUG, INFO, WARNING, ERROR, CRITICAL
+#       logging.info("Start - Log-Level INFO ...")
+#else:
+#   logging.basicConfig(level=logging.WARN)    # DEBUG, INFO, WARNING, ERROR, CRITICAL
+#   logging.info("Start - Log-Level WARN ...")
    
 #-----------------------------------
 # init

@@ -6,6 +6,7 @@
 # this script will be replace by
 # the rollout script for PROD stage
 
+
 rollout        = "${MBOX_CURRENT_STAGE}"
 
 data_dir       = "${MBOX_DIR_DATA}"
@@ -27,8 +28,40 @@ server_port    = ${MBOX_SERVER_PORT}
 server_ip      = "${MBOX_DATABASE_SERVER}"
 server_dns     = [ "${DNS01}","${DNS02}","${DNS03}"]
 
+log_level      = "${MBOX_LOGLEVEL}"
+
+# ---------------------------------
+
 if rollout == "test": test  = True
 else:                 test  = False
 
-#### -> add more dir data
+
+# ---------------------------------
+
+import logging
+
+def init_logging(string):
+    """
+    Initialize logging and print software title
+    """
+    
+    if (log_level == "debug"): 
+      logging.basicConfig(level=logging.DEBUG)       # DEBUG, INFO, WARNING, ERROR, CRITICAL
+      logging.info("Start - Log-Level DEBUG ...")
+   
+    elif (log_level == "info"): 
+      logging.basicConfig(level=logging.INFO)       # DEBUG, INFO, WARNING, ERROR, CRITICAL
+      logging.info("Start - Log-Level INFO ...")
+   
+    elif (log_level == "warning"): 
+      logging.basicConfig(level=logging.WARNING)    # DEBUG, INFO, WARNING, ERROR, CRITICAL
+      logging.warning("Start - Log-Level WARNING ...")
+      
+    else: 
+      logging.basicConfig(level=logging.ERROR)    # DEBUG, INFO, WARNING, ERROR, CRITICAL
+      logging.error("Start - Log-Level ERROR ...")     
+   
+    logging.warning("--------------------------------")
+    logging.warning(string)
+    logging.warning("--------------------------------")    
 

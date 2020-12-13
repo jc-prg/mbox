@@ -38,6 +38,7 @@ services:
       - ${MBOX_DATABASE_PORT}:5984
     volumes:
       - ${MBOX_DIR_DATA}/couchdb:/opt/couchdb/data
+      - ./config/couchdb/default.ini:/opt/couchdb/etc/default.ini
     environment:
       - 'COUCHDB_USER=${MBOX_DB_USER}'
       - 'COUCHDB_PASSWORD=${MBOX_DB_PASSWORD}'

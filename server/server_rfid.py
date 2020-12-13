@@ -31,7 +31,7 @@ import modules_rfid.MFRC522 as MFRC522
 # start and configure logging
 #----------------------------------------------
 
-stage.init_logging( mbox.APIname_RFID + mbox.APIversion + "   (" + str(stage.rollout) + "/"+str(stage.log_level)+")", , '/log/server_RFID.log' )
+stage.init_logging( mbox.APIname_RFID + mbox.APIversion + "   (" + str(stage.rollout) + "/"+str(stage.log_level)+")", '/log/server_RFID.log' )
 
 if (stage.log_level != "error"): 
    GPIO.setwarnings(False)

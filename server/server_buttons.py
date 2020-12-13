@@ -7,6 +7,7 @@
 
 import RPi.GPIO as GPIO
 import time
+import logging
 import requests
 
 import modules.config_stage as stage

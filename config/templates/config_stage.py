@@ -40,7 +40,7 @@ else:                 test  = False
 
 import logging
 
-def init_logging(string="info",logfilename=""):
+def init_logging(string,logfilename=""):
     """
     Initialize logging and print software title
     """
@@ -53,7 +53,15 @@ def init_logging(string="info",logfilename=""):
       logging.info("--------------------------------")       
        
     elif (log_level == "info"): 
-      logging.basicConfig(level=logging.INFO)       # DEBUG, INFO, WARNING, ERROR, CRITICAL
+      if (logfilename != ""):
+         logging.basicConfig(filename=logfilename,
+                       filemode='a',
+                       format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
+                       datefmt='%d.%m.%y %H:%M:%S',
+                       level=logging.INFO)    
+      else:
+         logging.basicConfig(level=logging.INFO)
+
       logging.info("Start - Log-Level INFO ...")
       logging.info("--------------------------------")
       logging.info(string)
@@ -61,23 +69,31 @@ def init_logging(string="info",logfilename=""):
     
    
     elif (log_level == "warning"): 
-      logging.basicConfig(level=logging.WARNING)    # DEBUG, INFO, WARNING, ERROR, CRITICAL
-      logging.warning("Start ["+string+"] - Log-Level WARNING ...")
-      
-    else: 
-      logging.basicConfig(level=logging.ERROR)    # DEBUG, INFO, WARNING, ERROR, CRITICAL
-      logging.error("Start ["+string+"] Log-Level ERROR ...")
-      
-      
-    if (logfilename != ""):
-      logging.info("Set logfile "+logfilename)
-      logging.basicConfig(filename=logfilename,
+      if (logfilename != ""):
+         logging.basicConfig(filename=logfilename,
                        filemode='a',
                        format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
                        datefmt='%d.%m.%y %H:%M:%S',
-                       level=logging.WARN)    
-                       
+                       level=logging.WARNING)    
+      else:
+         logging.basicConfig(level=logging.WARNING)
+
+      logging.warning("Start ["+string+"] - Log-Level WARNING ...")
+      
+    else: 
+      if (logfilename != ""):
+         logging.basicConfig(filename=logfilename,
+                       filemode='a',
+                       format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
+                       datefmt='%d.%m.%y %H:%M:%S',
+                       level=logging.ERROR)    
+      else:
+         logging.basicConfig(level=logging.ERROR)
+         
+      logging.error("Start ["+string+"] Log-Level ERROR ...")
+           
     log = logging.getLogger("werkzeug")
     log.setLevel(logging.WARN)
+                      
 
 

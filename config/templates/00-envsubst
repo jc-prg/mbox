@@ -23,7 +23,9 @@ envsubst < "templates/active.json" > "$MBOX_DIR_DATA_ROOT/active.json"
 
 echo "> create start script"
 
-mkdir ../log
+if [[ ! -d "../log" ]]; then
+   mkdir ../log
+fi
 
 rm -rf ../start
 envsubst < "templates/start_mbox" > "../start"

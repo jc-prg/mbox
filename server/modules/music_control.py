@@ -532,13 +532,16 @@ def sortAlbumTracks(tracks,track_info):
 
      # check / read track order
      for x in tracks:
-        track_i = track_info[x]
+
+        if x not in track_info: return tracks
+
+        track_i = track_info[x]                # produces errors -> added check before
         track_o = track_i["track_num"][0]
-        
+
         if "/" in str(track_o):
           track_o = track_o.split("/")[0]
-        
-        try:  
+
+        try:
           track_order[x] = int(track_o)
         except:
           return tracks
@@ -561,7 +564,8 @@ def musicUuid2Files(thread,uuid_list):
     songs = thread.music_database.read_cache("tracks")
     for x in uuid_list:
       #print songs[x]["file"]
-      file_list.append(songs[x]["file"])
+      if x in songs:
+        file_list.append(songs[x]["file"])
 
     return file_list
 

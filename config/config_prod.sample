@@ -23,7 +23,7 @@ export WLAN_DEVICE="wlan0"
 
 # Wifi Data
 export WIFI_SSID="YourWifi"            # default network to connect to ...
-export WIFI_PWD=""                     # pwd for default network ... use "\$" instead of "$"
+export WIFI_PWD="YourPwd"              # pwd for default network ... use "\$" instead of "$"
 
 # Hotspot Data
 export HOTSPOT_SSID="JCmbox"
@@ -38,6 +38,7 @@ export ETH="eth0"
 # Identify device IP addresses
 export WLAN0_IP=`/sbin/ip -o -4 addr list $WLAN | awk '{print $4}' | cut -d/ -f1`
 export ETH0_IP=`/sbin/ip -o -4 addr list $ETH | awk '{print $4}' | cut -d/ -f1`
+export SERVER_IP="$WLAN0_IP"
 
 # Ports
 export MBOX_CLIENT_PORT=80
@@ -53,7 +54,7 @@ export DNS03="208.67.222.222"
 export MBOX_DOCKER_DATABASE="mbox_db_$MBOX_CURRENT_STAGE"
 export MBOX_DOCKER_CLIENT="mbox_client_$MBOX_CURRENT_STAGE"
 export MBOX_DOCKER_SERVER="mbox_server_$MBOX_CURRENT_STAGE"
-export MBOX_DATABASE_SERVER="$ETH0_IP"
+export MBOX_DATABASE_SERVER="$SERVER_IP"
 
 # Docker container names
 export MBOX_DB_USER="mbox"

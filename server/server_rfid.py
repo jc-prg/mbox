@@ -34,23 +34,11 @@ import modules_rfid.MFRC522 as MFRC522
 # start and configure logging
 #----------------------------------------------
 
+stage.init_logging( mbox.APIname_RFID + mbox.APIversion + "   (" + str(stage.rollout) + "/"+str(stage.log_level)+")" )
 
-stage.init_logging( mbox.APIname_RFID + mbox.APIversion + "   (" + str(stage.rollout) + ")" )
+if (stage.log_level != "error"): 
+   GPIO.setwarnings(False)
 
-#logging.warning("--------------------------------")
-#logging.warning(mbox.APIname_RFID + mbox.APIversion + "   (" + str(stage.rollout) + ")")
-#logging.warning("--------------------------------")
-#if stage.test:
-#    if mbox.DEBUG:
-#       logging.basicConfig(level=logging.DEBUG)  # DEBUG, INFO, WARNING, ERROR, CRITICAL
-#       logging.info("Start - Log-Level DEBUG ...")
-#    else:
-#       logging.basicConfig(level=logging.INFO)   # DEBUG, INFO, WARNING, ERROR, CRITICAL
-#       logging.info("Start - Log-Level INFO ...")
-#else:
-#   logging.basicConfig(level=logging.WARN)    # DEBUG, INFO, WARNING, ERROR, CRITICAL
-#   logging.info("Start - Log-Level WARN ...")
-   
 #-----------------------------------
 # init
 #-----------------------------------
@@ -183,8 +171,6 @@ signal.signal(signal.SIGINT, end_all)
 #-----------------------------------
 
 if __name__ == '__main__':
-
-   print("test")
 
    # Create an object of the class MFRC522
    MIFAREReader = MFRC522.MFRC522()

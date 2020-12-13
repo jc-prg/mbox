@@ -16,24 +16,16 @@ import modules.jcJson       as jcJSON
 
 # set start time and write title/version/stage
 #----------------------------------------------
+
 mbox.start_time = time.time()
-print("--------------------------------")
-print(mbox.APIname_BTN + mbox.APIversion + "   (" + str(stage.rollout) + ")")
-print("--------------------------------")
 
 # start and configure logging
 #----------------------------------------------
-import logging
-if stage.test:
-    if mbox.DEBUG:
-       logging.basicConfig(level=logging.DEBUG)  # DEBUG, INFO, WARNING, ERROR, CRITICAL
-       logging.info("Start - Log-Level DEBUG ...")
-    else:
-       logging.basicConfig(level=logging.INFO)   # DEBUG, INFO, WARNING, ERROR, CRITICAL
-       logging.info("Start - Log-Level INFO ...")
-else:
-   logging.basicConfig(level=logging.WARN)    # DEBUG, INFO, WARNING, ERROR, CRITICAL
-   logging.info("Start - Log-Level WARN ...")
+
+stage.init_logging( mbox.APIname_BTN + mbox.APIversion + "   (" + str(stage.rollout) + "/"+str(stage.log_level)+")" )
+
+if (stage.log_level != "error"): 
+   GPIO.setwarnings(False)
 
 #-----------------------------------
 # init

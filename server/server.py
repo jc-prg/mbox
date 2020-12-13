@@ -10,31 +10,11 @@ import modules.config_mbox     as mbox
 # set start time and write title/version/stage
 #----------------------------------------------
 mbox.start_time = time.time()
-print("--------------------------------")
-print(mbox.APIname + mbox.APIversion + "   (" + str(stage.rollout) + ")")
-print("--------------------------------")
 
 # start and configure logging
 #----------------------------------------------
-import logging
-if stage.test:
-    if mbox.DEBUG:
-       logging.basicConfig(level=logging.DEBUG)  # DEBUG, INFO, WARNING, ERROR, CRITICAL
-       logging.debug("MBOX Start (Log-Level DEBUG) ...")
-    else:
-       logging.basicConfig(level=logging.INFO)   # DEBUG, INFO, WARNING, ERROR, CRITICAL
-       logging.info("MBOX Start (Log-Level INFO) ...")
-else:
-   logging.basicConfig(filename='/log/server.log',
-                       filemode='a',
-                       format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
-                       datefmt='%d.%m.%y %H:%M:%S',
-                       level=logging.WARN)
 
-   log = logging.getLogger("werkzeug")
-   log.setLevel(logging.WARN)
-
-   logging.warn("MBOX Start (Log-Level WARN) ...")
+stage.init_logging( mbox.APIname + mbox.APIversion + "   (" + str(stage.rollout) + "/"+str(stage.log_level)+")", '/log/server.log' )
 
 # load API modules
 #----------------------------------------------

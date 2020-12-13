@@ -19,11 +19,8 @@ import modules.config_mbox  as mbox
 
 # set start time and write title/version/stage
 #----------------------------------------------
-mbox.start_time = time.time()
 
-print("--------------------------------")
-print(mbox.APIname_RFID + mbox.APIversion + "   (" + str(stage.rollout) + ")")
-print("--------------------------------")
+mbox.start_time = time.time()
 
 #---------------------------------------------
 
@@ -34,7 +31,7 @@ import modules_rfid.MFRC522 as MFRC522
 # start and configure logging
 #----------------------------------------------
 
-stage.init_logging( mbox.APIname_RFID + mbox.APIversion + "   (" + str(stage.rollout) + "/"+str(stage.log_level)+")" )
+stage.init_logging( mbox.APIname_RFID + mbox.APIversion + "   (" + str(stage.rollout) + "/"+str(stage.log_level)+")", , '/log/server_RFID.log' )
 
 if (stage.log_level != "error"): 
    GPIO.setwarnings(False)

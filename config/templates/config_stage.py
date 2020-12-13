@@ -40,7 +40,7 @@ else:                 test  = False
 
 import logging
 
-def init_logging(string):
+def init_logging(string="info",logfilename=""):
     """
     Initialize logging and print software title
     """
@@ -68,4 +68,16 @@ def init_logging(string):
     else: 
       logging.basicConfig(level=logging.ERROR)    # DEBUG, INFO, WARNING, ERROR, CRITICAL
       logging.error("Start ["+string+"] Log-Level ERROR ...")
+      
+      
+    if (logfilename != ""):
+      logging.basicConfig(filename=logfilename,
+                       filemode='a',
+                       format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
+                       datefmt='%d.%m.%y %H:%M:%S',
+                       level=logging.WARN)    
+                       
+    log = logging.getLogger("werkzeug")
+    log.setLevel(logging.WARN)
+
 

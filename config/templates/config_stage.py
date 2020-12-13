@@ -65,7 +65,7 @@ def init_logging(string,logfilename="",stage="test"):
       if (logfilename != "" and stage != "test"):
          logging.basicConfig(filename=logfilename,
                        filemode='a',
-                       format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
+                       format='%(asctime)s %(name)s %(levelname)s %(message)s',
                        datefmt='%d.%m.%y %H:%M:%S',
                        level=logging.WARNING)    
       else:
@@ -77,7 +77,7 @@ def init_logging(string,logfilename="",stage="test"):
       if (logfilename != "" and stage != "test"):
          logging.basicConfig(filename=logfilename,
                        filemode='a',
-                       format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
+                       format='%(asctime)s %(name)s %(levelname)s %(message)s',
                        datefmt='%d.%m.%y %H:%M:%S',
                        level=logging.ERROR)    
       else:

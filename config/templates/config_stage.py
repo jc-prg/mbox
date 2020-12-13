@@ -55,7 +55,6 @@ def init_logging(string="info",logfilename=""):
     elif (log_level == "info"): 
       logging.basicConfig(level=logging.INFO)       # DEBUG, INFO, WARNING, ERROR, CRITICAL
       logging.info("Start - Log-Level INFO ...")
-      logging.info("Start - Log-Level DEBUG ...")
       logging.info("--------------------------------")
       logging.info(string)
       logging.info("--------------------------------")       
@@ -71,6 +70,7 @@ def init_logging(string="info",logfilename=""):
       
       
     if (logfilename != ""):
+      logging.info("Set logfile "+logfilename)
       logging.basicConfig(filename=logfilename,
                        filemode='a',
                        format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',

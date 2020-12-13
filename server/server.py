@@ -31,9 +31,10 @@ logging.info("Start Server ..." + init.time_since_start())
 app = connexion.App(__name__, specification_dir="./")
 CORS(app.app)
 
-# Cead the swagger.yml file to configure the endpoints
+# Add the swagger.yml file to configure the endpoints
 logging.info("Load API Specification ..." + init.time_since_start())
 app.add_api("modules_api/swagger.yml")
+
 
 if __name__ == "__main__":
 

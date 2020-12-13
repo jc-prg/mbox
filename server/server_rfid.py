@@ -75,7 +75,7 @@ def call_api(command,card_id):
       data1     = response.json()
 
     except requests.exceptions.RequestException as e:
-      logging.info("Error connecting to API: " + str(e))
+      logging.error("Error connecting to API: " + str(e))
       data1     = {}
 
     return data1

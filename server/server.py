@@ -14,7 +14,7 @@ mbox.start_time = time.time()
 # start and configure logging
 #----------------------------------------------
 
-stage.init_logging( mbox.APIname + mbox.APIversion + "   (" + str(stage.rollout) + "/"+str(stage.log_level)+")", '/log/server.log' )
+stage.init_logging( mbox.APIname + mbox.APIversion + "   (" + str(stage.rollout) + "/"+str(stage.log_level)+")", '/log/server.log',stage.rollout )
 
 # load API modules
 #----------------------------------------------

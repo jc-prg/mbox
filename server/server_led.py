@@ -27,7 +27,7 @@ mbox.start_time = time.time()
 # start and configure logging
 #----------------------------------------------
 
-stage.init_logging( mbox.APIname_LED + mbox.APIversion + "   (" + str(stage.rollout) + "/"+str(stage.log_level)+")", '/log/server_LED.log' )
+stage.init_logging( mbox.APIname_LED + mbox.APIversion + "   (" + str(stage.rollout) + "/"+str(stage.log_level)+")", '/log/server_LED.log',stage.rollout )
 
 if (stage.log_level != "error"): 
    GPIO.setwarnings(False)

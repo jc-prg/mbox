@@ -40,9 +40,10 @@ else:                 test  = False
 
 import logging
 
-def init_logging(string,logfilename=""):
+def init_logging(string,logfilename="",stage="test"):
     """
     Initialize logging and print software title
+    When stage != "test" write and filename is specified, write log into file
     """
     
     if (log_level == "debug"): 
@@ -52,8 +53,8 @@ def init_logging(string,logfilename=""):
       logging.info(string)
       logging.info("--------------------------------")       
        
-    elif (log_level == "info"): 
-      if (logfilename != ""):
+    elif (log_level == "info" and stage != "test"): 
+      if (logfilename != "" and stage != "test"):
          logging.basicConfig(filename=logfilename,
                        filemode='a',
                        format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
@@ -69,7 +70,7 @@ def init_logging(string,logfilename=""):
     
    
     elif (log_level == "warning"): 
-      if (logfilename != ""):
+      if (logfilename != "" and stage != "test"):
          logging.basicConfig(filename=logfilename,
                        filemode='a',
                        format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',

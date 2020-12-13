@@ -22,7 +22,7 @@ mbox.start_time = time.time()
 # start and configure logging
 #----------------------------------------------
 
-stage.init_logging( mbox.APIname_BTN + mbox.APIversion + "   (" + str(stage.rollout) + "/"+str(stage.log_level)+")", '/log/server_BUTTONS.log' )
+stage.init_logging( mbox.APIname_BTN + mbox.APIversion + "   (" + str(stage.rollout) + "/"+str(stage.log_level)+")", '/log/server_BUTTONS.log',stage.rollout )
 
 if (stage.log_level != "error"): 
    GPIO.setwarnings(False)

@@ -313,8 +313,8 @@
 
 @media (max-width: 374px) {
   .album_cover 		{ width : 80px;  height :  80px; }
-  .album_cover.small	{ width : 15px;  height :  15px; }
-  .album_cover_descr	{ font-size : 10px; }
+  .album_cover.small		{ width : 15px;  height :  15px; }
+  .album_cover_descr		{ font-size : 10px; }
   .album_infos 		{ width : 165px; height :  80px; }
   .album_detail        	{ width : 268px; }
   .album_infos.new     	{ width : 140px; }
@@ -343,10 +343,10 @@
 
 @media (min-width: 1250px) {
 
-  .album_detail        { width : 640px; }
-  .album_control.new   { width : 495px; }
-  .album_infos.new     { width : 495px; }
-  .album_tracks_player { width : 630px; }
+  .album_detail        { width : 970px; }
+  .album_control.new   { width : 825px; }
+  .album_infos.new     { width : 825px; }
+  .album_tracks_player { width : 960px; }
 
   }
 

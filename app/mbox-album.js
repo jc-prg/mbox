@@ -4,6 +4,7 @@
 // show album list and details
 //--------------------------------------
 /* INDEX:
+function mboxListCount()
 function mboxAlbumAll_load(filter="",uuid="")
 function mboxAlbumAll(data)
 function mboxAlbumAll_section(count,title,last_title)
@@ -35,6 +36,19 @@ var mbox_list_pos    = 0;
 var mbox_list_load   = 0;
 var mbox_list_amount = 0;
 var mbox_list_last   = 0;
+
+//--------------------------------------
+
+function mboxListCount() {
+	var width = document.body.clientWidth;
+	var mbox_list_count;
+	
+	if (width > 1250)	{ mbox_list_count = 9; }
+	else if (width > 705)	{ mbox_list_count = 6; }
+	else			{ mbox_list_count = 3; }
+	
+	return mbox_list_count;
+	}
 
 
 // List albums
@@ -116,6 +130,7 @@ function mboxAlbumAll(data) {
 		var text1   = "";
 		var print1  = "";
 		var isvalidfilter = false;
+		var mbox_list_count = mboxListCount();
 
 		if (the_filter[0] in album_info[uuid] && album_info[uuid][the_filter[0]].indexOf(the_filter[1]) > -1) { isvalidfilter = true; }
 
@@ -125,7 +140,11 @@ function mboxAlbumAll(data) {
 			if (mbox_show_char) {
 				if (last_chapter != chapter) {
 					text1 = mboxAlbumAll_section(i,chapter,last_chapter);
-					if (text1 != "") { i++; text += text1; }
+					if (text1 != "") { 
+						i++; 
+						if (mbox_list_count > 6 && a > 1) {text += "<hr style='float:left;width:99%;border:#aaa solid 0.5px;'/>";}
+						text += text1; 
+						}
 					}
 				last_chapter = chapter;
 				}
@@ -270,9 +289,7 @@ function mboxAlbumList_load(i,uuid) {
 
 	// calculate which <DIV> is the right last in this row (to show in the next row) ... responsive design
 	var count = 3;
-	var width = document.body.clientWidth;
-	if (width > 705) { mbox_list_count = 6; }
-	else		 { mbox_list_count = 3; }
+	var mbox_list_count = mboxListCount();
 
 	mbox_list_pos = ((Math.floor((i-1)/mbox_list_count)+1) * mbox_list_count );
 	if (mbox_list_pos >= mbox_list_amount) { mbox_list_pos = mbox_list_amount-1; }
@@ -441,20 +458,27 @@ function mboxAlbumList(data) {
 	var tracks 	= {}
 	var i      	= 0;
 	var a      	= 0;
-	var max    	= albums["tracks"].length;
 	var withartist	= false;
 
 	// check, if compilation ... than show artist in row
 	if (artist == "Compilation") { withartist = true; }
+
+        // check, how many columns in the track list are required
+	var mbox_list_count	= mboxListCount();
+	var columns            = mbox_list_count/3;
 	
+	// prepare track list
 	var sorted_tracks	= mboxAlbumSortTracks( albums["tracks"], track_list );
 	var show_num		= true;
-	var count		= 0;
+	var max    		= albums["tracks"].length;
+	if (Math.round(max/columns) < (max/columns)) { max += 1; }
 	
+	var count		= 0;
 	for (var i=0;i<sorted_tracks.length;i++) {
 		count++;
 		text += mboxAlbumTrackRow(sorted_tracks[i],track_list,show_num,withartist,count-1);
-		if (count == Math.round(max/2)) { text += "</div><div class=\"album_tracks\">"; }
+		if (count == Math.round(max/columns)) 	{ text += "</div><div class=\"album_tracks\">"; }
+		if (count == 2*Math.round(max/columns)) 	{ text += "</div><div class=\"album_tracks\">"; }
 		}
 		
 	text += "</div>";

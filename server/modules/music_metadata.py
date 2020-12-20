@@ -211,7 +211,7 @@ def readID3(file,album_id="",album_nr=""):
 
         try:
           tags["disc_num"]     = audiofile.tag.disc	     # disc number
-          tabs["disc_total"]   = audiofile.tag.disc_total    # the total number of discs
+          tabs["disc_total"]   = audiofile.tag.disc_total  # the total number of discs
           
         except:
            logging.debug("No Disc Info")

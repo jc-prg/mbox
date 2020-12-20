@@ -534,8 +534,9 @@ def sortAlbumTracks(tracks,track_info):
      for x in tracks:
 
         if x not in track_info: return tracks
-
         track_i = track_info[x]                # produces errors -> added check before
+
+        if "track_num" not in track_i: return tracks
         track_o = track_i["track_num"][0]
 
         if "/" in str(track_o):

@@ -118,12 +118,12 @@ def readMutagen(file,ftype="mp4"):
         try:
           tags = ID3(file) #.tags
         except Exception as e:
-          logging.warn("Not an MP3 file"+file)
-          logging.warn(str(e))
+          logging.warning("Not an MP3 file"+file)
+          logging.warning(str(e))
           tags          = {}
           data["error"] = str(e)
       else:
-        logging.warn("File is empty: "+file)
+        logging.warning("File is empty: "+file)
         tags          = {}
         data["error"] = "File is empty"
 
@@ -133,27 +133,24 @@ def readMutagen(file,ftype="mp4"):
           value = tags[f_tag]
           data[r_tag] = value[0]
 
-    if ftype == "mp4" and "track_no" in data:
-      track_no = str(data["track_no"])
-      track_no = track_no.replace("(","")
-      track_no = track_no.replace(")","")
-      data["track_num"]    = track_no.split(",")
+    if ftype == "mp4":
       data["length"]       = MP4(file).info.length      
+      
+    if ftype == "mp4" and "track_no" in data:
+      track_no             = str(data["track_no"])
+      track_no             = track_no.replace("(","")
+      track_no             = track_no.replace(")","")
+      data["track_num"]    = track_no.split(",")
 
+    if ftype == "mp3":
+      data["length"]       = MP3(file).info.length      
+      
     if ftype == "mp3" and "track_no" in data:
-      if "/" in data["track_no"]:    data["track_num"]    = data["track_no"].split("/")
-      elif "," in data["track_no"]:  data["track_num"]    = data["track_no"].split(",")
-      else:                          data["track_num"]    = [ data["track_no"] ]
-      
-      if "disc_no" in data and "/" in data["disc_no"]:     data["disc_num"]     = data["disc_no"].split("/")[0]
-      elif "disc_no" in data:                              data["disc_num"]     = data["disc_no"]
-      
-      if not "length" in data:
-        try:
-          data["length"]       = MP3(file).info.length
-        except:
-          data["length"]       = -1
-          logging.warn("Could not read file length: "+file)
+      if "/" in data["track_no"]:                      data["track_num"]    = data["track_no"].split("/")
+      elif "," in data["track_no"]:                    data["track_num"]    = data["track_no"].split(",")
+      else:                                            data["track_num"]    = [ data["track_no"] ]
+      if "disc_no" in data and "/" in data["disc_no"]: data["disc_num"]     = data["disc_no"].split("/")[0]
+      elif "disc_no" in data:                          data["disc_num"]     = data["disc_no"]
 
 
     data["file"]         = file.replace(music_dir,"")

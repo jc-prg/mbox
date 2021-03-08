@@ -30,23 +30,36 @@ def readMetadata(path_to_file):
     '''
     get metadata from music file, return as standardized dict
     '''
-    
+
     tags     = {}
     temp     = path_to_file.split("/")
     filename = temp[len(temp)-1]
 
+    # check if file is empty
+    file_stats = os.stat(path_to_file)
+    if file_stats.st_size == 0:
+      tags["uuid"]      = "empty file"
+      tags["file"]      = "empty file"
+      tags["filesize"]  = 0
+      tags["artist"]    = "empty file"
+      tags["album"]     = "empty file"
+      tags["albumsize"] = 0
+      tags["title"]  = filename
+      return tags, str(tags["artist"]), str(tags["album"]), str(tags["title"])
+
+   # check file type and read metadata
     if   ".mp3" in filename.lower():  
        tags = readID3(path_to_file)
        #logging.info(tags)
        if "artist" not in tags and "album" not in tags:     tags  = readMutagen(path_to_file,"mp3")
        elif tags["artist"] == "" and tags["album"] == "":   tags  = readMutagen(path_to_file,"mp3")       
-       
+
     elif ".m4a" in filename.lower():
       tags = readMutagen(path_to_file,"mp4")
-      
+
     elif ".mp4" in filename.lower():
       tags = readMutagen(path_to_file,"mp4")
-      
+
     else:
       tags["artist"] = "file format not supported"
       tags["album"]  = "file format not supported"
@@ -55,16 +68,16 @@ def readMetadata(path_to_file):
     if not "artist" in tags or tags["artist"] == "":  tags["artist"] = "Unknown Artist"
     if not "album"  in tags or tags["album"] == "":   tags["album"]  = "Unknown Album"
     if not "title"  in tags or tags["title"] == "":   tags["title"]  = filename
-    
+
     if tags["album"] == "Unbekanntes Album":          tags["album"] = "Unknown Album"
     if tags["artist"] == "Unbekannte Künstler":       tags["album"] = "Unknown Artist"
-    
+
     tags["MD5"] = fileHashMD5(path_to_file)
-    
+
     logging.info(path_to_file + " MD5: " + tags["MD5"])
-    
+
     return tags, str(tags["artist"]), str(tags["album"]), str(tags["title"])
-    
+
 
 #------------------------------------
 

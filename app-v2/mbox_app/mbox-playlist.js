@@ -45,10 +45,12 @@ function mboxPlaylistAll_load(filter="",uuid="") {
                 appFW.requestAPI("GET",["db","playlists--cards",filter],"", mboxPlaylistAll); //playlists--cards
 		}
 
+//--------------------------------------
+
 function mboxPlaylistAll(data) {
 	var text                = "";
 	var print               = mboxCoverListStart();
-	var default_cover       = mbox_icons["playlist"]; // "img/cd2.png";
+	var default_cover       = mbox_icon_dir+mbox_icons["playlist"]; // "img/cd2.png";
         var playlists           = data["DATA"]["playlists"];
         var playlist_active     = "";
         var playlist_active_no  = 0;
@@ -116,7 +118,9 @@ function mboxPlaylistAll(data) {
 
 	setTextById("frame2", ""); // no filter defined yet
 	setTextById("frame3", text);
-	setTextById("ontop",   print);
+	setTextById("ontop",  print);
+	
+	document.getElementById("frame2").style.display="none";
 
         if (playlist_active != "") {
                 mboxPlaylistOne_load(playlist_active_no,playlist_active);
@@ -191,7 +195,7 @@ function mboxPlaylistOne(data) {
 		}
 	
         // check cover
-	var default_cover = mbox_icons["playlist"];
+	var default_cover = mbox_icon_dir + mbox_icons["playlist"];
 	var cover = mboxCoverAlbum_new("",albums);
 	if (!cover) { cover = default_cover; }
 
@@ -214,7 +218,7 @@ function mboxPlaylistOne(data) {
 
 	// control for box
 	if (mbox_device != "local") {
-		text += "<div class=\"player_active big\" id=\"playing_"+albums["uuid"]+"\" style=\"display:none;\"><img src=\""+mbox_icons["playing"]+"\" style=\"height:20px;width:20px;margin:2px;\"></div>";
+		text += "<div class=\"player_active big\" id=\"playing_"+albums["uuid"]+"\" style=\"display:none;\"><img src=\""+mbox_icon_dir+mbox_icons["playing"]+"\" style=\"height:20px;width:20px;margin:2px;\"></div>";
 	        text += mboxHtmlButton("play",  "appFW.requestAPI('GET',['play', '" + uuid + "'],'', mboxControl);", "blue");
         	text += mboxHtmlButton("pause", "appFW.requestAPI('GET',['pause'],'',                mboxControl);", "blue");
 	        text += mboxHtmlButton("stop",  "appFW.requestAPI('GET',['stop'],'',                 mboxControl);", "blue");
@@ -521,7 +525,7 @@ function mboxPlaylistTrackRow(data,uuid,split=false,uuid_pl="",color=0) {
 	       	cmd += "<div class=\"album_tracks_control\"  style=\"background:"+mbox_track_color[color]+";\">";
 		if (mbox_device == "local")	{ cmd += mboxHtmlButton("play",  "writeAudioPlayer('" + uuid + "','audioPlayer');", "green",   "small right"); }
 		else 				{ cmd += mboxHtmlButton("play",  "appFW.requestAPI('GET',['play', '"+uuid+"'],'',mboxControl);", "blue", "small right"); }
-                cmd += "<div class=\"player_active right\" id=\"playing3_"+uuid+"\" style=\"display:none;\"><img src=\""+mbox_icons["playing"]+"\" style=\"width:10px;height:10px;margin:2px;\"></div>";
+                cmd += "<div class=\"player_active right\" id=\"playing3_"+uuid+"\" style=\"display:none;\"><img src=\""+mbox_icon_dir+mbox_icons["playing"]+"\" style=\"width:10px;height:10px;margin:2px;\"></div>";
 	       	cmd += "</div>";
 
 		// Show Title if exist ...

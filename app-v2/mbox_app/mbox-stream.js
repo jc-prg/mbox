@@ -30,7 +30,7 @@ function mboxStream_load()             { appFW.requestAPI("GET",["db","radio","-
 function mboxStream(data) {
         var text          = "";
 	var print 	  = mboxCoverListStart();
-        var default_cover = mbox_icons["radio"]; // "img/cd2.png";
+        var default_cover = mbox_icon_dir + mbox_icons["radio"]; // "img/cd2.png";
 	var radio_data    = data["DATA"]["radio"];
 	var a             = 0;
         mbox_cover_list   = [];
@@ -76,16 +76,18 @@ function mboxStream(data) {
 
         var onclick = "mboxStreamAdd_dialog("+(a+1)+");";
 //	text += mboxCoverSeparator( "+", onclick );
-        text += mboxCoverSeparator( "<img src=\""+mbox_icon_dir+"/stream_add.png\" style=\"height:50px;width:50px;margin-top:10px;\">", onclick );
+	text += mboxCoverSeparator( "<img src=\""+mbox_icon_dir+"/stream_add.png\" style=\"height:50px;width:50px;margin-top:10px;\">", onclick );
 	text += mboxHtmlEntryDetail( a+1 );
 
-        mbox_list_amount = sorted_r.length+1;
+	mbox_list_amount = sorted_r.length+1;
 	print += mboxCoverListEnd();
 
 	setTextById("frame2", ""); // no filter defined yet
-        setTextById("frame3", text);
-        setTextById("ontop",   print);
-        }
+	setTextById("frame3", text);
+	setTextById("ontop",  print);
+
+	document.getElementById("frame2").style.display="none";
+	}
 
 
 // Load data albums and list ...
@@ -117,7 +119,7 @@ function mboxStreamChannel(data) {
         var text          = "";
         var uuid          = data["DATA"]["_selected_uuid"];
         var radio_data    = data["DATA"]["_selected"];
-        var default_cover = mbox_icons["radio"];
+        var default_cover = mbox_icon_dir + mbox_icons["radio"];
 
         // log ...
         if (radio_data) {
@@ -154,7 +156,7 @@ function mboxStreamChannel(data) {
 
         // player control (in box)
         text += "<div class=\"album_control new\">";
-        text += "<div class=\"player_active big\" id=\"playing_"+uuid+"\" style=\"display:none;\"><img src=\""+mbox_icons["playing"]+"\" style=\"height:20px;width:20px;margin:2px;\"></div>";
+        text += "<div class=\"player_active big\" id=\"playing_"+uuid+"\" style=\"display:none;\"><img src=\""+mbox_icon_dir + mbox_icons["playing"]+"\" style=\"height:20px;width:20px;margin:2px;\"></div>";
         
 	if (mbox_device != "local") {
       		text += mboxHtmlButton("play",  "appFW.requestAPI('GET',['play', '" + uuid + "'],'',mboxControl);", "blue");

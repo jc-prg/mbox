@@ -74,7 +74,7 @@ function mboxAlbumAll(data) {
 
 	var text             = "";
 	var print            = mboxCoverListStart();
-	var default_cover    = mbox_icons["album"];
+	var default_cover    = mbox_icon_dir + mbox_icons["album"];
 	var album_info       = data["DATA"]["album_info"];
 	var album_active     = "";
 	var album_active_no  = 0;
@@ -213,7 +213,7 @@ function mboxAlbumAll(data) {
 function mboxAlbumAll_section(count,title,last_title) {
 
 	var text     = "";
-	var cover    = mbox_icons["album"];
+	var cover    = mbox_icon_dir + mbox_icons["album"];
 	act_char    = title.substring(0,1);
 	last_title += " ";
 	last_char   = last_title.substring(0,1);
@@ -441,7 +441,7 @@ function mboxAlbumList(data) {
 	var track_list    = data["DATA"]["tracks"];
 	var album         = albums["album"];
 	var artist        = albums["artist"];
-	var default_cover = mbox_icons["album"]; //"img/cd2.png";
+	var default_cover = mbox_icon_dir + mbox_icons["album"]; //"img/cd2.png";
 
 	var length = "";
 	if (albums["albumlength"]) {
@@ -477,7 +477,7 @@ function mboxAlbumList(data) {
 	text += "<div class=\"album_control new\">";
 
 	if (mbox_device != "local") {
-		text += "<div class=\"player_active big\" id=\"playing_"+uuid+"\" style=\"display:none;\"><img src=\""+mbox_icons["playing"]+"\" style=\"height:20px;width:20px;margin:2px;\"></div>";
+		text += "<div class=\"player_active big\" id=\"playing_"+uuid+"\" style=\"display:none;\"><img src=\""+mbox_icon_dir + mbox_icons["playing"]+"\" style=\"height:20px;width:20px;margin:2px;\"></div>";
         	text += mboxHtmlButton("play",  "appFW.requestAPI('GET',['play', '" + uuid + "'],'',mboxControl);",	"blue");
 		text += mboxHtmlButton("pause", "appFW.requestAPI('GET',['pause'],'',mboxControl);",		"blue");
         	text += mboxHtmlButton("stop",  "appFW.requestAPI('GET',['stop'],'',mboxControl);",			"blue");
@@ -703,7 +703,7 @@ function mboxAlbumTrackRow(id,dataTracks,album=true,artist=false,count=0) {
 	if (mbox_device != "local") 	{
 		//cmd += mboxHtmlButton("play",  "appFW.requestAPI('GET',['play', '"+id+"'],'',mboxControl);", "blue", "small right");
 		cmd += mboxHtmlButton("play",  "appFW.requestAPI('GET',['play_position', '"+album_id+"', '"+count+"'],'',mboxControl);", "blue", "small right");
-		cmd += "<div class=\"player_active right\" id=\"playing3_"+id+"\" style=\"display:none;\"><img src=\""+mbox_icons["playing"]+"\" style=\"width:10px;height:10px;margin:2px;\"></div>";
+		cmd += "<div class=\"player_active right\" id=\"playing3_"+id+"\" style=\"display:none;\"><img src=\""+mbox_icon_dir+mbox_icons["playing"]+"\" style=\"width:10px;height:10px;margin:2px;\"></div>";
 		}
 	cmd  += "</div>";
 

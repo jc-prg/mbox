@@ -34,7 +34,7 @@ mbox_control_open = false;
 
 function mboxControlGroups() {
         var text    = "";
-        var cover   = [mbox_icons["album_bw"],mbox_icons["playlist_bw"],mbox_icons["radio_bw"]];
+        var cover   = [mbox_icon_dir+mbox_icons["album_bw"],mbox_icon_dir+mbox_icons["playlist_bw"],mbox_icon_dir+mbox_icons["radio_bw"]];
         var descr   = [lang("ALBUM"),lang("PLAYLIST"),lang("STREAM")];
         var onclick = [
                         "mboxAlbumAll_load();",
@@ -445,11 +445,18 @@ function mboxControlToggleDevice () {
 // show / hide filter
 //--------------------------------------
 
-function mboxControlToggleFilter () {
+function mboxControlToggleFilter (setting="") {
 	// switch next device setting
 
-	if (mbox_filter) 			{ mbox_filter = false;  document.getElementById("remote4").style.display="none"; }
-	else					{ mbox_filter = true;   document.getElementById("remote4").style.display="block"; }
+	if (setting != "") {
+		if (mbox_filter && !mbox_settings) 	{ mbox_filter = false; }
+		else					{ mbox_filter = true; }
+		}
+	else {
+		mbox_filter = setting;
+		}
+		
+	mboxControlToggleFilter_show ();
 	}
 	
 //--------------------------------------

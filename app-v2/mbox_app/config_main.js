@@ -123,6 +123,8 @@ function app_click_menu() {
 //--------------------------------
 
 function app_theme_changed(theme) {
+	if (theme == "dark")	{ mbox_icon_dir	= "mbox_img/icon_dark/"; }
+	else			{ mbox_icon_dir	= "mbox_img/icon/"; }
 	}
 	
 	

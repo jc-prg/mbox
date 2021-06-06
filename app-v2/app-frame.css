@@ -1,0 +1,46 @@
+/* default values (iPhone 5c) */ 
+
+.frame_block {
+   width : 100%;
+}
+
+.frame_column {
+   width           : 290px;
+   float           : left;
+   margin          : 4px;
+   padding         : 5px;
+   border-radius   : 5px;   
+   background-color: #dddddd;
+   opacity         : 0.9;
+   font-family     : sans-serif;
+   font-size       : 12px;
+   }
+
+.frame_column.test {
+   border          : solid 1px;
+   border-color    : black;
+   }
+
+
+/* adapted format for iphone 5c */
+
+@media (max-width: 374px) {
+  }
+
+/* adapted format for iphone Xs */
+
+@media (min-width: 375px) {
+  .frame_column { width   : 335px; }
+  }
+
+/* adapted format for Laptop & Bigger - 2 columns incl. menu*/
+
+@media (min-width: 705px) {
+  .frame_column.wide { width  : 660px; }
+  }
+
+/* adapted format for Laptop & Bigger - 3 columns incl. menu*/
+
+@media (min-width: 1250px) {
+  .frame_column.wide { width  : 990px; }
+  }

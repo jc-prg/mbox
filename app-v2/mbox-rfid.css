@@ -1,0 +1,33 @@
+.rfid_list {
+	width:95%;
+	height:280px;
+	overflow:auto;
+	border: solid 1px;
+	margin:auto;
+	padding:2px;
+	background:#dddddd;
+	padding:5px;
+	}
+
+.rfid_entry {
+	float:left;
+	height:60px;
+	width:355px;
+	max-width:355px;
+	overflow:hidden;
+	text-align:left;
+	padding:5px;
+	}
+
+.rfid_xxx {
+	float:left;
+	height:60px;
+	overflow:hidden;
+	position:default;
+	margin:0px;
+	padding:0px;
+	}
+
+@media (max-width: 735px) {
+	.rfid_entry { width : 220px; }
+	}

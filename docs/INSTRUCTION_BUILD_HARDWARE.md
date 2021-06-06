@@ -131,8 +131,8 @@ This part is (at least for me) the most difficult part as you've to solder a lot
 
 To create a more stable connection you can create a bigger connector using double-sided tape.
 
-![3 connectors for buttons, rfid-detector and LED](images/mbox_inside_01.JPG)
-![self created connector LED](images/mbox_inside_02.JPG)
+![3 connectors for buttons, rfid-detector and LED](images/mbox_inside_1.jpg)
+![self created connector LED](images/mbox_inside_2.jpg)
 
 
 ## Overview Wiring

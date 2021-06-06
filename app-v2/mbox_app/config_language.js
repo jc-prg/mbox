@@ -1,13 +1,12 @@
 //--------------------------------------
-// jc://music-box/, (c) Christoph Kloth
+// jc://app-framework/, (c) Christoph Kloth
 //--------------------------------------
 // multi-language support (implementation just started)
 //--------------------------------------
-// language[LANG][<param>]
-// lang(<param>);
+// language_app[LANG][<param>]
+// add your app specific translations
 
-var LANG     = "EN";
-var language = {
+var language_app = {
 	"DE" : {
 		"ADD"			: "Hinzuf&uuml;gen",
 		"ADD_PLAYLIST"		: "Playliste hinzuf&uuml;gen",
@@ -200,10 +199,3 @@ var language = {
 		}
 	}
 
-
-function lang( param ) {
-	if (language[LANG][param]) 	 { return language[LANG][param]; }
-        else if (language["EN"][param])  { return language["EN"][param]; }
-        else if (language["DE"][param])  { return language["DE"][param]; }
-	else { return "<font color='red'>Translation not found</font>"; }
-	}

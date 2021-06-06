@@ -8,6 +8,7 @@
 function mboxCoverAlbumInfo(nr,url_list,act,uuid)
 function mboxCoverAlbum(artist,album)
 function mboxCoverAlbum_new(id,data)
+function mboxCoverAlbum_alert(cover)
 function mboxCoverAlbum_checkFile(image_url)
 function mboxCoverTogglePrint()
 function mboxCoverList( uuid, cover="", description="", cmd_open="", cmd_play="", type="album" )
@@ -41,7 +42,7 @@ function mboxCoverAlbumInfo(nr,url_list,act,uuid) {
 		if (nr == 3) { url = mbox_cover_upl_dir + url_list[0]; if (act == "upload") { border = "border:2px solid red;"; } select = "upload"; }
 		if (nr == 4) { url = url_list[0];                      if (act == "web")    { border = "border:2px solid red;"; } select = "web"; }
 
-		var onclick = "mboxApp.requestAPI('PUT',['images','set_active','"+uuid+"','"+select+"'], '', " + close_cmd + " );";
+		var onclick = "appFW.requestAPI('PUT',['images','set_active','"+uuid+"','"+select+"'], '', " + close_cmd + " );";
 		img = "<img src='" + url + "' class='album_cover' style='height:"+size+";width:"+size+";"+border+"' onclick=\""+onclick+"\" title=\"("+select+": 1 von "+url_list.length+")\">&nbsp;";
 
 		console.log("URL:" + url);
@@ -145,7 +146,7 @@ function mboxCoverList( uuid, cover="", description="", cmd_open="", cmd_play=""
 	var icon_playing  = mbox_icons["playing"];
 
         if (mbox_device == "remote") {
-		button_play = "<div class=\"player_button small white\" onclick=\"" + cmd_play + "\"><img src=\"icon/play.png\" style=\"width:9px;height:9px;margin:2px;\"></div>";
+		button_play = "<div class=\"player_button small white\" onclick=\"" + cmd_play + "\"><img src=\""+mbox_icon_dir+"play.png\" style=\"width:9px;height:9px;margin:2px;\"></div>";
 		}
 
 	if (cover == "") {

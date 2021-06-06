@@ -26,7 +26,7 @@ function mboxStreamAdd_msg(data)
 
 //--------------------------------------
 
-function mboxStream_load()             { mboxApp.requestAPI("GET",["db","radio","-"],"", mboxStream); }
+function mboxStream_load()             { appFW.requestAPI("GET",["db","radio","-"],"", mboxStream); }
 function mboxStream(data) {
         var text          = "";
 	var print 	  = mboxCoverListStart();
@@ -52,7 +52,7 @@ function mboxStream(data) {
 	     var key      = sorted_r[i];
              var uuid     = by_title[key];
              var cmd_open = "mboxAlbumEmptyAll();mboxStreamChannel_load('"+(i+1)+"','" + uuid + "');"; 
-	     var cmd_play = "mboxApp.requestAPI('GET',['play', '" + uuid + "'],'',mboxControl);";
+	     var cmd_play = "appFW.requestAPI('GET',['play', '" + uuid + "'],'',mboxControl);";
              var cover    = default_cover;
 
              // check cover
@@ -76,14 +76,14 @@ function mboxStream(data) {
 
         var onclick = "mboxStreamAdd_dialog("+(a+1)+");";
 //	text += mboxCoverSeparator( "+", onclick );
-        text += mboxCoverSeparator( "<img src=\"icon/stream_add.png\" style=\"height:50px;width:50px;margin-top:10px;\">", onclick );
+        text += mboxCoverSeparator( "<img src=\""+mbox_icon_dir+"/stream_add.png\" style=\"height:50px;width:50px;margin-top:10px;\">", onclick );
 	text += mboxHtmlEntryDetail( a+1 );
 
         mbox_list_amount = sorted_r.length+1;
 	print += mboxCoverListEnd();
 
-	setTextById("remote4", ""); // no filter defined yet
-        setTextById("remote2", text);
+	setTextById("frame2", ""); // no filter defined yet
+        setTextById("frame3", text);
         setTextById("ontop",   print);
         }
 
@@ -100,7 +100,7 @@ function mboxStreamChannel_load(i,uuid) {
         if (mbox_list_pos > mbox_list_amount) { mbox_list_pos = mbox_list_amount; }
 
         //mboxAlbumEmptyAll();
-        mboxApp.requestAPI("GET",["data",uuid,"-"],"", mboxStreamChannel );
+        appFW.requestAPI("GET",["data",uuid,"-"],"", mboxStreamChannel );
         }
 
 // List albums tracks of an album
@@ -157,8 +157,8 @@ function mboxStreamChannel(data) {
         text += "<div class=\"player_active big\" id=\"playing_"+uuid+"\" style=\"display:none;\"><img src=\""+mbox_icons["playing"]+"\" style=\"height:20px;width:20px;margin:2px;\"></div>";
         
 	if (mbox_device != "local") {
-      		text += mboxHtmlButton("play",  "mboxApp.requestAPI('GET',['play', '" + uuid + "'],'',mboxControl);", "blue");
-        	text += mboxHtmlButton("stop",  "mboxApp.requestAPI('GET',['stop'],'',mboxControl);", "blue");
+      		text += mboxHtmlButton("play",  "appFW.requestAPI('GET',['play', '" + uuid + "'],'',mboxControl);", "blue");
+        	text += mboxHtmlButton("stop",  "appFW.requestAPI('GET',['stop'],'',mboxControl);", "blue");
         	text += mboxHtmlButton("empty");
 		}
 		
@@ -214,7 +214,7 @@ function mboxStreamWriteAudioPlayer(title,file,divid) {
 // radio info as popup (incl. some settings ...)
 //--------------------------------------
 
-function mboxStreamInfo_load(uuid) { mboxApp.requestAPI("GET",["data",uuid,"-"],"", mboxStreamInfo ); }
+function mboxStreamInfo_load(uuid) { appFW.requestAPI("GET",["data",uuid,"-"],"", mboxStreamInfo ); }
 function mboxStreamInfo(data) {
         var text   = "";
         var album  = data["DATA"]["_selected"];
@@ -267,7 +267,7 @@ function mboxStreamInfo_close() {
 
 //----------------------------------------
 
-function mboxStreamEdit_load(uuid)	{ mboxApp.requestAPI("GET",["data",uuid,"uuid,title,description,stream_info,stream_url,stream_url2"],"", mboxStreamEdit ); }
+function mboxStreamEdit_load(uuid)	{ appFW.requestAPI("GET",["data",uuid,"uuid,title,description,stream_info,stream_url,stream_url2"],"", mboxStreamEdit ); }
 function mboxStreamEdit(data) 		{ mboxDataEdit(data); }
 // -> mbox-data.js
 
@@ -281,7 +281,7 @@ function mboxStreamDelete(uuid,title) {
 	}
 	
 function mboxStreamDelete_exec(uuid,title) {
-	mboxApp.requestAPI('DELETE',['data',uuid],'',[mboxPlaylistDelete_msg,title]);
+	appFW.requestAPI('DELETE',['data',uuid],'',[mboxPlaylistDelete_msg,title]);
 	}
 
 function mboxStreamDelete_msg(data,title) {
@@ -303,7 +303,7 @@ function mboxStreamAdd() {
         document.getElementById("mboxStreamAdd").disabled = true;
         document.getElementById("mboxStreamAdd").innerHTML = "Please wait ...";
 
-        mboxApp.requestAPI('POST',['data','radio',encodeURIComponent(title+'||'+param)],'', mboxStreamAdd_msg);
+        appFW.requestAPI('POST',['data','radio',encodeURIComponent(title+'||'+param)],'', mboxStreamAdd_msg);
         }
 
 function mboxStreamAdd_dialog(i) {

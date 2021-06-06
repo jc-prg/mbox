@@ -29,7 +29,7 @@ function mboxHtmlShowJson(data)
 //-------------------------------------------------------------
 
 function image(file) {
-        return "<img src='icon/"+file+"' style='height:15px;margin:0px;padding:0px;' alt='"+file+"' />";
+        return "<img src='"+mbox_icon_dir+file+"' style='height:15px;margin:0px;padding:0px;' alt='"+file+"' />";
         }
         
 // ------------------------------------------
@@ -74,7 +74,7 @@ function mboxHtmlButton( button, cmd="", color="blue", small="", display="block"
 
         if (button != "empty") {
                 text +=   "<div class=\"player_button "+color+" "+small+"\" onclick=\"javascript:"+cmd+"\" style=\"display:"+display+";\">";
-                text +=   "<img src=\"icon/"+button+".png\" class=\"player_image "+small+"\"></div>";
+                text +=   "<img src=\""+mbox_icon_dir+button+".png\" class=\"player_image "+small+"\"></div>";
                 }
         else {
                 text +=   "<div class=\"player_button empty "+small+"\"></div>";
@@ -87,7 +87,7 @@ function mboxHtmlButton( button, cmd="", color="blue", small="", display="block"
 //--------------------------------------
 
 function mboxHtmlButton2( sendCmd, label ) {
-	return "<button onclick='javascript:mboxApp.sendCmd(" + sendCmd + ", mboxControl)'>" + label + "</button>";
+	return "<button onclick='javascript:appFW.sendCmd(" + sendCmd + ", mboxControl)'>" + label + "</button>";
 	}
 
 //-------------------------------------------------------------

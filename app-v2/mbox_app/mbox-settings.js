@@ -19,7 +19,7 @@ var MusicDir = "/mbox_music/";
 
 function mboxSettingsToggle() {
 	var div_settings = [ "setting1", "setting2", "setting3", "setting4" ];
-	var div_frames   = [ "remote1", "remote2", "remote3", "remote4" ];
+	var div_frames   = [ "frame1", "frame2", "frame3", "frame4" ];
 
 	if (document.getElementById("setting1").style.display == "none") {
 		for (var key in div_settings) { document.getElementById(div_settings[key]).style.display = "block"; }
@@ -35,7 +35,7 @@ function mboxSettingsToggle() {
 // write status information to settings page ...
 // -----------------------------------------------------
 
-function mboxSettingsStatus_load()  { mboxApp.requestAPI("GET",["status"],"",mboxSettingsStatus, "wait"); }
+function mboxSettingsStatus_load()  { appFW.requestAPI("GET",["status"],"",mboxSettingsStatus, "wait"); }
 function mboxSettingsStatus (data) {
 
 	var text    = "";
@@ -49,7 +49,7 @@ function mboxSettingsStatus (data) {
 	text += mboxHtmlTable("start");
 	text += mboxHtmlTable("<b>mBox-Client:",	appTitle + " " + appVersion + "<br/>(" + stage + ")");
 	text += mboxHtmlTable("<b>mBox-Server:",	data["API"]["name"] + " " + data["API"]["version"] + "<br/>(" + data["API"]["stage"] + ")");
-	text += mboxHtmlTable("<b>jcApp:",		mboxApp.appVersion);
+	text += mboxHtmlTable("<b>jcApp:",		appFW.appVersion);
 	text += mboxHtmlTable("<b>jcMessage:",		message.appVersion);
 	text += mboxHtmlTable("<b>jcPlayer:",		player.appVersion);
 	text += mboxHtmlTable("<b>jcSlider:",		slider.appVersion);
@@ -133,31 +133,31 @@ function mboxSettingsStatus (data) {
 	var onclick = ""; var question = ""; var cmd = "";
 
 	question = "<br/>"+lang("QUESTION_RELOAD");
-	onclick  = "mboxApp.requestAPI(#PUT#,[#load#,#all#],##,mboxHtmlShowLoading)";
+	onclick  = "appFW.requestAPI(#PUT#,[#load#,#all#],##,mboxHtmlShowLoading)";
         cmd      = "appMsg.confirm('" + question + "','" + onclick + "', 260);";
 	text    += button( cmd, "Reload Data" );
 
 	question = "<br/>"+lang("QUESTION_LOAD_NEW");
-	onclick  = "mboxApp.requestAPI(#PUT#,[#load#,#new#],##,mboxHtmlShowLoading)";
+	onclick  = "appFW.requestAPI(#PUT#,[#load#,#new#],##,mboxHtmlShowLoading)";
         cmd      = "appMsg.confirm('" + question + "','" + onclick + "', 260);";
 	text    += button( cmd, "Load New Data" );
 
 	question = "<br/>" + lang("QUESTION_LOAD_IMG");
-	onclick  = "mboxApp.requestAPI(#PUT#,[#load#,#images#],##,mboxHtmlShowLoading)";
+	onclick  = "appFW.requestAPI(#PUT#,[#load#,#images#],##,mboxHtmlShowLoading)";
         cmd      = "appMsg.confirm('" + question + "','" + onclick + "', 260);";
 	text    += button( cmd, "Load New Images" );
 
 	text += "<hr/>";
 
 	question = "<br/>"+lang("QUESTION_RESTORE_JSON");
-	onclick  = "mboxApp.requestAPI(#PUT#,[#backup#,#json2db#],##,mboxHtmlShowJson)";
+	onclick  = "appFW.requestAPI(#PUT#,[#backup#,#json2db#],##,mboxHtmlShowJson)";
         cmd      = "document.getElementById('json2db').disabled = true;";
         cmd	+= "document.getElementById('json2db').innerHTML = '" + lang("PLEASE_WAIT") + "';";
         cmd     += "appMsg.confirm('" + question + "','" + onclick + "', 260);";
 	text    += button( cmd, "Restore (JSON 2 DB)", "json2db" );
 
 	question = "<br/>"+lang("QUESTION_BACKUP2JSON");
-	onclick  = "mboxApp.requestAPI(#PUT#,[#backup#,#db2json#],##,mboxHtmlShowJson)";
+	onclick  = "appFW.requestAPI(#PUT#,[#backup#,#db2json#],##,mboxHtmlShowJson)";
         cmd      = "document.getElementById('db2json').disabled = true;";
         cmd	+= "document.getElementById('db2json').innerHTML = '" + lang("PLEASE_WAIT") + " ...';";
         cmd     += "appMsg.confirm('" + question + "','" + onclick + "', 260);";
@@ -183,7 +183,7 @@ function mboxSettingsStatus (data) {
 
 //----------------------------------------------------------------
 
-function mboxSettingsStatusPerformance_load() { mboxApp.requestAPI("GET",["db","all","-"],"",mboxSettingsStatusPerformance, "wait"); }
+function mboxSettingsStatusPerformance_load() { appFW.requestAPI("GET",["db","all","-"],"",mboxSettingsStatusPerformance, "wait"); }
 function mboxSettingsStatusPerformance(data) {
 	setTextById("duration_api_request",		Math.round(data["REQUEST"]["load-time-app"]/1000*10)/10+" s &nbsp; &nbsp; (all data)");
 	setTextById("duration_db_request",		Math.round(data["REQUEST"]["load-time"]*1000)/1000+" s");

@@ -32,10 +32,10 @@ function mboxUploadImageWrite(params) {
         filename = document.getElementById('fName').value;
 	if (filename == "") { filename = "-"; }
 
-	if (param[1] == "album") 	{ mboxApp.requestAPI('PUT', [ 'images', 'upload', param[0], filename ], '', mboxAlbumAll_load); }
-	if (param[1] == "playlist") 	{ mboxApp.requestAPI('PUT', [ 'images', 'upload', param[0], filename ], '', mboxPlaylistAll_load); }
-	if (param[1] == "radio") 	{ mboxApp.requestAPI('PUT', [ 'images', 'upload', param[0], filename ], '', mboxStream_load); }
-	else 				{ mboxApp.requestAPI('PUT', [ 'images', 'upload', param[0], filename ], ''); }
+	if (param[1] == "album") 	{ appFW.requestAPI('PUT', [ 'images', 'upload', param[0], filename ], '', mboxAlbumAll_load); }
+	if (param[1] == "playlist") 	{ appFW.requestAPI('PUT', [ 'images', 'upload', param[0], filename ], '', mboxPlaylistAll_load); }
+	if (param[1] == "radio") 	{ appFW.requestAPI('PUT', [ 'images', 'upload', param[0], filename ], '', mboxStream_load); }
+	else 				{ appFW.requestAPI('PUT', [ 'images', 'upload', param[0], filename ], ''); }
 	appMsg.hide();
 	}
 

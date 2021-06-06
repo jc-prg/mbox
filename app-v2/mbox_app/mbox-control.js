@@ -48,13 +48,13 @@ function mboxControlGroups() {
                 text += "<div class=\"album_cover_descr\" onclick=\"" + onclick[i] + "\">" + descr[i] + "</div>";
                 }
         text += "</div>";
-        setTextById("remote1",text);
+        setTextById("frame1",text);
         }
 
 
 //-----------------------------------------------------------
 
-function mboxControl_load()            { mboxApp.requestAPI('GET', ["status"], "", mboxControl,"","mboxControl_load"); }
+function mboxControl_load()            { appFW.requestAPI('GET', ["status"], "", mboxControl,"","mboxControl_load"); }
 function mboxControl(data) {
 
 	var d          = data["STATUS"]["playback"];
@@ -184,11 +184,11 @@ function mboxControl(data) {
 
 function mboxControlVolumeSet(volume) {
 	if (volume >= 0 && volume <= 100) {
-		if (mbox_device != "local") 	{ mboxApp.requestAPI('GET',['volume','set:'+volume], '', mboxControl); }
+		if (mbox_device != "local") 	{ appFW.requestAPI('GET',['volume','set:'+volume], '', mboxControl); }
 		else				{ volume = volume / 100;  mboxPlayer.volumeSet(volume);  mboxControl(); }
 		}
 	else if (volume == "mute") {
-		if (mbox_device != "local") 	{ mboxApp.requestAPI('GET',['volume','mute'], '', mboxControl); }
+		if (mbox_device != "local") 	{ appFW.requestAPI('GET',['volume','mute'], '', mboxControl); }
 		else				{ mboxPlayer.volumeMute(); mboxControl(); }
 		}
 	else {
@@ -393,7 +393,7 @@ function mboxControlCheckLoading(data) {
 
 function mboxControlCheckStatus () {
 	var d    = new Date();
-	var last = d.getTime() - mboxApp.lastConnect;
+	var last = d.getTime() - appFW.lastConnect;
 	//console.log("Last Connect: "+last);
 
 	if (last < 15000) 	{ mboxControlSetStatus("green"); }
@@ -457,8 +457,8 @@ function mboxControlToggleFilter () {
 function mboxControlToggleFilter_show () {
 	// switch next device setting
 
-	if (mbox_filter && !mbox_settings)	{ document.getElementById("remote4").style.display="block"; }
-	else					{ document.getElementById("remote4").style.display="none"; }
+	if (mbox_filter && !mbox_settings)	{ document.getElementById("frame2").style.display="block"; }
+	else					{ document.getElementById("frame2").style.display="none"; }
 	}
 	
 //--------------------------------------

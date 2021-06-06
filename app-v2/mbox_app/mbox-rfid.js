@@ -80,7 +80,7 @@ function mboxCardConnect(card,list={}) {
 function mboxCardConnect_exe(rfid) {
 	type = getValueById('mbox_select_connect');
 	uuid = getValueById('mbox_select_'+type);
-	mboxApp.requestAPI('PUT', ['cards', uuid, rfid ],'', mboxDataReturnMsg )
+	appFW.requestAPI('PUT', ['cards', uuid, rfid ],'', mboxDataReturnMsg )
 	}
 	
 	
@@ -116,8 +116,8 @@ function mboxCardEditLink(uuid) {
 // edit dialog ... // OFFEN -> RADIO
 //---------------------------------
 
-function mboxCardEditDialog_load1(uuid) { mboxCardUUID = uuid; 			mboxApp.requestAPI("GET",["status"],                "", mboxCardEditDialog_load2); }
-function mboxCardEditDialog_load2(data)	{ mboxCardCID = data["LOAD"]["RFID"]; 	mboxApp.requestAPI("GET",["cards", mboxCardUUID],   "", mboxCardEditDialog); }
+function mboxCardEditDialog_load1(uuid) { mboxCardUUID = uuid; 			appFW.requestAPI("GET",["status"],                "", mboxCardEditDialog_load2); }
+function mboxCardEditDialog_load2(data)	{ mboxCardCID = data["LOAD"]["RFID"]; 	appFW.requestAPI("GET",["cards", mboxCardUUID],   "", mboxCardEditDialog); }
 function mboxCardEditDialog(data) {
 
 	var exist1 = "";
@@ -131,7 +131,7 @@ function mboxCardEditDialog(data) {
 	var playlists = data["DATA"]["playlists"];
 
 	var dialog = "";
-	var cmd = "mboxApp.requestAPI('PUT', ['cards','" + uuid + "','" + rfid + "'],'', mboxCardEdit_save );";
+	var cmd = "appFW.requestAPI('PUT', ['cards','" + uuid + "','" + rfid + "'],'', mboxCardEdit_save );";
 
 	// check, if card detected ...
 	if (rfid == "") { return; }
@@ -232,7 +232,7 @@ function mboxCardEditDialog(data) {
 // Show all defined RFID Cards ... later edit
 //---------------------------------
 
-function mboxCardList_load(card_id="-") { mboxApp.requestAPI("GET",["cards",card_id], "", mboxCardList); console.log("Load list of RFID-Cards..."); }
+function mboxCardList_load(card_id="-") { appFW.requestAPI("GET",["cards",card_id], "", mboxCardList); console.log("Load list of RFID-Cards..."); }
 function mboxCardList(data) {
 
 	console.log("Load list of RFID-Cards... DATA LOADED");
@@ -349,7 +349,7 @@ function mboxCardDelete(card_id,title) {
 	}
 	
 function mboxCardDelete_exec(uuid,title) {
-	mboxApp.requestAPI('DELETE',['data',uuid],'',[mboxCardDelete_msg,title]);
+	appFW.requestAPI('DELETE',['data',uuid],'',[mboxCardDelete_msg,title]);
 	}
 
 function mboxCardDelete_msg(data,title) {

@@ -85,7 +85,7 @@ function mboxDataEditExecute(uuid, key_list, type) {
 	
 	console.error("EDIT EXECUTE"+type);
 
-	mboxApp.requestAPI("PUT", ["data",uuid], data, callback );
+	appFW.requestAPI("PUT", ["data",uuid], data, callback );
 	}
 
 //--------------------------------------

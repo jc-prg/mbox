@@ -119,17 +119,17 @@ function mboxPlayerControlPlaylist_advanced(uuid) {
 
 	// images / text not placed in the middle ...
 
-	text += mboxPlayerButtonText("-10","mboxApp.requestAPI('GET', ['play_last','10'],  '', mboxControl);",  "blue");
-	text += mboxPlayerButtonText("-5", "mboxApp.requestAPI('GET', ['play_last','5'],  '', mboxControl);",   "blue");
-	text += mboxPlayerButton("back",   "mboxApp.requestAPI('GET', ['play_last','1'],  '', mboxControl);",   "blue");
-	text += mboxPlayerButton("play",   "mboxApp.requestAPI('GET', ['play','"+uuid+"'],'', mboxControl);",   "blue");
-	text += mboxPlayerButton("next",   "mboxApp.requestAPI('GET', ['play_next','1'],  '', mboxControl);",   "blue");
-	text += mboxPlayerButtonText("+5", "mboxApp.requestAPI('GET', ['play_next','5'],  '', mboxControl);",   "blue");
-	text += mboxPlayerButtonText("+10","mboxApp.requestAPI('GET', ['play_next','10'],  '', mboxControl);",  "blue");
+	text += mboxPlayerButtonText("-10","appFW.requestAPI('GET', ['play_last','10'],  '', mboxControl);",  "blue");
+	text += mboxPlayerButtonText("-5", "appFW.requestAPI('GET', ['play_last','5'],  '', mboxControl);",   "blue");
+	text += mboxPlayerButton("back",   "appFW.requestAPI('GET', ['play_last','1'],  '', mboxControl);",   "blue");
+	text += mboxPlayerButton("play",   "appFW.requestAPI('GET', ['play','"+uuid+"'],'', mboxControl);",   "blue");
+	text += mboxPlayerButton("next",   "appFW.requestAPI('GET', ['play_next','1'],  '', mboxControl);",   "blue");
+	text += mboxPlayerButtonText("+5", "appFW.requestAPI('GET', ['play_next','5'],  '', mboxControl);",   "blue");
+	text += mboxPlayerButtonText("+10","appFW.requestAPI('GET', ['play_next','10'],  '', mboxControl);",  "blue");
 	
 	text += mboxPlayerButton("empty");
-	text += mboxPlayerButton("pause","mboxApp.requestAPI('GET', ['pause'], 		'', mboxControl);",                    		"blue");
-	text += mboxPlayerButton("stop", "mboxApp.requestAPI('GET', ['stop'],  		'', mboxControl); mboxControlPanel_toggle();",	"blue");
+	text += mboxPlayerButton("pause","appFW.requestAPI('GET', ['pause'], 		'', mboxControl);",                    		"blue");
+	text += mboxPlayerButton("stop", "appFW.requestAPI('GET', ['stop'],  		'', mboxControl); mboxControlPanel_toggle();",	"blue");
 	text += mboxPlayerButton("empty");
 	text += mboxPlayerButton("goto", "mboxControlShowUUID('"+uuid+"');", "blue");
 
@@ -143,14 +143,14 @@ function mboxPlayerControlPlaylist_advanced(uuid) {
 function mboxPlayerControlPlaylist(uuid) {
 	var text = "";
 
-	text += mboxPlayerButtonText("&nbsp;-5", "mboxApp.requestAPI('GET', ['play_last','5'],  '', mboxControl);",   "blue");
-	text += mboxPlayerButton("back", "mboxApp.requestAPI('GET', ['play_last','1'],  '', mboxControl);",   "blue");
-	text += mboxPlayerButton("play", "mboxApp.requestAPI('GET', ['play','"+uuid+"'],'', mboxControl);",   "blue");
-	text += mboxPlayerButton("next", "mboxApp.requestAPI('GET', ['play_next','1'],  '', mboxControl);",   "blue");
-	text += mboxPlayerButtonText("+5", "mboxApp.requestAPI('GET', ['play_next','5'],  '', mboxControl);",   "blue");
+	text += mboxPlayerButtonText("&nbsp;-5", "appFW.requestAPI('GET', ['play_last','5'],  '', mboxControl);",   "blue");
+	text += mboxPlayerButton("back", "appFW.requestAPI('GET', ['play_last','1'],  '', mboxControl);",   "blue");
+	text += mboxPlayerButton("play", "appFW.requestAPI('GET', ['play','"+uuid+"'],'', mboxControl);",   "blue");
+	text += mboxPlayerButton("next", "appFW.requestAPI('GET', ['play_next','1'],  '', mboxControl);",   "blue");
+	text += mboxPlayerButtonText("+5", "appFW.requestAPI('GET', ['play_next','5'],  '', mboxControl);",   "blue");
 	text += mboxPlayerButton("empty");
-	text += mboxPlayerButton("pause","mboxApp.requestAPI('GET', ['pause'], 		'', mboxControl);",                    		"blue");
-	text += mboxPlayerButton("stop", "mboxApp.requestAPI('GET', ['stop'],  		'', mboxControl); mboxControlPanel_toggle();",	"blue");
+	text += mboxPlayerButton("pause","appFW.requestAPI('GET', ['pause'], 		'', mboxControl);",                    		"blue");
+	text += mboxPlayerButton("stop", "appFW.requestAPI('GET', ['stop'],  		'', mboxControl); mboxControlPanel_toggle();",	"blue");
 	text += mboxPlayerButton("empty");
 	text += mboxPlayerButton("goto", "mboxControlShowUUID('"+uuid+"');", "blue");
 //	text += mboxPlayerButton("goto", "mboxPlayerControlPlaylist_advanced('"+uuid+"');", "green");
@@ -165,9 +165,9 @@ function mboxPlayerControlPlaylist(uuid) {
 function mboxPlayerControlStream(uuid) {
         var text = "";
 
-        text += mboxPlayerButton("play",  "mboxApp.requestAPI('GET', ['play','"+uuid+"'],  '',	mboxControl);",				  "blue");
-        text += mboxPlayerButton("pause", "mboxApp.requestAPI('GET', ['pause'], '', 		mboxControl);",				  "blue");
-        text += mboxPlayerButton("stop",  "mboxApp.requestAPI('GET', ['stop'],  '', 		mboxControl);mboxControlPanel_toggle();", "blue");
+        text += mboxPlayerButton("play",  "appFW.requestAPI('GET', ['play','"+uuid+"'],  '',	mboxControl);",				  "blue");
+        text += mboxPlayerButton("pause", "appFW.requestAPI('GET', ['pause'], '', 		mboxControl);",				  "blue");
+        text += mboxPlayerButton("stop",  "appFW.requestAPI('GET', ['stop'],  '', 		mboxControl);mboxControlPanel_toggle();", "blue");
 
         return text;
         }
@@ -280,7 +280,7 @@ function mboxPlayerJumpToPosition(e) {
 	var percentage = Math.round( pos / width * 100);
 
 	console.log("Position: " + xPosition + "/" + Math.round(pos) + "/" + percentage );
-	mboxApp.requestAPI('GET',['play_jump',percentage], '', mboxControl);
+	appFW.requestAPI('GET',['play_jump',percentage], '', mboxControl);
 	mboxControl_load();
 	}
 

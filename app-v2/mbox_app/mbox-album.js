@@ -8,11 +8,13 @@ function mboxListCount()
 function mboxAlbumAll_load(filter="",uuid="")
 function mboxAlbumAll(data)
 function mboxAlbumAll_section(count,title,last_title)
-function mboxAlbumAll_empty(count)
+function mboxAlbumAll_empty(count,title)
+function mboxAlbumAll_detail(count,title)
 function mboxAlbumAll_album(count,uuid,title,description,cover,cmd_open,cmd_play)
 function mboxAlbumFilterPath(data,selected)
 function mboxAlbumFilterArtist(data,selected)
 function mboxAlbumList_load(i,uuid)
+function mboxAlbumList_load_direct(pos, i,uuid)
 function mboxAlbumSortTracks(track_list,track_info)
 function mboxAlbumList(data)
 function mboxAlbumInfo_load(uuid)
@@ -59,7 +61,7 @@ function mboxListCount() {
 function mboxAlbumAll_load(filter="",uuid="") {
 		if (filter["UUID"]) 	{ filter = ">>"+filter["UUID"]; } 	// load after API call
 		else 			{ filter = filter+">>"+uuid; }		// load by filter function
-		mboxApp.requestAPI("GET",["db","album_info",filter], "", mboxAlbumAll,"","mboxAlbumAll");
+		appFW.requestAPI("GET",["db","album_info",filter], "", mboxAlbumAll,"","mboxAlbumAll");
 		}
 
 //--------------------------------------
@@ -103,7 +105,7 @@ function mboxAlbumAll(data) {
 	filter += mboxHtmlTableNew("end");
 	filter += "</div>";
 
-	setTextById("remote4",filter);
+	setTextById("frame2",filter);
 
 	// ..................................
 
@@ -176,7 +178,7 @@ function mboxAlbumAll(data) {
 			else {	onclick_open  = "mboxAlbumList_load('" + i + "','" + uuid + "');"; 				// load album details
 				}
 				
-			var onclick_play  = "mboxApp.requestAPI('GET',['play', '" + uuid + "'],'',mboxControl);"; 	// play album remote
+			var onclick_play  = "appFW.requestAPI('GET',['play', '" + uuid + "'],'',mboxControl);"; 	// play album remote
 			var cover    	  = default_cover;
 
 			if (uuid == album_active) { album_active_no = i; }
@@ -186,14 +188,14 @@ function mboxAlbumAll(data) {
 				if (text1 != "") { i++; text += text1; print += print1; }   // text = album list; print is cover for print out
 				}
 			}
-			//if (Number.isInteger(a / 6)) { setTextById("remote2",text); }
+			//if (Number.isInteger(a / 6)) { setTextById("frame2",text); }
 		mbox_list_amount = i;
 		}
 	text  += mboxAlbumAll_detail(chapter_detail,last_chapter);
 	
 	print += mboxCoverListEnd();
 
-	setTextById("remote2",text);
+	setTextById("frame3",text);
 	setTextById("ontop",print);
 
 	mboxControlToggleFilter_show();
@@ -341,7 +343,7 @@ function mboxAlbumList_load(i,uuid) {
 	mbox_list_last = i;
 
 	// Load Album into the calculated DIV
-	mboxApp.requestAPI("GET",["data",uuid,"-"],"", mboxAlbumList );
+	appFW.requestAPI("GET",["data",uuid,"-"],"", mboxAlbumList );
 	}
 
 //--------------------------------------
@@ -356,7 +358,7 @@ function mboxAlbumList_load_direct(pos, i,uuid) {
 	mboxAlbumShowTriangle(i);
 
 	// Load Album into the calculated DIV
-	mboxApp.requestAPI("GET",["data",uuid,"-"],"", mboxAlbumList );
+	appFW.requestAPI("GET",["data",uuid,"-"],"", mboxAlbumList );
 	}
 
 // sort list of albums tracks by track number, if every track has a number
@@ -468,18 +470,18 @@ function mboxAlbumList(data) {
 	text += "<div class=\"album_infos new\">";
 	text +=   "<b>" + artist + "</b><br/><i>" + album + "</i><br/>";
 	text +=   length;
-        text += "</div>";
-        text += mboxHtmlButton("delete",  "mboxAlbumEmptyBelow();mboxAlbumHideTriangle(mbox_list_last);", "opac",   "small small2");
+	text += "</div>";
+	text += mboxHtmlButton("delete",  "mboxAlbumEmptyBelow();mboxAlbumHideTriangle(mbox_list_last);", "opac",   "small small2");
 
         // player control (in box)
 	text += "<div class=\"album_control new\">";
 
 	if (mbox_device != "local") {
 		text += "<div class=\"player_active big\" id=\"playing_"+uuid+"\" style=\"display:none;\"><img src=\""+mbox_icons["playing"]+"\" style=\"height:20px;width:20px;margin:2px;\"></div>";
-        	text += mboxHtmlButton("play",  "mboxApp.requestAPI('GET',['play', '" + uuid + "'],'',mboxControl);",	"blue");
-	        text += mboxHtmlButton("pause", "mboxApp.requestAPI('GET',['pause'],'',mboxControl);",			"blue");
-        	text += mboxHtmlButton("stop",  "mboxApp.requestAPI('GET',['stop'],'',mboxControl);",			"blue");
-	        text += mboxHtmlButton("empty");
+        	text += mboxHtmlButton("play",  "appFW.requestAPI('GET',['play', '" + uuid + "'],'',mboxControl);",	"blue");
+		text += mboxHtmlButton("pause", "appFW.requestAPI('GET',['pause'],'',mboxControl);",		"blue");
+        	text += mboxHtmlButton("stop",  "appFW.requestAPI('GET',['stop'],'',mboxControl);",			"blue");
+		text += mboxHtmlButton("empty");
 		}
 	if (mbox_device != "remote") {
         	text += mboxHtmlButton("play",  "mboxPlayerLocal();",	"green");
@@ -540,7 +542,7 @@ function mboxAlbumList(data) {
 	text += "</div>";
 	text += "</div>";
 
-	//setTextById("remote1",text);
+	//setTextById("frame1",text);
 	mboxAlbumWriteBelow(text);
 
 	setTimeout(function(){
@@ -552,7 +554,7 @@ function mboxAlbumList(data) {
 // album info as popup (incl. some settings ...)
 //--------------------------------------
 
-function mboxAlbumInfo_load(uuid) { mboxApp.requestAPI("GET",["data",uuid,"-"],"", mboxAlbumInfo ); }
+function mboxAlbumInfo_load(uuid) { appFW.requestAPI("GET",["data",uuid,"-"],"", mboxAlbumInfo ); }
 function mboxAlbumInfo_close() { setTimeout(function(){ mboxAlbumAll_load(); }, 2000); appMsg.hide(); }
 function mboxAlbumInfo(data) {
 
@@ -625,7 +627,7 @@ function mboxAlbumDelete(title,uuid) {
 	
 function mboxAlbumDelete_exec(uuid,title) {
 	console.error("TEST "+uuid+" / "+title);
-	mboxApp.requestAPI('DELETE',['data',uuid],'',[mboxAlbumDelete_msg,title]); //,"wait");
+	appFW.requestAPI('DELETE',['data',uuid],'',[mboxAlbumDelete_msg,title]); //,"wait");
 	}
 
 function mboxAlbumDelete_msg(data,title) {
@@ -637,7 +639,7 @@ function mboxAlbumDelete_msg(data,title) {
 // track info as popup
 //--------------------------------------
 
-function mboxAlbumTrackInfo_load(uuid) { mboxApp.requestAPI("GET",["data",uuid,"-"],"", mboxAlbumTrackInfo ); }
+function mboxAlbumTrackInfo_load(uuid) { appFW.requestAPI("GET",["data",uuid,"-"],"", mboxAlbumTrackInfo ); }
 function mboxAlbumTrackInfo(data) {
 
 	var text   = "";
@@ -699,8 +701,8 @@ function mboxAlbumTrackRow(id,dataTracks,album=true,artist=false,count=0) {
 		cmd += mboxHtmlButton("play",  "mboxPlayerLocal(" + count + ");", "green",   "small right"); 
 		}
 	if (mbox_device != "local") 	{
-		//cmd += mboxHtmlButton("play",  "mboxApp.requestAPI('GET',['play', '"+id+"'],'',mboxControl);", "blue", "small right");
-		cmd += mboxHtmlButton("play",  "mboxApp.requestAPI('GET',['play_position', '"+album_id+"', '"+count+"'],'',mboxControl);", "blue", "small right");
+		//cmd += mboxHtmlButton("play",  "appFW.requestAPI('GET',['play', '"+id+"'],'',mboxControl);", "blue", "small right");
+		cmd += mboxHtmlButton("play",  "appFW.requestAPI('GET',['play_position', '"+album_id+"', '"+count+"'],'',mboxControl);", "blue", "small right");
 		cmd += "<div class=\"player_active right\" id=\"playing3_"+id+"\" style=\"display:none;\"><img src=\""+mbox_icons["playing"]+"\" style=\"width:10px;height:10px;margin:2px;\"></div>";
 		}
 	cmd  += "</div>";
@@ -756,7 +758,7 @@ function mboxAlbumHideTriangle(i) {
 //--------------------------------------
 
 function mboxAlbumEmptyAll() {
-	setTextById("remote1","");
+	setTextById("frame1","");
 	}
 
 

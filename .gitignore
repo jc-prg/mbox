@@ -57,3 +57,7 @@ config/autohotspot/templates/autohotspot
 config/autohotspot/templates/hostapd.conf
 
 config/autohotspot/templates/wpa_supplicant.conf
+
+app-v2/00-index-js.txt
+
+app-v2/cache.manifest

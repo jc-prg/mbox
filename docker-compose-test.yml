@@ -1,0 +1,68 @@
+#--------------------------------------------
+# MBOX Client and Database
+#----------------------------------------
+# Please edit not here, but the orginial configuration file. This files is created using a template.
+#----------------------------------------
+
+version: "3"
+services:
+
+  mbox_client_test:
+    image: php:7.1-apache
+    container_name: mbox_client_test2
+    ports:
+      - 86:5006
+    volumes:
+      - ./config/apache2/php.ini:/usr/local/etc/php/conf.d/php.ini
+      - ./config/apache2/www-app.conf:/etc/apache2/sites-enabled/www-app.conf
+
+      - /projects/test/mbox/app-v2:/var/www/html/app
+      - /projects/test/mbox_data/data:/var/www/html/app/server/data
+      - /projects/test/mbox_data/music:/var/www/html/app/mbox_music
+      - /projects/test/mbox_data/cover:/var/www/html/app/mbox_img/cover
+      - /projects/test/mbox_data/cover_upload:/var/www/html/app/mbox_img/cover_upload
+
+    depends_on:
+      - mbox_db_test
+      - mbox_server_test
+
+
+# CouchDB 
+#--------------------
+
+  mbox_db_test:
+    image: apache/couchdb:latest
+    container_name: mbox_db_test
+    ports:
+      - 5106:5984
+    volumes:
+      - /projects/test/mbox_data/couchdb:/opt/couchdb/data
+      - ./config/couchdb/default.ini:/opt/couchdb/etc/default.ini
+    environment:
+      - 'COUCHDB_USER=mbox'
+      - 'COUCHDB_PASSWORD=mbox'
+
+
+# main server component (tested with docker-compose under Ubuntu)
+#----------------------------------------
+
+  mbox_server_test:
+    build: ./config/container/srv
+    container_name: mbox_server_test
+    privileged: true
+    volumes:
+      - /projects/test/mbox/server:/usr/src/app/server
+      - /projects/test/mbox/server/audio:/usr/src/app/audio
+      - /projects/test/mbox_data:/projects/test/mbox_data
+      - /projects/test/mbox_data/music:/projects/test/mbox_data/music
+      - /projects/test/mbox_data/cover:/projects/test/mbox_data/cover
+      - ./log:/log
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
+      - 208.67.222.222
+    ports:
+      - 5006:5006
+    depends_on:
+      - mbox_db_test
+

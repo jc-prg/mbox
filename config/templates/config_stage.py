@@ -6,6 +6,7 @@
 # this script will be replace by
 # the rollout script for PROD stage
 
+
 rollout        = "${MBOX_CURRENT_STAGE}"
 
 data_dir       = "${MBOX_DIR_DATA}"
@@ -27,8 +28,65 @@ server_port    = ${MBOX_SERVER_PORT}
 server_ip      = "${MBOX_DATABASE_SERVER}"
 server_dns     = [ "${DNS01}","${DNS02}","${DNS03}"]
 
+log_level      = "${MBOX_LOGLEVEL}"
+
+# ---------------------------------
+
 if rollout == "test": test  = True
 else:                 test  = False
 
-#### -> add more dir data
+
+# ---------------------------------
+
+import logging
+
+def init_logging(string,logfilename="",stage="test"):
+    """
+    Initialize logging and print software title
+    When stage != "test" write and filename is specified, write log into file
+    """
+    
+    if (log_level == "debug"): 
+      logging.basicConfig(level=logging.DEBUG)       # DEBUG, INFO, WARNING, ERROR, CRITICAL
+      logging.info("Start - Log-Level DEBUG ...")
+      logging.info("--------------------------------")
+      logging.info(string)
+      logging.info("--------------------------------")       
+       
+    elif (log_level == "info"): 
+      logging.basicConfig(level=logging.INFO)
+      logging.info("Start - Log-Level INFO ...")
+      logging.info("--------------------------------")
+      logging.info(string)
+      logging.info("--------------------------------")       
+    
+   
+    elif (log_level == "warning"): 
+      if (logfilename != "" and stage != "test"):
+         logging.basicConfig(filename=logfilename,
+                       filemode='a',
+                       format='%(asctime)s %(name)s %(levelname)s %(message)s',
+                       datefmt='%d.%m.%y %H:%M:%S',
+                       level=logging.WARNING)    
+      else:
+         logging.basicConfig(level=logging.WARNING)
+
+      logging.warning("Start ["+string+"] - Log-Level WARNING ...")
+      
+    else: 
+      if (logfilename != "" and stage != "test"):
+         logging.basicConfig(filename=logfilename,
+                       filemode='a',
+                       format='%(asctime)s %(name)s %(levelname)s %(message)s',
+                       datefmt='%d.%m.%y %H:%M:%S',
+                       level=logging.ERROR)    
+      else:
+         logging.basicConfig(level=logging.ERROR)
+         
+      logging.error("Start ["+string+"] Log-Level ERROR ...")
+           
+    log = logging.getLogger("werkzeug")
+    log.setLevel(logging.WARN)
+                      
+
 

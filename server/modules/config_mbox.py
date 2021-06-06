@@ -11,9 +11,9 @@ DEBUG = False  # True if output logging in DEBUG level
 
 APIname       = "jc://mbox/server/"
 APIname_LED   = "jc://mbox/LED/"
-APIname_BTN   = "jc://mbox/button/"
+APIname_BTN   = "jc://mbox/BUTTON/"
 APIname_RFID  = "jc://mbox/RFID/"
-APIversion    = "v0.7.2"
+APIversion    = "v0.7.3"
 APPversion    = "v0.7.1"
 APPsupport    = [APPversion, "v0.7.0"]  # other supported versions
 

@@ -3,9 +3,11 @@
 # For LED
 #------------------------------
 led_pins = {
-            "SDI"    : 11, #23 #11
-            "RCLK"   : 12, #24 #12
-            "SRCLK"  : 13  #26 #13
+            "SDI"    : 7, 
+            "RCLK"   : 5, 
+            "SRCLK"  : 3, 
+            "GRND"   : "(6) connected to GROUND",
+            "5V"     : "(4) connected to 5V"
             }
 
 # For BUTTONS
@@ -29,7 +31,7 @@ rfid_pins = {
              "MOSI"    : 19,
              "MISO"    : 21,
              "IRQ"     : "not used",
-             "GND"     : "(9) connected to GROUND",
+             "GND"     : "(20) connected to GROUND",
              "RST"     : 22,
              "VCC"     : "(17) connected to 3.3V"
              }
@@ -37,7 +39,7 @@ rfid_pins = {
 # Overview GPIO Raspberry Pi 3 / Pi Zero
 # -----------------------------
 #    3.3V     1  :   2    5V
-#   GPIO2     3  :   4    5v
+#   GPIO2     3  :   4    5V
 #   GPIO3     5  :   6    GND
 #   GPIO4     7  :   8    GPIO14
 #     GND     9  :  10    GPIO15

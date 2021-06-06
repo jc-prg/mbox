@@ -16,6 +16,7 @@ export MBOX_SPEEK_ASK_WHOM="DAD" # options: who should be asked, if the box does
 export MBOX_CURRENT_STAGE="prod"
 export MBOX_ACTIVE_STAGE="$MBOX_CURRENT_STAGE"
 export MBOX_IS_TEST="False"
+export MBOX_LOGLEVEL="warning"   # options: "debug", "info", "warning", "error" (set log level for couchdb -> config/couchdb/default.ini)
 
 # Settings
 export WLAN_COUNTRY="DE"

@@ -36,17 +36,8 @@ stage.test = True
 
 # start and configure logging
 #----------------------------------------------
-import logging
-if stage.test:
-    if mbox.DEBUG:
-       logging.basicConfig(level=logging.DEBUG)  # DEBUG, INFO, WARNING, ERROR, CRITICAL
-       logging.info("Start - Log-Level DEBUG ...")
-    else:
-       logging.basicConfig(level=logging.INFO)   # DEBUG, INFO, WARNING, ERROR, CRITICAL
-       logging.info("Start - Log-Level INFO ...")
-else:
-   logging.basicConfig(level=logging.WARN)    # DEBUG, INFO, WARNING, ERROR, CRITICAL
-   logging.info("Start - Log-Level WARN ...")
+
+stage.init_logging( mbox.APIname_RFID + mbox.APIversion + "   (test-script/"+str(stage.log_level)+")", '/log/server_RFID.log' )
    
 #-----------------------------------
 # init

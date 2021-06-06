@@ -28,13 +28,9 @@ print("----------------------------------------")
 
 # start and configure logging
 #----------------------------------------------
-import logging
-if mbox.DEBUG:
-   logging.basicConfig(level=logging.DEBUG)  # DEBUG, INFO, WARNING, ERROR, CRITICAL
-   logging.info("Start - Log-Level DEBUG ...")
-else:
-   logging.basicConfig(level=logging.INFO)   # DEBUG, INFO, WARNING, ERROR, CRITICAL
-   logging.info("Start - Log-Level INFO ...")
+
+stage.init_logging( mbox.APIname_LED + mbox.APIversion + "   (test-script/"+str(stage.log_level)+")", '/log/server_LED.log' )
+
 
 #-----------------------------------
 # init

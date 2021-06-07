@@ -22,7 +22,7 @@ function mboxControlCheckStatus ()
 function mboxControlSetStatus (color)
 function mboxControlToggleMode()
 function mboxControlToggleDevice ()
-function mboxControlToggleFilter ()
+function mboxControlToggleFilter (setting="")
 function mboxControlToggleFilter_show ()
 */
 //--------------------------------------

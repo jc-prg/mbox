@@ -5,9 +5,11 @@
 //--------------------------------------
 /* INDEX:
 function mboxListCount()
+function mboxListCount_New()
 function mboxAlbumAll_load(filter="",uuid="")
+function mboxAlbumAll_reload()
 function mboxAlbumAll(data)
-function mboxAlbumAll_section(count,title,last_title)
+function mboxAlbumAll_chapter(count, title, last_title)
 function mboxAlbumAll_empty(count,title)
 function mboxAlbumAll_detail(count,title)
 function mboxAlbumAll_album(count,uuid,title,description,cover,cmd_open,cmd_play)

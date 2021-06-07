@@ -2,17 +2,17 @@
 @media (prefers-color-scheme: dark) {
 
   .mbox_control {
-  	border-top: 3px solid white;
-  	background: #666666;
-  	opacity   :0.9;
+  	border-top: 2px solid black;
+  	background: #888888;
+  	opacity   :0.8;
 	}
 
   .mbox_control.on	{}
   .mbox_control.off 	{}
   .mbox_vol_control	{}
-  .mbox_ctrl_info 		{ opacity : 1.0; color : white; }
-  .mbox_ctrl_info_player	{ opacity : 0.2; color : white; }
+  .mbox_ctrl_info 		{ opacity : 1.0; color : black; }
+  .mbox_ctrl_info_player	{ opacity : 0.2; color : black; }
   .mbox_ctrl_info_player.on1 	{ opacity : 1.0; }
   .mbox_ctrl_info_player.off1	{ opacity : 0.2; }
-  .mbox_ctrl_open 		{ opacity : 1.0; color : white; }
+  .mbox_ctrl_open 		{ opacity : 1.0; color : black; }
 }

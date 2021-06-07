@@ -293,10 +293,10 @@ function mboxPlayerButton( button, cmd="", color="blue", small="", display="bloc
         var text  = "";
 
         if (button != "empty") {
-                text +=   "<div class=\"player_button "+color+" "+small+"\" onclick=\"javascript:"+cmd+"\" style=\"display:"+display+";\">";
-                text +=   "<img src=\"icon/"+button+".png\" class=\"player_image "+small+"\"></div>";
+                text +=   "<div class=\"player_button " + color + " " + small + "\" onclick=\"javascript:" + cmd + "\" style=\"display:" + display + ";\">";
+                text +=   "<img src=\"" + mbox_icon_dir + button + ".png\" class=\"player_image " + small + "\"></div>";
                 }
-        else {  text +=   "<div class=\"player_button empty "+small+"\"></div>";
+        else {  text +=   "<div class=\"player_button empty " + small + "\"></div>";
                 }
 
         return text;
@@ -310,10 +310,10 @@ function mboxPlayerButtonText( button, cmd="", color="blue", small="", display="
         var text  = "";
 
         if (button != "empty") {
-                text +=   "<div class=\"player_button "+color+" "+small+"\" onclick=\"javascript:"+cmd+"\" style=\"display:"+display+";align:center;\">";
-                text +=   "<div style=\"color:black;margin:3px;margin-top:5px;\"><b>"+button+"</b></div></div>";
+                text +=   "<div class=\"player_button " + color + " " + small + "\" onclick=\"javascript:" + cmd + "\" style=\"display:" + display + ";align:center;\">";
+                text +=   "<div style=\"color:black;margin:3px;margin-top:5px;\"><b>" + button + "</b></div></div>";
                 }
-        else {  text +=   "<div class=\"player_button empty "+small+"\"></div>";
+        else {  text +=   "<div class=\"player_button empty " + small + "\"></div>";
                 }
 
         return text;

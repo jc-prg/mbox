@@ -34,8 +34,15 @@ function app_menu_entries() {
 	if (mbox_filter == true)	{ mbox_filter_show = "hide"; }
 	else				{ mbox_filter_show = "show"; }
 
+
+        var descr   = [lang("ALBUM"),lang("PLAYLIST"),lang("STREAM")];
+
 	var app_menu = [
 		//[lang("INDEX"),        		"link", "/index.html"],
+		[lang("ALBUM"),			"script",	"mboxAlbumAll_load(); appPrintStatus_load(); if(mbox_settings) {mboxSettingsToggle();}"],
+		[lang("PLAYLIST"),			"script",	"mboxPlaylist_load(); appPrintStatus_load(); if(mbox_settings) {mboxSettingsToggle();}"],
+		[lang("STREAM"),			"script",	"mboxStream_load(); appPrintStatus_load(); if(mbox_settings) {mboxSettingsToggle();}"],
+		["LINE"],
 		["Modus: "+mbox_mode,			"script",	"mboxControlToggleMode(); appPrintStatus_load(); if(mbox_settings) {mboxSettingsToggle();}"],
 		[lang("DEVICE")+": "+mbox_device,	"script",	"mboxControlToggleDevice(); appPrintStatus_load(); if(mbox_settings){mboxSettingsToggle();}"],
 		];		
@@ -47,11 +54,10 @@ function app_menu_entries() {
 		}
 		
 	app_menu = app_menu.concat([
-		["LINE"],
 		[lang("RFID_CARDS"),			"script", 	"mboxCardList_load();  if(mbox_settings){mboxSettingsToggle();printAllStatusLoad();};"],
-		[lang("SETTINGS"),  			"script", 	"mboxSettingsToggle(); mboxSettingsStatus_load(); appPrintStatus_load();" ],
+		[lang("COVER_IMAGES"),			"script",	"mboxCoverTogglePrint();"],
 		["LINE"],
-		[lang("COVER_IMAGES"),			"script",	"mboxCoverTogglePrint();"]
+		[lang("SETTINGS"),  			"script", 	"mboxSettingsToggle(); mboxSettingsStatus_load(); appPrintStatus_load();" ],
 		]);
 			
 	return app_menu;

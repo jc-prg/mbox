@@ -142,11 +142,11 @@ function mboxCoverList( uuid, cover="", description="", cmd_open="", cmd_play=""
 
 	var text          = "";
 	var button_play   = "";
-	var default_cover = mbox_icons[type];
-	var icon_playing  = mbox_icons["playing"];
+	var default_cover = mbox_icon_dir + mbox_icons[type];
+	var icon_playing  = mbox_icon_dir + mbox_icons["playing"];
 
         if (mbox_device == "remote") {
-		button_play = "<div class=\"player_button small white\" onclick=\"" + cmd_play + "\"><img src=\""+mbox_icon_dir+"play.png\" style=\"width:9px;height:9px;margin:2px;\"></div>";
+		button_play = "<div class=\"player_button small white\" onclick=\"" + cmd_play + "\"><img src=\"" + mbox_icon_dir + "play.png\" style=\"width:9px;height:9px;margin:2px;\"></div>";
 		}
 
 	if (cover == "") {

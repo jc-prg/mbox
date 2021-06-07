@@ -9,17 +9,19 @@
 }
 
 .mbox_control {
-  	position: fixed;
-  	bottom  : -110px;
-  	left    : 0px;
+  	position    : fixed;
+  	bottom      : -110px;
+  	left        : 0px;
 
-  	height  : 180px;
-  	width   : 100%;
+  	height      : 180px;
+  	width       : 100%;
 
-  	border-top: 4px solid black;
-  	background: #333333;
-  	opacity   :0.9;
-  	z-index   :100;
+  	border-top  : 4px solid black;
+  	background  : #333333;
+  	opacity     : 0.9;
+  	z-index     : 100;
+  	padding-top : 3px;
+	font-family : Helvetica, sans-serif;
 	}
 
 .mbox_control.on {
@@ -47,13 +49,14 @@
 	}
 
 .mbox_ctrl_info {
-  	width:95%;
-  	float:left;
-  	opacity:1;
-  	color:white;
-  	margin:3px;
-  	font-size:12px;
-  	overflow:hidden;
+  	width		: 95%;
+  	float		: left;
+  	opacity	: 1;
+  	color		: white;
+  	margin		: 3px;
+  	font-size	: 12px;
+	font-family	: Helvetica, sans-serif;
+  	overflow 	: hidden;
 	}
 
 /* ---------------------------------------- */
@@ -68,33 +71,34 @@
 }
 
 .mbox_ctrl_info_player {
-  	width:95%;
-  	float:left;
-  	opacity:1;
-  	color:white;
-  	margin:3px;
-  	font-size:12px;
-  	overflow:hidden;
-  	opacity:0.2;
+  	width		: 95%;
+  	float		: left;
+  	opacity	: 1;
+  	color		: white;
+  	margin		: 3px;
+  	font-size	: 12px;
+  	overflow	: hidden;
+  	opacity	: 0.2;
+	font-style	: sans-serif;
 	}
 
 .mbox_ctrl_info_player.on1 {
-  	opacity:1.0;
+  	opacity	: 1.0;
 	}
 
 .mbox_ctrl_info_player.off1 {
-  	opacity:0.2;
+  	opacity	: 0.2;
 	}
 
 /* ---------------------------------------- */
 
 .mbox_ctrl_open {
-  	float:right;
-  	cursor:pointer;
-  	width:5%;
-  	height:15px;
-  	color:white;
-  	opacity:1;
+  	float		: right;
+  	cursor		: pointer;
+  	width		: 5%;
+  	height		: 15px;
+  	color		: white;
+  	opacity	: 1;
 	}
 
 /* ---------------------------- */

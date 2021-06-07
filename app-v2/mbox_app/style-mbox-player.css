@@ -6,6 +6,7 @@
 	color          : white;
 	padding        : 0px;
 	width          : 100%;
+	font-family	: Helvetica, sans-serif;
 	}
 
 /* Control buttons */
@@ -19,7 +20,7 @@
 	border         : solid 1px white;
 	cursor         : pointer;
 	background     : #dddddd;
-	opacity	       : 1;
+	opacity	: 1;
 	}
 
 .mboxPlayer_button.empty {

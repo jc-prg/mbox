@@ -1,0 +1,50 @@
+@media (prefers-color-scheme: dark) {
+
+  .print_album_back		{ background : white; }
+  .print_album_cover		{}
+
+
+  .album_detail 		{ background : #222222; color : white; border-color : #444444; opacity : 1; }
+  .album_cover			{ color : black; border-color : gray; }
+
+  .album_filter		{}
+  .album_filter_dropdown	{}
+
+  .album_filter_button		{ background : lightgray; color : black; }
+
+  .character			{}
+
+  .album_triangle		{ border-bottom : 10px solid #eeeeee; }
+  .album_triangle2		{ border-bottom : 10px solid black; }
+
+  .album_cover.small 		{}
+  .album_cover.empty 		{ border : solid #2a2a2a 1px; }
+  .album_cover_descr 		{}
+
+  .album_x  			{ color : red; }
+  .album_infos			{ color : white; }
+  .album_control 		{ color : white; }
+  .album_plus			{ color : #333333; }
+
+  .album_sort			{ text-shadow : 2px 2px orange; }
+  .album_control.new 		{}
+  .album_infos.new   		{}
+
+  .album_tracks 		{ color : white; }
+  .album_tracks_headline 	{}
+  .album_tracks_line 		{}
+  .album_tracks_line hr 	{}
+  .album_tracks_title 		{}
+  .album_track_title_shorten 	{}
+  .album_tracks_length 	{}
+  .album_tracks_control 	{}
+
+  .album_tracks_error 		{ color : red; }
+  .album_tracks_player 	{ color : white; background : #111111; }
+  .album_play_track 		{ color : black; }
+
+  .album_edit_pl 		{ color : blue; }
+  .album_delete_pl 		{ color : red; }
+  .album_edit_select 		{ background : #dddddd; border-top : 1px solid gray; }
+  .album_edit_list 		{ background : #dddddd; border-top : 1px solid gray; }
+}

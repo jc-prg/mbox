@@ -50,7 +50,8 @@ function mboxSettingsStatus (data) {
 	text += mboxHtmlTable("<b>mBox-Client:",	appTitle + " " + appVersion + "<br/>(" + stage + ")");
 	text += mboxHtmlTable("<b>mBox-Server:",	data["API"]["name"] + " " + data["API"]["version"] + "<br/>(" + data["API"]["stage"] + ")");
 	text += mboxHtmlTable("<b>jcApp:",		appFW.appVersion);
-	text += mboxHtmlTable("<b>jcMessage:",		message.appVersion);
+	text += mboxHtmlTable("<b>jcAppFramework:",	appFwVersion);
+	text += mboxHtmlTable("<b>jcMessage:",	message.appVersion);
 	text += mboxHtmlTable("<b>jcPlayer:",		player.appVersion);
 	text += mboxHtmlTable("<b>jcSlider:",		slider.appVersion);
 	text += mboxHtmlTable("end");

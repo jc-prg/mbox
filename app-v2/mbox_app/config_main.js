@@ -2,7 +2,7 @@
 // config menu and main functions
 //--------------------------------
 
-var app_frame_count     = 5;
+var app_frame_count     = 4;
 var app_frame_style     = "frame_column wide";
 var app_setting_count   = 4;
 var app_setting_style   = "setting_bg";
@@ -11,8 +11,8 @@ var app_title           = "jc://music-box/";	// add your app title (default defi
 var app_version         = "v1.0.0";		// add your app version (default defined in app-fw/app-conf.is)
 var app_api_dir         = "api/";		// add your api dir (default defined in app-fw/app-conf.is)
 var app_api_status      = "status";		// add your api status command (default defined in app-fw/app-conf.is)
-var app_loading_image   = ""; // add your loading image (default defined in app-fw/app-conf.is)
-var app_reload_interval = 0;  // add your reloading interval (default=5s)
+var app_loading_image   = ""; 		// add your loading image (default defined in app-fw/app-conf.is)
+var app_reload_interval = 5;  		// add your reloading interval (default=5s)
 
 
 //--------------------------------
@@ -20,7 +20,7 @@ var app_reload_interval = 0;  // add your reloading interval (default=5s)
 //--------------------------------
 
 var checkImgExists = false;
-var mboxSlider     = new jcSlider( name="mboxSlider", container="audio_slider");
+var mboxSlider     = new jcSlider( name="mboxSlider", container="mbox_audio_slider");
 
 //--------------------------------
 // create menu entries
@@ -68,8 +68,8 @@ function app_status(data) {
 	detected_card = mboxCardWriteRFID(data["LOAD"]["RFID"],data["LOAD"]["CARD"],data["DATA"]["SHORT"]);
 
 	// initial app data ...
-	setTextById("frame4",  appTitle + " (" + data["API"]["name"] + ": " + data["API"]["version"] + " / " + 
-				data["STATUS"]["active_device"] + ") " + detected_card );
+	var appInfo = appTitle + " (" + data["API"]["name"] + ": " + data["API"]["version"] + " / " + data["STATUS"]["active_device"] + ") " + detected_card;
+	setTextById("frame4", "<center>" + appInfo + "</center>" );
 
 	if (reload) { 
 
@@ -127,5 +127,15 @@ function app_theme_changed(theme) {
 	else			{ mbox_icon_dir	= "mbox_img/icon/"; }
 	}
 	
-	
+//--------------------------------
+// add code when screen size changed
+//--------------------------------
 
+function app_screen_size_changed(width, height) {
+	console.log("Changed screen size to " + width + "x" + height);
+	
+	if (mbox_mode == "Album")    { mboxAlbumAll_reload(); }
+	}
+
+//--------------------------------
+//EOF

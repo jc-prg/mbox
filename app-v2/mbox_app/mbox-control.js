@@ -448,7 +448,7 @@ function mboxControlToggleDevice () {
 function mboxControlToggleFilter (setting="") {
 	// switch next device setting
 
-	if (setting != "") {
+	if (setting == "") {
 		if (mbox_filter && !mbox_settings) 	{ mbox_filter = false; }
 		else					{ mbox_filter = true; }
 		}

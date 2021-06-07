@@ -160,7 +160,7 @@ class jcCouchDB ():
        elif db_key in self.cache:
            return self.cache[db_key][entry_key]
 
-       logging.info("CouchDB read cache: " + db_key + " " +str(time.time()))
+       logging.debug("CouchDB read cache: " + db_key + " " +str(time.time()))
 
        return
 
@@ -171,7 +171,7 @@ class jcCouchDB ():
        start_time = time.time()
        if db_key in self.database:
 
-           logging.info("CouchDB read: " + db_key + " - " + str(int(start_time - time.time())) + "s")
+           logging.debug("CouchDB read: " + db_key + " - " + str(int(start_time - time.time())) + "s")
            db = self.database[db_key]
            self.cache[db_key] = db
 

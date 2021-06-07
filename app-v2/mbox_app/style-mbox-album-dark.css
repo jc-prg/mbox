@@ -5,10 +5,11 @@
 
 
   .album_detail 		{ background : #222222; color : white; border-color : #444444; opacity : 1; }
-  .album_cover			{ color : black; border-color : gray; }
+  .album_cover			{ color : black; border-color : #111; opacity : 0.8; }
+  .album_cover:hover		{ opacity : 1; }
 
   .album_filter		{}
-  .album_filter_dropdown	{}
+  .album_filter_dropdown	{ opacity : 0.7; } /* background-color : lightgray; border-radius: 3px; } */
 
   .album_filter_button		{ background : lightgray; color : black; }
 
@@ -26,7 +27,7 @@
   .album_control 		{ color : white; }
   .album_plus			{ color : #333333; }
 
-  .album_sort			{ text-shadow : 2px 2px orange; }
+  .album_sort			{ text-shadow : 2px 2px brown; }
   .album_control.new 		{}
   .album_infos.new   		{}
 

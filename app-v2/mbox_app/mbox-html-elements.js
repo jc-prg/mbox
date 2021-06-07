@@ -73,11 +73,11 @@ function mboxHtmlButton( button, cmd="", color="blue", small="", display="block"
         var text  = "";
 
         if (button != "empty") {
-                text +=   "<div class=\"player_button "+color+" "+small+"\" onclick=\"javascript:"+cmd+"\" style=\"display:"+display+";\">";
-                text +=   "<img src=\""+mbox_icon_dir+button+".png\" class=\"player_image "+small+"\"></div>";
+                text +=   "<div class=\"player_button " + color + " " + small + "\" onclick=\"javascript:" + cmd + "\" style=\"display:" + display + ";\">";
+                text +=   "<img src=\"" + mbox_icon_dir + button + ".png\" class=\"player_image "+small+"\"></div>";
                 }
         else {
-                text +=   "<div class=\"player_button empty "+small+"\"></div>";
+                text +=   "<div class=\"player_button empty " + small + "\"></div>";
                 }
 
         return text;

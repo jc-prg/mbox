@@ -78,10 +78,9 @@ function app_status(data) {
 		
 		// write volume slider (default = hidden)
 		mboxSlider.setPosition(top="45px",bottom=false,left=false,right="10px");
-		mboxSlider.init(0,100,mbox_device);
 		mboxSlider.setOnChange(mboxControlVolumeSet);
 		mboxSlider.setShowVolume(mboxControlVolumeShow);
-		//mboxSlider.init(data);
+		mboxSlider.init(0,100,mbox_device);
 
 		// write menu entrie for 3 modes
 		if (mbox_mode == "Album")    { mboxAlbumAll_load(); }

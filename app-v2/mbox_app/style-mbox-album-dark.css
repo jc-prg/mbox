@@ -3,6 +3,7 @@
   .print_album_back		{ background : white; }
   .print_album_cover		{}
 
+  .player_button.opac		{ background : #cccccc; }
 
   .album_detail 		{ background : #222222; color : white; border-color : #444444; opacity : 1; }
   .album_cover			{ color : black; border-color : #111; opacity : 0.8; }
@@ -15,8 +16,8 @@
 
   .character			{}
 
-  .album_triangle		{ border-bottom : 10px solid #eeeeee; }
-  .album_triangle2		{ border-bottom : 10px solid black; }
+  .album_triangle		{ border-bottom : 10px solid #222222; }
+  .album_triangle2		{ border-bottom : 10px solid #444444; }
 
   .album_cover.small 		{}
   .album_cover.empty 		{ border : solid #2a2a2a 1px; }

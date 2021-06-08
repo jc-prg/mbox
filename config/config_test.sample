@@ -7,16 +7,17 @@
 # Language: EN, DE ... see ./app/mbox_language.js
 export MBOX_LANGUAGE="EN"        # options: "EN" if English, "DE" if German
 export MBOX_WITH_RPI="yes"       # options: "yes" if is Raspberry, "no" if not
-export MBOX_WITH_HARDWARE="yes"   # options: "yes" if hardware active, "no" if not
+export MBOX_WITH_HARDWARE="yes"  # options: "yes" if hardware active, "no" if not
 export MBOX_DATA_USB="yes"       # options: "yes" if music data on usb stick - default mount point is /media/usb, "no" if not
 export MBOX_SPEEK_MSG="yes"      # options: "yes" if the box should speek during startup and on errors, "no" if not
 export MBOX_SPEEK_ASK_WHOM="DAD" # options: who should be asked, if the box doesn't work correctly: "DAD", "MUM, "THE-ADMIN"
 
 # Stage
-export MBOX_CURRENT_STAGE="test"
+export MBOX_APP_VERSION="app-v2" # options: app-v1, app-v2 (= directory name)
+export MBOX_CURRENT_STAGE="test" # options: prod, test, <your name>
 export MBOX_ACTIVE_STAGE="$MBOX_CURRENT_STAGE"
 export MBOX_IS_TEST="True"
-export MBOX_LOGLEVEL="info"   # options: "debug", "info", "warning", "error"  (set log level for couchdb -> config/couchdb/default.ini)
+export MBOX_LOGLEVEL="info"      # options: "debug", "info", "warning", "error"  (set log level for couchdb -> config/couchdb/default.ini)
 
 # Settings
 export WLAN_COUNTRY="DE"
@@ -70,7 +71,7 @@ export MBOX_BUTTON_ACTIVE="true"
 export MBOX_DIR_DATA_ROOT="/projects_data"
 export MBOX_DIR_DATA="$MBOX_DIR_DATA_ROOT/$MBOX_CURRENT_STAGE"
 export MBOX_DIR="/projects/$MBOX_CURRENT_STAGE/mbox"
-export MBOX_DIR_CLIENT="$MBOX_DIR/app"
+export MBOX_DIR_CLIENT="$MBOX_DIR/$MBOX_APP_VERSION"
 export MBOX_DIR_SERVER="$MBOX_DIR/server"
 export MBOX_DIR_JCMODULES="/projects/$MBOX_CURRENT_STAGE/modules"
 export MBOX_DIR_DOCKERCOMPOSE="/usr/local/bin"

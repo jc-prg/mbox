@@ -1,0 +1,207 @@
+#!/bin/bash
+
+option=${DOLLAR}1
+is_rpi="${MBOX_WITH_RPI}"
+hardware="${MBOX_WITH_HARDWARE}"
+usb_dev="${MBOX_MOUNT_USB}"
+usb_mount="${MBOX_MOUNT_DATA}"
+
+echo
+echo "-------------------------------------"
+echo " Start jc://mbox/${MBOX_ACTIVE_STAGE}/"
+echo " (by Christoph Kloth)"
+echo "-------------------------------------"
+
+
+if [ ! ${DOLLAR}option ]; then
+  echo
+  echo "Press key - your options:"
+  echo " 'q' - exit"
+  echo " 'd' - docker start           [docker]"
+  echo " 'r' - docker restart         [restart]"
+  echo " 'c' - install crontab        [cron]"
+  echo " 'u' - update from GitHub     [update]"
+  echo " 's' - server (in progress)   [server]"
+  echo
+  echo " ... additional parameter:    [check-dns]"
+  count=0
+  while : ; do
+    read -n 1 k <&1
+    if [[ ${DOLLAR}k = q ]] ; then
+       printf "\n... quitting the program.\n"
+       exit 0
+    elif [[ ${DOLLAR}k = d ]] ; then
+       option="docker"
+       printf "\n... starting via docker.\n"
+       break
+    elif [[ ${DOLLAR}k = r ]] ; then
+       option="restart"
+       printf "\n... starting via docker.\n"
+       break
+    elif [[ ${DOLLAR}k = s ]] ; then
+       option="server"
+       printf "\n... starting directly from server.\n"
+       break
+    elif [[ ${DOLLAR}k = u ]] ; then
+       option="update"
+       printf "\n... update from https://github.com.\n"
+       break
+    elif [[ ${DOLLAR}k = c ]] ; then
+       option="cron"
+       printf "\n... install mbox via crontab.\n"
+       break
+    else
+       ((count=${DOLLAR}count+1))
+       printf "\nIterate for ${DOLLAR}count times\n"
+       echo "Press 'q' to exit"
+    fi
+  done
+fi
+
+#---------------------------------------
+
+install_cron() {
+  echo "CRON"
+  #write out current crontab
+  crontab -l > mycron
+  #echo new cron into cron file
+  echo "* * * * * /projects/prod/mbox/start_mbox check-dns >/dev/null 2>&1" >> mycron
+  #install new cron file
+  crontab mycron
+  rm mycron
+}
+
+install_rclocal() {
+  echo "INSTALL startup with /etc/rc.local"
+  ${MBOX_DIR}/config/install/install-rclocal
+}
+
+check_dns() {
+  echo "... check if dns error."
+  test=`cat ${MBOX_DIR}/log/internet_connect`
+
+  if [ ${DOLLAR}test == "DNS-ERROR" ]; then
+     sleep 5
+     if [ ${DOLLAR}test == "DNS-ERROR" ]; then
+        ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose.yml restart
+        #/usr/bin/docker restart mbox_server_prod_1
+        echo "RESET" > ${MBOX_DIR}/log/internet_connect
+     fi
+  elif [ ${DOLLAR}test == "NO-CONNECTION" ]; then
+     sleep 5
+     if [ ${DOLLAR}test == "NO-CONNECTION" ]; then
+       /usr/bin/autohotspot
+       echo "RESET" > ${MBOX_DIR}/log/internet_connect
+     fi
+  fi
+
+}
+
+#---------------------------------------
+
+# Start using docker container
+if [ ${DOLLAR}option == "docker" ]; then
+
+  echo "... mount usb if available and not done already."
+  mount ${DOLLAR}usb_dev ${DOLLAR}usb_mount
+  
+  if [ ${DOLLAR}is_rpi == "yes" ]; then
+    if [ ${DOLLAR}hardware == "yes" ]; then
+      echo "... start rpi components:"
+      ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose-rpi.yml up -d & #--remove-orphans
+    fi
+  fi
+
+  echo "... start main modules:"
+  ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose.yml up -d & #--remove-orphans
+
+  echo ""
+  echo "RESET" > ${MBOX_DIR}/log/internet_connect
+  sleep 5s
+  
+# Restart docker container
+elif [ ${DOLLAR}option == "restart" ]; then
+
+  if [ ${DOLLAR}is_rpi == "yes" ]; then
+    if [ ${DOLLAR}hardware == "yes" ]; then
+      echo "... restart rpi components:"
+      ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose-rpi.yml stop 
+      ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose-rpi.yml up -d
+    fi
+  fi
+  echo "... restart main modules:"
+  ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose.yml stop
+  ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose.yml up -d
+
+  echo ""
+  echo "RESET" > ${MBOX_DIR}/log/internet_connect
+  sleep 5s
+  
+# Update from GitHub
+elif [ ${DOLLAR}option == "update" ]; then
+
+    echo "Change dir"
+    cd ${MBOX_DIR}
+    
+    echo "Stop docker"
+    ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose.yml stop
+    if [ ${DOLLAR}hardware == "yes" ]; then
+      ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose-rpi.yml stop
+    fi
+    
+    echo "Update MBOX from repository"
+    git stash
+    git pull
+    git submodule update --recursive
+    
+#    echo "Update MODULES from repository"
+#    cd ${MBOX_DIR_JCMODULES}
+#    git stash
+#    git pull
+#    cd ${MBOX_DIR}
+    
+    echo "Create new configuration"
+    cd config/
+    ./create ${MBOX_CURRENT_STAGE}
+    cd ..
+    
+    echo "Restart docker"
+    if [ ${DOLLAR}hardware == "yes" ]; then
+      ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose-rpi.yml up -d #--remove-orphans
+    fi
+    ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose.yml up -d #--remove-orphans
+
+# install cron and automatic start
+elif [ ${DOLLAR}option == "cron" ]; then
+
+  install_cron
+  install_rclocal
+
+# check if DNS error (and restart if so)
+elif [ ${DOLLAR}option == "check-dns" ]; then
+
+  check_dns
+
+# start using server option (in progress)
+elif [ ${DOLLAR}option == "server" ]; then
+
+  echo "... IMPLEMENTATION NOT READY YET!"
+  echo "... mount usb if available and not done already."
+  mount ${DOLLAR}usb_dev ${DOLLAR}usb_mount
+  
+  echo "... start server"
+  ${MBOX_DIR}/server/server.py &
+  
+  if [ ${DOLLAR}is_rpi == "yes"]; then
+    if [ ${DOLLAR}hardware == "yes" ]; then
+      echo "... start server rpi components"
+      ${MBOX_DIR}/server/server_led.py &
+      ${MBOX_DIR}/server/server_rfid.py &
+      ${MBOX_DIR}/server/server_button.py &
+    fi
+  fi
+  echo ""
+  
+  sleep 5s
+
+fi

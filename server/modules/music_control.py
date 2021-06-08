@@ -51,7 +51,8 @@ class musicThread (threading.Thread):
       self.music_ctrl["playing"] = 0
       self.music_ctrl["state"]   = "Started"
       
-      self.music_load_new   = False
+      self.music_load_new        = False
+      self.music_vlc_connect     = True
 
       self.speak = speak.speakThread(4, "Thread speak", 1, "")  #  jcJSON.read("music"), jcJSON.read("radio"))
       self.speak.start()
@@ -59,12 +60,19 @@ class musicThread (threading.Thread):
       self.relevant_db  = self.music_database.databases["music"] # ["albums","album_info","tracks","files","cards"]
       self.vol_factor   = 0.8 # factor to limit audio level (max = 1.0)
 
-      if stage.rollout == "prod":     self.instance     = vlc.Instance("--quiet")
-      else:                           self.instance     = vlc.Instance()
+      try:
+        logging.info("Connecting to audio device via VLC ...")
+        if stage.rollout == "prod":     self.instance     = vlc.Instance("--quiet")
+        else:                           self.instance     = vlc.Instance()
       
-      self.player       = self.instance.media_player_new()
-      self.player.audio_set_volume(int(self.music_ctrl["volume"]*100))
-      self.player.audio_set_mute(False)
+        self.player       = self.instance.media_player_new()
+        self.player.audio_set_volume(int(self.music_ctrl["volume"]*100))
+        self.player.audio_set_mute(False)
+        
+      except Exception as e:
+        self.music_vlc_connect     = False
+        logging.error("VLC-error connecting to audio device: "+str(e))
+      
       
       self.last_card_identified = ""
 
@@ -76,8 +84,10 @@ class musicThread (threading.Thread):
       musicPlayList(self)
       logging.info( "Exiting " + self.name )
 
+
    def stop(self):
       self.stopProcess = True
+
 
    def reload_data(self):
       self.music_data         = {}

@@ -2,6 +2,8 @@
 #--------------------------
 # project specific substitution commands
 
+echo ">> create files from templates for $MBOX_APP_VERSION ..."
+
 # app-v1
 if [[ $MBOX_APP_VERSION == "app-v1" ]]; then
 

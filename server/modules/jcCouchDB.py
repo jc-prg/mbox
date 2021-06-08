@@ -172,11 +172,17 @@ class jcCouchDB ():
        if db_key in self.database:
 
            logging.debug("CouchDB read: " + db_key + " - " + str(int(start_time - time.time())) + "s")
-           db = self.database[db_key]
-           self.cache[db_key] = db
+           
+           try:
+             db = self.database[db_key]
+             self.cache[db_key] = db
+             if entry_key == "":                    return db["main"]["data"]
+             elif entry_key in db["main"]["data"]:  return db["main"]["data"][entry_key]
+             
+           except Exception as e:
+             if (db_key != "_users" and db_key != "_replicator"):
+               logging.error("CouchDB ERROR read: " + db_key + "/" + entry_key + " - " + str(e))
 
-           if entry_key == "":                    return db["main"]["data"]
-           elif entry_key in db["main"]["data"]:  return db["main"]["data"][entry_key]
 
        else:
            logging.warn("CouchDB ERROR read: " + db_key + " - " + str(int(start_time - time.time())) + "s")
@@ -217,7 +223,7 @@ class jcCouchDB ():
            return
        self.cache[key] = self.read(key)
 
-       logging.info("CouchDB save: " + key + " " +str(time.time()))
+       logging.debug("CouchDB save: " + key + " " +str(time.time()))
        return
 
    #--------------------------------------

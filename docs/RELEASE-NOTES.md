@@ -1,6 +1,18 @@
 # jc://music-box/ - Release Notes
 
-## Summary v0.7.x (in progress)
+## Summary v1.1.x (in progress)
+
+* Fix & optimize album list view
+* Create dark theme
+
+## Summary v1.0.0
+
+* Optimize wiring for LED to create stable connectors
+* Integrate  as sub-module
+* Move app functionality to the repository [jc://app-framework/](https://github.com/jc-prg/app-framework) and integrate as submodule
+* Bugfixes (in jc://mbox/ and [jc://modules/](https://github.com/jc-prg/modules))
+
+## Summary v0.7.x
 
 * restart playlist where switched off
 * additional LED for Wifi and playback status

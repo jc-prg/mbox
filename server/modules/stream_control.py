@@ -211,7 +211,9 @@ class radioThread (threading.Thread):
 
         # check if internet connected
         for key in host_ip:
-          if runcmd.ping(key): ping_ip = True
+          if runcmd.ping(key):
+            ping_ip = True
+            break
 
         # check if dns is working correctly
         count     = 0

@@ -226,7 +226,7 @@ function mboxAlbumAll(data) {
 
 				if (row_per_chapter == false) {
 					album_detail_number = (Math.trunc((i-1)/albums_per_row)+1) * albums_per_row;
-					console.log(album_detail_number);
+					//console.log(album_detail_number);
 					}
 				}
 			

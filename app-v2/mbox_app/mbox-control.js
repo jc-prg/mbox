@@ -378,11 +378,11 @@ function mboxControlCheckLoading(data) {
 	var l_time    = load_data["reload_time_left"];
 
 	// write info to ...
-	if (document.getElementById("reload_info")) {
+	if (document.getElementById("progress_info")) {	
 		if (l_new == false && l_all == false) { progress = 100; }
 		if (l_new) { text = "Load new Data: "; }
 		if (l_all) { text = "Reload all Data: "; }
-		setTextById("reload_info",text + Math.round(progress*100)/100+"% ("+convert_second2time(Math.round(l_time))+" min)");
+		setTextById("progress_info",text + Math.round(progress*100)/100+"% ("+convert_second2time(Math.round(l_time))+" min)");
 		}
 	}
 

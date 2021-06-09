@@ -229,7 +229,7 @@ function mboxHtmlSetButtonConfig	(data) {
 //----------------------------------------------------------------
 
 function mboxHtmlShowLoading(data) {
-	var text = "<b>" + lang("RELOAD_STARTED") + ":</b><br/><br/><div id='reload_info' style='border-style:solid 1px;'>x</div>";
+	var text = "<b>" + lang("RELOAD_STARTED") + ":</b><br/><br/><div id='progress_info' style='border-style:solid 1px;'>x</div>";
 	appMsg.alert(text);
 	}
 

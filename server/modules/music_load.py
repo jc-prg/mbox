@@ -339,7 +339,7 @@ def reloadMusic(data,all=True,thread=""):
 
           # check if it's a compilation
           tag1_org = tag1
-          if (tag1 != last_artist) and (tag4 == last_albumdir) and (tag1 != "file format not supported") and (tag1 != "empty file"):
+          if (tag1 != last_artist) and (tag4 == last_albumdir) and (tag2 != "file format not supported") and (tag2 != "empty file"):
              logging.debug("ALBUM DIR (COMPILATION): " + tag4)
              tags["compilation"] = 1
              tag1                = "Compilation"

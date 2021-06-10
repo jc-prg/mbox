@@ -48,5 +48,5 @@
   .album_edit_pl 		{ color : blue; }
   .album_delete_pl 		{ color : red; }
   .album_edit_select 		{ background : #dddddd; border-top : 1px solid gray; }
-  .album_edit_list 		{ background : #dddddd; border-top : 1px solid gray; }
+  .album_edit_list 		{ background : #dddddd; border-top : 1px solid gray; color : black; }
 }

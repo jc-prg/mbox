@@ -142,12 +142,6 @@ function mboxAlbumAll(data) {
 	var new_row         = false;
 	var new_sub_row     = false;
 	
-	// mboxAlbumAll_chapter() -> Chapter, starting with first character of e.g. artist
-	// mboxAlbumAll_empty()   -> Empty box, if row per chapter
-	// mboxAlbumAll_detail()  -> Album detail, to be filled when clicked on album (position dependend on rows)
-	// mboxCoverAlbum_new()   -> Album cover
-	// mboxAlbumAll_album()   -> Embedded album cover with tool tips etc.
-
 	// Sort entries (by artist)
 	var sorted_entries = [];
 	for (var key in album_info) {
@@ -321,6 +315,11 @@ function mboxAlbumAll_album(count,uuid,title,description,cover,cmd_open,cmd_play
 
 	text += mboxHtmlScrollTo( "start", uuid );
 	text += mboxHtmlToolTip(  "start" );
+	
+	if (description.indexOf("#error") >= 0) {
+	   if (appTheme == "dark") 	{ title = "<font color='yellow'>" + title + "</font>"; }
+	   else			{ title = "<font color='red'>" + title + "</font>"; }
+	   }
 
 	// write cover
 	text += mboxCoverList( uuid, cover, "<b>"+title+"</b><br/>"+description, cmd_open, cmd_play, "album" );

@@ -201,6 +201,29 @@ def checkIfCardExists(data_cards,album,artist,uuid):
 
 #------------------------------------
 
+def checkIfPlaylistEntryExists(data, entry_uuid, entry_ref):
+    '''
+    check album and track list, if track or file exists
+    '''
+    
+    if entry_uuid.startswith("a_"):
+       if entry_uuid in data["album_info"]: return entry_uuid
+       else:
+         for album_uuid in data["album_info"]:
+           if data["album_info"][album_uuid]["albumpath"] == entry_ref:
+             return album_uuid
+       
+    elif entry_uuid.startswith("t_"):
+       if entry_uuid in data["tracks"]: return entry_uuid
+       else:
+         for track_uuid in data["tracks"]:
+           if data["tracks"][track_uuid]["file"] == entry_ref:
+             return track_uuid
+
+    return "NOT FOUND"
+
+#------------------------------------
+
 def checkIfSupported(supported_formats,file_name):
      supported = False
      for type in supported_formats:
@@ -250,270 +273,293 @@ def reloadCoverImages(data,thread=""):
 
 #------------------------------------
 
-def reloadMusic(data,all=True,thread=""):
-    '''load metadata and images from files in music_dir'''
+
+def reloadMusic_getCurrentWithoutErrors(data_current):
+    '''
+    if only new files shall be loaded, the current data have to be prepare as base
+    therefor all db entries with errors will be deleted as they will be detected again (if they still exist)
+    '''
+
+    data_keys   = ["albums","album_info","artists","files","tracks"]
+    data_reload = {}
+    logging_msg = []
+    
+    for key in data_keys:
+       data_reload[key] = {}
+    
+    for x in data_current["albums"]:
+       if "#error" in x:  logging_msg.append("albums: "+x)
+       else:              data_reload["albums"][x] = data_current["albums"][x]
+       
+    for x in data_current["artists"]:
+       if "#error" in x:  logging_msg.append("artists: "+x)
+       else:              data_reload["artists"][x] = data_current["artists"][x]
+       
+    for x in data_current["files"]:
+       if "#error" in data_current["files"][x]["artist"]:       logging_msg.append("files: "+x)
+       else:                                                    data_reload["files"][x] = data_current["files"][x]
+       
+    for x in data_current["tracks"]:
+       if "#error" in data_current["tracks"][x]["artist"]:      logging_msg.append("tracks: "+x)
+       else:                                                    data_reload["tracks"][x] = data_current["tracks"][x]
+       
+    for x in data_current["album_info"]:
+       if "#error" in data_current["album_info"][x]["artist"]:  logging_msg.append("album_info: "+x)
+       else:                                                    data_reload["album_info"][x] = data_current["album_info"][x]
+       
+    for x in logging_msg:
+       logging.info(x)
+       
+    return data_reload
+
+#------------------------------------
+
+def reloadMusic_setProgessInfo(count, total, thread):
+    '''
+    '''
+
+    files_percentage  = float(count) / float(total) * 100
+    if thread != "":
+       thread.reload_progress      = files_percentage
+       current_time                = time.time()
+       thread.reload_time_required = time.time() - thread.reload_time_start
+       thread.reload_time_left     = thread.reload_time_required * (100 - files_percentage) / files_percentage
+       if files_percentage == 100: thread.reload_time_left = 0
+
+    logging.debug("Reload progress: "+str(files_percentage)+"%")
+    
+    
+#------------------------------------
+    
+def reloadMusic_loadFileAndImage(filename):
+    '''
+    get metadata for media file (compartibility)
+    '''
+
+    tags, tag1, tag2, tag3 = readMetadata(music_dir+filename)
+    return tags
+
+
+#------------------------------------
+    
+def reloadMusic_createAlbumInfo(track_data):
+    '''
+    create album info from track data
+    '''
+    album_info = {}
+    album_dir  = {}
+
+    # recreate album_infos based on tracks: (1) get all paths from tracks
+    for track in track_data:
+        file_path = track_data[track]["file"]
+        temp      = file_path.split("/")
+        file_name = temp[len(temp)-1]
+        file_path = file_path.replace(file_name,"")
+        if "album_uuid" in track_data[track]:  album_dir[file_path] = track_data[track]["album_uuid"]
+        else:                                  album_dir[file_path] = "NEW_ENTRY"
+        
+    # recreate album_infos based on tracks: (2) get album infos from tracks and check if it's a compilation (more than 1 artist)
+    for album_path in album_dir:
+
+        album_uuid   = album_dir[album_path]
+        if album_uuid == "NEW_ENTRY":
+           album_uuid = "a_"+str(uuid.uuid1())
+           
+        album_data = {
+             "uuid"         : album_uuid,
+             "artist"       : "",
+             "album"        : "",
+             "albumname"    : "",
+             "albumpath"    : album_path,
+             "albumlength"  : 0,
+             "albumsize"    : 0,
+             "compilation"  : False,
+             "card_id"      : 0,		#### GET FROM OLD ENTRY, IF EXISTS !!!
+             "genre"        : [],
+             "tracks"       : [],
+             "track_count"  : 0,
+             "error"        : [],
+             "cover_images" : {"active" : "dir", "active_pos" : 0, "upload" : [], "dir" : [], "track" : []}
+             }
+        album_data_error = {
+             "uuid"         : album_uuid+"_error",
+             "artist"       : "",
+             "album"        : "",
+             "albumname"    : "",
+             "albumpath"    : album_path,
+             "albumlength"  : 0,
+             "albumsize"    : 0,
+             "compilation"  : False,
+             "card_id"      : 0,		#### GET FROM OLD ENTRY, IF EXISTS !!!
+             "genre"        : [],
+             "tracks"       : [],
+             "track_count"  : 0,
+             "error"        : [],
+             "cover_images" : {"active" : "dir", "active_pos" : 0, "upload" : [], "dir" : [], "track" : []}
+             }
+             
+        track_count       = 0
+        track_count_error = 0
+        
+        for track_uuid in track_data:
+           if album_path in track_data[track_uuid]["file"]:
+              track_info   = track_data[track_uuid]
+              
+              if "#error" in track_info["artist"]:
+                  track_count_error += 1
+                  album_data_error["album"]       = track_info["album"] 
+                  album_data_error["albumname"]   = track_info["album"] 
+                  album_data_error["artist"]      = track_info["artist"]
+                  
+                  if "error" in track_info: album_data_error["error"].append(track_info["error"])              
+                  
+                  album_data_error["tracks"].append(track_uuid)
+                  album_data_error["track_count"]  = track_count_error
+              
+              else:
+                track_count += 1
+                if track_count == 1:
+                  album_data["album"]       = track_info["album"] 
+                  album_data["albumname"]   = track_info["album"] 
+                  album_data["artist"]      = track_info["artist"]
+                elif album_data["artist"] != track_info["artist"] and not "#error" in track_info["artist"]:
+                  album_data["artist"]      = "Compilation"
+                  album_data["compilation"] = True
+                elif not "#error" in track_info["artist"] and track_info["album"] == "":
+                  album_data["album"]       = track_info["album"] 
+                  album_data["albumname"]   = track_info["album"] 
+                  album_data["artist"]      = track_info["artist"]
+                                  
+                album_data["tracks"].append(track_uuid)
+                album_data["track_count"]  = track_count
+                if "filesize" in track_info: album_data["albumsize"]   += float(track_info["filesize"])
+                if "length" in track_info:   album_data["albumlength"] += float(track_info["length"])
+                if "error" in track_info:    album_data["error"].append(track_info["error"]+" ("+track_info["file"]+")")              
+                if "genre" in track_info and track_info["genre"] not in album_data["genre"]:
+                   album_data["genre"].append(track_info["genre"])      
+                if "cover_images" in track_info: 
+                   if "dir" in track_info["cover_images"]:   album_data["cover_images"]["dir"].extend(track_info["cover_images"]["dir"])
+                   if "track" in track_info["cover_images"]: album_data["cover_images"]["track"].extend(track_info["cover_images"]["track"])
+                                
+        if len(album_data["cover_images"]["dir"]) == 0 and len(album_data["cover_images"]["track"]) > 0:
+           album_data["cover_images"]["active"] = "track"
+        
+        album_info[album_uuid] = album_data
+        
+        if album_data_error["artist"] != "":
+           album_info[album_uuid+"_error"] = album_data_error      
+        
+    return album_info
+
+
+#------------------------------------
+
+def reloadMusic(data,load_all=True,thread=""):
+    '''
+    load metadata and images from files in music_dir
+    '''
 
     global music_dir, music_cover
-
-    data_album_list = {} # albums
-    data_album_info = {} # album infos
-    data_tracks     = {} # tracks
-    data_files      = {} # files
-    data_artists    = {} # files
-    data_i          = {} # album infos - collect
-    data_h          = {} # temporary dict to add image files to album
+    logging.info("Start reloading music data: " + music_dir + " | all=" + str(load_all))
     
-    a_uuid          = ""
-    files_exist     = data["files"]
-    
-    logging.info("Start reloading music data: " + music_dir + " | all=" + str(all))
+    data_reload = {}
+    data_temp   = {}
+    keys_media  = ["albums","album_info","artists","tracks","files","cards","playlists"]
+    keys_temp   = ["album_dir", "album_info","album_image"]  
 
-    # delete old cover files (as not required after reload)
-    if all:                                                 # if all files / db entries should be reloaded (else: add only new entries)
-      image_files = readFiles(music_cover)                  # read all filenames and delete @ the end of this function
+    for key in keys_media:
+      data_reload[key] = {}
+    for key in keys_temp:
+      data_temp[key] = {}
+      
+    media_files_exist  = data["files"].keys()
+    media_files_reload = readFiles(music_dir)
+    image_files_reload = readFiles(music_cover)
 
-    # if not all, copy existing entries to vars
-    else:
-      data_album_list = data["albums"]      # data_a
-      data_album_info = data["album_info"]  # data_e
-      data_tracks     = data["tracks"]      # data_t
-      data_files      = data["files"]       # data_f
-      data_artists    = data["artists"]     # data_k
-
-    # read all file names in music dir and start loop to read ID3 tags
-    files            = readFiles(music_dir)
-    files_amount     = len(files)
+    if not load_all:
+       data_reload = reloadMusic_getCurrentWithoutErrors(data_current=data)
+       
+    # reload files incl. metadata and images -> tracks and files
+    files_amount     = len(media_files_reload)
     files_count      = 0
     files_percentage = 0
 
-    last_artist      = ""
-    last_album       = ""
-    last_title       = ""
-    last_albumdir    = ""
+    logging.info("... reload (load_all="+str(load_all)+") - " + str(files_amount) + " files found.")
+    
+    for path2file in media_files_reload:
 
-    logging.info("... renew all: " + str(files_amount) + " files found.")
-
-    for file in files:
-
-      # check if entry for file already exists in db
-      m_file            = file.replace(music_dir,"")
-
-      # calculate and show progress
-      files_count      += 1
-      files_percentage  = float(files_count) / float(files_amount) * 100
-      if thread != "":
-          thread.reload_progress      = files_percentage
-          current_time                = time.time()
-          thread.reload_time_required = time.time() - thread.reload_time_start
-          thread.reload_time_left     = thread.reload_time_required * (100 - files_percentage) / files_percentage
-
-      logging.debug("Reload progress: "+str(files_percentage)+"%")
-
-      # check if file alread loaded and if all files should be loaded
-      if (m_file not in files_exist) or all:
-        logging.debug("NOT EXIST_or_ALL: " + str(all))
-
-        # generate album identifier based on path to file
-        albumID3  = ""
-        albumPath = AlbumByPath(file)
-        if (albumPath not in data_h):
-          data_h[albumPath] = {}
-
-        #logging.info("XXX" + file)
-
-        # check if image file in folder (and take last one as alternative cover)
-        if os.path.isfile(file) and checkIfSupported(thread.supported_img,file) == True:
-
-            data_h[albumPath]["cover_image"] = file.replace(music_dir,"")
-            if "cover_images" not in data_h[albumPath]:         data_h[albumPath]["cover_images"] = {}
-            if "dir" not in data_h[albumPath]["cover_images"]:  data_h[albumPath]["cover_images"]["dir"] = []
-            data_h[albumPath]["cover_images"]["dir"].append( file.replace(music_dir,"") )
-
-
-        # check if mp3 and read data from ID3 tags
-        if os.path.isfile(file) and checkIfSupported(thread.supported_mpX,file) == True:
-
-          tags, tag1, tag2, tag3 = readMetadata(file)
-          tag4                   = albumPath
-          check                  = True
-
-          # check if it's a compilation
-          tag1_org = tag1
-          if (tag1 != last_artist) and (tag4 == last_albumdir) and (tag2 != "file format not supported") and (tag2 != "empty file"):
-             logging.debug("ALBUM DIR (COMPILATION): " + tag4)
-             tags["compilation"] = 1
-             tag1                = "Compilation"
-
-             # correct hierachy
-             if last_artist != tag1:
-               if tag1 not in data_album_list:              data_album_list[tag1]             = {}      # create category compilations
-               if last_album not in data_album_list[tag1]:  data_album_list[tag1][last_album] = {}      # create album in category
-
-               data_album_list[tag1][last_album]            = data_album_list[last_artist][last_album]  # move last entry to group "Compilation"
-               del data_album_list[last_artist][last_album]                                             # remove entry with artist name
-
-             # correct other
-             if last_artist != tag1:
-               lst_albumID3 = last_artist+"_"+tag2
-               act_albumID3 = tag1+"_"+tag2
-
-               if lst_albumID3 in data_i: data_i[act_albumID3] = data_i[lst_albumID3]                   # move track list from first song to compilation
-               if lst_albumID3 in data_i: data_i[act_albumID3+"_tags"] = data_i[lst_albumID3+"_tags"]   # move track list from first song to compilation
-               if lst_albumID3 in data_h: data_h[act_albumID3] = data_h[lst_albumID3]                   # move albumPath from first song to compilation
-
-               if lst_albumID3 in data_h: del data_h[lst_albumID3]                                      # delete albumPath for first song
-               if lst_albumID3 in data_i: del data_i[lst_albumID3]                                      # delete list of tracks for first song
-
-          else:
-             logging.debug("ALBUM DIR: " + tag4)
-
-          # set last vars to check next file if part of compilation (different artists per album)
-          last_artist   = tag1
-          last_album    = tag2
-          last_title    = tag3
-          last_albumdir = tag4
-
-          # get basic album information - artist, album, cover image
-          # ----------------------------------------------------
-          # generate temporary identifier (to mach image files to albums)
-          
-          albumID3         = tag1+"_"+tag2
-          data_h[albumID3] = data_h[albumPath]
-
-          ###################################### uebergeben von tags fuer das Album -> MISSING: tags[cover_images];tags[cover_image] ...
-
-          # check if embedded images from audiofiles
-          if "cover_images" in tags:
-
-            if not albumID3+"_image" in data_i:
-              data_i[albumID3+"_image"]            = {}
-              data_i[albumID3+"_image"]            = tags["cover_images"]
-              data_i[albumID3+"_image"]["active"]  = "track"
-
-            else:
-              for img in tags["cover_images"]["track"]:
-                 data_i[albumID3+"_image"]["track"].append(img)
-
-          data_i[albumID3] = [tag1,tag2,tag4] # simplification - assumption files of an album will never be stored in different directories (tag4)
-
-          # create list of tracks
-          if albumID3+"_tags" in data_i: # exist
-             data_i[albumID3+"_tags"].append(tags["uuid"])
-          else:                          # is empty
-             data_i[albumID3+"_tags"] = {}
-             data_i[albumID3+"_tags"] = [tags["uuid"]]
-
-          # safe title and filename in dict
-          data_tracks[tags["uuid"]] = tags
-          data_files[tags["file"]]  = tags
-
-          # create hierarchy: artist - track
-          if tag1_org not in data_artists:        data_artists[tag1_org]         = {}
-          if tag3 not in data_artists[tag1_org]:  data_artists[tag1_org][tag3]   = {}
-
-          data_artists[tag1_org][tag3] = tags
-
-          # create hierarchy: artist - album - track
-          if tag1 not in data_album_list:          data_album_list[tag1]         = {}
-          if tag2 not in data_album_list[tag1]:    data_album_list[tag1][tag2]   = {}
-
-
-    # create list of albums by UUID based on track infos -> album_info
-    for key in data_i:
-       a_uuid = "a_"+str(uuid.uuid1())
-       if key+"_tags" in data_i:
-         if data_i[key][1] not in data_album_list[data_i[key][0]]: data_album_list[data_i[key][0]][data_i[key][1]] = {}
-
-         data_album_list[data_i[key][0]][data_i[key][1]]["uuid"] = a_uuid  # KeyError 'Unknown Album'
-         data_album_info[a_uuid]                  = {}
-         data_album_info[a_uuid]["artist"]        = data_i[key][0]
-         data_album_info[a_uuid]["album"]         = data_i[key][1]
-         data_album_info[a_uuid]["tracks"]        = data_i[key+"_tags"]
-         data_album_info[a_uuid]["track_count"]   = len(data_i[key+"_tags"])
-         data_album_info[a_uuid]["albumpath"]     = data_i[key][2]
-         data_album_info[a_uuid]["albumsize"]     = 0
-         data_album_info[a_uuid]["albumlength"]   = 0
-         data_album_info[a_uuid]["genres"]        = []
-         data_album_info[a_uuid]["error"]         = []
-
-         data_album_info[a_uuid]["cover_images"]          = {}
-         data_album_info[a_uuid]["cover_images"]["dir"]   = []
-         data_album_info[a_uuid]["cover_images"]["track"] = []
-
-         # consolidate data from tracks
-         # -------------------------         
-         for t_key in data_album_info[a_uuid]["tracks"]:
-
-           # calculate album size in bytes
-           data_album_info[a_uuid]["albumsize"]       = data_album_info[a_uuid]["albumsize"]   + data_tracks[t_key]["filesize"]
-           if "length" in data_tracks[t_key]: 
-             data_album_info[a_uuid]["albumlength"]   = int(data_album_info[a_uuid]["albumlength"]) + int(data_tracks[t_key]["length"])
-
-           # collect genre information from tracks
-           if "genre" in data_tracks[t_key]:
-             if data_tracks[t_key]["genre"] and not data_tracks[t_key]["genre"] in data_album_info[a_uuid]["genres"]:
-               data_album_info[a_uuid]["genres"].append(data_tracks[t_key]["genre"])
-           data_tracks[t_key]["uuid_album"] = a_uuid
-
-           # error message from tracks
-           if "error" in data_tracks[t_key]:
-             data_album_info[a_uuid]["error"].append(data_tracks[t_key]["error"] + " ("+data_tracks[t_key]["file"]+")")
-           data_tracks[t_key]["uuid_album"] = a_uuid
-
-
-         # check if already a rfid card is connected ???
-         # -------------------------         
-         # def checkIfCardExists(data_cards,album,artist,uuid):
-         if "cards" in data:
-         
-            x_cards   = data["cards"]
-            x_album   = data_album_info[a_uuid]["album"]
-            x_artist  = data_album_info[a_uuid]["artist"]
-            x_uuid    = a_uuid
-
-            x_cards, x_card_id = checkIfCardExists(x_cards,x_album,x_artist,x_uuid)
-
-            data_album_info[a_uuid]["card_id"] = x_card_id
-            data["cards"]                      = x_cards
-
-         # set image information for album
-         # -------------------------
-         if key+"_image" in data_i:
-             data_album_info[a_uuid]["cover_images"]         = data_i[key+"_image"] # images extracted from audio file
-
-         if "cover_images" in data_h[key]:
-             data_album_info[a_uuid]["cover_images"]["dir"]  = data_h[key]["cover_images"]["dir"] # images from directory
-             if len(data_album_info[a_uuid]["cover_images"]["track"]) == 0: data_album_info[a_uuid]["cover_images"]["active"] = "dir"
-         else:
-             data_album_info[a_uuid]["cover_images"]["dir"]  = []
-
-         if len(data_album_info[a_uuid]["cover_images"]["track"]) == 0 and len(data_album_info[a_uuid]["cover_images"]["dir"]) == 0:
-             data_album_info[a_uuid]["cover_images"]["active"] = "none"
-
-
-    data["albums"]      = data_album_list
-    data["tracks"]      = data_tracks
-    data["files"]       = data_files
-    data["artists"]     = data_artists
-
-    if all:
-      data["album_info"]  = data_album_info        # replace all albums
-
-    else:
-      for x in data_album_info:
-        data["album_info"][x] = data_album_info[x] # add not existing albums
-
-    if "playlists" not in data:   data["playlists"] = {}
-    if "cards" not in data:       data["cards"]     = {}
+      if os.path.isfile(path2file) and checkIfSupported(thread.supported_mpX,path2file) == True:
+         filename          = path2file.replace(music_dir,"")
+         files_count      += 1
+         reloadMusic_setProgessInfo(count=files_count, total=len(media_files_reload), thread=thread)
       
+         if load_all or filename not in media_files_exist:
+            file_uuid = str(uuid.uuid1())
+            data_reload["files"][filename]                 = reloadMusic_loadFileAndImage(filename)
+            data_reload["tracks"]["t_"+file_uuid]          = data_reload["files"][filename]
+            data_reload["tracks"]["t_"+file_uuid]["uuid"]  = "t_"+file_uuid
+            data_reload["files"][filename]["uuid"]         = "t_"+file_uuid
+            
+         else:
+            file_uuid = str(uuid.uuid1())
+            file_data = reloadMusic_loadFileAndImage(filename)
+            if "#error" in file_data["artist"]:
+               data_reload["files"][filename]                 = file_data
+               data_reload["tracks"]["t_"+file_uuid]          = data_reload["files"][filename]
+               data_reload["tracks"]["t_"+file_uuid]["uuid"]  = "t_"+file_uuid
+               data_reload["files"][filename]["uuid"]         = "t_"+file_uuid
+         
+    # check, if file still exists (for load_all=True)
+
+    # recreate album_infos based on tracks
+    data_reload["album_info"] = reloadMusic_createAlbumInfo(track_data=data_reload["tracks"]) 
+
+    # recreate album hierachy based on album info
+    for album_uuid in data_reload["album_info"]:
+        album_data = data_reload["album_info"][album_uuid]
+        if album_data["artist"] not in data_reload["album_info"]: data_reload["albums"][album_data["artist"]] = {}
+        data_reload["albums"][album_data["artist"]][album_data["albumname"]]         = {}
+        data_reload["albums"][album_data["artist"]][album_data["albumname"]]["uuid"] = album_uuid
+        
+    # recreate list of artists    
+    for track_uuid in data_reload["tracks"]:
+        artist_name = data_reload["tracks"][track_uuid]["artist"]
+        if not "#error" in artist_name:
+           if not artist_name in data_reload["artists"]:              data_reload["artists"][artist_name] = {}
+           if not track_uuid in data_reload["artists"][artist_name]:  data_reload["artists"][artist_name][track_uuid] = data_reload["tracks"][track_uuid]         
+           # ... check why editing in playlist doesn't work
+           # ... check, if track_uuid is enough and the rest can be loaded on client side
+        
+    # reconnect cards information
+    if "cards" in data:
+       cards_temp = data["cards"]
+       for album_uuid in data_reload["album_info"]:
+          cards_temp, card_id = checkIfCardExists(data_cards=cards_temp, album=data_reload["album_info"][album_uuid]["albumname"], artist=data_reload["album_info"][album_uuid]["artist"], uuid=album_uuid)
+          data_reload["album_info"][album_uuid]["card_id"] = card_id          
+       data_reload["cards"] = cards_temp
+
+    # reconnect playlist information - albums based on uuid or directory, tracks based on filename and path
+    if "playlists" in data:
+       for playlist_uuid in data["playlists"]:
+          position = 0
+          for entry_uuid in data["playlists"][playlist_uuid]["tracks"]:
+             entry_ref  = data["playlists"][playlist_uuid]["tracks_ref"][position]
+             check_uuid = checkIfPlaylistEntryExists(data, entry_uuid=entry_uuid, entry_ref=entry_ref)
+             if check_uuid != "NOT FOUND" and check_uuid != entry_uuid:
+                data["playlists"][playlist_uuid]["tracks"][position] = entry_uuid 
+             position += 1
+       data_reload["playlists"] = data["playlists"]
+       # ... check why playlist gets overwritten during reload
+    
     # delete old cover files, if all entries should be reloaded (and reload was successful)
-    if all:
-      for x in image_files:
+    if load_all:
+      for x in image_files_reload:
         if os.path.isfile(x):
           os.remove(x)
 
     logging.info("Finished reloading music data: " + music_dir + " | all=" + str(all) + " | albums=" + str(len(data["albums"])))
-    return data
+    return data_reload
 
+    
 #---------------------------------------
 # EOF

@@ -340,7 +340,7 @@ def mboxAPI_readDB(databases,db_filter=""):
 
        if databases == "all":       db_list = ["files","tracks","albums","album_info","cards","playlists","radio","artists"]
        elif "--" in databases:      db_list = databases.split("--")
-       elif databases == "artists": db_list = ["albums","album_info"]
+       elif databases == "artists": db_list = ["albums","album_info","artists"]
        else:                        db_list = [databases]
 
        data    = mboxAPI_start("readDB","readDB","",param,"")
@@ -359,17 +359,20 @@ def mboxAPI_readDB(databases,db_filter=""):
              data["DATA"]["_selected"]             = data["DATA"][database][uuid]
        
        # create combined requests - ARTISTS
+       
+       #.... check for errors!
        if databases == "artists":
           artists = {}
           for key in data["DATA"]["album_info"]:
              album_info     = data["DATA"]["album_info"][key]
              artist         = album_info["artist"] 
              album          = {}
-             album["album"] = album_info["album"] 
+             album["album"] = album_info["albumname"] 
              album["uuid"]  = key 
             
-             if not artist in artists: artists[artist] = []
-             artists[artist].append( album )
+             if not "#error" in artist:
+               if not artist in artists: artists[artist] = []
+               artists[artist].append( album )
             
           data["DATA"]["artists"] = artists
           del data["DATA"]["album_info"]

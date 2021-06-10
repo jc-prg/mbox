@@ -37,19 +37,20 @@ def setMetadataError(error, filename, error_msg="", decoder=""):
     
     tags = {}
     tags["uuid"]      = "t_"+str(uuid.uuid1())
-    tags["file"]      = error
+    tags["file"]      = directory + filename
     tags["filesize"]  = 0
     tags["artist"]    = "#error: "+directory
     tags["album"]     = error
     tags["albumsize"] = 0
-    tags["title"]     = filename
+    tags["title"]     = filename + " (error: " + error + ")"
     tags["error"]     = error
     
     logging.warning(error + ": " + filename)
     if decoder != "":
+       logging.warning("..."+decoder)
        tags["decoder"] = decoder
     if error_msg != "":
-       logging.warning(error_msg)
+       logging.warning("..."+error_msg)
        tags["error"]  = error_msg
     return tags
 
@@ -73,6 +74,9 @@ def readMetadata(path_to_file):
    # check file type and read metadata
     if   ".mp3" in filename.lower():  
        tags = readID3(path_to_file)
+       if tags["filesize"] == 0:
+          return tags, str(tags["artist"]), str(tags["album"]), str(tags["title"])
+         
        #logging.info(tags)
        if "artist" not in tags and "album" not in tags:     tags  = readMutagen(path_to_file,"mp3")
        elif tags["artist"] == "" and tags["album"] == "":   tags  = readMutagen(path_to_file,"mp3")       

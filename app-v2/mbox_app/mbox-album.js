@@ -721,29 +721,48 @@ function mboxAlbumTrackInfo(data) {
 	var url1   = RESTurl + "api/data/"+track["uuid_album"]+"/-/";
 	var url2   = "/mbox_music/";
 
+	var msg_height = 400;
+	if (appTheme == "dark") 	{ color = "yellow"; }
+	else				{ color = "red"; }
 
 	text += "<b>"+lang("TRACK_INFORMATION")+ "</b><br/>";
-	cover = "";
-	if (track["cover_images"]) 	{ cover += mboxCoverAlbumInfo(1, track["cover_images"]["track"],  track["cover_images"]["active"], uuid); }
-	else 				{ cover += lang("DATA_OLD_FORMAT"); }
+	
+	if (track["artist"].indexOf("#error") == -1) {
+		cover = "";
+		if (track["cover_images"]) 	{ cover += mboxCoverAlbumInfo(1, track["cover_images"]["track"],  track["cover_images"]["active"], uuid); }
+		else 				{ cover += lang("DATA_OLD_FORMAT"); }
 
-	text += mboxHtmlTableNew("start");
-	text += "<tr><td colspan='2'><hr></td></tr>";
-	text += mboxHtmlTableNew(["<i>"+lang("TITLE")+":", 		track["title"] ] );
-	text += mboxHtmlTableNew(["<i>"+lang("ALBUM")+":", 		track["album"] ] );
-	text += mboxHtmlTableNew(["<i>"+lang("BAND_ARTIST")+":",	track["artist"] ] );
-	text += mboxHtmlTableNew(["<i>"+lang("SIZE")+":", 		size + " MByte / " + length + " min" ] );
-	text += mboxHtmlTableNew(["<i>"+lang("TRACK")+" Dir:", 	"<a href='" + url2 + path + "' target='_blank'>" + path + "</a>" ] );
-	text += mboxHtmlTableNew(["<i>UUID "+lang("TRACK")+":",	"<a href='" + url  + "' target='_blank'>" + uuid + "</a>" ] );
-	text += mboxHtmlTableNew(["<i>UUID "+lang("ALBUM")+":", 	"<a href='" + url1 + "' target='_blank'>" + track["uuid_album"] + "</a>" ] );
-	if ("error" in track) {
-		text += mboxHtmlTableNew(["<i><font color='red'>"+lang("ERROR")+":</font><i>", "<i><font color='red'>"+track["error"]+"</font></i>" ] );
+		text += mboxHtmlTableNew("start");
+		text += "<tr><td colspan='2'><hr></td></tr>";
+		text += mboxHtmlTableNew(["<i>"+lang("TITLE")+":", 		track["title"] ] );
+		text += mboxHtmlTableNew(["<i>"+lang("ALBUM")+":", 		track["album"] ] );
+		text += mboxHtmlTableNew(["<i>"+lang("BAND_ARTIST")+":",	track["artist"] ] );
+		text += mboxHtmlTableNew(["<i>"+lang("SIZE")+":", 		size + " MByte / " + length + " min" ] );
+		text += mboxHtmlTableNew(["<i>"+lang("TRACK")+" Dir:", 	"<a href='" + url2 + path + "' target='_blank'>" + path + "</a>" ] );
+		text += mboxHtmlTableNew(["<i>UUID "+lang("TRACK")+":",	"<a href='" + url  + "' target='_blank'>" + uuid + "</a>" ] );
+		text += mboxHtmlTableNew(["<i>UUID "+lang("ALBUM")+":", 	"<a href='" + url1 + "' target='_blank'>" + track["uuid_album"] + "</a>" ] );
+		if ("error" in track) {
+			text += mboxHtmlTableNew(["<i><font color='"+color+"'>"+lang("ERROR")+":</font><i>", "<i><font color='"+color+"'>"+track["error"]+"</font></i>" ] );
+			}
+		text += mboxHtmlTableNew(["<i>"+lang("COVER_AVAILABLE")+":", cover ] );
+		text += "<tr><td colspan='2'><hr></td></tr>";
+		text += mboxHtmlTableNew("end");
 		}
-	text += mboxHtmlTableNew(["<i>"+lang("COVER_AVAILABLE")+":", cover ] );
-	text += "<tr><td colspan='2'><hr></td></tr>";
-	text += mboxHtmlTableNew("end");
+	else {
+		text += mboxHtmlTableNew("start");
+		text += "<tr><td colspan='2'><hr></td></tr>";
 
-	appMsg.confirm(text,"",400);
+		text += mboxHtmlTableNew([lang("FILE")+":", 					"<a href='" + url2 + path + "' target='_blank'>" + path + "</a>" ] );
+		text += mboxHtmlTableNew(["UUID "+lang("TRACK")+":",				"<a href='" + url  + "' target='_blank'>" + uuid + "</a>" ] );
+		text += mboxHtmlTableNew(["<font color='"+color+"'>"+lang("ERROR")+":</font><i>", "<font color='"+color+"'>"+track["error"]+"</font></i>" ] );
+		text += mboxHtmlTableNew(["Decoder:",						track["decoder"] ] );
+				
+		text += "<tr><td colspan='2'><hr></td></tr>";
+		text += mboxHtmlTableNew("end");
+		msg_height = 250;
+		}
+
+	appMsg.confirm(text,"",msg_height);
 	}
 
 // track title row

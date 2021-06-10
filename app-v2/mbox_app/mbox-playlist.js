@@ -424,10 +424,10 @@ function mboxPlaylistEditAlbums(data) {
 //---------------------------
 
 function mboxPlaylistEditTracks_load(uuid_filter,source="") { 
-	var sep			= "||";
-	var ids			= uuid_filter.split(sep);	// list of IDs, uuid of playlist first
-	var uuid		= ids[0];       		// id of album (selected ...)
-	var filter		= ids[1];
+	var sep	= "||";
+	var ids	= uuid_filter.split(sep);	// list of IDs, uuid of playlist first
+	var uuid	= ids[0];       		// id of album (selected ...)
+	var filter	= ids[1];
 	if (filter == "") { filter = "-"; }
 
 	appFW.requestAPI("GET",["data",uuid,filter], "", mboxPlaylistEditTracks);

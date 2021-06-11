@@ -14,9 +14,11 @@ function mboxControlVolumeControl(volume, mute)
 function mboxControlShowUUID(uuid)
 function mboxControlPlaying_show(uuid,uuid_song,playing)
 function mboxControlPlaying_delete ()
-function mboxControlPanel_toggle()
+function mboxControlPanel_open()
 function mboxControlPanel_close()
 function mboxControlPanel_toggle()
+function mboxControlPanel_hide(complete=false)
+function mboxControlPanel_show()
 function mboxControlCheckLoading(data)
 function mboxControlCheckStatus ()
 function mboxControlSetStatus (color)
@@ -27,7 +29,9 @@ function mboxControlToggleFilter_show ()
 */
 //--------------------------------------
 
-mbox_control_open = false;
+var mboxControlPanel_open     = false;
+var mboxControlPanel_progress = false;
+
 
 // Write menu with groups ...
 //-----------------------------------------------------------
@@ -151,7 +155,7 @@ function mboxControl(data) {
 
 		// check if open ...
 		var on_off = "";
-		if (mbox_control_open)  { on_off = " on1"; display_open="none"; display_close="block"; }
+		if (mboxControlPanel_open)  { on_off = " on1"; display_open="none"; display_close="block"; }
 		else			{ on_off = " off1"; }
 
 		text += "<div class='mbox_ctrl_open' id='ctrl_open' style='display:"+display_open+";'>";
@@ -296,6 +300,8 @@ function mboxControlShowUUID(uuid) {
 
 function mboxControlPlaying_show(uuid,uuid_song,playing) {
 
+        if (playing == 0)	{ mboxControlPanel_hide(); }
+        else			{ mboxControlPanel_show(); }
 
 	activeElements = document.getElementsByClassName("player_active");
 
@@ -330,37 +336,73 @@ function mboxControlPlaying_delete () {
 // open and close mbox control at the bottom of the page
 //--------------------------------------
 
-function mboxControlPanel_toggle() 	{ if (mbox_control_open == false) { mboxControlPanel_toggle(); } }
-function mboxControlPanel_close() 	{ if (mbox_control_open == true)  { mboxControlPanel_toggle(); } }
+function mboxControlPanel_open() 	{ if (mboxControlPanel_open == false) { mboxControlPanel_toggle(); } }
+function mboxControlPanel_close() 	{ if (mboxControlPanel_open == true)  { mboxControlPanel_toggle(); } }
 function mboxControlPanel_toggle() {
 
-	if (mbox_control_open == false) {
-		document.getElementById('mbox_control').classList.remove('off');
-		document.getElementById('mbox_control').classList.add('on');
-		if (document.getElementById('mbox_control_info')) {
-			document.getElementById('mbox_control_info').classList.remove('off1');
-			document.getElementById('mbox_control_info').classList.add('on1');
-			}
-                document.getElementById('ctrl_close').style.display = "none";
-                document.getElementById('ctrl_open').style.display  = "block";
+	if (mboxControlPanel_progress) { return; }
+	mboxControlPanel_progress = true;
+		
+	if (mboxControlPanel_open == false) {
+		if (cssClassExists(id='mbox_control',check='show')) { cssClassChange(id='mbox_control', from='show'); }
+		cssClassChange(id='mbox_control', from='off',to='on');
+		cssClassChange(id='mbox_control_info', from='off1', to='on1');
+		
+		elementHidden('ctrl_close');
+		elementVisible('ctrl_open');
 
-		mbox_control_open = true;
+		mboxControlPanel_open = true;
 		}
 	else {
-		document.getElementById('mbox_control').classList.remove('on');
-		document.getElementById('mbox_control').classList.add('off');
-		if (document.getElementById('mbox_control_info')) {
-			document.getElementById('mbox_control_info').classList.add('off1');
-			document.getElementById('mbox_control_info').classList.remove('on1');
-			}
-                document.getElementById('ctrl_close').style.display = "block";
-                document.getElementById('ctrl_open').style.display  = "none";
+		cssClassChange(id='mbox_control', from='on',to='off');
+		cssClassChange(id='mbox_control_info', from='on1', to='off1');
 
-		mbox_control_open = false;
+		elementHidden('ctrl_open');
+		elementVisible('ctrl_close');
+
+		mboxControlPanel_open = false;
 		}
 
-	//document.getElementById('mbox_control').classList.toggle('on');
-	//document.getElementById('mbox_control_info').classList.toggle('on');
+	mboxControlPanel_progress = false;
+	}
+
+//--------------------------------------
+
+function mboxControlPanel_hide(complete=false) {
+
+	if (mboxControlPanel_progress) { return; } else { mboxControlPanel_progress = true; }
+		
+	if (complete || cssClassExists(id='mbox_control',check='on')) {		
+		cssClassChange(id='mbox_control', from='on',to='off');
+		setTimeout(function() {		
+			cssClassChange(id='mbox_control', from='off',to='hide');
+			mboxControlPanel_open     = false;
+			mboxControlPanel_progress = false;
+			}, 2000);
+		return;
+		}
+	else if (cssClassExists(id='mbox_control',check='off'))	{ cssClassChange(id='mbox_control', from='off',to='hide'); }
+	else if (cssClassExists(id='mbox_control',check='show'))	{ cssClassChange(id='mbox_control', from='show',to='hide'); }
+	else 								{ cssClassChange(id='mbox_control', from='',to='hide'); }
+
+	mboxControlPanel_open     = false;
+	mboxControlPanel_progress = false;
+	}
+
+//--------------------------------------
+
+
+function mboxControlPanel_show() {
+
+	if (mboxControlPanel_progress) { return; } else { mboxControlPanel_progress = true; }
+	
+	if (cssClassExists(id='mbox_control',check='hide'))		{ cssClassChange(id='mbox_control', from='hide',to='show'); }
+	else if (cssClassExists(id='mbox_control',check='off'))	{}
+	else if (cssClassExists(id='mbox_control',check='on'))	{}
+	else if (cssClassExists(id='mbox_control',check='show'))	{}
+	else								{ cssClassChange(id='mbox_control', from='',to='show'); }
+		
+	mboxControlPanel_progress = false;
 	}
 
 
@@ -396,7 +438,7 @@ function mboxControlCheckStatus () {
 	var last = d.getTime() - appFW.lastConnect;
 	//console.log("Last Connect: "+last);
 
-	if (last < 15000) 	{ mboxControlSetStatus("green"); }
+	if (last < 15000) 		{ mboxControlSetStatus("green"); }
 	else if (last < 35000) 	{ mboxControlSetStatus("yellow"); mboxControlPlaying_delete(); }
 	else if (last > 65000) 	{ mboxControlSetStatus("red");    mboxControlPlaying_delete(); }
 

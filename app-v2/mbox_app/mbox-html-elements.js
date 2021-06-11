@@ -2,8 +2,8 @@
 // jc://music-box/, (c) Christoph Kloth
 //--------------------------------------
 /* INDEX:
+function scrollToTop()
 function image(file)
-function dict_size(d)
 function button (onclick,label, id="")
 function add_link(link, description="")
 function clickMenu ()
@@ -40,14 +40,6 @@ function image(file) {
         return "<img src='"+mbox_icon_dir+file+"' style='height:15px;margin:0px;padding:0px;' alt='"+file+"' />";
         }
         
-// ------------------------------------------
-
-function dict_size(d) {
-	var c=0;
-	for (var i in d) {c++;}
-	return c;
-	}
-
 // ------------------------------------------
 
 function button (onclick,label, id="") {

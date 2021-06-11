@@ -8,6 +8,16 @@
   to   {bottom: -110px;}
 }
 
+@keyframes control_hide {
+  from {bottom: -110px;}
+  to   {bottom: -180px;}
+}
+
+@keyframes control_show {
+  from {bottom: -180px;}
+  to   {bottom: -110px;}
+}
+
 .mbox_control {
   	position    : fixed;
   	bottom      : -110px;
@@ -33,11 +43,24 @@
 
 .mbox_control.off {
 	animation-name: control_off;
-  	animation-duration: 4s;
+  	animation-duration: 2s;
 
   	bottom  : -110px;
 	}
 
+.mbox_control.hide {
+	animation-name: control_hide;
+  	animation-duration: 1.5s;
+
+  	bottom  : -180px;
+	}
+
+.mbox_control.show {
+	animation-name: control_show;
+  	animation-duration: 3s;
+
+  	bottom  : -110px;
+	}
 /* ---------------------------------------- */
 
 .mbox_vol_control {
@@ -118,7 +141,7 @@
   }
 
 /* adapted format for Laptop & Bigger */
-
+/*
 @media (min-width: 1000px) {
   .mbox_control {
     bottom  : -110px;
@@ -131,4 +154,4 @@
     to   {bottom: -20px;}
     }
   }
-
+*/

@@ -26,20 +26,26 @@ function mboxStreamAdd_msg(data)
 
 //--------------------------------------
 
-function mboxStream_load()             { appFW.requestAPI("GET",["db","radio","-"],"", mboxStream); }
+function mboxStream_load()  { 
+	appFW.requestAPI("GET",["db","radio","-"],"", mboxStream);
+	scrollToTop();
+	}
+	
+//--------------------------------------
+
 function mboxStream(data) {
-        var text          = "";
+	var text          = "";
 	var print 	  = mboxCoverListStart();
-        var default_cover = mbox_icon_dir + mbox_icons["radio"]; // "img/cd2.png";
+	var default_cover = mbox_icon_dir + mbox_icons["radio"]; // "img/cd2.png";
 	var radio_data    = data["DATA"]["radio"];
 	var a             = 0;
-        mbox_cover_list   = [];
-        mbox_mode         = 'Radio'; 
+	mbox_cover_list   = [];
+	mbox_mode         = 'Radio'; 
 
-        // sort by radio name
-        var sorted_r   = [];
-        var by_title = {};
-        for (var key in radio_data) { if (radio_data[key]["title"]) {
+	// sort by radio name
+	var sorted_r   = [];
+	var by_title = {};
+	for (var key in radio_data) { if (radio_data[key]["title"]) {
 		//console.log(key + "/" + radio_data[key]["title"]);
 		sorted_r.push( radio_data[key]["title"] );
 		by_title[radio_data[key]["title"]] = key;

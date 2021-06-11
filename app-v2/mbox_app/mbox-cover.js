@@ -28,7 +28,7 @@ function mboxCoverAlbumInfo(nr,url_list,act,uuid) {
 	if (nr == 3) { if (act == "upload") { border = "border:2px solid red;"; } select = "upload"; }
 	if (nr == 4) { if (act == "web")    { border = "border:2px solid red;"; } select = "web"; }
 
-        var img       = "<div class='album_cover' style='height:"+size+";width:"+size+";background:gray;cursor:default;"+border+"' title='"+select+"'></div>";
+	var img       = "<div class='album_cover' style='height:"+size+";width:"+size+";background:gray;cursor:default;"+border+"' title='"+select+"'></div>";
 	var close_cmd = "";
 
 	if 	(uuid.indexOf("r_")>=0) { close_cmd = "mboxStreamInfo_close"; }

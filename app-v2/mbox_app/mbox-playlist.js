@@ -40,10 +40,11 @@ function mboxPlaylistAdd_msg(data)
 //--------------------------------------
 
 function mboxPlaylistAll_load(filter="",uuid="") {
-                if (filter["UUID"])     { filter = filter["UUID"]; }
-                else                    { filter = filter+">>"+uuid; }
-                appFW.requestAPI("GET",["db","playlists--cards",filter],"", mboxPlaylistAll); //playlists--cards
-		}
+	if (filter["UUID"])     { filter = filter["UUID"]; }
+	else                    { filter = filter+">>"+uuid; }
+	appFW.requestAPI("GET",["db","playlists--cards",filter],"", mboxPlaylistAll); //playlists--cards
+	scrollToTop();
+	}
 
 //--------------------------------------
 
@@ -51,11 +52,11 @@ function mboxPlaylistAll(data) {
 	var text                = "";
 	var print               = mboxCoverListStart();
 	var default_cover       = mbox_icon_dir+mbox_icons["playlist"]; // "img/cd2.png";
-        var playlists           = data["DATA"]["playlists"];
-        var playlist_active     = "";
-        var playlist_active_no  = 0;
-        var last_char           = "";
-        mbox_mode               = 'Playlist'; 
+	var playlists           = data["DATA"]["playlists"];
+	var playlist_active     = "";
+	var playlist_active_no  = 0;
+	var last_char           = "";
+	mbox_mode               = 'Playlist'; 
 
         // reset cover list (to show cover of all albums, playlists, ...)
         mbox_cover_list   = [];

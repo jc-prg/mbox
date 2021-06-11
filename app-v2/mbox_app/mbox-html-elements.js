@@ -28,6 +28,14 @@ function mboxHtmlShowJson(data)
 // general functions ...
 //-------------------------------------------------------------
 
+
+function scrollToTop() {
+	document.body.scrollTop = 0; // For Safari
+	document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+	} 
+
+// ------------------------------------------
+
 function image(file) {
         return "<img src='"+mbox_icon_dir+file+"' style='height:15px;margin:0px;padding:0px;' alt='"+file+"' />";
         }

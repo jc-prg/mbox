@@ -71,10 +71,11 @@ function mboxListCount_New() {
 //--------------------------------------
 
 function mboxAlbumAll_load(filter="",uuid="") {
-		if (filter["UUID"]) 	{ filter = ">>"+filter["UUID"]; } 	// load after API call
-		else 			{ filter = filter+">>"+uuid; }		// load by filter function
-		appFW.requestAPI("GET",["db","album_info",filter], "", mboxAlbumAll,"","mboxAlbumAll");
-		}
+	if (filter["UUID"]) 	{ filter = ">>"+filter["UUID"]; } 	// load after API call
+	else 			{ filter = filter+">>"+uuid; }		// load by filter function
+	appFW.requestAPI("GET",["db","album_info",filter], "", mboxAlbumAll,"","mboxAlbumAll");
+	scrollToTop();
+	}
 
 //--------------------------------------
 
@@ -233,7 +234,7 @@ function mboxAlbumAll(data) {
 			//.............
 			
 			var onclick_play  = "appFW.requestAPI('GET',['play', '" + uuid + "'],'',mboxControl);"; 	// play album remote
-			var onclick_open  = "mboxAlbumList_load('" + album_detail_number + "','" + uuid + "');"; 	// load album details
+			var onclick_open  = "mboxAlbumList_load_direct('" + album_detail_number + "',"+i+",'" + uuid + "');"; 	// load album details
 			
 			if (row_per_chapter) {
 				chapter_number_x = chapter_number;
@@ -396,7 +397,7 @@ function mboxAlbumFilterArtist(data,selected) {
 // Load data albums and list ...
 //--------------------------------------
 
-function mboxAlbumList_load(i,uuid) {
+function mboxAlbumList_load(i, uuid) {
 
 	// calculate which <DIV> is the right last in this row (to show in the next row) ... responsive design
 	var count = 3;
@@ -415,7 +416,7 @@ function mboxAlbumList_load(i,uuid) {
 
 //--------------------------------------
 
-function mboxAlbumList_load_direct(pos, i,uuid) {
+function mboxAlbumList_load_direct(pos, i, uuid) {
 
 	// define position where to show album details
 	mbox_list_last = i;
@@ -431,7 +432,7 @@ function mboxAlbumList_load_direct(pos, i,uuid) {
 // sort list of albums tracks by track number, if every track has a number
 //--------------------------------------
 
-function mboxAlbumSortTracks(track_list,track_info) {
+function mboxAlbumSortTracks(track_list, track_info) {
 
 	var a         = 0;
 	var b         = 0;
@@ -610,13 +611,12 @@ function mboxAlbumList(data) {
 	text += "</div>";
 	text += "</div>";
 
-	//setTextById("frame1",text);
 	mboxAlbumWriteBelow(text);
-
+	
 	setTimeout(function(){
 		document.getElementById("scrollto2_"+uuid.replace(/-/g,"")).scrollIntoView();
-		window.scrollBy(0,-70);
-		}, 2000);
+		window.scrollBy(0,-100);
+		}, 1000);
 	}
 
 // album info as popup (incl. some settings ...)
@@ -832,7 +832,11 @@ function mboxAlbumTrackRow(id,dataTracks,album=true,artist=false,count=0) {
 function mboxAlbumShowTriangle(i) {
 	elementVisible("album_tri1_"+i);
 	elementVisible("album_tri2_"+i);
-	mboxAlbumHideTriangle(mbox_list_last);
+	for (var a=1;a<mbox_list_amount;a++) {
+		if (a != i) {
+			mboxAlbumHideTriangle(a);
+			}
+		}
 	}
 
 function mboxAlbumHideTriangle(i) {

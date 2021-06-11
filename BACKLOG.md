@@ -10,26 +10,28 @@ Here you'll find a history of features implemented into hardware and software as
 
 ### KNOWN BUGS
 
+- BUG check if audio device is connected -> show visible error message in client (restart of computer usually works)
+
 - BUG add image / delete - update list of albums
 - BUG server - after connecting card to album the message "invalid entry connected" is spoken -> move all data to cache directly
 - BUG server - Start with STREAM and card laying on the RFID sensor leads to an error -> remove card_id, until connection is OK
 - BUG app/server - if playlist with the same title already exists, two lists with the same tracks, id, and image are displayed => check server side?
 - BUG server - if playing and press play in a playlist, start with first song instead of actuall running song (PlaySong -> start file, not list without loading list again)
+
 - UNSTABLE app/server - Delete RFID Cards doesn't work the 2nd time {Error: mbox - GET / http://music-box:5005/api/cards/-/ (not available/4/500).}
-- UNSTABLE app - loading albums and tracks to edit playlist doesnt work every time (on the box more often than on the computer)
 
 ### FEATURE IDEAS
 
 - server: if data dir is not available ... error message (from LED / RFI / BUTTONS server ...)
-- app: filter for genres (or other metadata ...)
 - app: filter with full text search ...
-- app: volume doesn't work with iOS / Safari yet -> HTML5 audio processing?
+- app: filter for genres (or other metadata ...)
 - server: understandable return message in API response (even if successful)
-- server: run mboxDB and mboxServer outside of a container (? faster start up)
 - server: save presets in database and e.g. prefered device
-- server: check and show voltage ... "vcgencmd measure_volts core" ... sdram_i, sdram_p, sdram_c (problem, when recharging the battery)
+- app: volume doesn't work with iOS / Safari yet -> HTML5 audio processing?
+- server: run mboxDB and mboxServer outside of a container (? faster start up)
+- server: check and show voltage for RPi... "vcgencmd measure_volts core" ... sdram_i, sdram_p, sdram_c (problem, when recharging the battery)
 
-## Done
+## DONE
 
 ### BOX BASICS
 
@@ -61,6 +63,7 @@ Here you'll find a history of features implemented into hardware and software as
 * OK - LED for server status (Docker is running, server is running, microservices are running, ...)
 * OK - LED for "card detected"
 * OK - LED for WiFi connection & Playback status
+* OK - 3 stable connectors for LED, RFID and buttons
 
 - cover for "deckel" inside
 
@@ -174,6 +177,12 @@ Here you'll find a history of features implemented into hardware and software as
 * OK - BUG server - reconnect Cards when reloading data doesn't work
 * OK - start with last song played before switched off
 * OK - create HASH from files to reconnect (? additionally to filename ?)
+* OK - BUG - when reading media files that are not OK
+* OK - BUG - errors with HTTP server & CouchDB
+* OK - Ping only once, if OK
+* OK - server: if error in media files, group them in an album / or name album "#error" -> well visible in album list
+* OK - BUG loading new data doesn't work correctly
+* OK - BUG when detecting defect media files -> check is missing if already part of existing data (doubled data)
 
 * DECLINED - Play the whole song, not only parts // not seen any more
 * DECLINED - dont delete playlist when stop: don't unload playlist/title if stop - just rewind to first position, but display now reflects situation
@@ -315,5 +324,11 @@ Here you'll find a history of features implemented into hardware and software as
    * OK - place dialog in the middle depending on screen and dialog size (bit more above ...)
    * OK - if text bigger than box, scroll automatically
 * OK - BUG app - deletion of card connection doesn't work (at least, if album not found ...)
+* OK - BUG in jc://modules/ ... some API requests doesnt work (global var instead of locale)
+* OK - app-framework as separate module -> submodule
+* OK - include jc://modules/ as submodule
+* OK - UNSTABLE app - loading albums and tracks to edit playlist doesnt work every time (on the box more often than on the computer)
+* OK - BUG place triangle of album detail correctly
+* OK - Smooth showing & hiding of the control panel (playing in formation)
 
 

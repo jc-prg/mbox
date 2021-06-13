@@ -521,6 +521,9 @@ def reloadMusic(data,load_all=True,thread=""):
         data_reload["albums"][album_data["artist"]][album_data["albumname"]]         = {}
         data_reload["albums"][album_data["artist"]][album_data["albumname"]]["uuid"] = album_uuid
         
+        for track_uuid in data_reload["album_info"][album_uuid]["tracks"]:
+          data_reload["tracks"][track_uuid]["album_uuid"] = album_uuid
+        
     # recreate list of artists    
     for track_uuid in data_reload["tracks"]:
         artist_name = data_reload["tracks"][track_uuid]["artist"]

@@ -600,12 +600,13 @@ function mboxAlbumList(data) {
 	var max    		= albums["tracks"].length;
 	if (Math.round(max/columns) < (max/columns)) { max += 1; }
 	
-	var count		= 0;
+	var row_number		= 0;
 	for (var i=0;i<sorted_tracks.length;i++) {
-		count++;
-		text += mboxAlbumTrackRow(sorted_tracks[i],track_list,show_num,withartist,count-1);
-		if (count == Math.round(max/columns)) 	{ text += "</div><div class=\"album_tracks\">"; }
-		if (count == 2*Math.round(max/columns)) 	{ text += "</div><div class=\"album_tracks\">"; }
+		row_number++;
+		var position = row_number-1;
+		text += mboxAlbumTrackRow(id=sorted_tracks[i], dataTracks=track_list, album=show_num, artist=withartist, count=position);
+		if (row_number == Math.round(max/columns)) 	{ text += "</div><div class=\"album_tracks\">"; }
+		if (row_number == 2*Math.round(max/columns)) 	{ text += "</div><div class=\"album_tracks\">"; }
 		}
 		
 	text += "</div>";
@@ -718,7 +719,7 @@ function mboxAlbumTrackInfo(data) {
 	var length = convert_second2time(Math.round(track["length"]));
 	var path   = track["file"];
 	var url    = RESTurl + "api/data/"+track["uuid"]+"/-/";
-	var url1   = RESTurl + "api/data/"+track["uuid_album"]+"/-/";
+	var url1   = RESTurl + "api/data/"+track["album_uuid"]+"/-/";
 	var url2   = "/mbox_music/";
 
 	var msg_height = 400;
@@ -740,7 +741,7 @@ function mboxAlbumTrackInfo(data) {
 		text += mboxHtmlTableNew(["<i>"+lang("SIZE")+":", 		size + " MByte / " + length + " min" ] );
 		text += mboxHtmlTableNew(["<i>"+lang("TRACK")+" Dir:", 	"<a href='" + url2 + path + "' target='_blank'>" + path + "</a>" ] );
 		text += mboxHtmlTableNew(["<i>UUID "+lang("TRACK")+":",	"<a href='" + url  + "' target='_blank'>" + uuid + "</a>" ] );
-		text += mboxHtmlTableNew(["<i>UUID "+lang("ALBUM")+":", 	"<a href='" + url1 + "' target='_blank'>" + track["uuid_album"] + "</a>" ] );
+		text += mboxHtmlTableNew(["<i>UUID "+lang("ALBUM")+":", 	"<a href='" + url1 + "' target='_blank'>" + track["album_uuid"] + "</a>" ] );
 		if ("error" in track) {
 			text += mboxHtmlTableNew(["<i><font color='"+color+"'>"+lang("ERROR")+":</font><i>", "<i><font color='"+color+"'>"+track["error"]+"</font></i>" ] );
 			}
@@ -768,18 +769,17 @@ function mboxAlbumTrackInfo(data) {
 // track title row
 //--------------------------------------
 
-function mboxAlbumTrackRow(id,dataTracks,album=true,artist=false,count=0) {
+function mboxAlbumTrackRow(id, dataTracks, album=true, artist=false, count=0) {
 	var track    = dataTracks[id];
 	var text     = "";
 	var cmd      = "";
-	var album_id = track["uuid_album"];
+	var album_id = track["album_uuid"];
 
 	var length = "";
-	if (track["length"]) {
-		length = " <font color='gray'>(" + convert_second2time(Math.round(track["length"])) + ")</font>";
-		}
+	if (track["length"]) { length = " <font color='gray'>(" + convert_second2time(Math.round(track["length"])) + ")</font>"; }
 
-	//console.log(id);
+	console.log("Track UUID: " + id + " / Album UUID: " + album_id);
+	console.log(track);
 
 	cmd  += "<div class=\"album_tracks_control\">";
 

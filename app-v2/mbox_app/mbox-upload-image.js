@@ -19,8 +19,8 @@ function mboxUploadImage(uuid,category,name="") {
 
         appMsg.confirm(text,cmd,280,false);					// create dialog
 	UploadDateien = [];							// empty var with file data
-        enableUpload();								// enable upload
-        document.getElementById("uploadbutton").style.display = "none";		// hide upload button from default form
+        enableUpload();							// enable upload
+        document.getElementById("uploadbutton").style.display = "none";	// hide upload button from default form
         }
 
 //----------------------------------------------------------------

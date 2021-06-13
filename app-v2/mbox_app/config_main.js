@@ -15,11 +15,11 @@ var app_api_status        = "status";		// add your api status command (default d
 var app_loading_image     = ""; 		// add your loading image (default defined in app-fw/app-conf.is)
 var app_reload_interval   = 5;  		// add your reloading interval (default=5s)
 
-
 //--------------------------------
 // mbox specific initialization
 //--------------------------------
 
+var UploadScript   = "mbox_app/upload.php";
 var checkImgExists = false;
 var mboxSlider     = new jcSlider( name="mboxSlider", container="mbox_audio_slider");
 
@@ -111,10 +111,10 @@ function app_force_reload(data) {
 	}
 	
 //--------------------------------
-// add code when checked the status
+// add code for initialization
 //--------------------------------
 
-function app_check_status() {
+function app_initialize(data) {
 	}
 	
 //--------------------------------

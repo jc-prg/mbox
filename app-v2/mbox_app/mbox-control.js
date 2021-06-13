@@ -413,7 +413,7 @@ function mboxControlPanel_show() {
 function mboxControlCheckLoading(data) {
 
 	var text      = "";
-        var load_data = data["STATUS"]["load_data"];
+	var load_data = data["STATUS"]["load_data"];
 	var progress  = load_data["reload_progress"];
 	var l_new     = load_data["reload_new"];
 	var l_all     = load_data["reload_all"];
@@ -421,10 +421,14 @@ function mboxControlCheckLoading(data) {
 
 	// write info to ...
 	if (document.getElementById("progress_info")) {	
-		if (l_new == false && l_all == false) { progress = 100; }
-		if (l_new) { text = "Load new Data: "; }
-		if (l_all) { text = "Reload all Data: "; }
+		if (l_new == false && l_all == false) { progress = 100; l_time = 0; }
+		if (l_new)			{ text = "Load new Data: "; }
+		else if (l_all)		{ text = "Reload all Data: "; }
+		else if (progress == 100) 	{ text = "Done: "; appFW.setAutoupdateLoading(false); }
 		setTextById("progress_info",text + Math.round(progress*100)/100+"% ("+convert_second2time(Math.round(l_time))+" min)");
+		}
+	if (l_new == false && l_all == false) {
+		appFW.setAutoupdateLoading(false); 
 		}
 	}
 

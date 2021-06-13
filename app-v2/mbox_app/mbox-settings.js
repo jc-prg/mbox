@@ -134,12 +134,12 @@ function mboxSettingsStatus (data) {
 	var onclick = ""; var question = ""; var cmd = "";
 
 	question = "<br/>"+lang("QUESTION_RELOAD");
-	onclick  = "appFW.requestAPI(#PUT#,[#load#,#all#],##,mboxHtmlShowLoading)";
+	onclick  = "appFW.setAutoupdateLoading();appFW.requestAPI(#PUT#,[#load#,#all#],##,mboxHtmlShowLoading);";
         cmd      = "appMsg.confirm('" + question + "','" + onclick + "', 260);";
 	text    += button( cmd, "Reload Data" );
 
 	question = "<br/>"+lang("QUESTION_LOAD_NEW");
-	onclick  = "appFW.requestAPI(#PUT#,[#load#,#new#],##,mboxHtmlShowLoading)";
+	onclick  = "appFW.setAutoupdateLoading();appFW.requestAPI(#PUT#,[#load#,#new#],##,mboxHtmlShowLoading);";
         cmd      = "appMsg.confirm('" + question + "','" + onclick + "', 260);";
 	text    += button( cmd, "Load New Data" );
 

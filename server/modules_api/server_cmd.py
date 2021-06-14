@@ -20,8 +20,7 @@ from modules_api.server_init  import *
 if stage.test:
     if mbox.DEBUG: logging.basicConfig(level=logging.DEBUG)  # DEBUG, INFO, WARNING, ERROR, CRITICAL
     else:          logging.basicConfig(level=logging.INFO)   # DEBUG, INFO, WARNING, ERROR, CRITICAL
-else:              logging.basicConfig(level=logging.WARN)    # DEBUG, INFO, WARNING, ERROR, CRITICAL
-
+else:              logging.basicConfig(level=logging.WARN)   # DEBUG, INFO, WARNING, ERROR, CRITICAL
 
 #-------------------------------------------------
 
@@ -135,7 +134,7 @@ def mboxAPI_end(data,reduce_data=[]):
     data["STATUS"]["active_device"] = mbox.active_device
 
     if not "no-playback" in reduce_data:
-      data["STATUS"]["playback"]      = deviceStatus()
+      data["STATUS"]["playback"]    = deviceStatus()
     
     if not "no-system" in reduce_data:
       data["STATUS"]["system"]        = {
@@ -1042,6 +1041,7 @@ def mboxAPI_jump(percentage):
             data = mboxAPI_error(data, "Command only for music_box: "+mbox.active_device+"/"+str(percentage))
             logging.warn("Command only for music_box: "+mbox.active_device+"/"+str(percentage))   
             
+       time.sleep(wait_time)
        data = mboxAPI_end(data,["no-statistic","no-system"])
        return(data)
 
@@ -1068,7 +1068,7 @@ def mboxAPI_stop():
        data       = mboxAPI_start("stop","stop","","","")
        
        if mbox.active_device == "music_box":   thread_music_ctrl.stop_playback()   # album or song
-       else:                          thread_radio_ctrl.stop_playback()   # radio
+       else:                                   thread_radio_ctrl.stop_playback()   # radio
        
        data = mboxAPI_end(data,["no-statistic","no-system"])
        return(data)

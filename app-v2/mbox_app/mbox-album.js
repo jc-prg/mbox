@@ -17,7 +17,6 @@ function mboxAlbumFilterPath(data,selected)
 function mboxAlbumFilterArtist(data,selected)
 function mboxAlbumList_load(i, uuid)
 function mboxAlbumList_load_direct(pos, i, uuid)
-function mboxAlbumSortTracks(track_list, track_info)
 function mboxAlbumList(data)
 function mboxAlbumInfo_load(uuid)
 function mboxAlbumInfo_close()
@@ -29,6 +28,7 @@ function mboxAlbumTrackInfo_load(uuid)
 function mboxAlbumTrackInfo(data)
 function mboxAlbumTrackRow(id,dataTracks,album=true,artist=false,count=0)
 function mboxAlbumShowTriangle(i)
+
 function mboxAlbumHideTriangle(i)
 function mboxAlbumEmptyAll()
 function mboxAlbumEmptyBelow()
@@ -86,10 +86,6 @@ function mboxAlbumAll_reload() {
 //--------------------------------------
 
 function mboxAlbumAll(data) {
-
-	//console.log(data);
-
-	if (!data) { return; } // unclear, why sometimes no data are returned ...
 
 	var text             = "";
 	var print            = mboxCoverListStart();
@@ -429,70 +425,6 @@ function mboxAlbumList_load_direct(pos, i, uuid) {
 	appFW.requestAPI("GET",["data",uuid,"-"],"", mboxAlbumList );
 	}
 
-// sort list of albums tracks by track number, if every track has a number
-//--------------------------------------
-
-function mboxAlbumSortTracks(track_list, track_info) {
-
-	var a         = 0;
-	var b         = 0;
-	var dont_sort = false;
-	var use_disc  = false;
-	
-	for (var i=0;i<track_list.length;i++) {
-		if ("track_num" in track_info[track_list[i]]) {
-			if (track_info[track_list[i]]["track_num"][0]) { a++; }
-			if (track_info[track_list[i]]["disc_num"])     { b++; }
-			}
-		}
-		
-	if (a != track_list.length) 	{ dont_sort = true; }
-	if (b > 0)			{ use_disc = true; }
-
-	if (a == track_list.length) {
-	
-		// sort by "track_num"
-		var sort_tracks   = [];
-		var sorted_tracks = [];
-		var album         = {};
-		
-		for (var x in track_info) {
-			if (track_list.includes(x)) {
-				var mykey;
-				
-				if (use_disc)	{ mykey = (track_info[x]["disc_num"] * 100) + track_info[x]["track_num"][0]; }
-				else		{ mykey = track_info[x]["track_num"][0]; }
-				
-				sort_tracks.push(mykey);
-				if (album[mykey] != undefined)	{ dont_sort = true; }
-				else				{ album[mykey] = track_info[x]["uuid"]; } 
-			}	}
-
-		sort_tracks.sort(sortNumber);
-		
-		for (var i=0;i<sort_tracks.length;i++) {
-			if (album[sort_tracks[i]]) {
-				sorted_tracks.push(album[sort_tracks[i]]);
-			}	}
-			
-		if (sorted_tracks.length == track_list.length && dont_sort == false)  {
-			console.debug("...1"); 
-			return sorted_tracks;
-			}
-		else						{ 
-			// return unsorted list		
-			console.debug("...2: "+sorted_tracks.length+"/"+track_list.length); 
-			return track_list;
-			}
- 		}
-	if (dont_sort) {
-		// return unsorted list
-		console.debug("...3: "+a+"/"+track_list.length); 
-		return track_list;
-		}
-	}
-
-
 // List albums tracks of an album
 //--------------------------------------
 
@@ -501,9 +433,7 @@ function mboxAlbumList(data) {
 	var text 	  = "";
 	//var albums        = data["answer"]["album"];
 	//var track_list    = data["answer"]["tracks"];
-
-	console.log(data["DATA"]);
-	
+	//console.log(data["DATA"]);	
 
 	var albums        = data["DATA"]["_selected"];
 	var uuid          = data["DATA"]["_selected_uuid"];
@@ -585,7 +515,8 @@ function mboxAlbumList(data) {
 	var tracks 	= {}
 	var i      	= 0;
 	var a      	= 0;
-	var withartist	= false;
+	var withartist    = false;
+	var withtrackinfo = false;
 
 	// check, if compilation ... than show artist in row
 	if (artist == "Compilation") { withartist = true; }
@@ -595,16 +526,26 @@ function mboxAlbumList(data) {
 	var columns            = mbox_list_count/3;
 	
 	// prepare track list
-	var sorted_tracks	= mboxAlbumSortTracks( albums["tracks"], track_list );
+	var sorted_tracks	= albums["tracks"];
 	var show_num		= true;
 	var max    		= albums["tracks"].length;
 	if (Math.round(max/columns) < (max/columns)) { max += 1; }
-	
+
+	// check if more than one CD	
+	var last_cd = "";
+	for (var i=0;i<sorted_tracks.length;i++) {
+		if ("disc_num" in track_list[sorted_tracks[i]]) {
+			if (last_cd == "") { last_cd = track_list[sorted_tracks[i]]["disc_num"]; }
+			if (last_cd != track_list[sorted_tracks[i]]["disc_num"]) { withtrackinfo = true; }
+			}
+		}
+		
+	// create rows in columns
 	var row_number		= 0;
 	for (var i=0;i<sorted_tracks.length;i++) {
 		row_number++;
 		var position = row_number-1;
-		text += mboxAlbumTrackRow(id=sorted_tracks[i], dataTracks=track_list, album=show_num, artist=withartist, count=position);
+		text += mboxAlbumTrackRow(id=sorted_tracks[i], dataTracks=track_list, album=show_num, artist=withartist, count=position, trackinfo=withtrackinfo);
 		if (row_number == Math.round(max/columns)) 	{ text += "</div><div class=\"album_tracks\">"; }
 		if (row_number == 2*Math.round(max/columns)) 	{ text += "</div><div class=\"album_tracks\">"; }
 		}
@@ -769,7 +710,7 @@ function mboxAlbumTrackInfo(data) {
 // track title row
 //--------------------------------------
 
-function mboxAlbumTrackRow(id, dataTracks, album=true, artist=false, count=0) {
+function mboxAlbumTrackRow(id, dataTracks, album=true, artist=false, count=0, trackinfo=false) {
 	var track    = dataTracks[id];
 	var text     = "";
 	var cmd      = "";
@@ -778,8 +719,7 @@ function mboxAlbumTrackRow(id, dataTracks, album=true, artist=false, count=0) {
 	var length = "";
 	if (track["length"]) { length = " <font color='gray'>(" + convert_second2time(Math.round(track["length"])) + ")</font>"; }
 
-	console.log("Track UUID: " + id + " / Album UUID: " + album_id);
-	console.log(track);
+	console.debug("Debug UUID: " + id + " / Album UUID: " + album_id + " / " + track["album"] + " / " + track["sort_pos"] + " / " + track["sort"]);
 
 	cmd  += "<div class=\"album_tracks_control\">";
 
@@ -798,19 +738,22 @@ function mboxAlbumTrackRow(id, dataTracks, album=true, artist=false, count=0) {
 
 	// if track in album
 	if (album) {
+	
 		text += "<table><tr><td style='width:20px;vertical-align:top;padding:0px'>";
-		if ("disc_num" in track) {
-			if (track["disc_num"] > 0) {
-				length = "<font color='gray'>CD " + track["disc_num"] + "&nbsp; </font>" + length;
-			}	}
-		if ("track_num" in track) {
-			if (track["track_num"][0] > 0) {
-				text += track["track_num"][0] + ". ";
-			}	}
+		if ("sort_pos" in track)  { text += track["sort_pos"] + ". "; }
+
+		var track_info = "";
+		if (trackinfo) {
+			if ("track_num" in track) { if (track["track_num"][0] > 0)	{ track_info += "Track " + track["track_num"][0]; }}
+			if ("track_num" in track) { if (track["track_num"][1] > 0)	{ track_info += "/" + track["track_num"][1]; }}
+			if ("disc_num" in track)  { if (track["disc_num"] > 0)	{ track_info += " - CD " + track["disc_num"] + " &nbsp; "; }}
+			}
+		
+		var info = "<font color='gray'>" + track_info + length + "</font>";
 		text += "</td><td>";
 		text += "<div class='album_track_title_shorten' onclick='mboxAlbumTrackInfo_load(\"" + track["uuid"] + "\")' style='cursor:pointer;'>" + track["title"] + "</div>";
 		if (artist) { text += "<div class='album_track_title_shorten'><i>"+track["artist"] + "</i></div>"; }
-		text += "<div class='album_track_length'>" + length + "</div>";
+		text += "<div class='album_track_length'>" + info + "</div>";
 		text += "</td></tr></table>";
 		}
 	// if track in playlist

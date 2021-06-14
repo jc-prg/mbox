@@ -44,6 +44,7 @@ def setMetadataError(error, filename, error_msg="", decoder=""):
     tags["albumsize"] = 0
     tags["title"]     = filename + " (error: " + error + ")"
     tags["error"]     = error
+    tags["sort"]      = "00000"+filename
     
     logging.warning(error + ": " + filename)
     if decoder != "":
@@ -69,13 +70,13 @@ def readMetadata(path_to_file):
     file_stats = os.stat(path_to_file)
     if file_stats.st_size == 0:
        tags = setMetadataError(error="empty file", filename=path_to_file)
-       return tags, str(tags["artist"]), str(tags["album"]), str(tags["title"])
+       return tags
 
    # check file type and read metadata
     if   ".mp3" in filename.lower():  
        tags = readID3(path_to_file)
        if tags["filesize"] == 0:
-          return tags, str(tags["artist"]), str(tags["album"]), str(tags["title"])
+          return tags
          
        #logging.info(tags)
        if "artist" not in tags and "album" not in tags:     tags  = readMutagen(path_to_file,"mp3")
@@ -89,7 +90,7 @@ def readMetadata(path_to_file):
 
     else:
        tags = setMetadataError(error="file format not supported", filename=path_to_file)
-       return tags, str(tags["artist"]), str(tags["album"]), str(tags["title"])
+       return tags
 
     if not "artist" in tags or tags["artist"] == "":  tags["artist"] = "Unknown Artist"
     if not "album"  in tags or tags["album"] == "":   tags["album"]  = "Unknown Album"
@@ -100,9 +101,11 @@ def readMetadata(path_to_file):
 
     tags["MD5"] = fileHashMD5(path_to_file)
 
-    logging.info(path_to_file + " MD5: " + tags["MD5"])
-
-    return tags, str(tags["artist"]), str(tags["album"]), str(tags["title"])
+    if "track_no" in tags: del tags["track_no"]
+    if "disc_no"  in tags: del tags["disc_no"]
+    
+    logging.debug(path_to_file + " MD5: " + tags["MD5"])   
+    return tags
 
 
 #------------------------------------
@@ -194,13 +197,17 @@ def readMutagen(filename,ftype="mp4"):
         if "disc_no" in data and "/" in data["disc_no"]: data["disc_num"]     = data["disc_no"].split("/")[0]
         elif "disc_no" in data:                          data["disc_num"]     = data["disc_no"]
 
-
     data["file"]         = filename.replace(music_dir,"")
     data["uuid"]         = "t_"+str(uuid.uuid1())
     data["compliation"]  = 0
     data["filesize"]     = os.path.getsize(filename)
     data["cover_images"] = {}
     data["cover_images"]["track"] = []
+
+    data["sort"] = 0
+    if "track_num" in data and int(data["track_num"][0]) > 0: data["sort"] += int(data["track_num"][0])
+    if "disc_num" in data and int(data["disc_num"]) > 0:      data["sort"] += int(data["disc_num"])*1000
+    data["sort"] = str(data["sort"]).zfill(5)+data["file"]
 
     for tag in tags:    
       if "covr" in tag:
@@ -269,6 +276,11 @@ def readID3(filename ,album_id="", album_nr=""):
         tags["file"]         = filename.replace(music_dir,"")
         tags["uuid"]         = "t_"+str(uuid.uuid1())
         #tags["duration"]     = audiofile.tag.duration
+
+        tags["sort"] = 0
+        if "track_num" in tags and int(tags["track_num"]) > 0: tags["sort"] += int(tags["track_num"])
+        if "disc_num" in tags and int(tags["disc_num"]) > 0:   tags["sort"] += int(tags["disc_num"])*1000
+        tags["sort"] = str(tags["sort"]).zfill(5)+tags["file"]
 
         # check for images and write to file
         tags["cover_images"]           = {}

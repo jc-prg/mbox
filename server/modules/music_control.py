@@ -302,12 +302,14 @@ def musicPlaying(thread):
         old_state                     = thread.music_ctrl["state"]
         thread.music_ctrl["state"]    = str(thread.player.get_state())
         
-        if thread.music_ctrl["state"] == "State.Playing" or thread.music_ctrl["state"] == "State.Paused":
-            thread.music_plays = 1
-            logging.debug("Playing 01:"+thread.music_ctrl["state"]+"..."+str(thread.music_ctrl["playing"]))
-        else:
+        #if thread.music_ctrl["state"] == "State.NothingSpecial" or thread.music_ctrl["state"] == "State.Stopped":
+        if thread.music_ctrl["state"] == "State.Stopped":
             thread.music_plays = 0
             logging.debug("Playing 02:"+thread.music_ctrl["state"]+"..."+str(thread.music_ctrl["playing"]))
+        else:
+            #if thread.music_ctrl["state"] == "State.Playing" or thread.music_ctrl["state"] == "State.Paused":
+            thread.music_plays = 1
+            logging.debug("Playing 01:"+thread.music_ctrl["state"]+"..."+str(thread.music_ctrl["playing"]))
 
         thread.music_ctrl["playing"]  = thread.music_plays
 
@@ -335,7 +337,7 @@ def musicPlayList(thread):
     '''
     Play list, detect end of file and than play next
     '''
-    wait_time = 0.5
+    wait_time = 0.1
     running   = True
     last_load = False  
     last_run  = thread.music_database.read("status")
@@ -508,21 +510,18 @@ def musicGetTracks(thread,album_uuid):
     if "a_" in album_uuid and album_uuid in db_album_info:
        songs       = db_album_info                      # db["album_info"]
        tracks      = songs[album_uuid]["tracks"]
-       track_info  = db_tracks                          # db["tracks"]
-       track_list  = sortAlbumTracks(tracks,track_info)
+       track_list  = tracks
 
     # read data from db IF Playlist
     elif "p_" in album_uuid and album_uuid in db_playlists:
        songs       = db_playlists                       # db["playlists"]
        tracks1     = songs[album_uuid]["tracks"]
        tracks      = []
-       track_info  = db_tracks                          # db["tracks"]
 
        for key in tracks1:
          if "t_"   in key: tracks.append(key)
          elif "a_" in key:
            tracks2 = db_album_info[key]["tracks"]       # db["album_info"][key]["tracks"]
-           tracks2 = sortAlbumTracks(tracks2,track_info)
            for key2 in tracks2: tracks.append(key2)
 
        track_list = tracks
@@ -531,38 +530,6 @@ def musicGetTracks(thread,album_uuid):
        thread.speak.speak_message("UNVALID-ENTRY-CONNECTED-TO-CARD")
 
     return track_list
-
-
-def sortAlbumTracks(tracks,track_info):
-     '''
-     sort albums bei track number
-     '''
-     track_order = {}
-     track_list  = []
-
-     # check / read track order
-     for x in tracks:
-
-        if x not in track_info: return tracks
-        track_i = track_info[x]                # produces errors -> added check before
-
-        if "track_num" not in track_i: return tracks	
-        track_o = track_i["track_num"][0]
-
-        if "/" in str(track_o):
-          track_o = track_o.split("/")[0]
-
-        try:
-          track_order[x] = int(track_o)
-        except:
-          return tracks
-
-     track_order = sorted(track_order.items(), key=operator.itemgetter(1))
-
-     for x in track_order:
-        track_list.append(x[0])
-
-     return track_list
 
 
 #------------------

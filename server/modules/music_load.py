@@ -205,22 +205,29 @@ def checkIfPlaylistEntryExists(data, entry_uuid, entry_ref):
     '''
     check album and track list, if track or file exists
     '''
+    check_uuid = "NOT FOUND"
+    check_ref  = "NOT FOUND"
     
     if entry_uuid.startswith("a_"):
-       if entry_uuid in data["album_info"]: return entry_uuid
+       if entry_uuid in data["album_info"]: 
+          check_uuid = entry_uuid
        else:
          for album_uuid in data["album_info"]:
            if data["album_info"][album_uuid]["albumpath"] == entry_ref:
-             return album_uuid
+             check_uuid = album_uuid
+             check_ref  = data["album_info"][album_uuid]["albumpath"]
        
     elif entry_uuid.startswith("t_"):
-       if entry_uuid in data["tracks"]: return entry_uuid
+       if entry_uuid in data["tracks"]: 
+          check_uuid = entry_uuid
        else:
          for track_uuid in data["tracks"]:
            if data["tracks"][track_uuid]["file"] == entry_ref:
-             return track_uuid
+             check_uuid = track_uuid
+             check_ref  = data["tracks"][track_uuid]["file"]
 
-    return "NOT FOUND"
+    logging.debug("checkIfPlaylistEntryExists : "+entry_uuid+" -> "+check_uuid)
+    return check_uuid
 
 #------------------------------------
 
@@ -328,26 +335,15 @@ def reloadMusic_setProgessInfo(count, total, thread):
 
     logging.debug("Reload progress: "+str(files_percentage)+"%")
     
-    
-#------------------------------------
-    
-def reloadMusic_loadFileAndImage(filename):
-    '''
-    get metadata for media file (compartibility)
-    '''
-
-    tags, tag1, tag2, tag3 = readMetadata(music_dir+filename)
-    return tags
-
-
 #------------------------------------
     
 def reloadMusic_createAlbumInfo(track_data):
     '''
     create album info from track data
     '''
-    album_info = {}
-    album_dir  = {}
+    album_info    = {}
+    album_dir     = {}
+    sorted_tracks = {}
 
     # recreate album_infos based on tracks: (1) get all paths from tracks
     for track in track_data:
@@ -403,7 +399,7 @@ def reloadMusic_createAlbumInfo(track_data):
         
         for track_uuid in track_data:
            if album_path in track_data[track_uuid]["file"]:
-              track_info   = track_data[track_uuid]
+              track_info       = track_data[track_uuid]
               
               if "#error" in track_info["artist"]:
                   track_count_error += 1
@@ -422,9 +418,11 @@ def reloadMusic_createAlbumInfo(track_data):
                   album_data["album"]       = track_info["album"] 
                   album_data["albumname"]   = track_info["album"] 
                   album_data["artist"]      = track_info["artist"]
+                  
                 elif album_data["artist"] != track_info["artist"] and not "#error" in track_info["artist"]:
                   album_data["artist"]      = "Compilation"
                   album_data["compilation"] = True
+                  
                 elif not "#error" in track_info["artist"] and track_info["album"] == "":
                   album_data["album"]       = track_info["album"] 
                   album_data["albumname"]   = track_info["album"] 
@@ -447,30 +445,47 @@ def reloadMusic_createAlbumInfo(track_data):
         album_info[album_uuid] = album_data
         
         if album_data_error["artist"] != "":
-           album_info[album_uuid+"_error"] = album_data_error      
-        
-    return album_info
+           album_info[album_uuid+"_error"] = album_data_error
+           
+    for album_uuid in album_info:
+
+       # sort tracks in album by key "sort"
+       sorted_tracks = {}
+       album_data    = album_info[album_uuid]
+       for track_uuid in album_data["tracks"]:
+          track = track_data[track_uuid]
+          if "sort" not in track:                 track["sort"] = "00000"
+          if track["sort"] not in sorted_tracks:  sorted_tracks[track["sort"]] = []
+          sorted_tracks[track["sort"]].append(track_uuid)
+
+       # add position of track to track data as "sort_pos"
+       track_list_sorted = []
+       track_list_pos    = 0
+       for key in sorted(sorted_tracks.keys()):
+         track_list_pos    += 1
+         track_list_sorted.extend(sorted_tracks[key])       
+         for track in sorted_tracks[key]:
+            track_data[track]["sort_pos"] = track_list_pos
+
+       album_info[album_uuid]["tracks"] = track_list_sorted.copy()
+       
+    return album_info, track_data
 
 
 #------------------------------------
 
-def reloadMusic(data,load_all=True,thread=""):
+def reloadMusic(data, load_all=True, thread=""):
     '''
     load metadata and images from files in music_dir
     '''
 
     global music_dir, music_cover
-    logging.info("Start reloading music data: " + music_dir + " | all=" + str(load_all))
+    logging.info("reloadMusic: Start reloading music data: " + music_dir + " | all=" + str(load_all))
     
-    data_reload = {}
-    data_temp   = {}
-    keys_media  = ["albums","album_info","artists","tracks","files","cards","playlists"]
-    keys_temp   = ["album_dir", "album_info","album_image"]  
-
+    keys_media  = mbox.databases["music"]
+    data_reload = {}    
     for key in keys_media:
       data_reload[key] = {}
-    for key in keys_temp:
-      data_temp[key] = {}
       
     media_files_exist  = data["files"].keys()
     media_files_reload = readFiles(music_dir)
@@ -484,57 +499,59 @@ def reloadMusic(data,load_all=True,thread=""):
     files_count      = 0
     files_percentage = 0
 
-    logging.info("... reload (load_all="+str(load_all)+") - " + str(files_amount) + " files found.")
+    logging.info("reloadMusic ... Starting (load_all="+str(load_all)+") - " + str(files_amount) + " files found.")
     
     for path2file in media_files_reload:
 
       if os.path.isfile(path2file) and checkIfSupported(thread.supported_mpX,path2file) == True:
+         file_uuid         = str(uuid.uuid1())
          filename          = path2file.replace(music_dir,"")
          files_count      += 1
          reloadMusic_setProgessInfo(count=files_count, total=len(media_files_reload), thread=thread)
       
          if load_all or filename not in media_files_exist:
-            file_uuid = str(uuid.uuid1())
-            data_reload["files"][filename]                 = reloadMusic_loadFileAndImage(filename)
-            data_reload["tracks"]["t_"+file_uuid]          = data_reload["files"][filename]
-            data_reload["tracks"]["t_"+file_uuid]["uuid"]  = "t_"+file_uuid
-            data_reload["files"][filename]["uuid"]         = "t_"+file_uuid
+            data_reload["files"][filename]                    = readMetadata(music_dir+filename)
+            data_reload["tracks"]["t_"+file_uuid]             = data_reload["files"][filename]
+            data_reload["tracks"]["t_"+file_uuid]["uuid"]     = "t_"+file_uuid
+            data_reload["files"][filename]["uuid"]            = "t_"+file_uuid
             
          else:
-            file_uuid = str(uuid.uuid1())
-            file_data = reloadMusic_loadFileAndImage(filename)
+            file_data                                         = readMetadata(music_dir+filename)
             if "#error" in file_data["artist"]:
                data_reload["files"][filename]                 = file_data
                data_reload["tracks"]["t_"+file_uuid]          = data_reload["files"][filename]
                data_reload["tracks"]["t_"+file_uuid]["uuid"]  = "t_"+file_uuid
                data_reload["files"][filename]["uuid"]         = "t_"+file_uuid
          
-    # check, if file still exists (for load_all=True)
+    # ??? check, if file still exists (for load_all=True)
 
     # recreate album_infos based on tracks
-    data_reload["album_info"] = reloadMusic_createAlbumInfo(track_data=data_reload["tracks"]) 
-
+    logging.info("reloadMusic: recreate album_infos based on tracks")
+    data_reload["album_info"], data_reload["tracks"] = reloadMusic_createAlbumInfo(track_data=data_reload["tracks"])
+    
     # recreate album hierachy based on album info
+    logging.info("reloadMusic: recreate album hierachy")
     for album_uuid in data_reload["album_info"]:
-        album_data = data_reload["album_info"][album_uuid]
-        if album_data["artist"] not in data_reload["album_info"]: data_reload["albums"][album_data["artist"]] = {}
-        data_reload["albums"][album_data["artist"]][album_data["albumname"]]         = {}
-        data_reload["albums"][album_data["artist"]][album_data["albumname"]]["uuid"] = album_uuid
+       album_data = data_reload["album_info"][album_uuid]
         
-        for track_uuid in data_reload["album_info"][album_uuid]["tracks"]:
+       if album_data["artist"] not in data_reload["albums"]:                           data_reload["albums"][album_data["artist"]] = {}
+       if album_data["albumname"] not in data_reload["albums"][album_data["artist"]]:  data_reload["albums"][album_data["artist"]][album_data["albumname"]] = {}
+       data_reload["albums"][album_data["artist"]][album_data["albumname"]]["uuid"] = album_uuid
+        
+       for track_uuid in data_reload["album_info"][album_uuid]["tracks"]:
           data_reload["tracks"][track_uuid]["album_uuid"] = album_uuid
         
     # recreate list of artists    
+    logging.info("reloadMusic: recreate list of artists")
     for track_uuid in data_reload["tracks"]:
-        artist_name = data_reload["tracks"][track_uuid]["artist"]
-        if not "#error" in artist_name:
-           if not artist_name in data_reload["artists"]:              data_reload["artists"][artist_name] = {}
-           if not track_uuid in data_reload["artists"][artist_name]:  data_reload["artists"][artist_name][track_uuid] = data_reload["tracks"][track_uuid]         
-           # ... check why editing in playlist doesn't work
-           # ... check, if track_uuid is enough and the rest can be loaded on client side
+       artist_name = data_reload["tracks"][track_uuid]["artist"]
+       if not "#error" in artist_name:
+          if not artist_name in data_reload["artists"]:              data_reload["artists"][artist_name] = {}
+          if not track_uuid in data_reload["artists"][artist_name]:  data_reload["artists"][artist_name][track_uuid] = data_reload["tracks"][track_uuid]         
         
     # reconnect cards information
     if "cards" in data:
+       logging.info("reloadMusic: reconnect cards information")
        cards_temp = data["cards"]
        for album_uuid in data_reload["album_info"]:
           cards_temp, card_id = checkIfCardExists(data_cards=cards_temp, album=data_reload["album_info"][album_uuid]["albumname"], artist=data_reload["album_info"][album_uuid]["artist"], uuid=album_uuid)
@@ -543,24 +560,25 @@ def reloadMusic(data,load_all=True,thread=""):
 
     # reconnect playlist information - albums based on uuid or directory, tracks based on filename and path
     if "playlists" in data:
+       logging.info("reloadMusic: reconnect playlist information")
        for playlist_uuid in data["playlists"]:
           position = 0
           for entry_uuid in data["playlists"][playlist_uuid]["tracks"]:
              entry_ref  = data["playlists"][playlist_uuid]["tracks_ref"][position]
-             check_uuid = checkIfPlaylistEntryExists(data, entry_uuid=entry_uuid, entry_ref=entry_ref)
+             check_uuid = checkIfPlaylistEntryExists(data_reload, entry_uuid=entry_uuid, entry_ref=entry_ref)
              if check_uuid != "NOT FOUND" and check_uuid != entry_uuid:
-                data["playlists"][playlist_uuid]["tracks"][position] = entry_uuid 
+                data["playlists"][playlist_uuid]["tracks"][position] = check_uuid
              position += 1
        data_reload["playlists"] = data["playlists"]
-       # ... check why playlist gets overwritten during reload
     
     # delete old cover files, if all entries should be reloaded (and reload was successful)
     if load_all:
-      for x in image_files_reload:
-        if os.path.isfile(x):
-          os.remove(x)
+       logging.info("reloadMusic: delete old cover files")
+       for x in image_files_reload:
+         if os.path.isfile(x):
+           os.remove(x)
 
-    logging.info("Finished reloading music data: " + music_dir + " | all=" + str(all) + " | albums=" + str(len(data["albums"])))
+    logging.info("reloadMusic: finished ... " + music_dir + " | all=" + str(all) + " | albums=" + str(len(data["albums"])))
     return data_reload
 
     

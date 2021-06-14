@@ -85,8 +85,8 @@ function mboxPlayerRemote(song,uuid,playing) {
 
 	// check if control panel open
 	var on_off = "";
-	if (mboxControlPanel_open)  { on_off = " on1"; display_open="none"; display_close="block"; }
-	else			     { on_off = " off1"; }
+	if (mboxControlPanel_open)  { on_off = " on1";  } //display_open="none"; display_close="block"; }
+	else			     { on_off = " off1"; } //display_open="block"; display_close="none";  }
 
 	// print player
 	if (mbox_device != "local") {
@@ -120,16 +120,16 @@ function mboxPlayerControlPlaylist_advanced(uuid) {
 	// images / text not placed in the middle ...
 
 	text += mboxPlayerButtonText("-10","appFW.requestAPI('GET', ['play_last','10'],  '', mboxControl);",  "blue");
-	text += mboxPlayerButtonText("-5", "appFW.requestAPI('GET', ['play_last','5'],  '', mboxControl);",   "blue");
-	text += mboxPlayerButton("back",   "appFW.requestAPI('GET', ['play_last','1'],  '', mboxControl);",   "blue");
-	text += mboxPlayerButton("play",   "appFW.requestAPI('GET', ['play','"+uuid+"'],'', mboxControl);",   "blue");
-	text += mboxPlayerButton("next",   "appFW.requestAPI('GET', ['play_next','1'],  '', mboxControl);",   "blue");
-	text += mboxPlayerButtonText("+5", "appFW.requestAPI('GET', ['play_next','5'],  '', mboxControl);",   "blue");
+	text += mboxPlayerButtonText("-5", "appFW.requestAPI('GET', ['play_last','5'],   '', mboxControl);",   "blue");
+	text += mboxPlayerButton("back",   "appFW.requestAPI('GET', ['play_last','1'],   '', mboxControl);",   "blue");
+	text += mboxPlayerButton("play",   "appFW.requestAPI('GET', ['play','"+uuid+"'], '', mboxControl);",   "blue");
+	text += mboxPlayerButton("next",   "appFW.requestAPI('GET', ['play_next','1'],   '', mboxControl);",   "blue");
+	text += mboxPlayerButtonText("+5", "appFW.requestAPI('GET', ['play_next','5'],   '', mboxControl);",   "blue");
 	text += mboxPlayerButtonText("+10","appFW.requestAPI('GET', ['play_next','10'],  '', mboxControl);",  "blue");
 	
 	text += mboxPlayerButton("empty");
-	text += mboxPlayerButton("pause","appFW.requestAPI('GET', ['pause'], 		'', mboxControl);",                    		"blue");
-	text += mboxPlayerButton("stop", "appFW.requestAPI('GET', ['stop'],  		'', mboxControl); mboxControlPanel_hide(true);",	"blue");
+	text += mboxPlayerButton("pause","appFW.requestAPI('GET', ['pause'], 	'', mboxControl);",                    		"blue");
+	text += mboxPlayerButton("stop", "appFW.requestAPI('GET', ['stop'],  	'', mboxControl); mboxControlPanel_hide(true);",	"blue");
 	text += mboxPlayerButton("empty");
 	text += mboxPlayerButton("goto", "mboxControlShowUUID('"+uuid+"');", "blue");
 

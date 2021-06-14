@@ -62,7 +62,6 @@ function mboxControl_load()            { appFW.requestAPI('GET', ["status"], "",
 function mboxControl(data) {
 
 	var d          = data["STATUS"]["playback"];
-	
 	if (!d)	{ return; }
 	
 	var type       = d["device"];
@@ -71,7 +70,10 @@ function mboxControl(data) {
 	var status     = d["status"];
 	var playing    = d["playing"];
 
-        var text       = "";
+	if (playing == 0)	{ mboxControlPanel_hide(); }
+	else			{ mboxControlPanel_show(); mboxControlPanel_delay = 0; }
+
+	var text       = "";
 	var uuid       = "";
 	var audio      = "";
 
@@ -101,8 +103,8 @@ function mboxControl(data) {
 			var p_position  = d["playlist_pos"];
 			var p_length    = d["playlist_len"];
 
-			if ("playlist_uuid" in d && d["playlist_uuid"].length > 0)	{ uuid 		= d["playlist_uuid"]; }
-			else 								{ uuid 		= song["uuid_album"]; }
+			if ("playlist_uuid" in d && d["playlist_uuid"].length > 0)	{ uuid 	= d["playlist_uuid"]; }
+			else 								{ uuid 	= song["uuid_album"]; }
 			if (song)							{ uuid_song 	= song["uuid"]; }
                         else								{ uuid_song 	= ""; }
 
@@ -125,7 +127,7 @@ function mboxControl(data) {
 
 		// Info for running music, if web stream / radio
 		else if (type == "radio") {
-			var channel	= d["stream"];
+			var channel     = d["stream"];
 			var title       = d["stream"]["title"];
 			var description = d["stream"]["description"];
 			var info        = d["stream"]["stream_info"];
@@ -172,7 +174,9 @@ function mboxControl(data) {
 
 	// volume control
 	text += mboxControlVolumeControl(volume,mute);
-	text += mboxPlayerRemote(song,uuid,playing);
+	if (playing == 0 || playing == 1) {
+		text += mboxPlayerRemote(song,uuid,playing);
+		}
 
         setTextById("mbox_control", text);
         
@@ -189,11 +193,11 @@ function mboxControl(data) {
 function mboxControlVolumeSet(volume) {
 	if (volume >= 0 && volume <= 100) {
 		if (mbox_device != "local") 	{ appFW.requestAPI('GET',['volume','set:'+volume], '', mboxControl); }
-		else				{ volume = volume / 100;  mboxPlayer.volumeSet(volume);  mboxControl(); }
+		else				{ volume = volume / 100;  mboxPlayer.volumeSet(volume);  mboxControl_load(); }
 		}
 	else if (volume == "mute") {
 		if (mbox_device != "local") 	{ appFW.requestAPI('GET',['volume','mute'], '', mboxControl); }
-		else				{ mboxPlayer.volumeMute(); mboxControl(); }
+		else				{ mboxPlayer.volumeMute(); mboxControl_load(); }
 		}
 	else {
 		console.warn("mboxControlVolumeSet: Value out of range ("+volume+")");
@@ -300,23 +304,20 @@ function mboxControlShowUUID(uuid) {
 
 function mboxControlPlaying_show(uuid,uuid_song,playing) {
 
-        if (playing == 0)	{ mboxControlPanel_hide(); }
-        else			{ mboxControlPanel_show(); }
-
 	activeElements = document.getElementsByClassName("player_active");
 
 	for (var i=0;i<activeElements.length;i++) {
 		element = activeElements[i];
 		if (playing != 0) {
-			if (element.id == "playing_"+uuid)		{ element.style.display = "block"; }
-			else if (element.id == "playing2_"+uuid) 	{ element.style.display = "block"; }
-			else if (element.id == "playing3_"+uuid) 	{ element.style.display = "block"; }
-			else if (element.id == "playing_"+uuid_song)	{ element.style.display = "block"; }
+			if (element.id == "playing_"+uuid)			{ element.style.display = "block"; }
+			else if (element.id == "playing2_"+uuid) 		{ element.style.display = "block"; }
+			else if (element.id == "playing3_"+uuid) 		{ element.style.display = "block"; }
+			else if (element.id == "playing_"+uuid_song)		{ element.style.display = "block"; }
 			else if (element.id == "playing2_"+uuid_song) 	{ element.style.display = "block"; }
 			else if (element.id == "playing3_"+uuid_song) 	{ element.style.display = "block"; }
-			else 						{ element.style.display = "none"; }
+			else 							{ element.style.display = "none"; }
 			}
-		else 						{ element.style.display = "none"; }
+		else 								{ element.style.display = "none"; }
 		}
 
 	return;
@@ -368,10 +369,14 @@ function mboxControlPanel_toggle() {
 
 //--------------------------------------
 
+var mboxControlPanel_delay = 0;
+
 function mboxControlPanel_hide(complete=false) {
 
-	if (mboxControlPanel_progress) { return; } else { mboxControlPanel_progress = true; }
+	if (mboxControlPanel_delay < 2) { mboxControlPanel_delay += 1; return; }
+	mboxControlPanel_delay = 0;
 		
+	if (mboxControlPanel_progress) { return; } else { mboxControlPanel_progress = true; }
 	if (complete || cssClassExists(id='mbox_control',check='on')) {		
 		cssClassChange(id='mbox_control', from='on',to='off');
 		setTimeout(function() {		

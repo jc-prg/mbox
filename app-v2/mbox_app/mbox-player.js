@@ -54,7 +54,7 @@ var mboxPlayer;
 
 function mboxPlayerLocal(position=0, play=true) {
 
-	if (!mboxPlayer) { mboxPlayer = new jcPlayer("mboxPlayer","audioPlayer", mbox_music_dir, mbox_cover_dir, "apps/"); }
+	if (!mboxPlayer) { mboxPlayer = new jcPlayer("mboxPlayer","audioPlayer", mbox_music_dir, mbox_cover_dir, "modules/"); }
 
 	mboxPlayer.activeTrack              	  = position;
 	mboxPlayer.activeCtrl["info_cover"] 	  = false;

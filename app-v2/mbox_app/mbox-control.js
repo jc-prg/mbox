@@ -70,8 +70,14 @@ function mboxControl(data) {
 	var status     = d["status"];
 	var playing    = d["playing"];
 
-	if (playing == 0)	{ mboxControlPanel_hide(); }
-	else			{ mboxControlPanel_show(); mboxControlPanel_delay = 0; }
+	if (mbox_device == "remote") {
+		if (playing == 0)	{ mboxControlPanel_hide(); }
+		else			{ mboxControlPanel_show(); mboxControlPanel_delay = 0; }
+		}
+	else {
+		mboxControlPanel_show(); 
+		mboxControlPanel_delay = 0;
+		}
 
 	var text       = "";
 	var uuid       = "";
@@ -158,7 +164,7 @@ function mboxControl(data) {
 		// check if open ...
 		var on_off = "";
 		if (mboxControlPanel_open)  { on_off = " on1"; display_open="none"; display_close="block"; }
-		else			{ on_off = " off1"; }
+		else			     { on_off = " off1"; }
 
 		text += "<div class='mbox_ctrl_open' id='ctrl_open' style='display:"+display_open+";'>";
 		text += mboxHtmlButton("open", "mboxControlPanel_toggle();",   "blue", "right");

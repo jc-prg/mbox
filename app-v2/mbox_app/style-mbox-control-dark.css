@@ -1,6 +1,11 @@
 
 @media (prefers-color-scheme: dark) {
 
+  hr { 
+    border: 1px solid gray; 
+    border-bottom: 1px solid black;
+  }
+
   .mbox_control {
   	border-top: 2px solid black;
   	background: #888888;

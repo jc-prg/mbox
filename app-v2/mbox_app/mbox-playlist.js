@@ -170,7 +170,6 @@ function mboxPlaylistOne(data) {
 			if (data["DATA"]["album_info"][track_list[i]]) {
 			
 				album_tracks = data["DATA"]["album_info"][track_list[i]]["tracks"];
-// SORT ???
 				for (var j=0;j<album_tracks.length;j++) {
 					track_list_complete.push( album_tracks[j] );
 					}
@@ -548,7 +547,6 @@ function mboxPlaylistTrackRow(data, uuid, column, uuid_pl="", count_pl=0, color=
 		// Controls to play Track ...
 		cmd += "<div class=\"album_tracks_control\"  style=\"background:"+mbox_track_color[color]+";\">";
 		if (mbox_device == "local")	{ cmd += mboxHtmlButton("play",  "writeAudioPlayer('" + uuid + "','audioPlayer');", "green",   "small right"); }
-//		else 				{ cmd += mboxHtmlButton("play",  "appFW.requestAPI('GET',['play', '"+uuid+"'],'',mboxControl);", "blue", "small right"); }
 		else 				{ cmd += mboxHtmlButton("play",  "appFW.requestAPI('GET',['play_position', '"+uuid_pl+"',"+position	+"],'',mboxControl);", "blue", "small right"); }
 		cmd += "<div class=\"player_active right\" id=\"playing3_"+uuid+"\" style=\"display:none;\"><img src=\""+mbox_icon_dir+mbox_icons["playing"]+"\" style=\"width:10px;height:10px;margin:2px;\"></div>";
 		cmd += "</div>";
@@ -580,7 +578,6 @@ function mboxPlaylistTrackRow(data, uuid, column, uuid_pl="", count_pl=0, color=
 
 	// if not exists
 	else {	       	
-//		var onclick2   =  "appFW.requestAPI('PUT',['playlist_items','delete','"+ids[1]+"','"+tracklist[i]+"'],'', mboxPlaylistInfoDelete);";
        	cmd += "<div class=\"album_tracks_control\">";
         	cmd += mboxHtmlButton("delete",  "appFW.requestAPI('PUT',['playlist_items','delete', '"+uuid_pl+"','"+uuid+"'],'',mboxPlaylistDeleteTrack);", "red", "small right");
        	cmd += "</div>";
@@ -687,8 +684,6 @@ function mboxPlaylistDeleteTrackInfo(data) {
 		param = data["REQUEST"]["c-param"].split(" ");
 		mboxPlaylistEditTracks_load(param[0]+sep+param[0]);
 		mboxPlaylistAll_load('', param[0]);
-		//appFW.requestAPI("GET",["db","all",document.getElementById("selectAlbum").value], "", mboxPlaylistEditTracks,"wait");
-		//mboxPlaylistAll_load('', data["LOAD"]["UUID"]);
 		setTextById("playlistEditingInfo","");
 		}, 1000);
 	}
@@ -705,8 +700,6 @@ function mboxPlaylistAddTrackInfo(data) {
 		param = data["REQUEST"]["c-param"].split(" ");
 		mboxPlaylistEditTracks_load(param[0]+sep+param[0]);
 		mboxPlaylistAll_load('', param[0]);
-		//appFW.requestAPI("GET",["db","all",document.getElementById("selectAlbum").value], "", mboxPlaylistEditTracks,"wait");
-		//mboxPlaylistAll_load('', data["LOAD"]["UUID"]);
 		setTextById("playlistEditingInfo","");
 		}, 1000);
 	}

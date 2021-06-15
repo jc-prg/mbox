@@ -6,28 +6,31 @@ Here you'll find a history of features implemented into hardware and software as
 
 ### IN PROGRESS
 
-...
+- BUG Play stream in local mode
 
 ### KNOWN BUGS
 
-- BUG check if audio device is connected -> show visible error message in client (restart of computer usually works)
-
-- BUG add image / delete - update list of albums
+- BUG server - if playing and press play in a playlist, start with first song instead of actuall running song (PlaySong -> start file, not list without loading list again)
 - BUG server - after connecting card to album the message "invalid entry connected" is spoken -> move all data to cache directly
 - BUG server - Start with STREAM and card laying on the RFID sensor leads to an error -> remove card_id, until connection is OK
 - BUG app/server - if playlist with the same title already exists, two lists with the same tracks, id, and image are displayed => check server side?
-- BUG server - if playing and press play in a playlist, start with first song instead of actuall running song (PlaySong -> start file, not list without loading list again)
+- BUG check if audio device is connected -> show visible error message in client (restart of computer usually works)
 
 - UNSTABLE app/server - Delete RFID Cards doesn't work the 2nd time {Error: mbox - GET / http://music-box:5005/api/cards/-/ (not available/4/500).}
 
 ### FEATURE IDEAS
 
-- server: if data dir is not available ... error message (from LED / RFI / BUTTONS server ...)
+- jc-player: +5 / -5 ; jump to position (like in remote player)
+- app: Delete reference to picture / delete picture (if uploaded)
+- app: track view (with out albums) -> preparation for additional filters
 - app: filter with full text search ...
 - app: filter for genres (or other metadata ...)
+
+- app: volume doesn't work with iOS / Safari yet -> HTML5 audio processing?
+
+- server: if data dir is not available ... error message (from LED / RFI / BUTTONS server ...)
 - server: understandable return message in API response (even if successful)
 - server: save presets in database and e.g. prefered device
-- app: volume doesn't work with iOS / Safari yet -> HTML5 audio processing?
 - server: run mboxDB and mboxServer outside of a container (? faster start up)
 - server: check and show voltage for RPi... "vcgencmd measure_volts core" ... sdram_i, sdram_p, sdram_c (problem, when recharging the battery)
 
@@ -183,6 +186,8 @@ Here you'll find a history of features implemented into hardware and software as
 * OK - server: if error in media files, group them in an album / or name album "#error" -> well visible in album list
 * OK - BUG loading new data doesn't work correctly
 * OK - BUG when detecting defect media files -> check is missing if already part of existing data (doubled data)
+* OK - Move track sort from client to server, stabilize and simplify code (-> music_load.py)
+* OK - BUG Reload data ... reference to playlist are not restored
 
 * DECLINED - Play the whole song, not only parts // not seen any more
 * DECLINED - dont delete playlist when stop: don't unload playlist/title if stop - just rewind to first position, but display now reflects situation
@@ -330,5 +335,11 @@ Here you'll find a history of features implemented into hardware and software as
 * OK - UNSTABLE app - loading albums and tracks to edit playlist doesnt work every time (on the box more often than on the computer)
 * OK - BUG place triangle of album detail correctly
 * OK - Smooth showing & hiding of the control panel (playing in formation)
-
+* OK - BUG upload image -> alert("error 404") ... for playlist & stream also; upload php not found -> see ./modules/jc-upload/upload.js (upload.php fix defined)
+* OK - optimize playlist view analogue to the album view (incl. 3 columns)
+* OK - BUG Control Panel disappears from time to time when jumping to next song
+* OK - BUG Control Panel disappears when playing stream (or playlist?)
+* OK - BUG Deleting playlist entry with "not found" from list doesn't work
+* OK - play in track of a playlist starts as part of the playlist (instead of single track)
+* OK - BUG icons on local player buttons
 

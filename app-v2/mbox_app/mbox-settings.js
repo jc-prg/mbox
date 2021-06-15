@@ -49,6 +49,9 @@ function mboxSettingsStatus (data) {
 	text += mboxHtmlTable("start");
 	text += mboxHtmlTable("<b>mBox-Client:",	appTitle + " " + appVersion + "<br/>(" + stage + ")");
 	text += mboxHtmlTable("<b>mBox-Server:",	data["API"]["name"] + " " + data["API"]["version"] + "<br/>(" + data["API"]["stage"] + ")");
+	text += mboxHtmlTable("end");
+	text += "<hr/>";
+	text += mboxHtmlTable("start");
 	text += mboxHtmlTable("<b>jcApp:",		appFW.appVersion);
 	text += mboxHtmlTable("<b>jcAppFramework:",	appFwVersion);
 	text += mboxHtmlTable("<b>jcMessage:",	message.appVersion);
@@ -58,10 +61,13 @@ function mboxSettingsStatus (data) {
 	text += "<hr/>";
 	text += mboxHtmlTable("start");
 	text += mboxHtmlTable("<b>Modus:", 		mbox_mode);
-	text += mboxHtmlTable("<b>Status:",	 	data["STATUS"]["playback"]["status"] + " (" + data["STATUS"]["playback"]["file"] + ")");
 	text += mboxHtmlTable("<b>Playing:", 		data["STATUS"]["playback"]["playing"]);
 	text += mboxHtmlTable("<b>Active Device:", 	data["STATUS"]["active_device"]);
 	text += mboxHtmlTable("<b>Window:", 		document.body.clientWidth + "x" + document.body.clientHeight);
+	text += mboxHtmlTable("end");
+	text += "<hr/>";
+	text += mboxHtmlTable("start");
+	text += mboxHtmlTable("<b>Status:",	 	data["STATUS"]["playback"]["status"] + " (" + data["STATUS"]["playback"]["file"] + ")");
 	text += mboxHtmlTable("end");
 	text += "<hr/>";
 	text += mboxHtmlTable("start");

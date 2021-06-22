@@ -44,7 +44,7 @@ class musicPlayer(threading.Thread):
       self.play_status   = 0
       self.play_position = 0
       self.player_status = ""
-      self.volume_factor = 0.8       # default factor to limit audio level (max = 1.0)
+      self.volume_factor = 1         # default factor to limit audio level (max = 1.0)
       self.volume_start  = 0.4       # initial volume
       self.volume        = self.volume_start
       self.volume_mute   = False
@@ -519,7 +519,7 @@ class musicControlThread(threading.Thread):
       current_list["length"]     = len(self.music_list)
       current_list["files"]      = self.music_list
       current_list["list"]       = []
-      for filename in self.music_list:
+      for filename in self.music_list and not filename.startswith("http"):
         file_info = self.metadata_by_filename(filename)
         current_list["list"].append(file_info)
       return current_list
@@ -578,10 +578,10 @@ class musicControlThread(threading.Thread):
           if mbox.rfid_ctrl["cardUID"] in database:
           
             if "LastCard" in self.music_ctrl and self.music_ctrl["LastCard"] == database[mbox.rfid_ctrl["cardUID"]][0]:
-              logging.info("Card already started ...")
+              logging.info("Card already started ("+self.music_ctrl["LastCard"]+")...")
 
             else:
-              logging.info("Start Playlist: "+database[mbox.rfid_ctrl["cardUID"]][0])
+              logging.info("Start Playlist: "+database[mbox.rfid_ctrl["cardUID"]][0]+" / "+self.music_ctrl["LastCard"])              
               self.playlist_load_uuid(database[mbox.rfid_ctrl["cardUID"]][0])
               self.music_ctrl["LastCard"]  = database[mbox.rfid_ctrl["cardUID"]][0]
               
@@ -597,6 +597,7 @@ class musicControlThread(threading.Thread):
           
               if mbox.rfid_ctrl["cardUID"] not in cardDB: 
                  self.speak.speak_message("NO-MUSIC-CONNECTED-TO-CARD")
+        
                  
    def playlist_next(self,stop):
       '''

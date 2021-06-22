@@ -68,7 +68,8 @@ class speakThread (threading.Thread):
       tts = gtts.gTTS(text, lang=language)
       tts.save(filename)
       self.play_file(filename)
-      time2wait = (self.player.get_length()/1000) + 0.5
+      #time2wait = (self.player.get_length()/1000) + 0.5
+      time2wait = 3
       time.sleep(time2wait)
       ### -> wait for length of file (to be implemented)
 
@@ -97,4 +98,6 @@ class speakThread (threading.Thread):
       else:
         self.play_file(fname_UE)
 
+      time2wait = 3
+      time.sleep(time2wait)
 

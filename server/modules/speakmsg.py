@@ -9,6 +9,7 @@ import operator
 import logging
 import vlc
 import os.path
+import gtts
 
 import modules.config_stage as stage
 import modules.config_mbox  as mbox
@@ -56,10 +57,27 @@ class speakThread (threading.Thread):
           return "Error"
         
       return "Ended"
+      
+      
+   def speak_text(self, text):
+      '''
+      Use google API to speech from text
+      '''
+      filename = "/tmp/music-box-speech.mp3"
+      language = stage.language.lower()
+      tts = gtts.gTTS(text, lang=language)
+      tts.save(filename)
+      self.play_file(filename)
+      time2wait = (self.player.get_length()/1000) + 0.5
+      time.sleep(time2wait)
+      ### -> wait for length of file (to be implemented)
 
     
    def speak_message(self, message):
-
+      '''
+      play spoken messages from prerecorded files
+      '''
+      
       self.player.audio_set_volume(self.default_volume)
       self.player.audio_set_mute(False)
 

@@ -1,0 +1,287 @@
+# ------------------------
+# podcast functions
+# ------------------------
+
+import time, datetime, os
+import logging
+import requests
+import uuid
+import threading
+
+from xml.etree import cElementTree as ET
+from pprint import pprint
+
+import modules.config_stage as stage
+import modules.config_mbox  as mbox
+import modules.speakmsg     as speak
+import modules.runcmd       as runcmd
+
+from modules.config_mbox import *
+from decimal             import *
+
+# ------------------------
+
+def internet_connection():
+    '''
+    check if connection to internet exists
+    '''
+    host_ip   = stage.server_dns
+    host      = ['spiegel.de','google.com']
+    ping_ip   = False
+    error_msg = ""
+    
+    speak = speak.speakThread(4, name + " VLC Player / Speak", 1, "")  #  jcJSON.read("music"), jcJSON.read("radio"))
+    speak.start()
+
+    logging.debug("check if internet is connected - ping dns server")
+    for key in host_ip:
+        if runcmd.ping(key):
+          ping_ip = True
+          break
+
+    logging.debug("check if dns is working correctly - ping domain names")
+    count     = 0
+    while count < len(host):
+         try:
+            connect = runcmd.ping(host[count])
+            if connect and ping_ip:
+                error_msg = "CONNECTED"
+                internet_connection_error(error_msg)
+                logging.warning("Internet connection OK: " + host[count])
+                return error_msg
+
+            elif ping_ip:
+                error_msg = "DNS-ERROR"
+                internet_connection_error(error_msg)
+                logging.warning("Connection OK, DNS for Domain doesnt work: "+host[count])
+
+            else:
+                error_msg = "NO-CONNECTION"
+                internet_connection_error(error_msg)
+                logging.warning("Internet connection ERROR: " + host[count])
+
+         except requests.exceptions.RequestException as e:
+            error_msg = "NO-CONNECTION"
+            logging.warning("Error connecting to INTERNET ("+host[count]+"): " + str(e))
+
+         count = count + 1
+      
+    if error_msg == "DNS-ERROR":
+          logging.error("Could not connect to INTERNET!")
+          speak.speak_message("CONNECTION-ERROR-RESTART-SHORTLY")
+          time.sleep(20)
+          return False
+          
+    elif error_msg != "CONNECTED":
+          logging.error("Could not connect to INTERNET!")
+          speak.speak_message("NO-INTERNET-CONNECTION")
+          time.sleep(0.5)
+          speak.speak_message("TRY-AGAIN-IN-A-MINUTE")
+          time.sleep(20)
+          music_ctrl["LastCard"] = ""
+          return False
+    
+    speak.stop()
+    return True
+
+
+def internet_connection_error(info):
+    '''
+    write error message to log file
+    '''
+    f = open("/log/internet_connect", "w+")
+    f.write(info)
+    f.close()
+
+
+# ------------------------
+
+class podcastThread (threading.Thread):
+
+   def __init__(self, threadID, name, database):
+      '''
+      set initial values to vars and start VLC
+      '''
+
+      # init thread
+      threading.Thread.__init__(self)
+      self.threadID         = threadID
+      self.name             = name
+      self.database         = database
+      self.running          = True
+      self.temp_podcasts    = {}
+      self.update_interval  = 60 * 5
+      
+      
+   def run(self):
+      '''
+      run thread (nothing special at the moment)
+      '''
+      logging.info( "Starting " + self.name )
+      
+      while self.running:
+         streams = self.database.read_cache("radio")
+         for stream_uuid in streams:
+            stream      = streams[stream_uuid]
+            stream_url  = stream["stream_url"]
+            
+            if stream_url.endswith(".rss") or stream_url.endswith(".xml"):
+            
+#              if stream_uuid in self.temp_podcasts and "update" in self.temp_podcasts[stream_uuid]:
+#                logging.info(str(self.temp_podcasts[stream_uuid]["update"]))
+#                logging.info(str(self.update_interval))
+#                logging.info(str(self.temp_podcasts[stream_uuid]["update"]+self.update_interval))
+#                logging.info(str(time.time()))
+#                logging.info(str(self.temp_podcasts[stream_uuid]["update"]+self.update_interval < time.time()))
+            
+              if stream_uuid not in self.temp_podcasts:
+                 podcast                         = self.get_tracks_rss(rss_url=stream_url,playlist_uuid=stream_uuid)
+                 self.temp_podcasts[stream_uuid] = podcast
+                                               
+              elif self.temp_podcasts[stream_uuid]["update"] + self.update_interval < time.time():
+                 podcast                         = self.get_tracks_rss(rss_url=stream_url,playlist_uuid=stream_uuid)
+                 self.temp_podcasts[stream_uuid] = podcast
+                 
+         time.sleep(1)
+        
+      logging.info( "Exiting " + self.name )
+
+
+   def stop(self):
+      '''
+      Stop thread
+      '''
+      self.running = False
+      
+   
+   def get_podcasts(self, playlist_uuid):
+      '''
+      return info from cache
+      '''
+      if playlist_uuid in self.temp_podcasts:
+         return self.temp_podcasts[playlist_uuid]
+      else:
+         return {}
+      
+
+   def get_tracks_rss(self, rss_url, playlist_uuid):
+      '''
+      get tracks from rrs feed (itunes-format)
+      '''     
+      if not internet_connection: return
+      podcast = {}
+       
+      try:
+        logging.info("Read podcast:" + rss_url)     
+        response = requests.get(rss_url)
+        response.encoding = response.apparent_encoding
+        logging.info(response.encoding)
+        playlist = response.text                            #### -> UTF-8 ???
+        playlist = playlist.encode('utf-8')
+        
+         
+      except requests.exceptions.RequestException as e:
+        logging.error("Can't open the podcast info from RSS/XML: " + str(e))
+        #self.speak.speak_message("CANT-OPEN-STREAM")
+        return ""
+      
+      e          = ET.XML(playlist)
+      data_all   = etree_to_dict(e)["rss"]["channel"]
+      data_items = data_all["item"]
+    
+      itunes_sub = "{http://www.itunes.com/dtds/podcast-1.0.dtd}"
+    
+#      logging.info(".")     
+#      logging.info(str(data_all))     
+        
+      podcast = {
+        "title"        : data_all["title"],
+        "album"        : data_all["title"],
+        "uuid"         : playlist_uuid,
+        "artist"       : data_all[itunes_sub+"author"],
+        "cover_images" : { "active" : "track", "active_pos" : 0, "url" : [ data_all["image"]["url"] ], "track" : [], "dir" : [], "upload" : [] },
+        "stream_info"  : data_all["link"],
+        "stream_link"  : rss_url,
+        "tracks"       : {},
+        "track_count"  : 0,
+        "track_list"   : [],
+        "track_url"    : {},
+        "publication"  : "",
+        "description"  : "",
+        "update"       : time.time()
+    	}
+    	
+      if "pubDate"     in data_all: podcast["publication"]  = data_all["pubDate"]
+      if "description" in data_all: podcast["description"]  = data_all["description"]
+      if "image"       in data_all: 
+        podcast["cover_images"]["url"]    = [ data_all["image"]["url"] ]
+        podcast["cover_images"]["active"] = "url"
+    	
+      podcast_sort = {}
+      for item in data_items:
+        item_uuid = "t_" + str(uuid.uuid1())
+        podcast["tracks"][item_uuid] = {
+          "title"       : item["title"],
+          "description" : item["description"],
+          "album"       : podcast["title"],
+          "album_uuid"  : playlist_uuid,
+          "file"        : item["enclosure"]["@url"],
+          "length"      : int(item["enclosure"]["@length"]),
+          "type"        : item["enclosure"]["@type"],
+          "decoder"     : "jc:music:podcast",
+          "image"       : ""
+          }
+          
+        podcast["track_url"][item["enclosure"]["@url"]] = item_uuid
+
+        if "pubDate" in item:          
+           podcast["tracks"][item_uuid]["publication"] = item["pubDate"]
+           
+           time_format = "%a, %d %b %Y %H:%M:%S %z"
+           time_input  = item["pubDate"]
+           time_stamp  = time.mktime(datetime.datetime.strptime(time_input, time_format).timetuple())           
+           podcast_sort[time_stamp] = item_uuid
+           
+        if "duration" in item:         
+           podcast["tracks"][item_uuid]["duration"]    = item["duration"]
+           
+        if itunes_sub+"image" in item:
+          podcast["tracks"][item_uuid]["image"] = item[itunes_sub+"image"]["@href"]
+          if podcast["track_count"] == 1:
+            podcast["cover_images"]["track"].append(item[itunes_sub+"image"]["@href"])
+            
+      for key in sorted(podcast_sort):
+        podcast["track_list"].append(podcast_sort[key])
+        podcast["track_count"] += 1
+        
+      podcast["track_list"] = podcast["track_list"][::-1]
+    
+      logging.debug(str(podcast))  
+      return podcast
+    
+    
+# ------------------------
+
+from collections import defaultdict
+
+def etree_to_dict(t):
+    d = {t.tag: {} if t.attrib else None}
+    children = list(t)
+    if children:
+        dd = defaultdict(list)
+        for dc in map(etree_to_dict, children):
+            for k, v in dc.items():
+                dd[k].append(v)
+        d = {t.tag: {k:v[0] if len(v) == 1 else v for k, v in dd.items()}}
+    if t.attrib:
+        d[t.tag].update(('@' + k, v) for k, v in t.attrib.items())
+    if t.text:
+        text = t.text.strip()
+        if children or t.attrib:
+            if text:
+              d[t.tag]['#text'] = text
+        else:
+            d[t.tag] = text
+    return d
+    
+    

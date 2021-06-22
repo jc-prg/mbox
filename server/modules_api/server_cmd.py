@@ -13,6 +13,7 @@ import modules.stream_control as radio_ctrl
 import modules.speakmsg       as speak
 
 from modules.runcmd           import *
+from modules.music_podcast    import *
 from modules_api.server_init  import *
 
 #-------------------------------------------------
@@ -263,9 +264,9 @@ def mboxAPI_setButton(buttonID):
        if param == "no_button": mbox.rfid_ctrl["buttonID"] = ""
        else:                    mbox.rfid_ctrl["buttonID"] = param
 
-       if   mbox.active_device == "music_box" and param == "next":    thread_music_ctrl.playlist_next(1)
-       elif mbox.active_device == "music_box" and param == "back":    thread_music_ctrl.playlist_next(-1)
-       elif mbox.active_device == "music_box" and param == "pause":   thread_music_ctrl.pause_playback()
+       if   mbox.active_device == "music_box" and param == "next":    thread_playlist_ctrl.playlist_next(1)
+       elif mbox.active_device == "music_box" and param == "back":    thread_playlist_ctrl.playlist_next(-1)
+       elif mbox.active_device == "music_box" and param == "pause":   thread_playlist_ctrl.player.pause()
 
        data = mboxAPI_end(data)
        return(data)
@@ -356,6 +357,15 @@ def mboxAPI_readDB(databases,db_filter=""):
              data["DATA"]["_selected_uuid"]        = uuid
              data["DATA"]["_selected_db"]          = database
              data["DATA"]["_selected"]             = data["DATA"][database][uuid]
+             
+       # TEMP ... read podcast ...       
+       if databases == "radio":
+          for stream_uuid in data["DATA"]["radio"]:
+             stream_url = data["DATA"]["radio"][stream_uuid]["stream_url"]
+             if stream_url.endswith(".rss") or stream_url.endswith(".xml"):   
+                podcast = thread_podcast.get_podcasts(playlist_uuid=stream_uuid)
+                data["DATA"]["radio"][stream_uuid]["podcast"]        = podcast
+                           
        
        # create combined requests - ARTISTS
        
@@ -400,6 +410,7 @@ def mboxAPI_readEntry(uuid,db_filter=""):
        param2 = uuid
        uuid   = mboxAPI_testUUID(database,uuid)
        data   = mboxAPI_start("readEntry","readEntry","",param,param2)
+       
 
        # read entry from database
        if database in couch.database:
@@ -408,7 +419,11 @@ def mboxAPI_readEntry(uuid,db_filter=""):
 
            if "main" in couch.database[database]:
                temp = couch.read_cache(database)
+
                if uuid in temp:
+                   if uuid.startswith("r_"): 
+                      temp[uuid]["podcast"] = thread_podcast.get_podcasts(playlist_uuid=uuid)
+                   
                    data["DATA"]["_selected_uuid"]            = uuid
                    data["DATA"]["_selected_db"]              = database
                    
@@ -879,45 +894,29 @@ def mboxAPI_volume(param):
        db_entries = {}
        data       = mboxAPI_start("volume","volume","",param,"")
        
-       if param == "mute":
-            thread_music_ctrl.music_mute()
-            thread_radio_ctrl.volume = round(thread_music_ctrl.music_ctrl["volume"]*100)
-            thread_radio_ctrl.mute   = thread_music_ctrl.music_ctrl["mute"]
-
-       elif (param == "up"):
-            thread_music_ctrl.music_vol("up")
-            
-       elif (param == "down"):
-            thread_music_ctrl.music_vol("down")
-
-       elif ("set" in param):
+       if param == "mute":     thread_playlist_ctrl.player.mute()
+       elif param == "up":     thread_playlist_ctrl.volume_up("up")
+       elif param == "down":   thread_playlist_ctrl.volume_up("down")
+       elif param.startswith("set"):
             getvol = param.split(":")
-            thread_music_ctrl.music_vol(int(getvol[1]))
-
+            thread_playlist_ctrl.volume_up(int(getvol[1]))
        else:
             data = mboxAPI_error(data, "Parameter not supported: "+param)
             logging.warn("Parameter not supported: " + param)   
             
-       # volume for radio / web stream
-       thread_radio_ctrl.volume = round(thread_music_ctrl.music_ctrl["volume"]*100)
-       thread_radio_ctrl.mute   = thread_music_ctrl.music_ctrl["mute"]
-
        data = mboxAPI_end(data,["no-statistic","no-system"])
        return(data)
 
 # ---
 
-def mboxAPI_play_position(uuid,position):
+def mboxAPI_play_position(uuid, position):
 
-       data = mboxAPI_play(uuid)
+       data = mboxAPI_play(uuid)      
+
+       position = int(position)+1
+       thread_playlist_ctrl.playlist_load_uuid(playlist_uuid=uuid, position=position)
        
-       if mbox.active_device == "music_box":   
-            thread_music_ctrl.playlist_next(int(position))
-            
-       else:
-            data = mboxAPI_error(data, "Command only for music_box: "+mbox.active_device+"/"+str(position))
-            logging.warn("Command only for music_box: "+mbox.active_device+"/"+str(position))   
-
+       data = mboxAPI_end(data,["no-statistic","no-system"])
        return(data)
 
 # ---
@@ -928,64 +927,31 @@ def mboxAPI_play(uuid):
        db_entries = {}
        uuid       = mboxAPI_testUUID("album_info",uuid)
        data       = mboxAPI_start("play","play","",uuid,"")
+       database   = {}
        
-       # play radio stream
-       if   "r_" in uuid:
-           thread_music_ctrl.stop_playback()
-           mbox.active_device = "radio"
-           database  = couch.read_cache("radio")
-           if uuid in database:
-               thread_radio_ctrl.load(database[uuid]["stream_url"],database[uuid],uuid)
-               thread_radio_ctrl.play()
-           else:
-               data = mboxAPI_error(data, "UUID not found: "+uuid)
-       
-       # play track
-       elif "t_" in uuid:
-           thread_radio_ctrl.stop_playback()
-           mbox.active_device = "music_box"
-           database  = couch.read_cache("tracks")
-           if uuid in database:
-                uuid_current = ""
-                
-                if "song" in thread_music_ctrl.music_ctrl and "uuid" in thread_music_ctrl.music_ctrl["song"]:
-                    uuid_current = thread_music_ctrl.music_ctrl["song"]["uuid"]
-                elif "playlist" in thread_music_ctrl.music_ctrl:
-                    uuid_current = thread_music_ctrl.music_ctrl["playlist"][0]["uuid"]
-
-                if (thread_music_ctrl.music_ctrl["status"] == "pause") and (uuid == uuid_current):
-                    thread_music_ctrl.pause_playback()
-                else:
-                    thread_music_ctrl.load_list([database[uuid]["file"]])
-                    thread_music_ctrl.music_ctrl["playlist_uuid"] = ""
-                    
-           else:
-               data = mboxAPI_error(data, "UUID not found: "+uuid)
+       mbox.active_device = "music_box"   
+       if "a_" in uuid:   database  = couch.read_cache("album_info")
+       elif "p_" in uuid: database  = couch.read_cache("playlists")
+       elif "t_" in uuid: database  = couch.read_cache("tracks")
+       elif "r_" in uuid: database  = couch.read_cache("radio")
                       
-       # play album or playlist
-       elif "a_" in uuid or "p_" in uuid:
-           thread_radio_ctrl.stop_playback()
-           mbox.active_device = "music_box"   
-           if "a_" in uuid: database  = couch.read_cache("album_info")
-           if "p_" in uuid: database  = couch.read_cache("playlists")
-           
-           if uuid in database:
-                uuid_current = ""
+       if database != {}:
+         if uuid in database:
+           uuid_current = ""
 
-                if "playlist_uuid" in thread_music_ctrl.music_ctrl:
-                    uuid_current = thread_music_ctrl.music_ctrl["playlist_uuid"]
+           if "playlist_uuid" in thread_playlist_ctrl.music_ctrl:
+             uuid_current = thread_playlist_ctrl.music_ctrl["playlist_uuid"]
+             if uuid == uuid_current and "Paused" in thread_playlist_ctrl.music_ctrl["status"]:
+               thread_playlist_ctrl.player.pause()
+             else:
+               thread_playlist_ctrl.playlist_load_uuid(uuid)
 
-                if uuid == uuid_current and thread_music_ctrl.music_ctrl["status"] == "pause":
-                    thread_music_ctrl.pause_playback()
-                else:
-                    thread_music_ctrl.load_list_uuid(uuid)
-           
-           else:
-               data = mboxAPI_error(data, "UUID not found: "+uuid)
+         else:
+           data = mboxAPI_error(data, "UUID not found: "+uuid)
 
        else:
-            data = mboxAPI_error(data, "UUID format not supported: "+uuid)
-            logging.warn("UUID format not supported: " + uuid)
+         data = mboxAPI_error(data, "UUID format not supported: "+uuid)
+         logging.warn("UUID format not supported: " + uuid)
        
        data = mboxAPI_end(data,["no-statistic","no-system"])
        return(data)
@@ -998,13 +964,10 @@ def mboxAPI_next(step):
        db_entries = {}
        data       = mboxAPI_start("next","next","",step,"")
        
-       if mbox.active_device == "music_box":   
-            thread_music_ctrl.playlist_next(int(step))
-            
-       else:
-            data = mboxAPI_error(data, "Command only for music_box: "+mbox.active_device+"/"+str(step))
-            logging.warn("Command only for music_box: "+mbox.active_device+"/"+str(step))   
-            
+       position      = thread_playlist_ctrl.music_list_p + int(step)
+       playlist_uuid = thread_playlist_ctrl.music_ctrl["playlist_uuid"]       
+       thread_playlist_ctrl.playlist_load_uuid(playlist_uuid=playlist_uuid, position=position)
+                   
        data = mboxAPI_end(data,["no-statistic","no-system"])
        return(data)
 
@@ -1016,12 +979,9 @@ def mboxAPI_last(step):
        db_entries = {}
        data       = mboxAPI_start("last","last","",step,"")
        
-       if mbox.active_device == "music_box":   
-            thread_music_ctrl.playlist_next(int(step)*-1)
-            
-       else:
-            data = mboxAPI_error(data, "Command only for music_box: "+mbox.active_device+"/"+str(step))
-            logging.warn("Command only for music_box: "+mbox.active_device+"/"+str(step))   
+       position      = thread_playlist_ctrl.music_list_p - int(step)
+       playlist_uuid = thread_playlist_ctrl.music_ctrl["playlist_uuid"]       
+       thread_playlist_ctrl.playlist_load_uuid(playlist_uuid=playlist_uuid, position=position)
             
        data = mboxAPI_end(data,["no-statistic","no-system"])
        return(data)
@@ -1033,15 +993,9 @@ def mboxAPI_jump(percentage):
        global couch
        db_entries = {}
        data       = mboxAPI_start("jump","jump","",percentage,"")
-       
-       if mbox.active_device == "music_box":   
-            thread_music_ctrl.playing_jump(int(percentage))
-            
-       else:
-            data = mboxAPI_error(data, "Command only for music_box: "+mbox.active_device+"/"+str(percentage))
-            logging.warn("Command only for music_box: "+mbox.active_device+"/"+str(percentage))   
-            
-       time.sleep(wait_time)
+
+       thread_playlist_ctrl.player.set_position(int(percentage))
+                   
        data = mboxAPI_end(data,["no-statistic","no-system"])
        return(data)
 
@@ -1053,8 +1007,7 @@ def mboxAPI_pause():
        db_entries = {}
        data       = mboxAPI_start("pause","pause","","","")
 
-       if mbox.active_device == "music_box":   thread_music_ctrl.pause_playback()   # album or song
-       else:                                   thread_radio_ctrl.pause_playback()   # radio
+       thread_playlist_ctrl.player.pause()
        
        data = mboxAPI_end(data,["no-statistic","no-system"])
        return(data)
@@ -1067,8 +1020,7 @@ def mboxAPI_stop():
        db_entries = {}
        data       = mboxAPI_start("stop","stop","","","")
        
-       if mbox.active_device == "music_box":   thread_music_ctrl.stop_playback()   # album or song
-       else:                                   thread_radio_ctrl.stop_playback()   # radio
+       thread_playlist_ctrl.player.stop()
        
        data = mboxAPI_end(data,["no-statistic","no-system"])
        return(data)
@@ -1096,8 +1048,6 @@ def mboxAPI_template_edit(database,param):
 
        # read all data from DB
        for name in databases: db_entries[name] = couch.read(name)
-
-       ####
 
        # write change data to DB
        for name in databases: couch.write(name, db_entries[name])

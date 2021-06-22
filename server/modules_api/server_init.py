@@ -2,13 +2,15 @@ import time
 import logging
 import os.path
 
-import modules.config_stage   as stage
-import modules.config_mbox    as mbox
-import modules.jcCouchDB      as jcCouch
-import modules.music_load     as music_load
-import modules.music_control  as music_ctrl
-import modules.stream_control as radio_ctrl
-import modules.speakmsg       as speak
+import modules.config_stage      as stage
+import modules.config_mbox       as mbox
+import modules.jcCouchDB         as jcCouch
+import modules.music_load        as music_load
+import modules.music_control     as music_ctrl
+import modules.music_podcast     as music_podcast
+import modules.music_control_v2  as music_ctrl_v2
+import modules.stream_control    as radio_ctrl
+import modules.speakmsg          as speak
 
 from modules.runcmd         import *
 
@@ -90,18 +92,25 @@ thread_speak.speak_message("STARTING")
 logging.info("Load CouchDB ..." + time_since_start())
 couch = jcCouch.jcCouchDB()
 
-logging.info("Load Music Control ..." + time_since_start())
-thread_music_ctrl = music_ctrl.musicThread(2, "Thread Music", 1, couch) # jcJSON.read("music"))
-thread_music_ctrl.start()
-
 logging.info("Load Music Import Module ..." + time_since_start())
 thread_music_load = music_load.musicLoadingThread(3, "Thread Music Load", 1, couch) #  jcJSON.read("music"))
 thread_music_load.start()
+
+logging.info("Load Music Control ..." + time_since_start())
+thread_music_ctrl = music_ctrl.musicThread(2, "Thread Music", 1, couch) # jcJSON.read("music"))
+#thread_music_ctrl.start()
 
 logging.info("Load WebStream Control ..." + time_since_start())
 thread_radio_ctrl = radio_ctrl.radioThread(4, "Thread Radio", 1, couch)  #  jcJSON.read("music"), jcJSON.read("radio"))
 thread_radio_ctrl.start()
 
+logging.info("Load NEW Podcast Load ..." + time_since_start())
+thread_podcast = music_podcast.podcastThread(6, "Thread Podcast", couch)
+thread_podcast.start()
+
+logging.info("Load NEW Playlist Control ..." + time_since_start())
+thread_playlist_ctrl = music_ctrl_v2.musicControlThread(5, "Thread Playlist", "music_box", couch, thread_podcast)
+thread_playlist_ctrl.start()
 
 
 #-------------------------------------------------
@@ -109,31 +118,26 @@ thread_radio_ctrl.start()
 #-------------------------------------------------
 
 def deviceStatus():
-    '''return control data from active device'''
-
-    global thread_radio_ctrl, thread_music_ctrl
-
-    if mbox.active_device == "radio":
-      ctrl           = thread_radio_ctrl.music_ctrl
-      ctrl["volume"] = thread_music_ctrl.music_ctrl["volume"]
-
-    elif mbox.active_device == "music_box":
-      ctrl           = thread_music_ctrl.music_ctrl
-    else:
-      ctrl           = thread_music_ctrl.music_ctrl
+    '''
+    return control data from active device
+    '''
+    ctrl = thread_playlist_ctrl.music_ctrl
     return ctrl
 
 
 def checkDevice():
-    '''check which device is active (as rfid can change this in the background)'''
+    '''
+    check which device is active (as rfid can change this in the background)
+    '''
+    play_status   = str(thread_playlist_ctrl.music_plays)
+    play_type     = thread_playlist_ctrl.music_ctrl["type"]
+    play_position = str(thread_playlist_ctrl.music_list_p) + "/" + str(len(thread_playlist_ctrl.music_list))
+    play_volume   = str(thread_playlist_ctrl.music_ctrl["volume"])
 
-    global thread_radio_ctrl, thread_music_ctrl
+    logging.info("Check Device: Play=" + play_status + " / Type="+ play_type + " / Pos=" + play_position + " / Vol=" + play_volume)
 
-    if   thread_music_ctrl.music_ctrl["playing"] != 0:  mbox.active_device = "music_box"
-    elif thread_radio_ctrl.music_ctrl["playing"] != 0:  mbox.active_device = "radio"
-    else:                                               mbox.active_device = ""
-
-    logging.info("Check Device: Music ("+str(thread_music_ctrl.music_ctrl["playing"])+") Radio ("+str(thread_radio_ctrl.music_ctrl["playing"])+") - " + mbox.active_device)
+    if play_type == "Stream":  mbox.active_device = "radio"
+    else:                      mbox.active_device = "music_box"
 
     return mbox.active_device
 
@@ -153,6 +157,8 @@ def end_all(n1,n2):
   thread_radio_ctrl.stop_playback()
   thread_radio_ctrl.stop()
   thread_music_load.stop()
+  thread_playlist_ctrl.stop()
+  thread_podcast.stop()
 
   raise RuntimeError("Server going down")
 

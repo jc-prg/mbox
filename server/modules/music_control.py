@@ -23,7 +23,9 @@ from decimal             import *
 class musicThread (threading.Thread):
 
    def __init__(self, threadID, name, counter, database):
-      '''set initial values to vars and start pygame.mixer'''
+      '''
+      set initial values to vars and start VLC
+      '''
 
       # init thread
       threading.Thread.__init__(self)

@@ -1,8 +1,6 @@
-FROM ubuntu:20.04
+FROM ubuntu:18.04
 
-ENV TZ=Europe/Berlin
 ENV DEBIAN_FRONTEND=noninteractive
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 RUN apt-get -y update && apt-get install -y python3 python3-distutils python3-pip python3-apt
 

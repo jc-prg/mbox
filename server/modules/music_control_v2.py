@@ -497,7 +497,7 @@ class musicControlThread(threading.Thread):
       '''
       player volume
       '''
-      self.player.set_volume(int(vol))
+      self.player.set_volume(vol)
       self.music_ctrl["volume"] = self.player.volume
 
 
@@ -505,7 +505,7 @@ class musicControlThread(threading.Thread):
       '''
       player volume
       '''
-      self.player.volume_up(int(up))
+      self.player.volume_up(up)
       self.music_ctrl["volume"] = self.player.volume
 
 
@@ -767,7 +767,7 @@ class musicControlThread(threading.Thread):
           "playlist_len"  : -1,
           "playlist_files": [],
           "playlist_uuid" : "",
-          "volume"        : 0,
+          "volume"        : 0.4,
           "position"      : -1,
           "length"        : -1,
           "playing"       : -1,

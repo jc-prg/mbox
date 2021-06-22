@@ -69,9 +69,11 @@ class speakThread (threading.Thread):
       tts.save(filename)
       self.play_file(filename)
 
-      time.sleep(1.5)
+      #time.sleep(1.5)
       duration = self.player.get_length() / 1000
       time.sleep(duration)
+      
+      logging.info("Speak_text: "+text+" ("+str(duration)+")")
     
 
     
@@ -99,7 +101,7 @@ class speakThread (threading.Thread):
       else:
         self.play_file(fname_UE)
 
-      time.sleep(1.5)
+      #time.sleep(1.5)
       duration = self.player.get_length() / 1000
       time.sleep(duration)
 

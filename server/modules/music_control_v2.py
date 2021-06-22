@@ -394,7 +394,7 @@ class musicControlThread(threading.Thread):
           self.music_list_p   = last_music["playlist_pos"]
           self.music_load_new = True
 
-      time.sleep(4)
+      time.sleep(2)
       while self.running:     
 
          time.sleep(wait_time)         
@@ -447,7 +447,8 @@ class musicControlThread(threading.Thread):
                         
             if current_path.startswith("http"): 
                self.player.stop()
-               self.speak.speak_text(current_info["title"])
+               if "title" in current_info:
+                  self.speak.speak_text(current_info["title"])
                self.player.play_stream(current_path)
             else:                               
                self.player.stop()
@@ -531,6 +532,8 @@ class musicControlThread(threading.Thread):
       '''
       load list from album, playlist or stream -> put to playlist array
       '''
+      logging.info("Load Playlist "+playlist_uuid+"/"+str(position)+" ...")
+      
       self.music_list      = []
       self.music_list_p    = int(position)
       self.music_load_new  = True
@@ -548,6 +551,7 @@ class musicControlThread(threading.Thread):
       if self.music_device == "music_box":
          track_list           = self.playlist_by_uuid(playlist_uuid)
          track_db             = self.music_database.read_cache("tracks")
+         
       else:
          podcast              = self.music_podcast.get_podcasts(playlist_uuid)
          track_list           = []
@@ -556,6 +560,9 @@ class musicControlThread(threading.Thread):
            track_db             = podcast["tracks"]
            if len(track_list) > 0:
              self.music_type   = "Podcast"
+         else:
+           track_list          = self.playlist_by_uuid(playlist_uuid)
+           track_db            = {}
       
       for track in track_list:
         if track in track_db and "file" in track_db[track]:
@@ -597,7 +604,7 @@ class musicControlThread(threading.Thread):
               logging.info("No Entry connected.")
               self.last_card_identified = mbox.rfid_ctrl["cardUID"]
           
-              if mbox.rfid_ctrl["cardUID"] not in cardDB: 
+              if mbox.rfid_ctrl["cardUID"] not in database: 
                  self.speak.speak_message("NO-MUSIC-CONNECTED-TO-CARD")
         
                  

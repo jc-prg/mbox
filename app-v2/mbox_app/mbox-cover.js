@@ -86,16 +86,17 @@ function mboxCoverAlbum_new(id,data) {
 	if (data && data["uuid"]) 	{ albumInfo     = data; }
 	else if (data)			{ albumInfo     = data[id]; }
 	else				{ return; }
-
+	
 	if (albumInfo["cover_images"]) {
 		var images   = albumInfo["cover_images"];
 		var position = 0;
 
 		if (images["active"] && images["active"] != "none" && images[images["active"]].length > 0) {
 			if (images["active"] == "upload") 	{ cover = mbox_cover_upl_dir + images["upload"][position]; }
-			if (images["active"] == "dir") 		{ cover = mbox_music_dir     + images["dir"][position]; }
+			if (images["active"] == "dir") 	{ cover = mbox_music_dir     + images["dir"][position]; }
 			if (images["active"] == "track") 	{ cover = mbox_cover_dir     + images["track"][position]; }
-			if (images["active"] == "web") 		{ cover = images["web"][position]; }
+			if (images["active"] == "web") 	{ cover = images["web"][position]; }
+			if (images["active"] == "url") 	{ cover = images["url"][position]; }
 			}
 		cover=encodeURI(cover);
 		}

@@ -238,6 +238,16 @@
 	float           : left;
 	}
 
+.album_track_description_shorten {
+	overflow           : hidden;
+	display            : -webkit-box;
+	-webkit-box-orient : vertical;
+	-webkit-line-clamp : 4;
+	height             : 60px;
+	margin-bottom      : 2px;
+	margin-top         : 2px;
+	}
+
 .album_tracks_length {
 	float           : left;
 	}

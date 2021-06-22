@@ -65,6 +65,7 @@ function mboxControl(data) {
 	if (!d)	{ return; }
 	
 	var type       = d["device"];
+	var type_sub   = d["type"];
 	var volume     = d["volume"];
 	var mute       = d["mute"];
 	var status     = d["status"];
@@ -103,7 +104,7 @@ function mboxControl(data) {
 		mboxSlider.set_value(Math.round(volume*100));
 
 		// Info for running music, if music box
-		if (type == "music_box") {
+		if (type == "music_box" || type_sub == "Podcast") {
 			var song        = d["song"];
 			var playlist    = d["playlist"];
 			var p_position  = d["playlist_pos"];
@@ -121,9 +122,14 @@ function mboxControl(data) {
 
 			// Show album and titel ...
 			if (song) { if (song["info"] == "Title loaded" && playing != 0) {
-				text += "&nbsp;<b>" + song["artist"] + "</b><br/>";
-				text += "&nbsp;" + song["title"] + " (" + p_position + "/" + p_length + ")<br/>";
-				//text += "<i>" + status + "</i><br/>";
+				if (song["artist"] != undefined) {
+					text += "&nbsp;<b>" + song["artist"] + "</b><br/>";
+					text += "&nbsp;" + song["title"] + " (" + p_position + "/" + p_length + ")<br/>";
+					}
+				else {
+					text += "&nbsp;<b>" + song["album"] + "</b><br/>";
+					text += "&nbsp;" + song["title"] + " (" + p_position + "/" + p_length + ")<br/>";
+					}
 				}
 
 			// No song loaded ...
@@ -149,7 +155,7 @@ function mboxControl(data) {
 				}
 			}
 		else {
-			text += "<i>"+lang("DEVICE_UNKNOWN") +"</i><br/>&nbsp;";
+			text += "<i>"+lang("DEVICE_UNKNOWN") +" ("+type+")</i><br/>&nbsp;";
 			}
 		}
 	text += "</div>";

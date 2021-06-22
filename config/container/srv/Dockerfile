@@ -1,4 +1,4 @@
-FROM python:3.7
+FROM python:3.8
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV uid 1000
@@ -10,12 +10,13 @@ RUN apt-get update
 # ---------------------------
 COPY ./requirements.txt ./requirements.txt
 RUN pip install -r requirements.txt
-
+#RUN apt install -y python-xmltodict
+#
 # install and configure VLC
 # ---------------------------
-RUN useradd -m vlc; \
-    apt-get install -y vlc \
-    rm -rf /var/lib/apt/lists/*
+RUN apt-get install -y vlc --fix-missing
+RUN useradd -m vlcuser
+RUN rm -rf /var/lib/apt/lists/*
 
 WORKDIR /usr/src/app
 CMD [ "python", "./server/server.py" ]

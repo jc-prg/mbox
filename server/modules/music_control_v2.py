@@ -65,8 +65,8 @@ class musicPlayer(threading.Thread):
       
         self.connected    = True
         self.player       = self.instance.media_player_new()
-        self.player.audio_set_volume(int(self.volume*100))
-        self.player.audio_set_mute(self.volume_mute)
+#        self.player.audio_set_volume(int(self.volume*100))
+#        self.player.audio_set_mute(self.volume_mute)
         
       except Exception as e:
         self.connected    = False
@@ -724,7 +724,7 @@ class musicControlThread(threading.Thread):
       '''
       set and return control data
       '''
-      if state != "Started":
+      if state != "Started" and playlist != {}:
         if "LastCard" in self.music_ctrl: last_card = self.music_ctrl["LastCard"]
         else:                             last_card = ""
         
@@ -733,7 +733,7 @@ class musicControlThread(threading.Thread):
           song   = {}
         else:
           stream = {}
-
+          
         self.music_ctrl = {
           "device"        : self.music_device,
           "type"          : self.music_type,

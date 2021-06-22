@@ -123,9 +123,10 @@ class podcastThread (threading.Thread):
          streams = self.database.read_cache("radio")
          for stream_uuid in streams:
             stream      = streams[stream_uuid]
-            stream_url  = stream["stream_url"]
+            if "stream_url" in stream:
+              stream_url  = stream["stream_url"]
             
-            if stream_url.endswith(".rss") or stream_url.endswith(".xml"):
+              if stream_url.endswith(".rss") or stream_url.endswith(".xml"):
             
 #              if stream_uuid in self.temp_podcasts and "update" in self.temp_podcasts[stream_uuid]:
 #                logging.info(str(self.temp_podcasts[stream_uuid]["update"]))
@@ -134,13 +135,16 @@ class podcastThread (threading.Thread):
 #                logging.info(str(time.time()))
 #                logging.info(str(self.temp_podcasts[stream_uuid]["update"]+self.update_interval < time.time()))
             
-              if stream_uuid not in self.temp_podcasts:
-                 podcast                         = self.get_tracks_rss(rss_url=stream_url,playlist_uuid=stream_uuid)
-                 self.temp_podcasts[stream_uuid] = podcast
+                if stream_uuid not in self.temp_podcasts:
+                  podcast                         = self.get_tracks_rss(rss_url=stream_url,playlist_uuid=stream_uuid)
+                  self.temp_podcasts[stream_uuid] = podcast
                                                
-              elif self.temp_podcasts[stream_uuid]["update"] + self.update_interval < time.time():
-                 podcast                         = self.get_tracks_rss(rss_url=stream_url,playlist_uuid=stream_uuid)
-                 self.temp_podcasts[stream_uuid] = podcast
+                elif self.temp_podcasts[stream_uuid]["update"] + self.update_interval < time.time():
+                  podcast                         = self.get_tracks_rss(rss_url=stream_url,playlist_uuid=stream_uuid)
+                  self.temp_podcasts[stream_uuid] = podcast
+                  
+            else: 
+              logging.warning("No Stream_URL for "+stream_uuid)
                  
          time.sleep(1)
         

@@ -171,6 +171,15 @@ function mboxSettingsStatus (data) {
 	text    += button( cmd, "Backup (DB 2 JSON)", "db2json" );
 
 	text += "<hr/></center>";
+	question = "Load Card UUID?";
+	onclick  = "var card_uuid = document.getElementById(#card_uuid#).value;appFW.requestAPI(#PUT#,[#set-card#,card_uuid],##,##);";
+	cmd      = "appMsg.confirm('" + question + "','" + onclick + "', 260);";
+
+	text += mboxHtmlTable("start");
+	text += mboxHtmlTable("<input id='card_uuid' style='width:120px;'/>",button( cmd, "Simulate Card" ));
+	text += mboxHtmlTable("end");
+	text += "<br/>";
+	text += "<hr/>";
 
 	text += "<center><b>Development</b></center>";
 	text += "<hr/>";

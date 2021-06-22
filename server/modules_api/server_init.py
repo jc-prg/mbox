@@ -96,13 +96,13 @@ logging.info("Load Music Import Module ..." + time_since_start())
 thread_music_load = music_load.musicLoadingThread(3, "Thread Music Load", 1, couch) #  jcJSON.read("music"))
 thread_music_load.start()
 
-logging.info("Load Music Control ..." + time_since_start())
-thread_music_ctrl = music_ctrl.musicThread(2, "Thread Music", 1, couch) # jcJSON.read("music"))
+#logging.info("Load Music Control ..." + time_since_start())
+#thread_music_ctrl = music_ctrl.musicThread(2, "Thread Music", 1, couch) # jcJSON.read("music"))
 #thread_music_ctrl.start()
 
-logging.info("Load WebStream Control ..." + time_since_start())
-thread_radio_ctrl = radio_ctrl.radioThread(4, "Thread Radio", 1, couch)  #  jcJSON.read("music"), jcJSON.read("radio"))
-thread_radio_ctrl.start()
+#logging.info("Load WebStream Control ..." + time_since_start())
+#thread_radio_ctrl = radio_ctrl.radioThread(4, "Thread Radio", 1, couch)  #  jcJSON.read("music"), jcJSON.read("radio"))
+#thread_radio_ctrl.start()
 
 logging.info("Load NEW Podcast Load ..." + time_since_start())
 thread_podcast = music_podcast.podcastThread(6, "Thread Podcast", couch)

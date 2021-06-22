@@ -519,9 +519,10 @@ class musicControlThread(threading.Thread):
       current_list["length"]     = len(self.music_list)
       current_list["files"]      = self.music_list
       current_list["list"]       = []
-      for filename in self.music_list and not filename.startswith("http"):
-        file_info = self.metadata_by_filename(filename)
-        current_list["list"].append(file_info)
+      for filename in self.music_list: 
+        if not filename.startswith("http"):
+          file_info = self.metadata_by_filename(filename)
+          current_list["list"].append(file_info)
       return current_list
 
 

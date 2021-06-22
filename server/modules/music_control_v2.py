@@ -548,6 +548,7 @@ class musicControlThread(threading.Thread):
          track_db             = self.music_database.read_cache("tracks")
       else:
          podcast              = self.music_podcast.get_podcasts(playlist_uuid)
+         track_list           = []
          if "track_list" in podcast:
            track_list           = podcast["track_list"]
            track_db             = podcast["tracks"]

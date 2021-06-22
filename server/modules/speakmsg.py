@@ -34,8 +34,10 @@ class speakThread (threading.Thread):
       self.stopProcess    = False
       self.default_volume = 70;
       
-      if stage.rollout == "prod":     self.instance     = vlc.Instance("--quiet")
-      else:                           self.instance     = vlc.Instance()
+      #if stage.rollout == "prod":     self.instance     = vlc.Instance("--quiet")
+      #else:                           self.instance     = vlc.Instance()
+      
+      self.instance     = vlc.Instance()
             
       self.player       = self.instance.media_player_new()
 
@@ -43,8 +45,7 @@ class speakThread (threading.Thread):
       #global music_plays, music_loaded, music_ctrl
 
    def play_file(self, filename):
-      file = filename
-      self.media = self.instance.media_new( file ) #str(file.encode('utf-8')) )
+      self.media = self.instance.media_new( filename ) #str(file.encode('utf-8')) )
       self.player.set_media(self.media)
       self.player.play()
       

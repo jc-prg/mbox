@@ -364,9 +364,10 @@ class musicControlThread(threading.Thread):
       self.music_ctrl      = self.control_data(state="Started")
       self.music_type      = ""
       self.music_podcast   = podcast
-      
-      self.relevant_db     = self.music_database.databases["music"]
-      self.speak           = speak.speakThread(4, name + " / Speak", 1, "")  #  jcJSON.read("music"), jcJSON.read("radio"))
+
+      self.last_card_identified = ""      
+      self.relevant_db          = self.music_database.databases["music"]
+      self.speak                = speak.speakThread(4, name + " / Speak", 1, "")  #  jcJSON.read("music"), jcJSON.read("radio"))
       self.speak.start()
 
       

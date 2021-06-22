@@ -447,9 +447,9 @@ class musicControlThread(threading.Thread):
             if current_path.startswith("http"): 
                self.player.stop()
                self.speak.speak_text(current_info["title"])
-               #time.sleep(2)
                self.player.play_stream(current_path)
             else:                               
+               self.player.stop()
                self.player.play_file(mbox.music_dir + current_path)
             
             if last_load:

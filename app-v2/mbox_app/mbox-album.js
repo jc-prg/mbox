@@ -208,13 +208,14 @@ function mboxAlbumAll(data) {
 						album_line      = true; 
 						album_detail    = true; 
 						}
+					album_in_row++;
 					}
 				else {
 					album_in_row++;
 					new_row      = false;
 					new_sub_row  = false;
 					if (album_next_empty)						{ album_next_empty = false; album_empty = true; album_detail = true; chapter_number++; }
-					if (row_per_chapter && album_in_row+1 == albums_per_row)	{ 
+					if (row_per_chapter && album_in_row == albums_per_row)	{ 
 						album_in_row = 1;
 						album_next_empty = true;
 						}

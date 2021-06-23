@@ -119,6 +119,7 @@ class podcastThread (threading.Thread):
       '''
       logging.info( "Starting " + self.name )
       
+      count_error = 0
       while self.running:
          streams = self.database.read_cache("radio")
          for stream_uuid in streams:
@@ -131,6 +132,13 @@ class podcastThread (threading.Thread):
                 if stream_uuid not in self.temp_podcasts:
                   podcast                         = self.get_tracks_rss(rss_url=stream_url,playlist_uuid=stream_uuid)
                   self.temp_podcasts[stream_uuid] = podcast
+                  
+                elif self.temp_podcasts[stream_uuid] == "":
+                  count_error += 1
+                  if count_error == 15:
+                      count_error = 0
+                      podcast                         = self.get_tracks_rss(rss_url=stream_url,playlist_uuid=stream_uuid)
+                      self.temp_podcasts[stream_uuid] = podcast
                                                
                 elif self.temp_podcasts[stream_uuid]["update"] + self.update_interval < time.time():
                   podcast                         = self.get_tracks_rss(rss_url=stream_url,playlist_uuid=stream_uuid)

@@ -3,11 +3,13 @@ FROM ubuntu:18.04
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get -y update && apt-get install -y python3 python3-distutils python3-pip python3-apt
+RUN python3 -m pip install -U setuptools
+RUN python3 -m pip install -U wheel
 
 # install required PYTHON3 modules
 # ---------------------------
 COPY ./requirements.txt ./requirements.txt
-RUN pip install -r requirements.txt
+RUN pip3 install -r requirements.txt
 
 
 # install and configure VLC

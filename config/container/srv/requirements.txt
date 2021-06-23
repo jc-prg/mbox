@@ -13,5 +13,6 @@ xmltodict
 connexion[swagger-ui]
 mutagen
 couchdb
+setuptools
 uuid
 eyed3

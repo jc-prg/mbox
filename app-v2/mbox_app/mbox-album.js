@@ -156,7 +156,7 @@ function mboxAlbumAll(data) {
 	var album_per_row  = 0;
 	if (sorted_entries.length == 0) { text += "<div>" + lang("NODATA_RELOAD") + "</div>"; }
 	for (var a=0;a<sorted_entries.length;a++) {
-
+	
 		var cover   = default_cover;
 		var keys    = sorted_entries[a].split("||");
 		var uuid    = keys[3];
@@ -183,7 +183,8 @@ function mboxAlbumAll(data) {
 		
 // letzter Eintrag mit row_per_chapter == true
 // mehrzeilige Einträge mit row_per_chapter == true
-		
+			console.log(a);
+	
 			// check if new row without chapters
 			if (mbox_show_char == false) {
 				if (Math.round(a+1/albums_per_row) == (a+1/albums_per_row))	{ new_row = true;  }
@@ -212,7 +213,12 @@ function mboxAlbumAll(data) {
 					new_row      = false;
 					new_sub_row  = false;
 					if (album_next_empty)						{ album_next_empty = false; album_empty = true; album_detail = true; chapter_number++; }
-					if (row_per_chapter && album_in_row+1 == albums_per_row)	{ album_in_row = 1; album_next_empty = true; }
+					if (row_per_chapter && album_in_row+1 == albums_per_row)	{ 
+						album_in_row = 1;
+						album_next_empty = true;
+						}
+					console.log("row per chapter: "+row_per_chapter+ " / album_in_row:"+album_in_row+" / albums_per_row: "+albums_per_row+" / next_empty: "+album_next_empty);
+					// -> not placed right ... ?
 					}
 
 				if (row_per_chapter == false) {

@@ -152,7 +152,7 @@ elif [ ${DOLLAR}option == "update" ]; then
     echo "Update MBOX from repository"
     git stash
     git pull
-    git submodule update --recursive
+    git submodule update --init --recursive
     
 #    echo "Update MODULES from repository"
 #    cd ${MBOX_DIR_JCMODULES}

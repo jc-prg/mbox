@@ -204,7 +204,7 @@ function mboxAlbumAll(data) {
 						new_row         = true; 
 						new_sub_row     = false;	
 						}
-					if (row_per_chapter && a > 1)	{ 
+					if (row_per_chapter && a >= 1) { 
 						album_line      = true; 
 						album_detail    = true; 
 						}

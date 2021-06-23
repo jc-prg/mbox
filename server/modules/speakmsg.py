@@ -34,10 +34,8 @@ class speakThread (threading.Thread):
       self.stopProcess    = False
       self.default_volume = 70;
       
-      #if stage.rollout == "prod":     self.instance     = vlc.Instance("--quiet")
-      #else:                           self.instance     = vlc.Instance()
-      
-      self.instance     = vlc.Instance()
+      if stage.rollout == "prod":     self.instance     = vlc.Instance("--quiet")
+      else:                           self.instance     = vlc.Instance()
             
       self.player       = self.instance.media_player_new()
 

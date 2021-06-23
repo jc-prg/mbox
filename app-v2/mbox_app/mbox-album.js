@@ -252,11 +252,10 @@ function mboxAlbumAll(data) {
 
 			//.............
 			
-			if (album_detail_last)	{ text += mboxAlbumAll_detail( chapter_number, chapter ); }
-
-			last_chapter = chapter;
+			if (album_detail_last)	{ text += mboxAlbumAll_detail( chapter_number, chapter ); }		
 			}
-
+			
+		last_chapter = chapter;
 		mbox_list_amount = i;
 		}
 	text  += mboxAlbumAll_detail(chapter_detail,last_chapter);

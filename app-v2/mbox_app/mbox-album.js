@@ -208,7 +208,6 @@ function mboxAlbumAll(data) {
 						album_line      = true; 
 						album_detail    = true; 
 						}
-					album_in_row++;
 					}
 				else {
 					album_in_row++;

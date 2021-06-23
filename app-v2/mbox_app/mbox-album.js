@@ -193,6 +193,7 @@ function mboxAlbumAll(data) {
 
 			// print cover with charakter and empty album, if new line per chapter
 			else {
+				console.log("... "+last_chapter+" / "+chapter);
 				if (last_chapter != chapter) {
 					i++;
 					chapter_number++;	

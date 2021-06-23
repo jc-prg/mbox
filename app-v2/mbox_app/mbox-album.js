@@ -214,10 +214,15 @@ function mboxAlbumAll(data) {
 					album_in_row++;
 					new_row      = false;
 					new_sub_row  = false;
-					if (album_next_empty)						{ album_next_empty = false; album_empty = true; album_detail = true; chapter_number++; }
-					if (row_per_chapter && album_in_row == albums_per_row)	{ 
-						album_in_row = 1;
+					if (row_per_chapter && album_in_row == albums_per_row) { 
+						album_in_row     = 1;
 						album_next_empty = true;
+						}
+					if (album_next_empty) { 
+						album_next_empty = false; 
+						album_empty      = true; 
+						album_detail     = true; 
+						chapter_number++;
 						}
 					console.log("row per chapter: "+row_per_chapter+ " / album_in_row:"+album_in_row+" / albums_per_row: "+albums_per_row+" / next_empty: "+album_next_empty);
 					// -> not placed right ... ?

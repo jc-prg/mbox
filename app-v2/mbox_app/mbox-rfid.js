@@ -261,13 +261,14 @@ function mboxCardList(data) {
 	if (typeof cards != "string" && Object.keys(cards).length > 0) {
            for (var card in cards) {
 		
-                var aa      = cards[card][0];
+		var aa      = cards[card][0];
+		var title1  = cards[card][1];
 		var onclick = "";
 		var type    = "";
 
-                if (aa.indexOf("a_")>-1)  { img = div2 + "<img src=\""+mbox_icons["album_bw"]+"\" style=\"width:30px;height:30px;\"/>" + divE; 		type = "album"; } //album
-                if (aa.indexOf("p_")>-1)  { img = div2 + "<img src=\""+mbox_icons["playlist_bw"]+"\" style=\"width:30px;height:30px;\"/>" + divE;	type = "playlist"; } //playlist
-                if (aa.indexOf("r_")>-1)  { img = div2 + "<img src=\""+mbox_icons["radio_bw"]+"\" style=\"width:30px;height:30px;\"/>" + divE; 		type = "radio"; } //radio/webstream
+                if (aa.indexOf("a_")>-1)  { img = div2 + "<img src=\""+mbox_icon_dir+mbox_icons["album_bw"]+"\" style=\"width:30px;height:30px;\"/>" + divE; 	type = "album"; } //album
+                if (aa.indexOf("p_")>-1)  { img = div2 + "<img src=\""+mbox_icon_dir+mbox_icons["playlist_bw"]+"\" style=\"width:30px;height:30px;\"/>" + divE;	type = "playlist"; } //playlist
+                if (aa.indexOf("r_")>-1)  { img = div2 + "<img src=\""+mbox_icon_dir+mbox_icons["radio_bw"]+"\" style=\"width:30px;height:30px;\"/>" + divE; 	type = "radio"; } //radio/webstream
 
 		if (selected && selected != "" && card != selected) { continue; }
 //		if (filter   && filter != "" && filter != type)	  { continue; }
@@ -276,7 +277,8 @@ function mboxCardList(data) {
 		text += img;
 
 		text    += div1; //"<div style=\"float:left;height:70px;\">";
-                text    += "<a href='"+ RESTurl + "api/data/"+card+"/-/' target='_blank'>" +card + "</a><br/><b>";
+		text    += "<a href='"+ RESTurl + "api/data/"+card+"/-/' target='_blank'>" +card + "</a><br/><b>";
+		//text    += cards[card][1] + cards[card][2] + ".";
 		notfound = "<font color=\"red\">NOT FOUND ...</b></font><br/>("+aa+" / "+cards[card][1]+")";
 
                 if (aa.indexOf("a_")>-1)   	{
@@ -302,14 +304,14 @@ function mboxCardList(data) {
 	                text += "<a style='cursor:pointer;' onclick='"+onclick+"'><small>";
 			if (aa in radio) {
 				text += radio[aa]["title"] + " / " + radio[aa]["description"] + "<br/>";
+				//text += title1 + "<br/>";
 				title = radio[aa]["title"];
 				}
 			else { text += notfound;  title = "";}
 			//text += "Radio Channel"; 
-			//title = "Radio";
 			}
-
-                text += "</small></a></b>" + divE;
+			
+		text += "</small></a></b>" + divE;
 
 		if (data["LOAD"]["RFID"] == card) 	{ color = "yellow"; }
 		else					{ color = "red";    }

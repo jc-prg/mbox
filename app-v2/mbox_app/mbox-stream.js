@@ -269,41 +269,17 @@ function mboxPodcastTrackRow(id, dataTracks, album=true, artist=false, count=0, 
 
 	text += "<div class=\"album_tracks_title\">";
 	console.log(track);
-
-	// if track in album
+	
+	// track
 	text += "<table><tr><td style='width:20px;vertical-align:top;padding:0px'>";
 	text += (count+1);
 	text += ".</td><td>";
 	text += "<div class='album_track_title_shorten'><b>" + track["title"] + "</b></div><br/>";
 	text += "<div class='album_track_description_shorten'>" + track["description"] + "</div>";
-//	text += track["description"] + "<br/>";
 	text += "<font color='gray'>" + track["publication"] + "</font>";
+	text += length;
 	text += "</td></tr></table>";
 
-/*	
-		if ("sort_pos" in track)  { text += track["sort_pos"] + ". "; }
-
-		var track_info = "";
-		if (trackinfo) {
-			if ("track_num" in track) { if (track["track_num"][0] > 0)	{ track_info += "Track " + track["track_num"][0]; }}
-			if ("track_num" in track) { if (track["track_num"][1] > 0)	{ track_info += "/" + track["track_num"][1]; }}
-			if ("disc_num" in track)  { if (track["disc_num"] > 0)	{ track_info += " - CD " + track["disc_num"] + " &nbsp; "; }}
-			}
-		
-		var info = "<font color='gray'>" + track_info + length + "</font>";
-		text += "</td><td>";
-		text += "<div class='album_track_title_shorten' onclick='mboxAlbumTrackInfo_load(\"" + track["uuid"] + "\")' style='cursor:pointer;'>" + track["title"] + "</div>";
-		if (artist) { text += "<div class='album_track_title_shorten'><i>"+track["artist"] + "</i></div>"; }
-		text += "<div class='album_track_length'>" + info + "</div>";
-		text += "</td></tr></table>";
-		}
-	// if track in playlist
-	else {
-		text += "<b>" +track["title"] + "</b>" + length + "<br/>";
-		text += track["artist"] + "/";
-		text += track["album"] + "<br/>";
-		}
-*/
 	text += "</div>";
 	text += cmd;
 
@@ -428,7 +404,7 @@ function mboxStreamAdd_dialog(i) {
         text += "<tr><td>"+lang("TITLE")+":</td>		<td><input id=\"stream_title\" style=\"width:150px\"></input></td></tr>";
         text += "<tr><td>"+lang("DESCRIPTION")+":</td> 		<td><input id=\"stream_description\" style=\"width:150px\"></input></td></tr>";
         text += "<tr><td>"+lang("WEBSITE")+" URL:</td>  	<td><input id=\"stream_radio_url\" style=\"width:150px\"></input></td></tr>";
-        text += "<tr><td>"+lang("STREAM")+" URL (m3u):</td>	<td><input id=\"stream_stream_url\" style=\"width:150px\"></input></td></tr>";
+        text += "<tr><td>"+lang("STREAM")+" URL (m3u,rss,xml):</td>	<td><input id=\"stream_stream_url\" style=\"width:150px\"></input></td></tr>";
         text += "<tr><td>"+lang("LOGO")+" URL:</td>		<td><input id=\"stream_image_url\" style=\"width:150px\"></input></td></tr>";
         text += "</table><br/>";
         text += button("mboxStreamAdd();",lang("ADD"),"mboxStreamAdd");

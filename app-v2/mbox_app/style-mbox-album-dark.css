@@ -1,5 +1,9 @@
 @media (prefers-color-scheme: dark) {
 
+  a 				{ color : yellow; }
+  a:hover 			{ color : orange; }
+  a:visited 			{ color: orange; }
+
   .print_album_back		{ background : white; }
   .print_album_cover		{}
 

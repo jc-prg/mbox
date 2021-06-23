@@ -130,7 +130,7 @@ class musicPlayer(threading.Thread):
       get position in current playing or pause file
       '''
       if self.player_status == "State.Playing" or self.player_status == "State.Paused": 
-         position = float(self.player.get_time()) / 1000
+         position = float(self.player.get_time()) #/ 1000
       else:
          position = 0
       return position
@@ -141,7 +141,7 @@ class musicPlayer(threading.Thread):
       get length of current playing or pause file
       '''
       if self.player_status == "State.Playing" or self.player_status == "State.Paused": 
-         length = float(self.player.get_length()) / 1000
+         length = float(self.player.get_length()) #/ 1000
       else:
          length = 0
       return length
@@ -447,8 +447,8 @@ class musicControlThread(threading.Thread):
                         
             if current_path.startswith("http"): 
                self.player.stop()
-               if "title" in current_info:
-                  self.speak.speak_text(current_info["title"])
+               if self.music_list_p == 1 and "title" in current_stream:    self.speak.speak_text(current_stream["title"])
+               if "title" in current_info:                                 self.speak.speak_text(current_info["title"])
                self.player.play_stream(current_path)
             else:                               
                self.player.stop()
@@ -464,12 +464,13 @@ class musicControlThread(threading.Thread):
             else:                            self.music_ctrl = self.control_data(state="error", song={}, playlist=current_list)
             
 
-         if not self.music_load_new and self.player.playing == 1:
+         if not self.music_load_new:
          
-            self.music_ctrl["length"]    = float(self.player.get_length())   / 1000
-            self.music_ctrl["position"]  = float(self.player.get_position()) / 1000
+            if self.player.play_status == 1:
+               self.music_ctrl["length"]    = float(self.player.get_length())   / 1000
+               self.music_ctrl["position"]  = float(self.player.get_position()) / 1000
          
-            if self.music_ctrl["state"] == "State.Ended":
+            if self.player.player_status == "State.Ended":
             
                if self.music_list_p < len(self.music_list):
                  self.music_load_new = True
@@ -743,6 +744,9 @@ class musicControlThread(threading.Thread):
           song   = {}
         else:
           stream = {}
+          
+#        if song != "":
+#           thread.music_ctrl["position"]         = float(thread.player.get_time()) / 1000        
           
         self.music_ctrl = {
           "device"        : self.music_device,

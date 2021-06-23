@@ -110,7 +110,7 @@ class podcastThread (threading.Thread):
       self.database         = database
       self.running          = True
       self.temp_podcasts    = {}
-      self.update_interval  = 60 * 5
+      self.update_interval  = 60 * 60
       
       
    def run(self):
@@ -127,14 +127,7 @@ class podcastThread (threading.Thread):
               stream_url  = stream["stream_url"]
             
               if stream_url.endswith(".rss") or stream_url.endswith(".xml"):
-            
-#              if stream_uuid in self.temp_podcasts and "update" in self.temp_podcasts[stream_uuid]:
-#                logging.info(str(self.temp_podcasts[stream_uuid]["update"]))
-#                logging.info(str(self.update_interval))
-#                logging.info(str(self.temp_podcasts[stream_uuid]["update"]+self.update_interval))
-#                logging.info(str(time.time()))
-#                logging.info(str(self.temp_podcasts[stream_uuid]["update"]+self.update_interval < time.time()))
-            
+                       
                 if stream_uuid not in self.temp_podcasts:
                   podcast                         = self.get_tracks_rss(rss_url=stream_url,playlist_uuid=stream_uuid)
                   self.temp_podcasts[stream_uuid] = podcast
@@ -230,7 +223,7 @@ class podcastThread (threading.Thread):
           "album"       : podcast["title"],
           "album_uuid"  : playlist_uuid,
           "file"        : item["enclosure"]["@url"],
-          "length"      : int(item["enclosure"]["@length"]),
+          "filesize"    : float(item["enclosure"]["@length"]) / 1000,
           "type"        : item["enclosure"]["@type"],
           "decoder"     : "jc:music:podcast",
           "image"       : ""
@@ -246,8 +239,11 @@ class podcastThread (threading.Thread):
            time_stamp  = time.mktime(datetime.datetime.strptime(time_input, time_format).timetuple())           
            podcast_sort[time_stamp] = item_uuid
            
-        if "duration" in item:         
-           podcast["tracks"][item_uuid]["duration"]    = item["duration"]
+        if itunes_sub+"duration" in item:
+           length_format = "%H:%M:%S"    
+           podcast["tracks"][item_uuid]["duration"]    = item[itunes_sub+"duration"]          
+           hour,minute,second = podcast["tracks"][item_uuid]["duration"].split(":")
+           podcast["tracks"][item_uuid]["length"]      = float(hour)*3600 + float(minute)*60 + float(second)
            
         if itunes_sub+"image" in item:
           podcast["tracks"][item_uuid]["image"] = item[itunes_sub+"image"]["@href"]

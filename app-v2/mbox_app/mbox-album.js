@@ -189,7 +189,7 @@ function mboxAlbumAll(data) {
 
 			// print cover with charakter and empty album, if new line per chapter
 			else {
-				if (last_chapter != chapter) {
+				if (last_chapter != chapter && isvalidfilter == false) {
 					i++;
 					chapter_number++;	
 					album_character = true;
@@ -240,11 +240,14 @@ function mboxAlbumAll(data) {
 				onclick_open  = "mboxAlbumList_load_direct('" + chapter + "_" + chapter_number_x + "','" + i + "','" + uuid + "');"; 				// load album details
 				}
 				
-			if (uuid == album_active) { album_active_no = i; }
 			if (uuid) {
 				cover           = mboxCoverAlbum_new( uuid, album_info );  // Check if Cover exists
 				[text1, print1] = mboxAlbumAll_album( i, uuid, album, artist, cover, onclick_open, onclick_play );
 				if (text1 != "") { i++; text += text1; print += print1; }  // text = album list; print is cover for print out
+				}
+			if (uuid == album_active) { 
+				if (row_per_chapter)	{ album_active_no1 = chapter + "_" + chapter_number_x; album_active_no2 = i; }
+				else			{ album_active_no1 = album_detail_number; album_active_no2 = i; }
 				}
 
 			//.............
@@ -264,7 +267,8 @@ function mboxAlbumAll(data) {
 	mboxControlToggleFilter_show();
 
 	if (album_active && album_active != "") {
-		mboxAlbumList_load(album_active_no,album_active);
+		//mboxAlbumList_load(album_active_no,album_active);
+		mboxAlbumList_load_direct(album_active_no1,album_active_no2,album_active);
 		document.getElementById('scrollto_'+album_active.replace(/-/g,"")).scrollIntoView();
 		}
 	}
@@ -344,9 +348,9 @@ function mboxAlbumFilterPath(data,selected) {
 	var list     = [];
 
 	for (key in data) {
-		path = data[key]["albumpath"].split("_");
-		if (path.length > 0 && list.indexOf(path[1])==-1) {
-			list.push(path[1]);
+		path = data[key]["albumpath"].split("/");
+		if (path.length > 0 && list.indexOf(path[0])==-1) {
+			list.push(path[0]);
 			}
 		}
 
@@ -731,8 +735,8 @@ function mboxAlbumTrackRow(id, dataTracks, album=true, artist=false, count=0, tr
 		}
 	if (mbox_device != "local") 	{
 		//cmd += mboxHtmlButton("play",  "appFW.requestAPI('GET',['play', '"+id+"'],'',mboxControl);", "blue", "small right");
-		cmd += mboxHtmlButton("play",  "appFW.requestAPI('GET',['play_position', '"+album_id+"', '"+count+"'],'',mboxControl);", "blue", "small right");
 		cmd += "<div class=\"player_active right\" id=\"playing3_"+id+"\" style=\"display:none;\"><img src=\"" + mbox_icon_dir + mbox_icons["playing"] + "\" style=\"width:10px;height:10px;margin:2px;\"></div>";
+		cmd += mboxHtmlButton("play",  "appFW.requestAPI('GET',['play_position', '"+album_id+"', '"+count+"'],'',mboxControl);", "blue", "small right");
 		}
 	cmd  += "</div>";
 

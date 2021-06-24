@@ -77,7 +77,7 @@ function mboxControl(data) {
 	
 	console.debug("mboxControl: playing="+playing+" / load_new="+load_new+" / load_all="+load_all);
 	if (playing == 1 || load_new || load_all) 	{ appFW.setAutoupdateLoading(true,"mboxControl"); }
-	else						{ appFW.setAutoupdateLoading(false,"mboxControl"); }
+	else						{ appFW.setAutoupdateLoading(false,"mboxControl"); mboxControlPlaying_show(); }
 
 	if (mbox_device == "remote") {	
 		if (playing != 1)	{ mboxControlPanel_hide(); }
@@ -153,7 +153,7 @@ function mboxControl(data) {
 
 			if (channel && channel["uuid"] && playing != 0) {
 				if (d["channel_info"]) 	{ text += "<b>" + d["channel_info"] + "</b> (<a href=\"" + info + "\" target=\"_blank\" style=\"color:white\">www</a>) ... "+description+"<br/>"; }
-				else 			{ text += "<b>" + title + "</b>: " + description + " (<a href=\"" + info + "\" target=\"_blank\" style=\"color:white\">www</a>)<br/>"; }
+				else 				{ text += "<b>" + title + "</b>: " + description + " (<a href=\"" + info + "\" target=\"_blank\" style=\"color:white\">www</a>)<br/>"; }
 				text += "<i>" + status + "</i><br/>";  			//text += "<i>" + status + " ("+channel["uuid"]+")</i><br/>";
 				}
 		  	else {	text += "<i>"+lang("SELECT_MUSIC_ITEM") +"</i><br/>&nbsp;";
@@ -319,13 +319,13 @@ function mboxControlShowUUID(uuid) {
 // show which album, playlist or channel plays
 //--------------------------------------
 
-function mboxControlPlaying_show(uuid,uuid_song,playing) {
+function mboxControlPlaying_show(uuid="",uuid_song="",playing=0) {
 
 	activeElements = document.getElementsByClassName("player_active");
 
 	for (var i=0;i<activeElements.length;i++) {
 		element = activeElements[i];
-		if (playing != 0) {
+		if (playing == 1) {
 			if (element.id == "playing_"+uuid)			{ element.style.display = "block"; }
 			else if (element.id == "playing2_"+uuid) 		{ element.style.display = "block"; }
 			else if (element.id == "playing3_"+uuid) 		{ element.style.display = "block"; }

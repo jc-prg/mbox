@@ -482,6 +482,7 @@ class musicControlThread(threading.Thread):
                  self.music_list     = []
                  self.music_list_p   = 1
                  self.music_type     = ""
+                 self.control_data(state="Ended",song={},playlist={})
                  logging.info("Playlist empty, stop playing.")
 
       logging.info("Stopped music player ("+self.name+").")     

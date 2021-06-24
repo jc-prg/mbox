@@ -1020,6 +1020,7 @@ def mboxAPI_stop():
        db_entries = {}
        data       = mboxAPI_start("stop","stop","","","")
        
+       thread_playlist_ctrl.control_data(state="Ended",song={},playlist={})
        thread_playlist_ctrl.player.stop()
        
        data = mboxAPI_end(data,["no-statistic","no-system"])

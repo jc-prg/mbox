@@ -180,11 +180,7 @@ function mboxAlbumAll(data) {
 		if (a == sorted_entries.length-1) { album_detail_last = true; }
 		if (the_filter[0] in album_info[uuid] && album_info[uuid][the_filter[0]].indexOf(the_filter[1]) > -1) { isvalidfilter = true; }
 		if (filters == "" || isvalidfilter) {
-		
-// letzter Eintrag mit row_per_chapter == true
-// mehrzeilige Einträge mit row_per_chapter == true
-			console.log(a);
-	
+			
 			// check if new row without chapters
 			if (mbox_show_char == false) {
 				if (Math.round(a+1/albums_per_row) == (a+1/albums_per_row))	{ new_row = true;  }
@@ -193,7 +189,6 @@ function mboxAlbumAll(data) {
 
 			// print cover with charakter and empty album, if new line per chapter
 			else {
-				console.log("... "+last_chapter+" / "+chapter);
 				if (last_chapter != chapter) {
 					i++;
 					chapter_number++;	
@@ -223,13 +218,9 @@ function mboxAlbumAll(data) {
 						album_detail     = true; 
 						chapter_number++;
 						}
-					console.log("row per chapter: "+row_per_chapter+ " / album_in_row:"+album_in_row+" / albums_per_row: "+albums_per_row+" / next_empty: "+album_next_empty);
-					// -> not placed right ... ?
 					}
-
 				if (row_per_chapter == false) {
 					album_detail_number = (Math.trunc((i-1)/albums_per_row)+1) * albums_per_row;
-					//console.log(album_detail_number);
 					}
 				}
 			
@@ -241,7 +232,7 @@ function mboxAlbumAll(data) {
 			
 			//.............
 			
-			var onclick_play  = "appFW.requestAPI('GET',['play', '" + uuid + "'],'',mboxControl);"; 	// play album remote
+			var onclick_play  = "appFW.requestAPI('GET',['play', '" + uuid + "'],'',mboxControl);"; 			// play album remote
 			var onclick_open  = "mboxAlbumList_load_direct('" + album_detail_number + "',"+i+",'" + uuid + "');"; 	// load album details
 			
 			if (row_per_chapter) {

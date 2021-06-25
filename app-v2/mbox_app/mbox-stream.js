@@ -26,13 +26,7 @@ function mboxStreamAdd_msg(data)
 
 //--------------------------------------
 
-function mboxStream_load()  { 
-	appFW.requestAPI("GET",["db","radio","-"],"", mboxStream);
-	scrollToTop();
-	}
-	
-//--------------------------------------
-
+function mboxStream_load()  { appFW.requestAPI("GET",["db","radio","-"],"", mboxStream); scrollToTop(); }
 function mboxStream(data) {
 	var text          = "";
 	var print 	  = mboxCoverListStart();
@@ -61,7 +55,10 @@ function mboxStream(data) {
 		var cmd_play = "appFW.requestAPI('GET',['play', '" + uuid + "'],'',mboxControl);";
 		var cover    = default_cover;
 
-		// check cover
+		// check cover, load via URL if PodCast
+	        if (radio_data[uuid]["podcast"] && radio_data[uuid]["podcast"]["title"]) {
+	        	radio_data[uuid]["cover_images"] = radio_data[uuid]["podcast"]["cover_images"];        	
+	        	}
 		cover = mboxCoverAlbum_new(uuid,radio_data);
 
 		// print playlist cover
@@ -163,6 +160,7 @@ function mboxStreamChannel(data) {
         if (!cover) { cover = default_cover; }
         
         // Write album cover
+        var onclick    = "mboxCoverAlbum_alert(\""+cover+"\");";        
         text += "<div class=\"album_cover\" style=\"background:url("+cover+");background-size:contain;background-position:center;background-repeat:no-repeat;\" onclick='" + onclick + "'>";
         text += "</div>";
 
@@ -246,15 +244,16 @@ function mboxStreamChannel(data) {
 
 function mboxPodcastTrackRow(id, dataTracks, album=true, artist=false, count=0, trackinfo=false) {
 
-	var track    = dataTracks[id];
-	var text     = "";
-	var cmd      = "";
-	var album_id = track["album_uuid"];
+	var track       = dataTracks[id];
+	var text        = "";
+	var cmd         = "";
+	var stream_uuid = track["album_uuid"];
 
 	var length = "";
 	if (track["duration"]) { length = " <font color='gray'>(" + track["duration"] + ")</font>"; }
 
-	console.debug("Debug UUID: " + id + " / Podcast UUID: " + album_id + " / " + track["album"] + " / " + track["sort_pos"] + " / " + track["sort"]);
+	console.debug("Debug UUID: " + id + " / Podcast UUID: " + stream_uuid + " / " + track["album"] + " / " + track["sort_pos"] + " / " + track["sort"]);
+	console.debug(track);
 
 	// track playback control
 	cmd  += "<div class=\"album_tracks_control\">";
@@ -262,19 +261,18 @@ function mboxPodcastTrackRow(id, dataTracks, album=true, artist=false, count=0, 
 		cmd += mboxHtmlButton("play",  "mboxPlayerLocal(" + count + ");", "green",   "small right"); 
 		}
 	if (mbox_device != "local") 	{
-		cmd += mboxHtmlButton("play",  "appFW.requestAPI('GET',['play_position', '"+album_id+"', '"+count+"'],'',mboxControl);", "blue", "small right");
+		cmd += mboxHtmlButton("play",  "appFW.requestAPI('GET',['play_position', '"+stream_uuid+"', '"+count+"'],'',mboxControl);", "blue", "small right");
 		cmd += "<div class=\"player_active right\" id=\"playing3_"+id+"\" style=\"display:none;\"><img src=\"" + mbox_icon_dir + mbox_icons["playing"] + "\" style=\"width:10px;height:10px;margin:2px;\"></div>";
 		}
 	cmd  += "</div>";
 
 	text += "<div class=\"album_tracks_title\">";
-	console.log(track);
 	
 	// track
 	text += "<table><tr><td style='width:20px;vertical-align:top;padding:0px'>";
 	text += (count+1);
 	text += ".</td><td>";
-	text += "<div class='album_track_title_shorten'><b>" + track["title"] + "</b></div><br/>";
+	text += "<div class='album_track_title_shorten' onclick='mboxStreamTrackInfo_load(\"" + stream_uuid + "\", \"" + id + "\")' style='cursor:pointer;'><b>" + track["title"] + "</b></div><br/>";
 	text += "<div class='album_track_description_shorten'>" + track["description"] + "</div>";
 	text += "<font color='gray'>" + track["publication"] + "</font>";
 	text += length;
@@ -335,12 +333,20 @@ function mboxStreamInfo(data) {
         text += "<b>"+lang("STREAM_INFORMATION")+"</b><br/><br/>";
         text += mboxHtmlTableNew("start");
         text += "<tr><td colspan='2'><hr></td></tr>";
-        text += mboxHtmlTableNew(["<i>"+lang("TITLE")+":",             	album["title"] ] );
-        text += mboxHtmlTableNew(["<i>"+lang("DESCRIPTION")+":",       	album["description"] ] );
-        text += mboxHtmlTableNew(["<i>"+lang("INFORMATION")+":",        "<a href=\"" + album["stream_info"] + "\" target=\"_blank\">" + album["stream_info"] + "</a>" ] );
-        text += mboxHtmlTableNew(["<i>"+lang("STREAM")+" URL:",        	"<a href=\"" + album["stream_url"] + "\" target=\"_blank\">" + album["stream_url"] + "</a>" ] );
+        text += mboxHtmlTableNew(["<i>"+lang("TITLE")+":",		album["title"] ] );
+        text += mboxHtmlTableNew(["<i>"+lang("DESCRIPTION")+":",	album["description"] ] );
+        text += mboxHtmlTableNew(["<i>"+lang("INFORMATION")+":",	"<a href=\"" + album["stream_info"] + "\" target=\"_blank\">" + album["stream_info"] + "</a>" ] );
+        text += mboxHtmlTableNew(["<i>"+lang("STREAM")+" URL:",	"<a href=\"" + album["stream_url"] + "\" target=\"_blank\">" + album["stream_url"] + "</a>" ] );
         text += mboxHtmlTableNew(["<i>"+lang("STREAM")+" UUID:",	"<a href='" + url + "/' target='_blank'>" + uuid + "</a>" ] );
-        text += mboxHtmlTableNew(["<i>"+lang("CARD_ID")+":",         	"<a style='cursor:pointer;' onclick='mboxCardList_load(\""+cardid+"\");'>"    + cardid + "</a>" ] );
+        text += mboxHtmlTableNew(["<i>"+lang("CARD_ID")+":",		"<a style='cursor:pointer;' onclick='mboxCardList_load(\""+cardid+"\");'>"    + cardid + "</a>" ] );
+        if (album["podcast"] != {}) {
+		text += "<tr><td colspan='2'><center><i><hr/>Podcast Info<hr/></i></center></td></tr>";
+		text += mboxHtmlTableNew(["<i>"+lang("TITLE")+":",           album["podcast"]["title"] ] );
+		text += mboxHtmlTableNew(["<i>"+lang("DESCRIPTION")+":",     album["podcast"]["description"] ] );        	        
+		text += mboxHtmlTableNew(["<i>"+lang("TRACKS")+":",	       album["podcast"]["track_count"]+" Tracks" ] );        	        
+		text += mboxHtmlTableNew(["<i>"+lang("INFORMATION")+":",	"<a href=\"" + album["podcast"]["stream_info"] + "\" target=\"_blank\">" + album["podcast"]["stream_info"] + "</a>" ] );
+        	text += "<tr><td colspan='2'><hr></td></tr>";
+		}
         text += mboxHtmlTableNew(["<i>"+lang("COVER_AVAILABLE")+":", 	cover ] );
         text += "<tr><td colspan='2'><hr></td></tr>";
         text += mboxHtmlTableNew(["<i>"+lang("EDIT")+":",       	edit ] );
@@ -352,6 +358,36 @@ function mboxStreamInfo(data) {
 
 //----------------------------------------
 
+function mboxStreamTrackInfo_load(stream_uuid, track_uuid) { appFW.requestAPI("GET",["data",stream_uuid,"-"],"", [ mboxStreamTrackInfo, track_uuid ] ); }
+function mboxStreamTrackInfo(data, track_uuid) {
+        var text   = "";
+        var stream = data["DATA"]["_selected"];
+        var uuid   = data["DATA"]["_selected_uuid"];
+        var track  = stream["podcast"]["tracks"][track_uuid];
+        var url    = RESTurl + "api/data/"+uuid+"/--";
+
+        text += "<b>"+lang("TRACK_INFORMATION")+"</b><br/><br/>";
+        text += mboxHtmlTableNew("start");
+        text += "<tr><td colspan='2'><hr></td></tr>";
+        
+        text += mboxHtmlTableNew(["<i>"+lang("TITLE")+":",		track["title"] ] );
+        text += mboxHtmlTableNew(["<i>"+lang("DESCRIPTION")+":",	track["description"] ] );
+        text += mboxHtmlTableNew(["<i>"+lang("DURATION")+":",	track["duration"] ] );
+        text += mboxHtmlTableNew(["<i>"+lang("PUBLICATION")+":",	track["publication"] ] );
+        text += mboxHtmlTableNew(["<i>"+lang("TRACK")+" URL:",	"<a href=\"" + track["file"] + "\" target=\"_blank\">" + track["file"] + "</a>" ] );
+        text += mboxHtmlTableNew(["<i>"+lang("TRACK")+" UUID:",	track_uuid ] );
+        text += mboxHtmlTableNew(["<i>"+lang("STREAM")+" UUID:",	"<a href='" + url + "/' target='_blank'>" + uuid + "</a>" ] );
+        
+        
+        text += "<tr><td colspan='2'><hr></td></tr>";
+        text += mboxHtmlTableNew("end");
+
+        appMsg.confirm(text,"",450);
+	}
+
+
+//----------------------------------------
+
 function mboxStreamInfo_close() {
 	setTimeout(function(){ mboxStream_load(); }, 2000);
         appMsg.hide();        
@@ -360,7 +396,7 @@ function mboxStreamInfo_close() {
 //----------------------------------------
 
 function mboxStreamEdit_load(uuid)	{ appFW.requestAPI("GET",["data",uuid,"uuid,title,description,stream_info,stream_url,stream_url2"],"", mboxStreamEdit ); }
-function mboxStreamEdit(data) 		{ mboxDataEdit(data); }
+function mboxStreamEdit(data) 	{ mboxDataEdit(data); }
 // -> mbox-data.js
 
 // delete playlist (dialog to confirm)

@@ -349,8 +349,12 @@ function mboxAlbumFilterPath(data,selected) {
 	for (key in data) {
 		if (data[key]["albumpath"].indexOf("/") > -1)	{ path = data[key]["albumpath"].split("/"); }
 		else						{ path = data[key]["albumpath"].split("_"); }
-		if (path.length > 0 && list.indexOf(path[0])==-1) {
+		console.log(path);
+		if (path[0] != "" && path.length > 0 && list.indexOf(path[0])==-1) {
 			list.push(path[0]);
+			}
+		else if (path.length > 0 && list.indexOf(path[1])==-1) {
+			list.push(path[1]);
 			}
 		}
 

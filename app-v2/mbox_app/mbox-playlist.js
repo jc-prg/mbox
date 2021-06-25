@@ -181,18 +181,14 @@ function mboxPlaylistOne(data) {
 			}
 		}
 
-	// fill local playlist queue
-	if (mbox_device == "local") {
-	
-		// handover data to local player
-		mbox_playlist_queue["type"]		= "list";
-		mbox_playlist_queue["album"]		= albums;
-		mbox_playlist_queue["album"]["tracks"] = track_list_complete;
-		mbox_playlist_queue["scrollto"]	= "scrollto_" + playlist_uuid.replace(/-/g,"");
-		mbox_playlist_queue["tracks"]		= data["DATA"]["tracks"];
+	// handover data to local player
+	mbox_playlist_queue["type"]		= "list";
+	mbox_playlist_queue["album"]		= albums;
+	mbox_playlist_queue["album"]["tracks"] = track_list_complete;
+	mbox_playlist_queue["scrollto"]	= "scrollto_" + playlist_uuid.replace(/-/g,"");
+	mbox_playlist_queue["tracks"]		= data["DATA"]["tracks"];
 
-		console.debug(mbox_playlist_queue);
-		}
+	console.debug(mbox_playlist_queue);
 	
         // check cover
 	var default_cover = mbox_icon_dir + mbox_icons["playlist"];
@@ -291,7 +287,7 @@ function mboxPlaylistOne(data) {
 				k           += 1;
 				playlist_no += 1;
 				column_number = 1 + Math.trunc((k-1) / column_tracks);		
-				console.log(column_number + " = " + k + " / " + column_tracks);
+				console.debug(column_number + " = " + k + " / " + column_tracks);
 				mboxPlaylistTrackRow(data=data, uuid=track_list[i], column=column_number, uuid_pl=playlist_uuid, count_pl=playlist_no);
 				}
 				
@@ -304,7 +300,7 @@ function mboxPlaylistOne(data) {
 				if (track_list_album[track_list[i]]) {
 					k += 1;
 					column_number = 1 + Math.trunc((k-1) / column_tracks);				
-					console.log(column_number + " = " + k + " / " + column_tracks);
+					console.debug(column_number + " = " + k + " / " + column_tracks);
 					
 					mboxPlaylistTrackLine(column_number,color);
 					mboxPlaylistTrackRow(data=data, uuid=track_list[i], column=column_number, uuid_pl=playlist_uuid, count_pl=playlist_no, color=(color+1));
@@ -316,7 +312,7 @@ function mboxPlaylistOne(data) {
 						k           += 1;
 						playlist_no += 1;
 						column_number = 1 + Math.trunc((k-1) / column_tracks);				
-						console.log(column_number + " = " + k + " / " + column_tracks);
+						console.debug(column_number + " = " + k + " / " + column_tracks);
 						
 						mboxPlaylistTrackRow(data=data, uuid=tracks_album2[j], column=column_number, uuid_pl=playlist_uuid, count_pl=playlist_no);
 						}
@@ -326,7 +322,7 @@ function mboxPlaylistOne(data) {
 				else {
 					k += 1;
 					column_number = 1 + Math.trunc((k-1) / column_tracks);				
-					console.log(column_number + " = " + k + " / " + column_tracks);
+					console.debug(column_number + " = " + k + " / " + column_tracks);
 					
 					mboxPlaylistTrackRow(data=data, uuid=track_list[i], column=column_number, uuid_pl=playlist_uuid, count_pl=playlist_no, color=(color+1));
 					}
@@ -546,7 +542,7 @@ function mboxPlaylistTrackRow(data, uuid, column, uuid_pl="", count_pl=0, color=
 
 		// Controls to play Track ...
 		cmd += "<div class=\"album_tracks_control\"  style=\"background:"+mbox_track_color[color]+";\">";
-		if (mbox_device == "local")	{ cmd += mboxHtmlButton("play",  "writeAudioPlayer('" + uuid + "','audioPlayer');", "green",   "small right"); }
+		if (mbox_device == "local")	{ cmd += mboxHtmlButton("play",  "mboxPlayerLocal(" + position + ");", "green",   "small right"); }		 
 		else 				{ cmd += mboxHtmlButton("play",  "appFW.requestAPI('GET',['play_position', '"+uuid_pl+"',"+position	+"],'',mboxControl);", "blue", "small right"); }
 		cmd += "<div class=\"player_active right\" id=\"playing3_"+uuid+"\" style=\"display:none;\"><img src=\""+mbox_icon_dir+mbox_icons["playing"]+"\" style=\"width:10px;height:10px;margin:2px;\"></div>";
 		cmd += "</div>";

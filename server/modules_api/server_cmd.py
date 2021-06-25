@@ -362,9 +362,18 @@ def mboxAPI_readDB(databases,db_filter=""):
        if databases == "radio":
           for stream_uuid in data["DATA"]["radio"]:
              stream_url = data["DATA"]["radio"][stream_uuid]["stream_url"]
+             
              if stream_url.endswith(".rss") or stream_url.endswith(".xml") or stream_url.endswith(".podcast"):   
                 podcast = thread_podcast.get_podcasts(playlist_uuid=stream_uuid)
-                data["DATA"]["radio"][stream_uuid]["podcast"]        = podcast
+                data["DATA"]["radio"][stream_uuid]["podcast"] = podcast
+                if "_selected_uuid" in data and stream_uuid == uuid:
+                   data["DATA"]["_selected"]["podcast"] = podcast                
+                   
+             elif stream_url.endswith(".m3u"):
+                data["DATA"]["radio"][stream_uuid]["stream_url2"] = thread_playlist_ctrl.player.get_stream_m3u(stream_url)
+                if "_selected_uuid" in data and stream_uuid == uuid:
+                   data["DATA"]["_selected"]["stream_url2"] = thread_playlist_ctrl.player.get_stream_m3u(stream_url)
+
                            
        
        # create combined requests - ARTISTS
@@ -421,12 +430,9 @@ def mboxAPI_readEntry(uuid,db_filter=""):
                temp = couch.read_cache(database)
 
                if uuid in temp:
-                   if uuid.startswith("r_"): 
-                      temp[uuid]["podcast"] = thread_podcast.get_podcasts(playlist_uuid=uuid)
-                   
                    data["DATA"]["_selected_uuid"]            = uuid
                    data["DATA"]["_selected_db"]              = database
-                   
+                                                            
                    # check if rfid card (array instead of dict)
                    if not isinstance(temp[uuid],list):
                       data["DATA"]["_selected"]              = temp[uuid]
@@ -452,6 +458,13 @@ def mboxAPI_readEntry(uuid,db_filter=""):
 
                    if not "uuid" in data["DATA"]["_selected"]:
                       data["DATA"]["_selected"]["uuid"] = uuid
+
+                   # special handling for streams and podcast (read up-to-date data)
+                   if uuid.startswith("r_"): 
+                      temp[uuid]["podcast"] = thread_podcast.get_podcasts(playlist_uuid=uuid)
+                      if data["DATA"]["_selected"]["stream_url"].endswith(".m3u"):
+                         data["DATA"]["_selected"]["stream_url2"] = thread_playlist_ctrl.player.get_stream_m3u(data["DATA"]["_selected"]["stream_url"])
+
                else:
                    data = mboxAPI_error(data, "Entry not in database: " + uuid)
            else:

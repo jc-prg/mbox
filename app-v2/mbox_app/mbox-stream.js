@@ -129,17 +129,15 @@ function mboxStreamChannel(data) {
 	        console.debug("Show Radio Channel: " + uuid + "/" + radio_data["title"]);
 		}
 		
-	// fill local playlist queue
-	if (mbox_device == "local") {
-		
+        if (radio_data["podcast"] && radio_data["podcast"]["title"]) {
+        	}
+        else {
 		// handover data to local player
 		mbox_playlist_queue["type"]		= "stream";
 		mbox_playlist_queue["album"]		= radio_data;
 		mbox_playlist_queue["scrollto"]	= "scrollto_" + uuid.replace(/-/g,"");
 		mbox_playlist_queue["tracks"]		= {};
 		mbox_playlist_queue["url"]		= radio_data["stream_url2"];
-
-		console.debug(mbox_playlist_queue);
 		}
 
         // check if podcast data exists		
@@ -337,6 +335,7 @@ function mboxStreamInfo(data) {
         text += mboxHtmlTableNew(["<i>"+lang("DESCRIPTION")+":",	album["description"] ] );
         text += mboxHtmlTableNew(["<i>"+lang("INFORMATION")+":",	"<a href=\"" + album["stream_info"] + "\" target=\"_blank\">" + album["stream_info"] + "</a>" ] );
         text += mboxHtmlTableNew(["<i>"+lang("STREAM")+" URL:",	"<a href=\"" + album["stream_url"] + "\" target=\"_blank\">" + album["stream_url"] + "</a>" ] );
+        text += mboxHtmlTableNew(["<i>"+lang("STREAM")+" URL:",	"<a href=\"" + album["stream_url2"] + "\" target=\"_blank\">" + album["stream_url2"] + "</a>" ] );
         text += mboxHtmlTableNew(["<i>"+lang("STREAM")+" UUID:",	"<a href='" + url + "/' target='_blank'>" + uuid + "</a>" ] );
         text += mboxHtmlTableNew(["<i>"+lang("CARD_ID")+":",		"<a style='cursor:pointer;' onclick='mboxCardList_load(\""+cardid+"\");'>"    + cardid + "</a>" ] );
         if (album["podcast"] != {}) {

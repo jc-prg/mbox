@@ -360,6 +360,7 @@ class musicControlThread(threading.Thread):
       self.music_dir       = mbox.music_dir
       self.music_device    = device
       self.music_load_new  = False
+      self.music_load_new_p= False
       self.music_ctrl      = {}
       self.music_ctrl      = self.control_data(state="Started")
       self.music_type      = ""
@@ -466,10 +467,6 @@ class musicControlThread(threading.Thread):
 
          if not self.music_load_new:
          
-            if self.player.play_status == 1:
-               self.music_ctrl["length"]    = float(self.player.get_length())   / 1000
-               self.music_ctrl["position"]  = float(self.player.get_position()) / 1000
-         
             if self.player.player_status == "State.Ended":
             
                if self.music_list_p < len(self.music_list):
@@ -485,6 +482,10 @@ class musicControlThread(threading.Thread):
                  self.control_data(state="Ended",song={},playlist={})
                  logging.info("Playlist empty, stop playing.")
 
+            if self.player.play_status == 1:
+               self.music_ctrl["length"]       = float(self.player.get_length())   / 1000
+               self.music_ctrl["position"]     = float(self.player.get_position()) / 1000
+         
       logging.info("Stopped music player ("+self.name+").")     
       
 
@@ -536,10 +537,16 @@ class musicControlThread(threading.Thread):
       '''
       logging.info("Load Playlist "+playlist_uuid+"/"+str(position)+" ...")
       
-      self.music_list      = []
-      self.music_list_p    = int(position)
-      self.music_load_new  = True
-      self.music_list_uuid = playlist_uuid
+      if playlist_uuid == self.music_list_uuid:
+         self.music_list_p    = int(position)
+         self.music_load_new  = True
+         self.music_load_new_p= True
+         return
+      else:
+         self.music_list_p    = int(position)
+         self.music_load_new  = True
+         self.music_list      = []
+         self.music_list_uuid = playlist_uuid
 
       if playlist_uuid.startswith("a_"):   self.music_type   = "Album"
       elif playlist_uuid.startswith("p_"): self.music_type   = "Playlist"

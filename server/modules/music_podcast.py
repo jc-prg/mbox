@@ -223,18 +223,23 @@ class podcastThread (threading.Thread):
         podcast["cover_images"]["active"] = "url"
     	
       podcast_sort = {}
+      item_count   = 0
       for item in data_items:
-        item_uuid = "t_" + str(uuid.uuid1())
+        item_uuid   = "t_" + str(uuid.uuid1())
+        item_count += 1
         podcast["tracks"][item_uuid] = {
-          "title"       : item["title"],
+          "decoder"     : "jc:music:podcast",
           "description" : item["description"],
           "album"       : podcast["title"],
           "album_uuid"  : playlist_uuid,
           "file"        : item["enclosure"]["@url"],
           "filesize"    : float(item["enclosure"]["@length"]) / 1000,
+          "image"       : "",
+          "title"       : item["title"],
+          "track_num"   : [],
           "type"        : item["enclosure"]["@type"],
-          "decoder"     : "jc:music:podcast",
-          "image"       : ""
+          "url"         : item["enclosure"]["@url"],
+          "uuid"        : item_uuid
           }
           
         podcast["track_url"][item["enclosure"]["@url"]] = item_uuid
@@ -259,9 +264,12 @@ class podcastThread (threading.Thread):
           if podcast["track_count"] == 1:
             podcast["cover_images"]["track"].append(item[itunes_sub+"image"]["@href"])
             
+      track_position = len(podcast_sort)
       for key in sorted(podcast_sort):
         podcast["track_list"].append(podcast_sort[key])
         podcast["track_count"] += 1
+        podcast["tracks"][podcast_sort[key]]["track_num"] = [track_position, len(podcast_sort)]
+        track_position         -= 1
         
       podcast["track_list"] = podcast["track_list"][::-1]
     

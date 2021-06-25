@@ -180,7 +180,17 @@
 /* adaption for inside the list */
 
 .album_control.new { width : 170px; }
-.album_infos.new   { width : 170px; }
+.album_infos.new   { 
+	width : 170px;
+	overflow: auto;
+/*
+	overflow           : hidden;
+	display            : -webkit-box;
+	-webkit-box-orient : vertical;
+	-webkit-line-clamp : 4;
+	height             : 45px;
+*/
+	}
 
 /* .... */
 

@@ -242,7 +242,8 @@ class podcastThread (threading.Thread):
         if "pubDate" in item:          
            podcast["tracks"][item_uuid]["publication"] = item["pubDate"]
            
-           time_format = "%a, %d %b %Y %H:%M:%S %z"
+           if "+" in item["pubDate"] or "-" in item["pubDate"]: time_format = "%a, %d %b %Y %H:%M:%S %z"
+           else:                                                time_format = "%a, %d %b %Y %H:%M:%S %Z"
            time_input  = item["pubDate"]
            time_stamp  = time.mktime(datetime.datetime.strptime(time_input, time_format).timetuple())           
            podcast_sort[time_stamp] = item_uuid

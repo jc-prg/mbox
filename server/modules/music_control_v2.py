@@ -617,7 +617,7 @@ class musicControlThread(threading.Thread):
                  self.speak.speak_message("NO-MUSIC-CONNECTED-TO-CARD")
         
                  
-   def playlist_next(self,stop):
+   def playlist_next(self,step):
       '''
       jump within the playlist
       '''

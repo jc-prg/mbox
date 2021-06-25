@@ -458,6 +458,8 @@ function mboxAlbumList(data) {
 	mbox_playlist_queue["album"]    = albums;
 	mbox_playlist_queue["scrollto"] = "scrollto_" + uuid.replace(/-/g,"");
 	mbox_playlist_queue["tracks"]   = track_list;
+	
+	console.debug(mbox_playlist_queue);
 
 	// Check if Cover exists
         var cover       = mboxCoverAlbum_new(uuid,albums);

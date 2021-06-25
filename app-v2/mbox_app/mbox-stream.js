@@ -130,6 +130,12 @@ function mboxStreamChannel(data) {
 		}
 		
         if (radio_data["podcast"] && radio_data["podcast"]["title"]) {
+		// handover data to local player
+		mbox_playlist_queue["type"]		= "podcast";
+		mbox_playlist_queue["album"]		= radio_data;
+		mbox_playlist_queue["scrollto"]	= "scrollto_" + uuid.replace(/-/g,"");
+		mbox_playlist_queue["tracks"]		= radio_data["podcast"]["tracks"];
+		mbox_playlist_queue["url"]		= undefined;
         	}
         else {
 		// handover data to local player
@@ -139,6 +145,8 @@ function mboxStreamChannel(data) {
 		mbox_playlist_queue["tracks"]		= {};
 		mbox_playlist_queue["url"]		= radio_data["stream_url2"];
 		}
+		
+	console.log(mbox_playlist_queue);
 
         // check if podcast data exists		
         podcast = false;

@@ -62,7 +62,7 @@ function mboxPlayerLocal(position=0, play=true) {
 	mboxPlayer.activeCtrl["progress_padding"] = "0";
 	mboxPlayer.init();
 
-	console.log(mbox_playlist_queue);
+	console.debug(mbox_playlist_queue);
 
 	if (play) {
 		mboxPlayer.load(mbox_playlist_queue);

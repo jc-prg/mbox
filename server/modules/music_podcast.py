@@ -127,7 +127,7 @@ class podcastThread (threading.Thread):
             if "stream_url" in stream:
               stream_url  = stream["stream_url"]
             
-              if stream_url.endswith(".rss") or stream_url.endswith(".xml"):
+              if stream_url.endswith(".rss") or stream_url.endswith(".xml") or stream_url.endswith(".podcast"):
                        
                 if stream_uuid not in self.temp_podcasts:
                   podcast                         = self.get_tracks_rss(rss_url=stream_url,playlist_uuid=stream_uuid)

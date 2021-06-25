@@ -723,7 +723,7 @@ class musicControlThread(threading.Thread):
                       
             if stream_url.endswith(".m3u"):   track_list = [ stream_url ]
             elif stream_url.endswith(".mp3"): track_list = [ stream_url ]
-            elif stream_url.endswith(".rss"): 
+            elif stream_url.endswith(".rss") or stream_url.endswith(".xml") or stream_url.endswith(".podcast"): 
             
                get_tracks_rss(rss_url=stream_url, playlist_uuid=get_uuid)
                

@@ -362,7 +362,7 @@ def mboxAPI_readDB(databases,db_filter=""):
        if databases == "radio":
           for stream_uuid in data["DATA"]["radio"]:
              stream_url = data["DATA"]["radio"][stream_uuid]["stream_url"]
-             if stream_url.endswith(".rss") or stream_url.endswith(".xml"):   
+             if stream_url.endswith(".rss") or stream_url.endswith(".xml") or stream_url.endswith(".podcast"):   
                 podcast = thread_podcast.get_podcasts(playlist_uuid=stream_uuid)
                 data["DATA"]["radio"][stream_uuid]["podcast"]        = podcast
                            

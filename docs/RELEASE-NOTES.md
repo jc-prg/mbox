@@ -1,14 +1,16 @@
 # jc://music-box/ - Release Notes
 
-## Summary v1.1.x (in progress)
+## Summary v1.2.x (in progress)
 
 * Fix & optimize album list view
 * Create dark theme
+* Support podcasts -> URL .xml / .rss in stream_url (itunes-format, instead of m3u)
+* Optimized playback status display
 
 ## Summary v1.0.0
 
 * Optimize wiring for LED to create stable connectors
-* Integrate  as sub-module
+* Integrate jc://modules/ as sub-module
 * Move app functionality to the repository [jc://app-framework/](https://github.com/jc-prg/app-framework) and integrate as submodule
 * Bugfixes (in jc://mbox/ and [jc://modules/](https://github.com/jc-prg/modules))
 

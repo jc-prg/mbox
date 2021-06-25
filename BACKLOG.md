@@ -4,13 +4,14 @@ Here you'll find a history of features implemented into hardware and software as
 
 ## ToDo
 
+- BUG srv: looses internet connection from time to time; -> check if internet connect exists first
+
 ### IN PROGRESS
 
 - BUG Play stream in local mode
 
 ### KNOWN BUGS
 
-- BUG server - if playing and press play in a playlist, start with first song instead of actuall running song (PlaySong -> start file, not list without loading list again)
 - BUG server - after connecting card to album the message "invalid entry connected" is spoken -> move all data to cache directly
 - BUG server - Start with STREAM and card laying on the RFID sensor leads to an error -> remove card_id, until connection is OK
 - BUG app/server - if playlist with the same title already exists, two lists with the same tracks, id, and image are displayed => check server side?
@@ -188,6 +189,14 @@ Here you'll find a history of features implemented into hardware and software as
 * OK - BUG when detecting defect media files -> check is missing if already part of existing data (doubled data)
 * OK - Move track sort from client to server, stabilize and simplify code (-> music_load.py)
 * OK - BUG Reload data ... reference to playlist are not restored
+* OK - Refactor music\_ctrl and stream\_ctrl -> in one library
+* OK - Import and process podcast data
+* OK - Handle podcast data as a playlist
+* OK - Text2Speech for podcast titles (to navigate on the box)
+* OK - BUG Stream doesn't start any more after refactoring
+* OK - BUG srv: text2speech isn't played completely on the RPi -> other docker image (in progress)
+* OK - BUG if 1 file is ready, does the next start? -> resource busy?
+* OK - BUG server - if playing and press play in a playlist, start with first song instead of actuall running song (PlaySong -> start file, not list without loading list again) - reduced the errors
 
 * DECLINED - Play the whole song, not only parts // not seen any more
 * DECLINED - dont delete playlist when stop: don't unload playlist/title if stop - just rewind to first position, but display now reflects situation
@@ -342,4 +351,13 @@ Here you'll find a history of features implemented into hardware and software as
 * OK - BUG Deleting playlist entry with "not found" from list doesn't work
 * OK - play in track of a playlist starts as part of the playlist (instead of single track)
 * OK - BUG icons on local player buttons
+* OK - simulate cardID in the settings
+* OK - Handle podcasts as a specific type of streams -> playlist functionality
+* OK - BUG jump in track
+* OK - app: length of podcast (= x/1000?)
+* OK - app: jump in a podcast (like in track)
+* OK - BUG List of Cards doesn't work any more (only ID, no track infos) -> Dark Theme
+* OK - BUG app: "empty album" isn't placed correctly for wider view incl. chapters
+* OK - faster status reload if playing a song
+* OK - Track Info for podcasts, more detailed podcast info, cover in list view
 

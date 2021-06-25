@@ -6,10 +6,8 @@ import modules.config_stage      as stage
 import modules.config_mbox       as mbox
 import modules.jcCouchDB         as jcCouch
 import modules.music_load        as music_load
-import modules.music_control     as music_ctrl
 import modules.music_podcast     as music_podcast
 import modules.music_control_v2  as music_ctrl_v2
-import modules.stream_control    as radio_ctrl
 import modules.speakmsg          as speak
 
 from modules.runcmd         import *
@@ -95,14 +93,6 @@ couch = jcCouch.jcCouchDB()
 logging.info("Load Music Import Module ..." + time_since_start())
 thread_music_load = music_load.musicLoadingThread(3, "Thread Music Load", 1, couch) #  jcJSON.read("music"))
 thread_music_load.start()
-
-#logging.info("Load Music Control ..." + time_since_start())
-#thread_music_ctrl = music_ctrl.musicThread(2, "Thread Music", 1, couch) # jcJSON.read("music"))
-#thread_music_ctrl.start()
-
-#logging.info("Load WebStream Control ..." + time_since_start())
-#thread_radio_ctrl = radio_ctrl.radioThread(4, "Thread Radio", 1, couch)  #  jcJSON.read("music"), jcJSON.read("radio"))
-#thread_radio_ctrl.start()
 
 logging.info("Load NEW Podcast Load ..." + time_since_start())
 thread_podcast = music_podcast.podcastThread(6, "Thread Podcast", couch)

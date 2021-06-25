@@ -8,8 +8,6 @@ import modules.config_mbox    as mbox
 import modules.jcJson         as jcJSON
 import modules.jcCouchDB      as jcCouch
 import modules.music_load     as music_load
-import modules.music_control  as music_ctrl
-import modules.stream_control as radio_ctrl
 import modules.speakmsg       as speak
 
 from modules.runcmd           import *

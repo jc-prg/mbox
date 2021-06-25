@@ -64,14 +64,17 @@ class speakThread (threading.Thread):
       '''
       filename = "/tmp/music-box-speech.mp3"
       language = stage.language.lower()
-      tts = gtts.gTTS(text, lang=language)
-      tts.save(filename)
-      self.play_file(filename)
+      try:
+         tts = gtts.gTTS(text, lang=language)
+         tts.save(filename)
+         self.play_file(filename)
+         duration = self.player.get_length() / 1000
+         time.sleep(duration)
+               
+      except Exception as e:
+         logging.error("Could not speak message ("+text+").")
+         logging.error(" -> gtts error: "+str(e))
 
-      #time.sleep(1.5)
-      duration = self.player.get_length() / 1000
-      time.sleep(duration)
-      
       logging.info("Speak_text: "+text+" ("+str(duration)+")")
     
 

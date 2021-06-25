@@ -162,7 +162,7 @@ function mboxHtmlTableNew( cells=[], divide=false, width="100%", height="" ) {
 		for (var i=0;i<cells.length;i++) { 
 			if (cells_width != [])	{ width = cells_width[i]; }
 			else			{ width = cell_width; }
-			text += "<td width=\"" + width + "\">" + cells[i] + "</td>";
+			text += "<td width=\"" + width + "\" style=\"vertical-align:top;\">" + cells[i] + "</td>";
 			}
 		text    += "</tr>";
 		return text;
@@ -184,7 +184,7 @@ function mboxHtmlTable(p1,p2="",p3="",p4="") {
         // return start, end or row
         if (p1 == "start")      { return "<table border=\"0\" width=\"100%\">"; }
         else if (p1 == "end")   { return "</table>"; }
-	else                    { return "<tr><td width=\""+w[0]+"\">"+p1+"</td><td width=\""+w[1]+"\">"+p2+"</td><td width=\""+w[2]+"\">"+p3+"</td><td width=\""+w[3]+"\">"+p4+"</td></tr>"; }
+	else                    { return "<tr><td width=\""+w[0]+"\" style=\"vertical-align:top;\">"+p1+"</td><td width=\""+w[1]+"\">"+p2+"</td><td width=\""+w[2]+"\">"+p3+"</td><td width=\""+w[3]+"\">"+p4+"</td></tr>"; }
         }
 
 

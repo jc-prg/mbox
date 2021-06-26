@@ -5,7 +5,6 @@ import os
 
 import threading
 import time
-import operator
 import logging
 import vlc
 import os.path
@@ -14,9 +13,9 @@ import gtts
 import modules.config_stage as stage
 import modules.config_mbox  as mbox
 
-
-from modules.config_mbox import *
 from decimal             import *
+
+#import operator
 
 # ------------------------
 # THREADING CLASS
@@ -94,7 +93,7 @@ class speakThread (threading.Thread):
       fname_UE    = mbox.errormsg_dir + stage.language + "_UNKNOWN-ERROR.mp3"
       fname_UE_EN = mbox.errormsg_dir + "EN_UNKNOWN-ERROR.mp3"
    
-      if os.path.isfile(fname):
+      if os.path.isfile(fname): 
         self.play_file(fname)
       elif os.path.isfile(fname_EN):
         self.play_file(fname_EN)

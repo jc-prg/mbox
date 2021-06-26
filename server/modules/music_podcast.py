@@ -9,14 +9,12 @@ import uuid
 import threading
 
 from xml.etree import cElementTree as ET
-from pprint import pprint
 
 import modules.config_stage as stage
 import modules.config_mbox  as mbox
-import modules.speakmsg     as speak
-import modules.runcmd       as runcmd
+import modules.music_speak  as music_speak
+import modules.jcRunCmd     as runcmd
 
-from modules.config_mbox import *
 from decimal             import *
 
 # ------------------------
@@ -30,7 +28,7 @@ def internet_connection():
     ping_ip   = False
     error_msg = ""
     
-    speak = speak.speakThread(4, name + " VLC Player / Speak", 1, "")  #  jcJSON.read("music"), jcJSON.read("radio"))
+    speak = music_speak.speakThread(4, name + " VLC Player / Speak", 1, "")  #  jcJSON.read("music"), jcJSON.read("radio"))
     speak.start()
 
     logging.debug("check if internet is connected - ping dns server")

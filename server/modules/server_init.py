@@ -4,14 +4,34 @@ import os.path
 
 import modules.config_stage      as stage
 import modules.config_mbox       as mbox
+
 import modules.jcCouchDB         as jcCouch
+
 import modules.music_load        as music_load
 import modules.music_podcast     as music_podcast
-import modules.music_control_v2  as music_ctrl_v2
-import modules.speakmsg          as speak
+import modules.music_control     as music_ctrl
+import modules.music_speak       as music_speak
 
-from modules.runcmd         import *
+from   modules.jcRunCmd          import *
 
+#-------------------------------------------------
+#
+# server
+# modules/server_cmd
+# modules/server_init
+# modules/server_read-json
+# modules/jcCouch
+# modules/jcJson
+# modules/music_load
+# modules/music_podcast
+# modules/music_control
+# modules/music_player
+# modules/music_metadata
+# modules/jcRunCmd
+# modules/speakmsg
+# modules_gpio/*
+# modules_rfid/*
+#
 #-------------------------------------------------
 
 Status     = "Starting"
@@ -83,7 +103,7 @@ def speak_message(message):
 #-------------------------------------------------
 
 logging.info("Load Speak Messages ..." + time_since_start())
-thread_speak = speak.speakThread(4, "Thread Radio", 1, "")  #  jcJSON.read("music"), jcJSON.read("radio"))
+thread_speak = music_speak.speakThread(4, "Thread Speak", 1, "")  #  jcJSON.read("music"), jcJSON.read("radio"))
 thread_speak.start()
 thread_speak.speak_message("STARTING")
 
@@ -99,8 +119,8 @@ thread_podcast = music_podcast.podcastThread(6, "Thread Podcast", couch)
 thread_podcast.start()
 
 logging.info("Load NEW Playlist Control ..." + time_since_start())
-thread_playlist_ctrl = music_ctrl_v2.musicControlThread(5, "Thread Playlist", "music_box", couch, thread_podcast)
-thread_playlist_ctrl.start()
+thread_music_ctrl = music_ctrl.musicControlThread(5, "Thread Music Control", "music_box", couch, thread_podcast)
+thread_music_ctrl.start()
 
 
 #-------------------------------------------------
@@ -111,7 +131,7 @@ def deviceStatus():
     '''
     return control data from active device
     '''
-    ctrl = thread_playlist_ctrl.music_ctrl
+    ctrl = thread_music_ctrl.music_ctrl
     return ctrl
 
 
@@ -119,10 +139,10 @@ def checkDevice():
     '''
     check which device is active (as rfid can change this in the background)
     '''
-    play_status   = str(thread_playlist_ctrl.music_plays)
-    play_type     = thread_playlist_ctrl.music_ctrl["type"]
-    play_position = str(thread_playlist_ctrl.music_list_p) + "/" + str(len(thread_playlist_ctrl.music_list))
-    play_volume   = str(thread_playlist_ctrl.music_ctrl["volume"])
+    play_status   = str(thread_music_ctrl.music_plays)
+    play_type     = thread_music_ctrl.music_ctrl["type"]
+    play_position = str(thread_music_ctrl.music_list_p) + "/" + str(len(thread_music_ctrl.music_list))
+    play_volume   = str(thread_music_ctrl.music_ctrl["volume"])
 
     logging.info("Check Device: Play=" + play_status + " / Type="+ play_type + " / Pos=" + play_position + " / Vol=" + play_volume)
 
@@ -147,7 +167,7 @@ def end_all(n1,n2):
   thread_radio_ctrl.stop_playback()
   thread_radio_ctrl.stop()
   thread_music_load.stop()
-  thread_playlist_ctrl.stop()
+  thread_music_ctrl.stop()
   thread_podcast.stop()
 
   raise RuntimeError("Server going down")

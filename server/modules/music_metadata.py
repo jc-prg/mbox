@@ -2,18 +2,17 @@
 # Get Metadata from Music Files
 #---------------------------------
 
-from modules.config_mbox import *
+import os
+import uuid
+import logging
+import hashlib
+
+import eyed3
 from mutagen.id3         import ID3
 from mutagen.mp3         import MP3
 from mutagen.mp4         import MP4, MP4Cover
 
 import modules.config_mbox  as mbox
-
-import eyed3
-import os
-import uuid
-import logging
-import hashlib
 
 #------------------------------------
 
@@ -32,7 +31,7 @@ def setMetadataError(error, filename, error_msg="", decoder=""):
     '''
     temp      = filename.split("/")
     directory = filename.replace(temp[len(temp)-1], "")
-    directory = directory.replace(music_dir, "")
+    directory = directory.replace(mbox.music_dir, "")
     filename  = temp[len(temp)-1]
     
     tags = {}
@@ -111,8 +110,6 @@ def readMetadata(path_to_file):
 #------------------------------------
 
 def readMutagen(filename,ftype="mp4"):
-
-    global music_dir
 
     relevant_tags = {}
     data          = {}
@@ -197,7 +194,7 @@ def readMutagen(filename,ftype="mp4"):
         if "disc_no" in data and "/" in data["disc_no"]: data["disc_num"]     = data["disc_no"].split("/")[0]
         elif "disc_no" in data:                          data["disc_num"]     = data["disc_no"]
 
-    data["file"]         = filename.replace(music_dir,"")
+    data["file"]         = filename.replace(mbox.music_dir,"")
     data["uuid"]         = "t_"+str(uuid.uuid1())
     data["compliation"]  = 0
     data["filesize"]     = os.path.getsize(filename)
@@ -211,11 +208,11 @@ def readMutagen(filename,ftype="mp4"):
 
     for tag in tags:    
       if "covr" in tag:
-         data["cover_images"]["track"]  = [ writeImage(data["uuid"]+"_0",tags[tag]).replace(music_cover,"") ]
+         data["cover_images"]["track"]  = [ writeImage(data["uuid"]+"_0",tags[tag]).replace(mbox.music_cover,"") ]
          data["cover_images"]["active"] = "track"
 
       if "APIC" in tag:
-         data["cover_images"]["track"]  = [ writeImage(data["uuid"]+"_0",tags[tag]).replace(music_cover,"") ]
+         data["cover_images"]["track"]  = [ writeImage(data["uuid"]+"_0",tags[tag]).replace(mbox.music_cover,"") ]
          data["cover_images"]["active"] = "track"
 
     data["decoder"] = "mutagen::"+ftype
@@ -225,9 +222,9 @@ def readMutagen(filename,ftype="mp4"):
 #------------------------------------
 
 def readID3(filename ,album_id="", album_nr=""):
-    ''' read data from mp3 file, for available tags see https://eyed3.readthedocs.io/en/latest/eyed3.id3.html?highlight=images#eyed3.id3.tag.Tag.images '''
-    global music_dir
-
+    '''
+    read data from mp3 file, for available tags see https://eyed3.readthedocs.io/en/latest/eyed3.id3.html?highlight=images#eyed3.id3.tag.Tag.images
+    '''
     logging.debug("Read ID3: "+filename)
     found = True
 
@@ -273,7 +270,7 @@ def readID3(filename ,album_id="", album_nr=""):
           tags["genre"]        = ""
           logging.debug("No Genre: "+str(e))
 
-        tags["file"]         = filename.replace(music_dir,"")
+        tags["file"]         = filename.replace(mbox.music_dir,"")
         tags["uuid"]         = "t_"+str(uuid.uuid1())
         #tags["duration"]     = audiofile.tag.duration
 
@@ -292,7 +289,7 @@ def readID3(filename ,album_id="", album_nr=""):
            count                = 0
            for IMAGE in images:
              count    += 1
-             image_url = writeImage(tags["uuid"]+"_"+str(count),IMAGE.image_data).replace(music_cover,"")
+             image_url = writeImage(tags["uuid"]+"_"+str(count),IMAGE.image_data).replace(mbox.music_cover,"")
              tags["cover_images"]["track"].append(image_url)
              tags["cover_images"]["active"] = "track"
              tags["cover_image"]            = 1
@@ -312,11 +309,11 @@ def readID3(filename ,album_id="", album_nr=""):
     if found == False:
       logging.info("test////" + filename)
       tags["artist"]       = ""
-      tags["title"]        = filename.replace(music_dir,"")
+      tags["title"]        = filename.replace(mbox.music_dir,"")
       tags["album"]        = ""
       tags["album_artist"] = ""
       tags["track_num"]    = [0,0]
-      tags["file"]         = filename.replace(music_dir,"")
+      tags["file"]         = filename.replace(mbox.music_dir,"")
       tags["uuid"]         = "t_"+str(uuid.uuid1())
       tags["compliation"]  = 0
       tags["filesize"]     = filesize

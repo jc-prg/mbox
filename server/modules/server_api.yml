@@ -17,7 +17,7 @@ paths:
 
   /set-card/{cardUID}/:
     put:
-      operationId: modules_api.server_cmd.mboxAPI_setCard
+      operationId: modules.server_cmd.mboxAPI_setCard
       tags:
         - interface
       summary: set card ID to server
@@ -43,7 +43,7 @@ paths:
 
   /set-button/{buttonID}/:
     put:
-      operationId: modules_api.server_cmd.mboxAPI_setButton
+      operationId: modules.server_cmd.mboxAPI_setButton
       tags:
         - interface
       summary: set button ID to server
@@ -72,7 +72,7 @@ paths:
 
   /version/{APPversion}/:
     get:
-      operationId: modules_api.server_cmd.mboxAPI_checkVersion
+      operationId: modules.server_cmd.mboxAPI_checkVersion
       tags:
         - maintain
       summary: check if APP-version is supported
@@ -98,7 +98,7 @@ paths:
 
   /load/{param}/:
     put:
-      operationId: modules_api.server_cmd.mboxAPI_load
+      operationId: modules.server_cmd.mboxAPI_load
       tags:
         - maintain
       summary: reload data or images
@@ -125,7 +125,7 @@ paths:
 
   /backup/{param}/:
     put:
-      operationId: modules_api.server_cmd.mboxAPI_backup
+      operationId: modules.server_cmd.mboxAPI_backup
       tags:
         - maintain
       summary: create / load backup
@@ -151,7 +151,7 @@ paths:
                 $ref: "#/definitions/STATUS"
   /status/:
     get:
-      operationId: modules_api.server_cmd.mboxAPI_status
+      operationId: modules.server_cmd.mboxAPI_status
       tags:
         - maintain
       summary: read server status data
@@ -175,7 +175,7 @@ paths:
 
   /db/{databases}/{db_filter}/:
     get:
-      operationId: modules_api.server_cmd.mboxAPI_readDB
+      operationId: modules.server_cmd.mboxAPI_readDB
       tags:
         - data
       summary: read data from database(s)
@@ -206,7 +206,7 @@ paths:
 
   /data/{uuid}/{db_filter}/:
     get:
-      operationId: modules_api.server_cmd.mboxAPI_readEntry
+      operationId: modules.server_cmd.mboxAPI_readEntry
       tags:
         - data
       summary: read data from a single db entry
@@ -239,7 +239,7 @@ paths:
 
   /data/{database}/{param}/:
     post:
-      operationId: modules_api.server_cmd.mboxAPI_add
+      operationId: modules.server_cmd.mboxAPI_add
       tags:
         - data
       summary: create data set for radio or playlist
@@ -271,7 +271,7 @@ paths:
 
   /data/{uuid}/:
     delete:
-      operationId: modules_api.server_cmd.mboxAPI_delete
+      operationId: modules.server_cmd.mboxAPI_delete
       tags:
         - data
       summary: delete data set
@@ -295,7 +295,7 @@ paths:
               STATUS:
                 $ref: "#/definitions/STATUS"
     put:
-      operationId: modules_api.server_cmd.mboxAPI_edit
+      operationId: modules.server_cmd.mboxAPI_edit
       tags:
         - data
       summary: edit single data set
@@ -329,7 +329,7 @@ paths:
 
   /images/{cmd}/{uuid}/{param}/:
     put:
-      operationId: modules_api.server_cmd.mboxAPI_images
+      operationId: modules.server_cmd.mboxAPI_images
       tags:
         - data_items
       summary: Support functions
@@ -364,7 +364,7 @@ paths:
 
   /cards/{filter}/:
     get:
-      operationId: modules_api.server_cmd.mboxAPI_cardInfos
+      operationId: modules.server_cmd.mboxAPI_cardInfos
       tags:
         - data_items
       summary: get card infos
@@ -390,7 +390,7 @@ paths:
 
   /cards/{uuid}/{param}/:
     put:
-      operationId: modules_api.server_cmd.mboxAPI_cards
+      operationId: modules.server_cmd.mboxAPI_cards
       tags:
         - data_items
       summary: connect cards to db-entry
@@ -420,7 +420,7 @@ paths:
 
   /playlist_items/{cmd}/{uuid}/{param}/:
     put:
-      operationId: modules_api.server_cmd.mboxAPI_playlist_items
+      operationId: modules.server_cmd.mboxAPI_playlist_items
       tags:
         - data_items
       summary: add or delete playlist items
@@ -458,7 +458,7 @@ paths:
 
   /play/{uuid}/:
     get:
-      operationId: modules_api.server_cmd.mboxAPI_play
+      operationId: modules.server_cmd.mboxAPI_play
       tags:
         - playback
       summary: play item
@@ -484,7 +484,7 @@ paths:
 
   /play_position/{uuid}/{position}/:
     get:
-      operationId: modules_api.server_cmd.mboxAPI_play_position
+      operationId: modules.server_cmd.mboxAPI_play_position
       tags:
         - playback
       summary: play item and jump to a position
@@ -514,7 +514,7 @@ paths:
 
   /play_next/{step}/:
     get:
-      operationId: modules_api.server_cmd.mboxAPI_next
+      operationId: modules.server_cmd.mboxAPI_next
       tags:
         - playback
       summary: set step in playlist (1) - forward
@@ -541,7 +541,7 @@ paths:
 
   /play_last/{step}/:
     get:
-      operationId: modules_api.server_cmd.mboxAPI_last
+      operationId: modules.server_cmd.mboxAPI_last
       tags:
         - playback
       summary: set step in playlist (1) -backward
@@ -568,7 +568,7 @@ paths:
 
   /play_jump/{percentage}/:
     get:
-      operationId: modules_api.server_cmd.mboxAPI_jump
+      operationId: modules.server_cmd.mboxAPI_jump
       tags:
         - playback
       summary: jump in playing song x seconds (-1,1)
@@ -594,7 +594,7 @@ paths:
                 
   /speak/{message}/:
     get:
-      operationId: modules_api.server_cmd.mboxAPI_speak
+      operationId: modules.server_cmd.mboxAPI_speak
       tags:
         - maintain
       summary: speak message
@@ -620,7 +620,7 @@ paths:
 
   /pause/:
     get:
-      operationId: modules_api.server_cmd.mboxAPI_pause
+      operationId: modules.server_cmd.mboxAPI_pause
       tags:
         - playback
       summary: pause playback
@@ -641,7 +641,7 @@ paths:
 
   /stop/:
     get:
-      operationId: modules_api.server_cmd.mboxAPI_stop
+      operationId: modules.server_cmd.mboxAPI_stop
       tags:
         - playback
       summary: stop playback
@@ -663,7 +663,7 @@ paths:
 
   /volume/{param}/:
     get:
-      operationId: modules_api.server_cmd.mboxAPI_volume
+      operationId: modules.server_cmd.mboxAPI_volume
       tags:
         - playback
       summary: set volume

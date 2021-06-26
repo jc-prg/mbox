@@ -1,7 +1,7 @@
 import modules.jcJson          as jcJSON
 import modules.config_stage    as stage
 import modules.config_mbox     as mbox
-import modules.speakmsg        as speak
+import modules.music_speak     as speak
 
 import logging, time, uuid
 import couchdb, requests, json

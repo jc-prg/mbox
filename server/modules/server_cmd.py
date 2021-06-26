@@ -1,18 +1,20 @@
 import logging
 import uuid
 import urllib.parse
-from os import path
+#from os import path
 
 import modules.config_stage   as stage
 import modules.config_mbox    as mbox
+
 import modules.jcJson         as jcJSON
 import modules.jcCouchDB      as jcCouch
-import modules.music_load     as music_load
-import modules.speakmsg       as speak
+from   modules.jcRunCmd       import *
 
-from modules.runcmd           import *
-from modules.music_podcast    import *
-from modules_api.server_init  import *
+import modules.music_load     as music_load
+from   modules.music_podcast  import *
+#import modules.music_speak    as music_speak
+
+from   modules.server_init    import *
 
 #-------------------------------------------------
 
@@ -262,9 +264,9 @@ def mboxAPI_setButton(buttonID):
        if param == "no_button": mbox.rfid_ctrl["buttonID"] = ""
        else:                    mbox.rfid_ctrl["buttonID"] = param
 
-       if   mbox.active_device == "music_box" and param == "next":    thread_playlist_ctrl.playlist_next(1)
-       elif mbox.active_device == "music_box" and param == "back":    thread_playlist_ctrl.playlist_next(-1)
-       elif mbox.active_device == "music_box" and param == "pause":   thread_playlist_ctrl.player.pause()
+       if   mbox.active_device == "music_box" and param == "next":    thread_music_ctrl.playlist_next(1)
+       elif mbox.active_device == "music_box" and param == "back":    thread_music_ctrl.playlist_next(-1)
+       elif mbox.active_device == "music_box" and param == "pause":   thread_music_ctrl.player.pause()
 
        data = mboxAPI_end(data)
        return(data)
@@ -368,9 +370,9 @@ def mboxAPI_readDB(databases,db_filter=""):
                    data["DATA"]["_selected"]["podcast"] = podcast                
                    
              elif stream_url.endswith(".m3u"):
-                data["DATA"]["radio"][stream_uuid]["stream_url2"] = thread_playlist_ctrl.player.get_stream_m3u(stream_url)
+                data["DATA"]["radio"][stream_uuid]["stream_url2"] = thread_music_ctrl.player.get_stream_m3u(stream_url)
                 if "_selected_uuid" in data and stream_uuid == uuid:
-                   data["DATA"]["_selected"]["stream_url2"] = thread_playlist_ctrl.player.get_stream_m3u(stream_url)
+                   data["DATA"]["_selected"]["stream_url2"] = thread_music_ctrl.player.get_stream_m3u(stream_url)
 
                            
        
@@ -461,7 +463,7 @@ def mboxAPI_readEntry(uuid,db_filter=""):
                    if uuid.startswith("r_"): 
                       temp[uuid]["podcast"] = thread_podcast.get_podcasts(playlist_uuid=uuid)
                       if data["DATA"]["_selected"]["stream_url"].endswith(".m3u"):
-                         data["DATA"]["_selected"]["stream_url2"] = thread_playlist_ctrl.player.get_stream_m3u(data["DATA"]["_selected"]["stream_url"])
+                         data["DATA"]["_selected"]["stream_url2"] = thread_music_ctrl.player.get_stream_m3u(data["DATA"]["_selected"]["stream_url"])
 
                else:
                    data = mboxAPI_error(data, "Entry not in database: " + uuid)
@@ -905,12 +907,12 @@ def mboxAPI_volume(param):
        db_entries = {}
        data       = mboxAPI_start("volume","volume","",param,"")
        
-       if param == "mute":     thread_playlist_ctrl.player.mute()
-       elif param == "up":     thread_playlist_ctrl.volume_up("up")
-       elif param == "down":   thread_playlist_ctrl.volume_up("down")
+       if param == "mute":     thread_music_ctrl.player.mute()
+       elif param == "up":     thread_music_ctrl.volume_up("up")
+       elif param == "down":   thread_music_ctrl.volume_up("down")
        elif param.startswith("set"):
             getvol = param.split(":")
-            thread_playlist_ctrl.volume_up(int(getvol[1]))
+            thread_music_ctrl.volume_up(int(getvol[1]))
        else:
             data = mboxAPI_error(data, "Parameter not supported: "+param)
             logging.warn("Parameter not supported: " + param)   
@@ -925,7 +927,7 @@ def mboxAPI_play_position(uuid, position):
        data = mboxAPI_play(uuid)      
 
        position = int(position)+1
-       thread_playlist_ctrl.playlist_load_uuid(playlist_uuid=uuid, position=position)
+       thread_music_ctrl.playlist_load_uuid(playlist_uuid=uuid, position=position)
        
        data = mboxAPI_end(data,["no-statistic","no-system"])
        return(data)
@@ -950,12 +952,12 @@ def mboxAPI_play(uuid):
          if uuid in database:
            uuid_current = ""
 
-           if "playlist_uuid" in thread_playlist_ctrl.music_ctrl:
-             uuid_current = thread_playlist_ctrl.music_ctrl["playlist_uuid"]
-             if uuid == uuid_current and "Paused" in thread_playlist_ctrl.music_ctrl["status"]:
-               thread_playlist_ctrl.player.pause()
+           if "playlist_uuid" in thread_music_ctrl.music_ctrl:
+             uuid_current = thread_music_ctrl.music_ctrl["playlist_uuid"]
+             if uuid == uuid_current and "Paused" in thread_music_ctrl.music_ctrl["status"]:
+               thread_music_ctrl.player.pause()
              else:
-               thread_playlist_ctrl.playlist_load_uuid(uuid)
+               thread_music_ctrl.playlist_load_uuid(uuid)
 
          else:
            data = mboxAPI_error(data, "UUID not found: "+uuid)
@@ -975,9 +977,9 @@ def mboxAPI_next(step):
        db_entries = {}
        data       = mboxAPI_start("next","next","",step,"")
        
-       position      = thread_playlist_ctrl.music_list_p + int(step)
-       playlist_uuid = thread_playlist_ctrl.music_ctrl["playlist_uuid"]       
-       thread_playlist_ctrl.playlist_load_uuid(playlist_uuid=playlist_uuid, position=position)
+       position      = thread_music_ctrl.music_list_p + int(step)
+       playlist_uuid = thread_music_ctrl.music_ctrl["playlist_uuid"]       
+       thread_music_ctrl.playlist_load_uuid(playlist_uuid=playlist_uuid, position=position)
                    
        data = mboxAPI_end(data,["no-statistic","no-system"])
        return(data)
@@ -990,9 +992,9 @@ def mboxAPI_last(step):
        db_entries = {}
        data       = mboxAPI_start("last","last","",step,"")
        
-       position      = thread_playlist_ctrl.music_list_p - int(step)
-       playlist_uuid = thread_playlist_ctrl.music_ctrl["playlist_uuid"]       
-       thread_playlist_ctrl.playlist_load_uuid(playlist_uuid=playlist_uuid, position=position)
+       position      = thread_music_ctrl.music_list_p - int(step)
+       playlist_uuid = thread_music_ctrl.music_ctrl["playlist_uuid"]       
+       thread_music_ctrl.playlist_load_uuid(playlist_uuid=playlist_uuid, position=position)
             
        data = mboxAPI_end(data,["no-statistic","no-system"])
        return(data)
@@ -1005,7 +1007,7 @@ def mboxAPI_jump(percentage):
        db_entries = {}
        data       = mboxAPI_start("jump","jump","",percentage,"")
 
-       thread_playlist_ctrl.player.set_position(int(percentage))
+       thread_music_ctrl.player.set_position(int(percentage))
                    
        data = mboxAPI_end(data,["no-statistic","no-system"])
        return(data)
@@ -1018,7 +1020,7 @@ def mboxAPI_pause():
        db_entries = {}
        data       = mboxAPI_start("pause","pause","","","")
 
-       thread_playlist_ctrl.player.pause()
+       thread_music_ctrl.player.pause()
        
        data = mboxAPI_end(data,["no-statistic","no-system"])
        return(data)
@@ -1031,8 +1033,8 @@ def mboxAPI_stop():
        db_entries = {}
        data       = mboxAPI_start("stop","stop","","","")
        
-       thread_playlist_ctrl.control_data(state="Ended",song={},playlist={})
-       thread_playlist_ctrl.player.stop()
+       thread_music_ctrl.control_data(state="Ended",song={},playlist={})
+       thread_music_ctrl.player.stop()
        
        data = mboxAPI_end(data,["no-statistic","no-system"])
        return(data)

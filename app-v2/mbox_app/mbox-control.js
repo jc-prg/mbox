@@ -39,7 +39,7 @@ var mboxControlPanel_progress = false;
 function mboxControlGroups() {
         var text    = "";
         var cover   = [mbox_icon_dir+mbox_icons["album_bw"],mbox_icon_dir+mbox_icons["playlist_bw"],mbox_icon_dir+mbox_icons["radio_bw"]];
-        var descr   = [lang("ALBUM"),lang("PLAYLIST"),lang("STREAM")];
+        var descr   = [lang("ALBUM"),lang("PLAYLIST"),lang("PODCAST")];
         var onclick = [
                         "mboxAlbumAll_load();",
                         "mboxPlaylistAll_load();",

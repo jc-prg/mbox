@@ -42,7 +42,7 @@ function app_menu_entries() {
 		//[lang("INDEX"),        		"link", "/index.html"],
 		[lang("ALBUM"),			"script",	"mboxAlbumAll_load(); appPrintStatus_load(); if(mbox_settings) {mboxSettingsToggle();}"],
 		[lang("PLAYLIST"),			"script",	"mboxPlaylistAll_load(); appPrintStatus_load(); if(mbox_settings) {mboxSettingsToggle();}"],
-		[lang("STREAM"),			"script",	"mboxStream_load(); appPrintStatus_load(); if(mbox_settings) {mboxSettingsToggle();}"],
+		[lang("STREAM-PODCAST"),		"script",	"mboxStream_load(); appPrintStatus_load(); if(mbox_settings) {mboxSettingsToggle();}"],
 		["LINE"],
 		["Modus: "+mbox_mode,			"script",	"mboxControlToggleMode(); appPrintStatus_load(); if(mbox_settings) {mboxSettingsToggle();}"],
 		[lang("DEVICE")+": "+mbox_device,	"script",	"mboxControlToggleDevice(); appPrintStatus_load(); if(mbox_settings){mboxSettingsToggle();}"],

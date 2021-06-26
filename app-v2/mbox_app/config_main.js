@@ -137,10 +137,19 @@ function app_theme_changed(theme) {
 // add code when screen size changed
 //--------------------------------
 
+var app_screen_size_width_old  = "";
+var app_screen_size_height_old = "";
+
 function app_screen_size_changed(width, height) {
-	console.log("Changed screen size to " + width + "x" + height);
+	console.debug("Changed screen size to " + width + "x" + height);
 	
-	if (mbox_mode == "Album")    { mboxAlbumAll_reload(); }
+	// reload views if width changes
+	if (app_screen_size_width_old != width) {
+		if (mbox_mode == "Album")    { mboxAlbumAll_reload(); }
+		}
+
+	app_screen_size_width_old  = width;
+	app_screen_size_height_old = height;
 	}
 
 //--------------------------------

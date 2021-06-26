@@ -13,7 +13,7 @@ import gtts
 import modules.config_stage as stage
 import modules.config_mbox  as mbox
 
-from decimal             import *
+from decimal import *
 
 #import operator
 

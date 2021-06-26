@@ -347,14 +347,23 @@ function mboxAlbumFilterPath(data,selected) {
 	var list     = [];
 
 	for (key in data) {
-		if (data[key]["albumpath"].indexOf("/") > -1)	{ path = data[key]["albumpath"].split("/"); }
-		else						{ path = data[key]["albumpath"].split("_"); }
-		console.log(path);
-		if (path[0] != "" && path.length > 0 && list.indexOf(path[0])==-1) {
-			list.push(path[0]);
+		if (data[key]["albumpath"].indexOf("/") > -1)	{ 
+			path = data[key]["albumpath"].split("/"); 
 			}
-		else if (path.length > 0 && list.indexOf(path[1])==-1) {
-			list.push(path[1]);
+		else { 
+			path = data[key]["albumpath"].split("_");
+			}
+			
+		console.debug("mboxAlbumFilterPath");
+		console.debug(path);
+		
+		if (path.length > 0) {
+			if (path[0] != "" && list.indexOf(path[0])==-1) {
+				list.push(path[0]);
+				}
+			else if (path[0] == "" && list.indexOf(path[1])==-1) {
+				list.push(path[1]);
+				}
 			}
 		}
 

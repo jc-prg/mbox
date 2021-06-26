@@ -62,6 +62,7 @@ class musicControlThread(threading.Thread):
       logging.info("Starting music player ("+self.name+") ...")
       self.player = music_player.musicPlayer(self.threadID, self.name)
       self.player.start()
+      self.player.set_volume(self.player.volume_start)
 
       if self.player.connected and "_device" in last_run and last_run["_device"] == "music" and last_run["music"]["playing"] == 1:
         logging.info("Load playlist and song from last run ...")

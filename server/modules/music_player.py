@@ -33,6 +33,7 @@ class musicPlayer(threading.Thread):
 
       self.connected     = False
       self.internet      = False
+      self.player        = ""
       self.play_uuid     = ""
       self.play_url      = ""
       self.play_status   = 0
@@ -59,7 +60,7 @@ class musicPlayer(threading.Thread):
       
         self.connected    = True
         self.player       = self.instance.media_player_new()
-#        self.player.audio_set_volume(int(self.volume*100))
+        self.player.audio_set_volume(int(self.volume * self.volume_factor * 100))
 #        self.player.audio_set_mute(self.volume_mute)
         
       except Exception as e:
@@ -78,9 +79,12 @@ class musicPlayer(threading.Thread):
       '''
       set volume
       '''
-      self.player.audio_set_volume(int(vol * self.volume_factor * 100))
-      self.volume_mute   = False
-      self.volume        = vol
+      if self.player != "":
+        self.player.audio_set_volume(int(vol * self.volume_factor * 100))
+        self.volume_mute   = False
+        self.volume        = vol
+      else:
+        logging.warning("Player not loaded yet")
 
 
    def volume_up(self,up):
@@ -92,7 +96,7 @@ class musicPlayer(threading.Thread):
       elif (up == "down" and vol > 0):                       vol = vol - 0.05
       elif (isinstance(up, int) and up >= 0 and up <= 100):  vol = up / 100
 
-      self.player.audio_set_volume(int(vol * self.volume_factor * 100))
+      self.set_volume(vol)
       self.volume_mute   = False
       self.volume        = vol
 
@@ -121,10 +125,10 @@ class musicPlayer(threading.Thread):
       
    def get_position(self):
       '''
-      get position in current playing or pause file
+      get position in current playing or pause file -> 1000 / seconds
       '''
       if self.player_status == "State.Playing" or self.player_status == "State.Paused": 
-         position = float(self.player.get_time()) #/ 1000
+         position = float(self.player.get_time()) 
       else:
          position = 0
       return position
@@ -132,10 +136,10 @@ class musicPlayer(threading.Thread):
    
    def get_length(self):
       '''
-      get length of current playing or pause file
+      get length of current playing or pause file ->  1000 / seconds
       '''
       if self.player_status == "State.Playing" or self.player_status == "State.Paused": 
-         length = float(self.player.get_length()) #/ 1000
+         length = float(self.player.get_length())
       else:
          length = 0
       return length
@@ -158,7 +162,7 @@ class musicPlayer(threading.Thread):
           self.player.audio_set_volume(0)
       else:
           self.volume_mute = 0
-          self.player.audio_set_volume(int(self.volume*self.volume_factor*100))
+          self.player.audio_set_volume(int(self.volume * self.volume_factor * 100))
 
       
    def play_file(self,path):

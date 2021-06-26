@@ -307,11 +307,12 @@ function mboxControlVolumeControl(volume, mute) {
 function mboxControlShowUUID(uuid) {
 
 	// scroll to album / playlist / streaming entry
-	document.getElementById('scrollto_'+uuid.replace(/-/g,"")).scrollIntoView();
+	//document.getElementById('scrollto_'+uuid.replace(/-/g,"")).scrollIntoView();
 
 	// reload and open album / playlist entry
 	if (uuid.indexOf("p_") >= 0) 		{ mboxPlaylistAll_load("",uuid); }
 	else if (uuid.indexOf("a_") >= 0) 	{ mboxAlbumAll_load("",uuid); }
+	else if (uuid.indexOf("r_") >= 0) 	{ mboxStream_load(uuid); }
 	}
 
 

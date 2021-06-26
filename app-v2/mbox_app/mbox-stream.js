@@ -29,8 +29,8 @@ function mboxStreamAdd_msg(data)
 
 //--------------------------------------
 
-function mboxStream_load()  { appFW.requestAPI("GET",["db","radio","-"],"", mboxStream); scrollToTop(); }
-function mboxStream(data) {
+function mboxStream_load(stream_uuid="-")  { appFW.requestAPI("GET",["db","radio",stream_uuid],"", [mboxStream,stream_uuid]); scrollToTop(); }
+function mboxStream(data, selected_uuid="") {
 	var text          = "";
 	var print 	  = mboxCoverListStart();
 	var default_cover = mbox_icon_dir + mbox_icons["radio"]; // "img/cd2.png";
@@ -50,6 +50,7 @@ function mboxStream(data) {
         sorted_r.sort();
 
 	// list all radio channels
+	var active_stream = -1;
 	for (var i=0;i<sorted_r.length;i++) {
 
 		var key      = sorted_r[i];
@@ -57,6 +58,11 @@ function mboxStream(data) {
 		var cmd_open = "mboxAlbumEmptyAll();mboxStreamChannel_load('"+(i+1)+"','" + uuid + "');"; 
 		var cmd_play = "appFW.requestAPI('GET',['play', '" + uuid + "'],'',mboxControl);";
 		var cover    = default_cover;
+		
+		// check if active stream
+		if (selected_uuid == uuid) {
+			active_stream = (i+1);
+			}
 
 		// check cover, load via URL if PodCast
 	        if (radio_data[uuid]["podcast"] && radio_data[uuid]["podcast"]["title"]) {
@@ -93,6 +99,14 @@ function mboxStream(data) {
 	setTextById("ontop",  print);
 
 	document.getElementById("frame2").style.display="none";
+
+
+	if (selected_uuid != "" && active_stream > -1) {
+		//mboxAlbumList_load_direct(album_active_no1,album_active_no2,album_active);
+		mboxStreamChannel_load(i=active_stream,uuid=selected_uuid);
+		document.getElementById('scrollto_'+selected_uuid.replace(/-/g,"")).scrollIntoView();
+		}
+
 	}
 
 
@@ -461,8 +475,8 @@ function mboxStreamAdd_dialog(i) {
 
 function mboxStreamAdd_msg(data) {
         var text = "";
-        if (data["REQUEST"]["status"] == "success")     { text += lang("STREAM_CREATED"); } 
-        else                         		        { text += lang("STREAM_CREATED_ERROR"); } 
+        if (data["REQUEST"]["status"] == "success")	{ text += lang("STREAM_CREATED"); } 
+        else						{ text += lang("STREAM_CREATED_ERROR"); } 
         appMsg.alert(text);
         mboxStream_load()
         }

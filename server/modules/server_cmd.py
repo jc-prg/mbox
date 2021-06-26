@@ -1,19 +1,13 @@
 import logging
 import uuid
 import urllib.parse
-#from os import path
 
 import modules.config_stage   as stage
 import modules.config_mbox    as mbox
-
 import modules.jcJson         as jcJSON
 import modules.jcCouchDB      as jcCouch
 from   modules.jcRunCmd       import *
-
 import modules.music_load     as music_load
-from   modules.music_podcast  import *
-#import modules.music_speak    as music_speak
-
 from   modules.server_init    import *
 
 #-------------------------------------------------

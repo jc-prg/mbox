@@ -14,6 +14,7 @@ import modules.config_stage  as stage
 import modules.config_mbox   as mbox
 import modules.music_speak   as music_speak
 import modules.music_player  as music_player
+import modules.music_podcast as music_podcast
 
 from   decimal               import *
 
@@ -21,7 +22,7 @@ from   decimal               import *
       
 class musicControlThread(threading.Thread):
 
-   def __init__(self, threadID, name, device, database, podcast):
+   def __init__(self, threadID, name, device, database):
       '''
       set initial values to vars and start VLC
       '''
@@ -43,12 +44,14 @@ class musicControlThread(threading.Thread):
       self.music_ctrl      = {}
       self.music_ctrl      = self.control_data(state="Started")
       self.music_type      = ""
-      self.music_podcast   = podcast
+      
+      self.podcast              = music_podcast.podcastThread(threadID+10, "Thread Podcast", database)
+      self.podcast.start()
+      self.speak                = music_speak.speakThread(threadID+10, name + " / Speak", 1, "")
+      self.speak.start()
 
       self.last_card_identified = ""      
       self.relevant_db          = self.music_database.databases["music"]
-      self.speak                = music_speak.speakThread(4, name + " / Speak", 1, "")
-      self.speak.start()
 
       
    def run(self):
@@ -62,7 +65,6 @@ class musicControlThread(threading.Thread):
       logging.info("Starting music player ("+self.name+") ...")
       self.player = music_player.musicPlayer(self.threadID, self.name)
       self.player.start()
-      self.player.set_volume(self.player.volume_start)
 
       if self.player.connected and "_device" in last_run and last_run["_device"] == "music" and last_run["music"]["playing"] == 1:
         logging.info("Load playlist and song from last run ...")
@@ -102,7 +104,7 @@ class musicControlThread(threading.Thread):
             else:
                database                  = self.music_database.read_cache("radio")
                current_stream            = database[self.music_list_uuid]
-               current_stream["podcast"] = self.music_podcast.get_podcasts(self.music_list_uuid)
+               current_stream["podcast"] = self.podcast.get_podcasts(self.music_list_uuid)
                
                if current_stream["podcast"] != {}:
                   current_info         = current_stream["podcast"]
@@ -242,7 +244,7 @@ class musicControlThread(threading.Thread):
          track_db             = self.music_database.read_cache("tracks")
          
       else:
-         podcast              = self.music_podcast.get_podcasts(playlist_uuid)
+         podcast              = self.podcast.get_podcasts(playlist_uuid)
          track_list           = []
          if "track_list" in podcast:
            track_list           = podcast["track_list"]

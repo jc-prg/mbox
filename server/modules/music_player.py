@@ -60,7 +60,7 @@ class musicPlayer(threading.Thread):
       
         self.connected    = True
         self.player       = self.instance.media_player_new()
-        self.player.audio_set_volume(int(self.volume * self.volume_factor * 100))
+        self.set_volume(self.volume)
 #        self.player.audio_set_mute(self.volume_mute)
         
       except Exception as e:
@@ -159,10 +159,10 @@ class musicPlayer(threading.Thread):
       '''
       if self.volume_mute == 0 or value == True:
           self.volume_mute = 1
-          self.player.audio_set_volume(0)
+          self.set_volume(0)
       else:
           self.volume_mute = 0
-          self.player.audio_set_volume(int(self.volume * self.volume_factor * 100))
+          self.set_volume(self.volume)
 
       
    def play_file(self,path):

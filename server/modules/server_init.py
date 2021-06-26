@@ -103,7 +103,7 @@ def speak_message(message):
 #-------------------------------------------------
 
 logging.info("Load Speak Messages ..." + time_since_start())
-thread_speak = music_speak.speakThread(4, "Thread Speak", 1, "")  #  jcJSON.read("music"), jcJSON.read("radio"))
+thread_speak = music_speak.speakThread(1, "Thread Speak", 1, "")  #  jcJSON.read("music"), jcJSON.read("radio"))
 thread_speak.start()
 thread_speak.speak_message("STARTING")
 
@@ -111,15 +111,11 @@ logging.info("Load CouchDB ..." + time_since_start())
 couch = jcCouch.jcCouchDB()
 
 logging.info("Load Music Import ..." + time_since_start())
-thread_music_load = music_load.musicLoadingThread(3, "Thread Music Load", 1, couch) #  jcJSON.read("music"))
+thread_music_load = music_load.musicLoadingThread(2, "Thread Music Load", 1, couch) #  jcJSON.read("music"))
 thread_music_load.start()
 
-logging.info("Load Podcast Load ..." + time_since_start())
-thread_podcast = music_podcast.podcastThread(6, "Thread Podcast", couch)
-thread_podcast.start()
-
 logging.info("Load Music Control ..." + time_since_start())
-thread_music_ctrl = music_ctrl.musicControlThread(5, "Thread Music Control", "music_box", couch, thread_podcast)
+thread_music_ctrl = music_ctrl.musicControlThread(3, "Thread Music Control", "music_box", couch)
 thread_music_ctrl.start()
 
 
@@ -163,9 +159,6 @@ def end_all(n1,n2):
 
   logging.warn("Stop Application")
 
-  thread_music_ctrl.stop()
-  thread_radio_ctrl.stop_playback()
-  thread_radio_ctrl.stop()
   thread_music_load.stop()
   thread_music_ctrl.stop()
   thread_podcast.stop()

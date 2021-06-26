@@ -358,7 +358,7 @@ def mboxAPI_readDB(databases,db_filter=""):
              stream_url = data["DATA"]["radio"][stream_uuid]["stream_url"]
              
              if stream_url.endswith(".rss") or stream_url.endswith(".xml") or stream_url.endswith(".podcast"):   
-                podcast = thread_podcast.get_podcasts(playlist_uuid=stream_uuid)
+                podcast = thread_music_ctrl.podcast.get_podcasts(playlist_uuid=stream_uuid)
                 data["DATA"]["radio"][stream_uuid]["podcast"] = podcast
                 if "_selected_uuid" in data and stream_uuid == uuid:
                    data["DATA"]["_selected"]["podcast"] = podcast                
@@ -455,7 +455,7 @@ def mboxAPI_readEntry(uuid,db_filter=""):
 
                    # special handling for streams and podcast (read up-to-date data)
                    if uuid.startswith("r_"): 
-                      temp[uuid]["podcast"] = thread_podcast.get_podcasts(playlist_uuid=uuid)
+                      temp[uuid]["podcast"] = thread_music_ctrl.podcast.get_podcasts(playlist_uuid=uuid)
                       if data["DATA"]["_selected"]["stream_url"].endswith(".m3u"):
                          data["DATA"]["_selected"]["stream_url2"] = thread_music_ctrl.player.get_stream_m3u(data["DATA"]["_selected"]["stream_url"])
 

@@ -9,7 +9,7 @@
   .mbox_control {
   	border-top: 2px solid black;
   	background: #888888;
-  	opacity   :0.8;
+  	opacity   :0.9;
 	}
 
   .mbox_control.on	{}

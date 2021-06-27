@@ -65,9 +65,12 @@ class musicControlThread(threading.Thread):
       logging.info("Starting music player ("+self.name+") ...")
       self.player = music_player.musicPlayer(self.threadID, self.name)
       self.player.start()
+      time.sleep(2)
 
-      if self.player.connected and "_device" in last_run and last_run["_device"] == "music" and last_run["music"]["playing"] == 1:
-
+      if last_run["music"]["playing"] != 1:     
+        logging.info("Don't playlist and song from last run ("+last_music["playlist_uuid"]+")...")
+      
+      elif last_run["music"]["playing"] == 1:
         logging.info("Load playlist and song from last run ...")
         logging.info("... "+last_music["playlist_uuid"])
         last_load                   = True
@@ -81,7 +84,6 @@ class musicControlThread(threading.Thread):
           self.music_list_p         = last_music["playlist_pos"]
           self.music_load_new       = True
 
-      time.sleep(2)
       while self.running:     
 
          time.sleep(wait_time)         
@@ -337,8 +339,6 @@ class musicControlThread(threading.Thread):
       if not "_saved" in data or data["_saved"] + 3 < time.time():
         data["music"]  = self.music_ctrl
         data["_saved"] = time.time()
-        if self.music_ctrl["state"] == "State.Playing" or self.music_ctrl["state"] == "State.Paused": 
-           data["_device"] = "music"
         self.music_database.write("status",data)
         logging.info("Save playing status: "+self.music_ctrl["state"])
 

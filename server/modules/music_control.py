@@ -103,29 +103,27 @@ class musicControlThread(threading.Thread):
                
             else:
                database                  = self.music_database.read_cache("radio")
-               current_stream            = database[self.music_list_uuid]
-               current_stream["podcast"] = self.podcast.get_podcasts(self.music_list_uuid, current_stream["stream_url"])
+               if self.music_list_uuid in database:
+                 current_stream            = database[self.music_list_uuid]
+                 current_stream["podcast"] = self.podcast.get_podcasts(self.music_list_uuid, current_stream["stream_url"])
                
-               if current_stream["podcast"] != {}:
-                  current_info         = current_stream["podcast"]
-                  current_list["list"] = []
-                  for filename in current_list["files"]:
+                 if current_stream["podcast"] != {}:
+                   current_info         = current_stream["podcast"]
+                   current_list["list"] = []
+                   for filename in current_list["files"]:
                      track_uuid = current_info["track_url"][filename]
                      track_info = current_info["tracks"][track_uuid]
                      current_list["list"].append(track_info)
-                  current_uuid         = current_info["track_url"][current_path]
-                  current_info         = current_info["tracks"][current_uuid]
-                  current_info["uuid"] = current_uuid
-                  current_info["info"] = "Title loaded"
-                  
-                  #self.speak.speak_text(current_info["title"])
-                  
+                   current_uuid         = current_info["track_url"][current_path]
+                   current_info         = current_info["tracks"][current_uuid]
+                   current_info["uuid"] = current_uuid
+                   current_info["info"] = "Title loaded"                  
+                 else:
+                   current_info    = { "file" : current_path, "stream" : current_stream }
+                   current_info["stream"]["uuid"] = self.music_list_uuid
                else:
-                  current_info    = {
-                     "file"    : current_path,
-                     "stream"  : current_stream
-                     }
-                  current_info["stream"]["uuid"] = self.music_list_uuid
+                   current_info    = { "file" : current_path, "stream" : current_stream }
+                   current_info["stream"]["uuid"] = self.music_list_uuid
                
                         
             if current_path.startswith("http"): 
@@ -413,7 +411,7 @@ class musicControlThread(threading.Thread):
                 if stream_url.endswith(end): is_podcast = True           
                 
               if is_podcast:  
-                  get_tracks_rss(rss_url=stream_url, playlist_uuid=get_uuid)
+                  self.podcast.get_tracks_rss(rss_url=stream_url, playlist_uuid=get_uuid)
                   logging.warning("RSS Feed / Podcast-List not implemented yet!")
                   track_list = []
               else: 

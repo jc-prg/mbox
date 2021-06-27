@@ -134,8 +134,8 @@ class musicControlThread(threading.Thread):
                         
             if current_path.startswith("http"): 
                self.player.stop()
-               if self.music_list_p == 1 and "title" in current_stream:    self.speak.speak_text(current_stream["title"]+".", self.player.volume*100)
-               if "title" in current_info:                                 self.speak.speak_text(current_info["title"]+".", self.player.volume*100)
+               if self.music_list_p == 1 and current_stream and "title" in current_stream:    self.speak.speak_text(current_stream["title"]+".", self.player.volume*100)
+               if "title" in current_info:                                                    self.speak.speak_text(current_info["title"]+".", self.player.volume*100)
                self.player.play_stream(current_path)
             else:                               
                self.player.stop()

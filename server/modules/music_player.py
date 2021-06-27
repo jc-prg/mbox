@@ -180,6 +180,7 @@ class musicPlayer(threading.Thread):
         self.player.set_media(self.media)
         self.player.play()
         self.play_url = path
+        self.set_volume(self.volume)
         
       except Exception as e:
         logging.error("Player ("+self.name+"): Could not start playback - "+path+" - "+str(e))

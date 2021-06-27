@@ -31,7 +31,8 @@ class speakThread (threading.Thread):
       self.name           = name
       self.counter        = counter
       self.stopProcess    = False
-      self.default_volume = 70;
+      self.default_volume = 70
+      self.volume         = self.default_volume
       
       if stage.rollout == "prod":     self.instance     = vlc.Instance("--quiet")
       else:                           self.instance     = vlc.Instance()
@@ -44,6 +45,7 @@ class speakThread (threading.Thread):
    def play_file(self, filename):
       self.media = self.instance.media_new( filename ) #str(file.encode('utf-8')) )
       self.player.set_media(self.media)
+      self.player.audio_set_volume(self.volume)
       self.player.play()
       
       time.sleep(2)
@@ -57,12 +59,16 @@ class speakThread (threading.Thread):
       return "Ended"
       
       
-   def speak_text(self, text):
+   def speak_text(self, text, volume=-1):
       '''
       Use google API to speech from text
       '''
       filename = "/tmp/music-box-speech.mp3"
       language = stage.language.lower()
+      
+      if volume == -1: self.volume = self.volume_default
+      else:            self.volume = volume
+      
       try:
          tts = gtts.gTTS(text, lang=language)
          tts.save(filename)
@@ -78,7 +84,7 @@ class speakThread (threading.Thread):
     
 
     
-   def speak_message(self, message):
+   def speak_message(self, message, volume=-1):
       '''
       play spoken messages from prerecorded files
       '''

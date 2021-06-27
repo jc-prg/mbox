@@ -128,8 +128,8 @@ class musicControlThread(threading.Thread):
                         
             if current_path.startswith("http"): 
                self.player.stop()
-               if self.music_list_p == 1 and "title" in current_stream:    self.speak.speak_text(current_stream["title"]+".")
-               if "title" in current_info:                                 self.speak.speak_text(current_info["title"]+".")
+               if self.music_list_p == 1 and "title" in current_stream:    self.speak.speak_text(current_stream["title"]+".", self.player.volume*100)
+               if "title" in current_info:                                 self.speak.speak_text(current_info["title"]+".", self.player.volume*100)
                self.player.play_stream(current_path)
             else:                               
                self.player.stop()
@@ -144,7 +144,6 @@ class musicControlThread(threading.Thread):
             if self.player.play_status == 1: self.music_ctrl = self.control_data(state="play",  song=current_info, playlist=current_list)
             else:                            self.music_ctrl = self.control_data(state="error", song={}, playlist=current_list)
             
-
          if not self.music_load_new:
          
             if self.player.player_status == "State.Ended":
@@ -426,7 +425,7 @@ class musicControlThread(threading.Thread):
       
    def control_data(self,state,song={},playlist={}):
       '''
-      set and return control data
+	      set and return control data
       '''
       if state != "Started" and playlist != {}:
         if "LastCard" in self.music_ctrl: last_card = self.music_ctrl["LastCard"]

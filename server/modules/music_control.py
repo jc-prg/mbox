@@ -67,7 +67,9 @@ class musicControlThread(threading.Thread):
       self.player.start()
 
       if self.player.connected and "_device" in last_run and last_run["_device"] == "music" and last_run["music"]["playing"] == 1:
+
         logging.info("Load playlist and song from last run ...")
+        logging.info("... "+last_music["playlist_uuid"])
         last_load                   = True
         last_music                  = last_run["music"]
         self.music_ctrl             = last_music

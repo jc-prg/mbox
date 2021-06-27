@@ -71,17 +71,16 @@ class speakThread (threading.Thread):
       else:            self.volume = volume
       
       try:
-         tts = gtts.gTTS(text, lang=language)
+         tts = gtts.gTTS(str(text), lang=language)
          tts.save(filename)
          self.play_file(filename)
          duration = self.player.get_length() / 1000
+         logging.info("Speak_text: "+str(text)+" ("+str(duration)+")")
          time.sleep(duration)
                
       except Exception as e:
          logging.error("Could not speak message ("+text+").")
          logging.error(" -> gtts error: "+str(e))
-
-      logging.info("Speak_text: "+text+" ("+str(duration)+")")
     
 
     

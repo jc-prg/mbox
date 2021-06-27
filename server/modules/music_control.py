@@ -141,10 +141,10 @@ class musicControlThread(threading.Thread):
                    current_info    = { "file" : current_path, "stream" : current_stream }
                    current_info["stream"]["uuid"] = self.music_list_uuid
             
-            if last_load:
+            if last_load and self.player.play_status == 1:
                logging.debug("Jump to position in song from last run ...")
                position  = (self.music_ctrl["position"] / self.music_ctrl["length"]) * 100
-               self.set_position()
+               self.player.set_position()
                last_load = False
 
             if self.player.play_status == 1: self.music_ctrl = self.control_data(state="play",  song=current_info, playlist=current_list)

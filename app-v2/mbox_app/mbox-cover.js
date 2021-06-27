@@ -152,7 +152,7 @@ function mboxCoverList( uuid, cover="", description="", cmd_open="", cmd_play=""
 
 	if (cover == "") {
                 cover = default_cover;
-                text += "<div class=\"album_cover\" style=\"background:url(" + cover + ");\" onclick=\"" + cmd_open + "\">";
+                text += "<div class=\"album_cover\" style=\"background:url('" + cover + "');\" onclick=\"" + cmd_open + "\">";
 		text += button_play;
                 text += "<div class=\"player_active\" id=\"playing2_" + uuid + "\" style=\"display:none;\"><img src=\"" + icon_playing + "\" style=\"width:10px;height:10px;margin:2px;\"></div>";
                 text += "<br/><br/>";
@@ -160,7 +160,7 @@ function mboxCoverList( uuid, cover="", description="", cmd_open="", cmd_play=""
                 text += "</div>";
                 }
         else {
-                text += "<div class=\"album_cover\" style=\"background:url(" + cover + ");background-size:cover;background-repeat:no-repeat;vertical-align:botton;\" onclick=\"" + cmd_open + "\">";
+                text += "<div class=\"album_cover\" style=\"background:url('" + cover + "');background-size:cover;background-repeat:no-repeat;vertical-align:botton;\" onclick=\"" + cmd_open + "\">";
 		text += button_play;
                 text += "<div class=\"player_active\" id=\"playing2_" + uuid + "\" style=\"display:none;\"><img src=\"" + icon_playing + "\" style=\"width:10px;height:10px;margin:2px;\"></div>";
                 text += "</div>";
@@ -185,7 +185,7 @@ function mboxCoverListEnd() {
 	}
 
 function mboxCoverListEntry(id,cover) {
-	return "<div class=\"print_album_cover\" id=\"printCover_" + id + "\"onclick=\"document.getElementById('printCover_" + id + "').style.display='none';\" style=\"background:url("+cover+");background-size:cover;background-repeat:no-repeat;vertical-align:botton;\"></div>";
+	return "<div class=\"print_album_cover\" id=\"printCover_" + id + "\"onclick=\"document.getElementById('printCover_" + id + "').style.display='none';\" style=\"background:url('"+cover+"');background-size:cover;background-repeat:no-repeat;vertical-align:botton;\"></div>";
 	}
 
 //--------------------------------------

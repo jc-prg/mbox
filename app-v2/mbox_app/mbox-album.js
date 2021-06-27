@@ -284,7 +284,7 @@ function mboxAlbumAll_chapter(count, title, last_title) {
 	last_title += " ";
 	last_char   = last_title.substring(0,1);
 
-	text += "<div class=\"album_cover character\" style=\"background:url(" + cover + ");\">";
+	text += "<div class=\"album_cover character\" style=\"background:url('" + cover + "');\">";
 	text += "<div class=\"album_sort\">" + act_char + "</div>";
 	text += "</div>";
 	text += "<div class=\"album_detail\" id=\"album_" + count + "\" style=\"display:none\">test " + count + " / " + document.body.clientWidth + "</div>";
@@ -483,7 +483,7 @@ function mboxAlbumList(data) {
 	// Write album cover
         var onclick    = "mboxCoverAlbum_alert(\""+cover+"\");";
 	text += "<div id=\"scrollto2_"+uuid.replace(/-/g,"")+"\">";
-	text += "<div class=\"album_cover\" style=\"background:url("+cover+");background-size:contain;background-position:center;background-repeat:no-repeat;\" onclick='" + onclick + "'>";
+	text += "<div class=\"album_cover\" style=\"background:url('"+cover+"');background-size:contain;background-position:center;background-repeat:no-repeat;\" onclick='" + onclick + "'>";
 	text += "</div>";
 
 	// write album infos

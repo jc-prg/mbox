@@ -248,7 +248,8 @@ function mboxCardList(data) {
         
 	var div0     = "<div class=\"rfid_list\">";
 	var div1     = "<div class=\"rfid_entry\">";
-	var div2     = "<div class=\"rfid_xxx\">";
+	var div2     = "<div class=\"rfid_line\">";
+	var div3     = "<div class=\"rfid_xxx\">";
 	var divE     = "</div>";
 	
 	if (selected != "" || filter != "")	{ var filter_txt = " &nbsp;(<a onclick='mboxCardList_load();'>delete filter</a>)"; }
@@ -266,15 +267,16 @@ function mboxCardList(data) {
 		var onclick = "";
 		var type    = "";
 
-                if (aa.indexOf("a_")>-1)  { img = div2 + "<img src=\""+mbox_icon_dir+mbox_icons["album_bw"]+"\" style=\"width:30px;height:30px;\"/>" + divE; 	type = "album"; } //album
-                if (aa.indexOf("p_")>-1)  { img = div2 + "<img src=\""+mbox_icon_dir+mbox_icons["playlist_bw"]+"\" style=\"width:30px;height:30px;\"/>" + divE;	type = "playlist"; } //playlist
-                if (aa.indexOf("r_")>-1)  { img = div2 + "<img src=\""+mbox_icon_dir+mbox_icons["radio_bw"]+"\" style=\"width:30px;height:30px;\"/>" + divE; 	type = "radio"; } //radio/webstream
+                if (aa.indexOf("a_")>-1)  { img = "<img src=\""+mbox_icon_dir+mbox_icons["album_bw"]+"\" style=\"width:30px;height:30px;\"/>"; 	type = "album"; } //album
+                if (aa.indexOf("p_")>-1)  { img = "<img src=\""+mbox_icon_dir+mbox_icons["playlist_bw"]+"\" style=\"width:30px;height:30px;\"/>";	type = "playlist"; } //playlist
+                if (aa.indexOf("r_")>-1)  { img = "<img src=\""+mbox_icon_dir+mbox_icons["radio_bw"]+"\" style=\"width:30px;height:30px;\"/>"; 	type = "radio"; } //radio/webstream
 
 		if (selected && selected != "" && card != selected) { continue; }
 //		if (filter   && filter != "" && filter != type)	  { continue; }
 
-		text += div2; 
-		text += img;
+		text    += div2; 
+		text    += div3 + img + divE;
+
 
 		text    += div1; //"<div style=\"float:left;height:70px;\">";
 		text    += "<a href='"+ RESTurl + "api/data/"+card+"/-/' target='_blank'>" +card + "</a><br/><b>";
@@ -316,8 +318,10 @@ function mboxCardList(data) {
 		if (data["LOAD"]["RFID"] == card) 	{ color = "yellow"; }
 		else					{ color = "red";    }
 
-                text += div2; // + "<div style=\"margin:px;\">";
-                text += mboxHtmlButton("delete","appMsg.confirm('<br/>Zuordnung zwischen Karte &quot;" + card  + "&quot; und Album &quot;" + title + "&quot; löschen?','mboxCardDelete(#" + card + "#,#" + cards[card][0] + "#)',150)",color);
+		text += div3; // + "<div style=\"margin:px;\">";
+		text += mboxHtmlButton("play",  "appMsg.confirm('<br/>Karte &quot;" + card  + "&quot; ausführen und Album &quot;" + title + "&quot; starten?','mboxCardPlay_exec(#" + card + "#,#" + cards[card][0] + "#)',150)","green");
+		text += mboxHtmlButton("delete","appMsg.confirm('<br/>Karte &quot;" + card  + "&quot; vom Album &quot;" + title + "&quot; l&ouml;sen?','mboxCardDelete_exec(#" + card + "#,#" + cards[card][0] + "#)',150)",color);
+//		text += mboxHtmlButton("delete","mboxCardDelete(#" + card + "#,#" + cards[card][0] + "#);",color);
 		text += divE; // + divE;
 
 		text += divE;
@@ -336,7 +340,7 @@ function mboxCardList(data) {
 	//text += data["LOAD"]["RFID"];
 
 	if (selected && selected != "") { appMsg.confirm(text,"mboxCardList_load();",400); }
-	else				{ appMsg.confirm(text,"",400); }
+	else				 { appMsg.confirm(text,"",400); }
         //setTextById("remote1",text);
         }
 
@@ -346,7 +350,7 @@ function mboxCardList(data) {
 
 function mboxCardDelete(card_id,title) {
 	text    = lang("CARD_DELETE_ASK") + "?<br/> "+lang("TITLE")+": <b>"+title+"</b><br/>ID: "+card_id;
-	cmd     = "mboxStreamDelete_exec('"+card_id+"','"+title+"');";
+	cmd     = "mboxCardDelete_exec('"+card_id+"','"+title+"');";
 	appMsg.confirm(text,cmd,150,true);
 	}
 	
@@ -354,10 +358,21 @@ function mboxCardDelete_exec(uuid,title) {
 	appFW.requestAPI('DELETE',['data',uuid],'',[mboxCardDelete_msg,title]);
 	}
 
+function mboxCardPlay_exec(uuid,title) {
+	appFW.requestAPI('PUT',['set-card',uuid],'',[mboxCardPlay_msg,uuid]);
+	setTimeout(function(){ appFW.requestAPI('PUT',['set-card','no_card']); }, 5000);
+	}
+
 function mboxCardDelete_msg(data,title) {
 	mboxDataReturnMsg(data,lang("CARD_DELETED")+"<br/><b>"+title,lang("CARD_DELETE_ERROR")+"<br/><b>"+title);
-        mboxPlaylistAll_load();
-        }
+	//mboxPlaylistAll_load();
+	}
+
+function mboxCardPlay_msg(data,uuid) {
+	mboxDataReturnMsg(data,lang("CARD_STARTED")+"<br/><b>"+uuid,lang("CARD_START_ERROR")+"<br/><b>"+uuid);
+	mboxControlShowUUID(title);
+	//mboxPlaylistAll_load();
+	}
 
 // save edit dialog ...
 //---------------------------------

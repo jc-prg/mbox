@@ -132,6 +132,7 @@ class musicControlThread(threading.Thread):
                    current_info["stream"]["uuid"] = self.music_list_uuid
                
                         
+            database = self.music_database.read_cache("radio")
             if self.music_list_uuid in database and current_path.startswith("http"): 
                current_stream = database[self.music_list_uuid]
                self.player.stop()

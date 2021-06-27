@@ -171,7 +171,7 @@ class musicPlayer(threading.Thread):
       '''
       self.player.stop()
       
-      if not os.path.exists( path ) and not path.startswith("http"):
+      if not os.path.exists( path.encode('utf-8') ) and not path.startswith("http"):
          self.speak.speak_message("FILE-NOT-FOUND")
          return "Error"
 

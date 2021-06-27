@@ -293,8 +293,8 @@ class musicControlThread(threading.Thread):
           logging.info("CardUID: "+mbox.rfid_ctrl["cardUID"])
           if mbox.rfid_ctrl["cardUID"] in database:
           
-            if "LastCard" in self.music_ctrl and self.music_ctrl["LastCard"] == self.music_list_uuid:
-               logging.info("Card already started ("+self.music_ctrl["LastCard"]+")...")
+            if "LastCard" in self.music_ctrl and self.music_ctrl["LastCard"] == self.music_list_uuid and self.play_status != 1:
+               logging.info("Card already started ("+self.music_ctrl["LastCard"]+"/"+self.music_list_uuid+")...")
 
             else:
                logging.info("Start Playlist: "+database[mbox.rfid_ctrl["cardUID"]][0]+" / "+self.music_ctrl["LastCard"])              

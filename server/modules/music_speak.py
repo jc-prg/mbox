@@ -65,6 +65,7 @@ class speakThread (threading.Thread):
       '''
       filename = "/tmp/music-box-speech.mp3"
       language = stage.language.lower()
+      duration = -1
       
       if volume == -1: self.volume = self.volume_default
       else:            self.volume = volume

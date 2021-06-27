@@ -184,7 +184,7 @@ function mboxStreamChannel(data) {
         
         // Write album cover
         var onclick    = "mboxCoverAlbum_alert(\""+cover+"\");";        
-        text += "<div class=\"album_cover\" style=\"background:url("+cover+");background-size:contain;background-position:center;background-repeat:no-repeat;\" onclick='" + onclick + "'>";
+        text += "<div class=\"album_cover\" style=\"background:url('"+cover+"');background-size:contain;background-position:center;background-repeat:no-repeat;\" onclick='" + onclick + "'>";
         text += "</div>";
 
         // write album infos

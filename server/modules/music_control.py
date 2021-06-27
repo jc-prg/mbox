@@ -132,9 +132,10 @@ class musicControlThread(threading.Thread):
                    current_info["stream"]["uuid"] = self.music_list_uuid
                
                         
-            if current_path.startswith("http"): 
+            if self.music_list_uuid in database and current_path.startswith("http"): 
+               current_stream = database[self.music_list_uuid]
                self.player.stop()
-               if self.music_list_p == 1 and current_stream and "title" in current_stream:    self.speak.speak_text(current_stream["title"]+".", self.player.volume*100)
+               if self.music_list_p == 1 and "title" in current_stream:    self.speak.speak_text(current_stream["title"]+".", self.player.volume*100)
                if "title" in current_info:                                                    self.speak.speak_text(current_info["title"]+".", self.player.volume*100)
                self.player.play_stream(current_path)
             else:                               

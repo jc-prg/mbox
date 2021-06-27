@@ -58,9 +58,10 @@ class musicControlThread(threading.Thread):
       '''
       loop: check if track in playlist, stream ... and play status
       '''
-      wait_time = 0.1
-      last_load = False  
-      last_run  = self.music_database.read("status")
+      wait_time  = 0.1
+      last_load  = False  
+      last_run   = self.music_database.read("status")
+      last_music = last_run["music"]
 
       logging.info("Starting music player ("+self.name+") ...")
       self.player = music_player.musicPlayer(self.threadID, self.name)
@@ -74,7 +75,6 @@ class musicControlThread(threading.Thread):
         logging.info("Load playlist and song from last run ...")
         logging.info("... "+last_music["playlist_uuid"])
         last_load                   = True
-        last_music                  = last_run["music"]
         self.music_ctrl             = last_music
         self.music_ctrl["LastCard"] = ""
         self.music_loaded           = 1      

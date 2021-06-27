@@ -79,6 +79,7 @@ class musicPlayer(threading.Thread):
       '''
       set volume
       '''
+      logging.info("-> "+str(vol))
       if self.player != "":
         self.player.audio_set_volume(int(vol * self.volume_factor * 100))
         self.volume_mute   = False

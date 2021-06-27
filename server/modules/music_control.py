@@ -72,9 +72,6 @@ class musicControlThread(threading.Thread):
         logging.info("Don't playlist and song from last run ("+last_music["playlist_uuid"]+")...")
       
       elif last_run["music"]["playing"] == 1:
-        logging.info("Load playlist and song from last run ...")
-        logging.info("... "+last_music["playlist_uuid"])
-        last_load                   = True
         self.music_ctrl             = last_music
         self.music_ctrl["LastCard"] = ""
         self.music_loaded           = 1      
@@ -83,6 +80,11 @@ class musicControlThread(threading.Thread):
           self.music_list           = last_music["playlist_files"]
           self.music_list_p         = last_music["playlist_pos"]
           self.music_load_new       = True
+          last_load                 = True
+          
+          logging.info("Load playlist and song from last run ...")
+          logging.info("... "+last_music["playlist_uuid"])
+
 
       while self.running:     
 
@@ -95,7 +97,8 @@ class musicControlThread(threading.Thread):
          self.playlist_load_rfid()
          self.playback_save_status()
          self.music_plays = self.player.playing()       
-         
+
+         # if new data to be loaded         
          logging.debug("Active playlist: " + str(self.music_load_new) + "; List: " + str(len(self.music_list)) + "; Position: " + str(self.music_list_p) )
          if self.music_load_new and len(self.music_list) > 0 and int(self.music_list_p) <= len(self.music_list):
          
@@ -103,12 +106,17 @@ class musicControlThread(threading.Thread):
             current_path         = self.music_list[int(self.music_list_p)-1]
             current_list         = self.playlist_info()
             
+            # if playlist or album
             if not self.music_list_uuid.startswith("r_"):
                current_info         = self.metadata_by_filename(current_path)
                current_info["info"] = "Title loaded"
+               current_stream       = ""
                
+            # if stream or podcast
             else:
-               database                  = self.music_database.read_cache("radio")
+               database             = self.music_database.read_cache("radio")
+                              
+               # if stream exists
                if self.music_list_uuid in database:
                  current_stream            = database[self.music_list_uuid]
                  current_stream["podcast"] = self.podcast.get_podcasts(self.music_list_uuid, current_stream["stream_url"])
@@ -128,30 +136,35 @@ class musicControlThread(threading.Thread):
                    current_info    = { "file" : current_path, "stream" : current_stream }
                    current_info["stream"]["uuid"] = self.music_list_uuid               
                         
-                 if self.music_list_uuid in database and current_path.startswith("http"): 
-                   self.player.stop()
-                   if self.music_list_p == 1 and "title" in current_stream:    self.speak.speak_text(current_stream["title"]+".", self.player.volume*100)
-                   if "title" in current_info:                                 self.speak.speak_text(current_info["title"]+".", self.player.volume*100)
-                   self.player.play_stream(current_path)
-                 else:                               
-                   self.player.stop()
-                   self.player.play_file(mbox.music_dir + current_path)
-                   
+               # if stream_uuid not found    
                else:
                    current_info    = { "file" : current_path, "stream" : current_stream }
                    current_info["stream"]["uuid"] = self.music_list_uuid
             
-            if last_load and self.player.play_status == 1:
+            # start playback 
+            if current_path.startswith("http"): 
+              self.player.stop()
+              if self.music_list_p == 1 and "title" in current_stream:    self.speak.speak_text(current_stream["title"]+".", self.player.volume*100)
+              if "title" in current_info:                                 self.speak.speak_text(current_info["title"]+".", self.player.volume*100)
+              self.player.play_stream(current_path)
+                   
+            else:                               
+              self.player.stop()
+              self.player.play_file(mbox.music_dir + current_path)
+               
+            # if stopped device while playing, load last music
+            if last_load:
                logging.debug("Jump to position in song from last run ...")
                position  = (self.music_ctrl["position"] / self.music_ctrl["length"]) * 100
-               self.player.set_position()
+               self.player.set_position(position)
                last_load = False
 
+            # update data
             if self.player.play_status == 1: self.music_ctrl = self.control_data(state="play",  song=current_info, playlist=current_list)
             else:                            self.music_ctrl = self.control_data(state="error", song={}, playlist=current_list)
             
+         # if no new data, check if ended
          if not self.music_load_new:
-         
             if self.player.player_status == "State.Ended":
             
                if self.music_list_p < len(self.music_list):

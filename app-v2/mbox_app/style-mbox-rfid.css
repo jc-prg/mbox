@@ -19,6 +19,15 @@
 	padding:5px;
 	}
 
+.rfid_line {
+	float:left;
+	height:60px;
+	overflow:hidden;
+	position:default;
+	margin:0px;
+	padding:0px;
+	}
+
 .rfid_xxx {
 	float:left;
 	height:60px;
@@ -26,6 +35,12 @@
 	position:default;
 	margin:0px;
 	padding:0px;
+	}
+	
+.rfid_xxx .player_image {
+	margin : 4px;
+	top : 0px;
+	left : 0px;
 	}
 
 @media (max-width: 735px) {

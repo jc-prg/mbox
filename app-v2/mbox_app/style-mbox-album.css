@@ -237,7 +237,7 @@
 	}
 	
 .album_tracks_title {
-	width           : 240px;
+	width           : 260px;
 	float           : left;
 	margin-top      : 3px;
 	margin-bottom   : 2px;
@@ -246,7 +246,7 @@
 .album_track_title_shorten {
  	white-space	: nowrap;
  	overflow	: hidden;
-	width		: 220px;
+	width		: 240px;
 	text-overflow	: ellipsis;
 	float           : left;
 	}
@@ -273,7 +273,7 @@
   }
 
 .album_tracks_control {
-  width           : 60px;
+  width           : 40px;
   float           : left;
   text-align      : right;
   }

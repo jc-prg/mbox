@@ -68,14 +68,16 @@ class musicControlThread(threading.Thread):
 
       if self.player.connected and "_device" in last_run and last_run["_device"] == "music" and last_run["music"]["playing"] == 1:
         logging.info("Load playlist and song from last run ...")
-        last_load           = True
-        last_music          = last_run["music"]
-        self.music_ctrl     = last_music
-        self.music_loaded   = 1      
+        last_load                   = True
+        last_music                  = last_run["music"]
+        self.music_ctrl             = last_music
+        self.music_ctrl["LastCard"] = ""
+        self.music_loaded           = 1      
+        
         if "playlist_files" in last_music:
-          self.music_list     = last_music["playlist_files"]
-          self.music_list_p   = last_music["playlist_pos"]
-          self.music_load_new = True
+          self.music_list           = last_music["playlist_files"]
+          self.music_list_p         = last_music["playlist_pos"]
+          self.music_load_new       = True
 
       time.sleep(2)
       while self.running:     
@@ -336,6 +338,7 @@ class musicControlThread(threading.Thread):
         if self.music_ctrl["state"] == "State.Playing" or self.music_ctrl["state"] == "State.Paused": 
            data["_device"] = "music"
         self.music_database.write("status",data)
+        logging.info("Save playing status: "+self.music_ctrl["state"])
 
       
    def metadata_by_filename(self,filename):

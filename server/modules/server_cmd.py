@@ -1,4 +1,3 @@
-import logging
 import uuid
 import urllib.parse
 
@@ -357,7 +356,11 @@ def mboxAPI_readDB(databases,db_filter=""):
           for stream_uuid in data["DATA"]["radio"]:
              stream_url = data["DATA"]["radio"][stream_uuid]["stream_url"]
              
-             if stream_url.endswith(".rss") or stream_url.endswith(".xml") or stream_url.endswith(".podcast"):   
+             is_podcast = False
+             for end in music_podcast.podcast_ending:
+                if stream_url.endswith(end): is_podcast = True           
+                
+             if is_podcast:
                 podcast = thread_music_ctrl.podcast.get_podcasts(playlist_uuid=stream_uuid)
                 data["DATA"]["radio"][stream_uuid]["podcast"] = podcast
                 if "_selected_uuid" in data and stream_uuid == uuid:

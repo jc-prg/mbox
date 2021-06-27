@@ -19,6 +19,10 @@ from decimal             import *
 
 # ------------------------
 
+podcast_ending = [".xml",".podcast",".rss","feed/mp3"]
+
+# ------------------------
+
 def internet_connection():
     '''
     check if connection to internet exists
@@ -125,22 +129,23 @@ class podcastThread (threading.Thread):
             if "stream_url" in stream:
               stream_url  = stream["stream_url"]
             
-              if stream_url.endswith(".rss") or stream_url.endswith(".xml") or stream_url.endswith(".podcast"):
+              for end in podcast_ending:
+                if stream_url.endswith(end):
                        
-                if stream_uuid not in self.temp_podcasts:
-                  podcast                         = self.get_tracks_rss(rss_url=stream_url,playlist_uuid=stream_uuid)
-                  self.temp_podcasts[stream_uuid] = podcast
+                  if stream_uuid not in self.temp_podcasts:
+                    podcast                         = self.get_tracks_rss(rss_url=stream_url,playlist_uuid=stream_uuid)
+                    self.temp_podcasts[stream_uuid] = podcast
                   
-                elif self.temp_podcasts[stream_uuid] == "":
-                  count_error += 1
-                  if count_error == 15:
+                  elif self.temp_podcasts[stream_uuid] == "":
+                    count_error += 1
+                    if count_error == 15:
                       count_error = 0
                       podcast                         = self.get_tracks_rss(rss_url=stream_url,playlist_uuid=stream_uuid)
                       self.temp_podcasts[stream_uuid] = podcast
                                                
-                elif self.temp_podcasts[stream_uuid]["update"] + self.update_interval < time.time():
-                  podcast                         = self.get_tracks_rss(rss_url=stream_url,playlist_uuid=stream_uuid)
-                  self.temp_podcasts[stream_uuid] = podcast
+                  elif self.temp_podcasts[stream_uuid]["update"] + self.update_interval < time.time():
+                    podcast                         = self.get_tracks_rss(rss_url=stream_url,playlist_uuid=stream_uuid)
+                    self.temp_podcasts[stream_uuid] = podcast
                   
             else: 
               logging.warning("No Stream_URL for "+stream_uuid)
@@ -157,15 +162,20 @@ class podcastThread (threading.Thread):
       self.running = False
       
    
-   def get_podcasts(self, playlist_uuid):
+   def get_podcasts(self, playlist_uuid, stream_url=""):
       '''
       return info from cache
       '''
       if playlist_uuid in self.temp_podcasts:
          return self.temp_podcasts[playlist_uuid]
-      else:
-         return {}
-      
+
+      for end in podcast_ending:
+        if stream_url.endswith(end):
+           get_rss = self.get_tracks_rss(stream_url, playlist_uuid)
+           if get_rss != "": return get_rss
+           else:             return {}
+      return {}
+            
 
    def get_tracks_rss(self, rss_url, playlist_uuid):
       '''
@@ -202,7 +212,7 @@ class podcastThread (threading.Thread):
         "album"        : data_all["title"],
         "uuid"         : playlist_uuid,
         "artist"       : data_all[itunes_sub+"author"],
-        "cover_images" : { "active" : "track", "active_pos" : 0, "url" : [ data_all["image"]["url"] ], "track" : [], "dir" : [], "upload" : [] },
+        "cover_images" : { "active" : "track", "active_pos" : 0, "url" : [], "track" : [], "dir" : [], "upload" : [] },
         "stream_info"  : data_all["link"],
         "stream_link"  : rss_url,
         "tracks"       : {},
@@ -216,9 +226,14 @@ class podcastThread (threading.Thread):
     	
       if "pubDate"     in data_all: podcast["publication"]  = data_all["pubDate"]
       if "description" in data_all: podcast["description"]  = data_all["description"]
-      if "image"       in data_all: 
-        podcast["cover_images"]["url"]    = [ data_all["image"]["url"] ]
-        podcast["cover_images"]["active"] = "url"
+
+      if itunes_sub+"image" in data_all and "@href" in data_all[itunes_sub+"image"]:
+         data_all["image"] = {}
+         data_all["image"]["url"] = data_all[itunes_sub+"image"]["@href"]     
+
+      if "image"       in data_all and "url" in data_all["image"]: 
+         podcast["cover_images"]["url"]    = [ data_all["image"]["url"] ]
+         podcast["cover_images"]["active"] = "url"         
     	
       podcast_sort = {}
       item_count   = 0
@@ -253,10 +268,13 @@ class podcastThread (threading.Thread):
            
         if itunes_sub+"duration" in item:
            length_format = "%H:%M:%S"    
-           podcast["tracks"][item_uuid]["duration"]    = item[itunes_sub+"duration"]          
-           hour,minute,second = podcast["tracks"][item_uuid]["duration"].split(":")
-           podcast["tracks"][item_uuid]["length"]      = float(hour)*3600 + float(minute)*60 + float(second)
-           
+           podcast["tracks"][item_uuid]["duration"]    = item[itunes_sub+"duration"]
+           if ":" in item[itunes_sub+"duration"]:
+             hour,minute,second = podcast["tracks"][item_uuid]["duration"].split(":")
+             podcast["tracks"][item_uuid]["length"]    = float(hour)*3600 + float(minute)*60 + float(second)
+           else:
+             podcast["tracks"][item_uuid]["length"]    = float(item[itunes_sub+"duration"])
+               
         if itunes_sub+"image" in item:
           podcast["tracks"][item_uuid]["image"] = item[itunes_sub+"image"]["@href"]
           if podcast["track_count"] == 1:

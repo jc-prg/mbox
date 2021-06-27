@@ -171,7 +171,7 @@ class musicPlayer(threading.Thread):
       '''
       self.player.stop()
       
-      if not os.path.exists( path ) and not path.startswith("http"):
+      if not path.startswith("http") and not os.path.exists( path ):
          self.speak.speak_message("FILE-NOT-FOUND")
          return "Error"
 
@@ -206,11 +206,8 @@ class musicPlayer(threading.Thread):
          url = self.get_stream_m3u(url)
          return self.play_file(url)
          
-      elif url.endswith(".mp3"):
-         return self.play_file(url)
-         
       else:
-         return "not implemented yet"
+         return self.play_file(url)
 
 
    def playing(self):

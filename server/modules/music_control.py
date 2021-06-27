@@ -19,7 +19,7 @@ import modules.music_podcast as music_podcast
 from   decimal               import *
 
 # ------------------------------------------
-      
+
 class musicControlThread(threading.Thread):
 
    def __init__(self, threadID, name, device, database):
@@ -104,7 +104,7 @@ class musicControlThread(threading.Thread):
             else:
                database                  = self.music_database.read_cache("radio")
                current_stream            = database[self.music_list_uuid]
-               current_stream["podcast"] = self.podcast.get_podcasts(self.music_list_uuid)
+               current_stream["podcast"] = self.podcast.get_podcasts(self.music_list_uuid, current_stream["stream_url"])
                
                if current_stream["podcast"] != {}:
                   current_info         = current_stream["podcast"]
@@ -402,18 +402,23 @@ class musicControlThread(threading.Thread):
          database = self.music_database.read_cache("radio")        
          if get_uuid in database: 
             stream_url = database[get_uuid]["stream_url"]
+            
+
                       
             if stream_url.endswith(".m3u"):   track_list = [ stream_url ]
             elif stream_url.endswith(".mp3"): track_list = [ stream_url ]
-            elif stream_url.endswith(".rss") or stream_url.endswith(".xml") or stream_url.endswith(".podcast"): 
-            
-               get_tracks_rss(rss_url=stream_url, playlist_uuid=get_uuid)
-               
-               logging.warning("RSS Feed / Podcast-List not implemented yet!")
-               track_list = []
             else: 
-               logging.warning("Unknown URL format. Try out ...")
-               track_list = [ stream_url ]
+              is_podcast = False
+              for end in music_podcast.podcast_ending:
+                if stream_url.endswith(end): is_podcast = True           
+                
+              if is_podcast:  
+                  get_tracks_rss(rss_url=stream_url, playlist_uuid=get_uuid)
+                  logging.warning("RSS Feed / Podcast-List not implemented yet!")
+                  track_list = []
+              else: 
+                  logging.warning("Unknown URL format. Try out ...")
+                  track_list = [ stream_url ]
 
       else:
          logging.error("Unknown ID Type!")

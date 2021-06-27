@@ -126,22 +126,20 @@ class musicControlThread(threading.Thread):
                    current_info["info"] = "Title loaded"                  
                  else:
                    current_info    = { "file" : current_path, "stream" : current_stream }
-                   current_info["stream"]["uuid"] = self.music_list_uuid
+                   current_info["stream"]["uuid"] = self.music_list_uuid               
+                        
+                 if self.music_list_uuid in database and current_path.startswith("http"): 
+                   self.player.stop()
+                   if self.music_list_p == 1 and "title" in current_stream:    self.speak.speak_text(current_stream["title"]+".", self.player.volume*100)
+                   if "title" in current_info:                                 self.speak.speak_text(current_info["title"]+".", self.player.volume*100)
+                   self.player.play_stream(current_path)
+                 else:                               
+                   self.player.stop()
+                   self.player.play_file(mbox.music_dir + current_path)
+                   
                else:
                    current_info    = { "file" : current_path, "stream" : current_stream }
                    current_info["stream"]["uuid"] = self.music_list_uuid
-               
-                        
-            database = self.music_database.read_cache("radio")
-            if self.music_list_uuid in database and current_path.startswith("http"): 
-               current_stream = database[self.music_list_uuid]
-               self.player.stop()
-               if self.music_list_p == 1 and "title" in current_stream:    self.speak.speak_text(current_stream["title"]+".", self.player.volume*100)
-               if "title" in current_info:                                                    self.speak.speak_text(current_info["title"]+".", self.player.volume*100)
-               self.player.play_stream(current_path)
-            else:                               
-               self.player.stop()
-               self.player.play_file(mbox.music_dir + current_path)
             
             if last_load:
                logging.debug("Jump to position in song from last run ...")

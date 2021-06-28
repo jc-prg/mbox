@@ -93,10 +93,6 @@ class musicControlThread(threading.Thread):
             self.running = False
             break
 
-         if not self.music_load_new:
-            self.playlist_load_rfid()
-            self.playback_save_status()
-            
          self.music_plays     = self.player.playing()
          self.podcast.check_playing_podcast(playing=self.music_plays, playing_data=self.music_ctrl)
 
@@ -194,6 +190,10 @@ class musicControlThread(threading.Thread):
                self.music_ctrl["length"]       = float(self.player.get_length())   / 1000
                self.music_ctrl["position"]     = float(self.player.get_position()) / 1000
          
+         # check if rfid card and save status
+         self.playlist_load_rfid()
+         self.playback_save_status()
+            
       logging.info("Stopped music player ("+self.name+").")     
       
 

@@ -101,6 +101,7 @@ var language_app = {
 		"TRACKS_INSIDE"	: "Enthaltene Tracks",
 		"TRACK_DELETED"	: "Track gelöscht.",
 		"TRACK_DELETE_ERROR"	: "Fehler beim Löschen der Playlist aufgetreten.",
+		"UPDATE"               : "Aktualisierung",
 		"QUESTION_RELOAD"	: "Files komplett neu in DB laden?<br/>Playlisten im Anschluss nicht mehr nutzbar und RFID-Cards müssen neu verknüpft werden.",
 		"QUESTION_LOAD_NEW"	: "Neue Files in DB laden?",
 		"QUESTION_LOAD_IMG"	: "Neue Bilder in DB laden?",
@@ -208,6 +209,7 @@ var language_app = {
 		"QUESTION_LOAD_IMG"	: "Reload images form directories into the database?",
 		"QUESTION_RESTORE_JSON": "Transfer data from JSON files to CouchDB?",
 		"QUESTION_BACKUP2JSON"	: "Backup data from CouchDB to JSON files?",
+		"UPDATE"               : "Update",
 		"WEBSITE"		: "Website",
 		}
 	}

@@ -342,7 +342,7 @@ function mboxStreamInfo(data) {
                 cover += mboxCoverAlbumInfo(1, album["cover_images"]["track"],  album["cover_images"]["active"], uuid);
                 cover += mboxCoverAlbumInfo(2, album["cover_images"]["dir"],    album["cover_images"]["active"], uuid);
                 cover += mboxCoverAlbumInfo(3, album["cover_images"]["upload"], album["cover_images"]["active"], uuid);
-                cover += mboxCoverAlbumInfo(4, album["cover_images"]["web"],    album["cover_images"]["active"], uuid);
+                cover += mboxCoverAlbumInfo(4, album["cover_images"]["url"],    album["cover_images"]["active"], uuid);
                 }
         else {
                 cover += lang("DATA_OLD_FORMAT");
@@ -368,6 +368,8 @@ function mboxStreamInfo(data) {
 		text += mboxHtmlTableNew(["<i>"+lang("TITLE")+":",           album["podcast"]["title"] ] );
 		text += mboxHtmlTableNew(["<i>"+lang("DESCRIPTION")+":",     album["podcast"]["description"] ] );        	        
 		text += mboxHtmlTableNew(["<i>"+lang("TRACKS")+":",	       album["podcast"]["track_count"]+" Tracks" ] );        	        
+		text += mboxHtmlTableNew(["<i>"+lang("PUBLICATION")+":",     album["podcast"]["publication"] ] );
+		text += mboxHtmlTableNew(["<i>"+lang("UPDATE")+":",	       album["podcast"]["update_date"] ] );
 		text += mboxHtmlTableNew(["<i>"+lang("INFORMATION")+":",	"<a href=\"" + album["podcast"]["stream_info"] + "\" target=\"_blank\">" + album["podcast"]["stream_info"] + "</a>" ] );
         	text += "<tr><td colspan='2'><hr></td></tr>";
 		}

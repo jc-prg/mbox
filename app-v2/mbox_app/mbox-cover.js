@@ -26,7 +26,7 @@ function mboxCoverAlbumInfo(nr,url_list,act,uuid) {
 	if (nr == 1) { if (act == "track")  { border = "border:2px solid red;"; } select = "track"; }
 	if (nr == 2) { if (act == "dir")    { border = "border:2px solid red;"; } select = "dir"; }
 	if (nr == 3) { if (act == "upload") { border = "border:2px solid red;"; } select = "upload"; }
-	if (nr == 4) { if (act == "web")    { border = "border:2px solid red;"; } select = "web"; }
+	if (nr == 4) { if (act == "url")    { border = "border:2px solid red;"; } select = "url"; }
 
 	var img       = "<div class='album_cover' style='height:"+size+";width:"+size+";background:gray;cursor:default;"+border+"' title='"+select+"'></div>";
 	var close_cmd = "";
@@ -40,7 +40,7 @@ function mboxCoverAlbumInfo(nr,url_list,act,uuid) {
 		if (nr == 1) { url = mbox_cover_dir + url_list[0];     if (act == "track")  { border = "border:2px solid red;"; } select = "track"; }
 		if (nr == 2) { url = mbox_music_dir + url_list[0];     if (act == "dir")    { border = "border:2px solid red;"; } select = "dir"; }
 		if (nr == 3) { url = mbox_cover_upl_dir + url_list[0]; if (act == "upload") { border = "border:2px solid red;"; } select = "upload"; }
-		if (nr == 4) { url = url_list[0];                      if (act == "web")    { border = "border:2px solid red;"; } select = "web"; }
+		if (nr == 4) { url = url_list[0];                      if (act == "url")    { border = "border:2px solid red;"; } select = "url"; }
 
 		var onclick = "appFW.requestAPI('PUT',['images','set_active','"+uuid+"','"+select+"'], '', " + close_cmd + " );";
 		img = "<img src='" + url + "' class='album_cover' style='height:"+size+";width:"+size+";"+border+"' onclick=\""+onclick+"\" title=\"("+select+": 1 von "+url_list.length+")\">&nbsp;";
@@ -80,8 +80,9 @@ function mboxCoverAlbum(artist,album) {
 function mboxCoverAlbum_new(id,data) {
 
 	var albumInfo;
-	var i              = 0;
-	var cover	   = "";
+	var i             = 0;
+	var cover         = "";
+	var active        = "";
 
 	if (data && data["uuid"]) 	{ albumInfo     = data; }
 	else if (data)			{ albumInfo     = data[id]; }
@@ -92,16 +93,16 @@ function mboxCoverAlbum_new(id,data) {
 		var position = 0;
 
 		if (images["active"] && images["active"] != "none" && images[images["active"]].length > 0) {
+			active = images["active"];
 			if (images["active"] == "upload") 	{ cover = mbox_cover_upl_dir + images["upload"][position]; }
 			if (images["active"] == "dir") 	{ cover = mbox_music_dir     + images["dir"][position]; }
 			if (images["active"] == "track") 	{ cover = mbox_cover_dir     + images["track"][position]; }
-			if (images["active"] == "web") 	{ cover = images["web"][position]; }
 			if (images["active"] == "url") 	{ cover = images["url"][position]; }
 			}
 		cover=encodeURI(cover);
 		}
 
-	if (checkImgExists) {
+	if (checkImgExists && active != "url") {
 		if (mboxCoverAlbum_checkFile(cover))	{ return cover; }
 		else					{ return ""; }
 		}

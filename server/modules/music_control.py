@@ -84,6 +84,7 @@ class musicControlThread(threading.Thread):
           logging.info("Load playlist and song from last run ...")
           logging.info("... "+last_music["playlist_uuid"])
 
+      time.sleep(5)
       while self.running:     
 
          time.sleep(wait_time)         
@@ -139,17 +140,27 @@ class musicControlThread(threading.Thread):
                else:
                    current_info    = { "file" : current_path, "stream" : current_stream }
                    current_info["stream"]["uuid"] = self.music_list_uuid
-            
+
+            # set playback metadata            
+            if not last_load:
+               if self.player.play_status == 1: self.music_ctrl = self.control_data(state="play",  song=current_info, playlist=current_list)
+               else:                            self.music_ctrl = self.control_data(state="error", song={}, playlist=current_list)
+
             # start playback 
             if current_path.startswith("http"): 
-              self.player.stop()
-              if self.music_list_p == 1 and "title" in current_stream: self.speak.speak_text(current_stream["title"]+": "+current_info["title"]+".", self.player.volume*100)
-              elif "title" in current_info:                            self.speak.speak_text(current_info["title"]+".", self.player.volume*100)
-              self.player.play_stream(current_path)
+               self.player.stop()
+               p = self.music_ctrl["position"]
+               self.music_ctrl["length"]   = 0
+               self.music_ctrl["position"] = 0
+               if self.music_list_p == 1 and "title" in current_stream: self.speak.speak_text(current_stream["title"]+": "+current_info["title"]+".", self.player.volume*100)
+               elif "title" in current_info:                            self.speak.speak_text(current_info["title"]+".", self.player.volume*100)
+               self.player.play_stream(current_path)
+               self.music_ctrl["length"]   = self.player.get_length()
+               self.music_ctrl["position"] = p
                    
             else:                               
-              self.player.stop()
-              self.player.play_file(mbox.music_dir + current_path)
+               self.player.stop()
+               self.player.play_file(mbox.music_dir + current_path)
                
             # if stopped device while playing, load last music
             if last_load:
@@ -157,10 +168,6 @@ class musicControlThread(threading.Thread):
                position  = (self.music_ctrl["position"] / self.music_ctrl["length"]) * 100
                self.player.set_position(position)
                last_load = False
-
-            else:
-               if self.player.play_status == 1: self.music_ctrl = self.control_data(state="play",  song=current_info, playlist=current_list)
-               else:                            self.music_ctrl = self.control_data(state="error", song={}, playlist=current_list)
                
             self.volume(self.music_ctrl["volume"])
             

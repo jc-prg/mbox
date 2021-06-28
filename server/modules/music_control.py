@@ -93,8 +93,10 @@ class musicControlThread(threading.Thread):
             self.running = False
             break
 
-         self.playlist_load_rfid()
-         self.playback_save_status()
+         if not self.music_load_new:
+            self.playlist_load_rfid()
+            self.playback_save_status()
+            
          self.music_plays     = self.player.playing()
          self.podcast.check_playing_podcast(playing=self.music_plays, playing_data=self.music_ctrl)
 

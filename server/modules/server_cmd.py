@@ -364,7 +364,9 @@ def mboxAPI_readDB(databases,db_filter=""):
                 podcast = thread_music_ctrl.podcast.get_podcasts(playlist_uuid=stream_uuid)
                 data["DATA"]["radio"][stream_uuid]["podcast"] = podcast
                 if "_selected_uuid" in data and stream_uuid == uuid:
-                   data["DATA"]["_selected"]["podcast"] = podcast                
+                   data["DATA"]["_selected"]["podcast"] = podcast
+                   if "cover_images" in podcast:
+                      data["DATA"]["_selected"]["cover_images"] = podcast["cover_images"]
                    
              elif stream_url.endswith(".m3u"):
                 data["DATA"]["radio"][stream_uuid]["stream_url2"] = thread_music_ctrl.player.get_stream_m3u(stream_url)
@@ -459,6 +461,8 @@ def mboxAPI_readEntry(uuid,db_filter=""):
                    # special handling for streams and podcast (read up-to-date data)
                    if uuid.startswith("r_"): 
                       temp[uuid]["podcast"] = thread_music_ctrl.podcast.get_podcasts(playlist_uuid=uuid)
+                      if "cover_images" in temp[uuid]["podcast"]:
+                         data["DATA"]["_selected"]["cover_images"] = temp[uuid]["podcast"]["cover_images"]
                       if data["DATA"]["_selected"]["stream_url"].endswith(".m3u"):
                          data["DATA"]["_selected"]["stream_url2"] = thread_music_ctrl.player.get_stream_m3u(data["DATA"]["_selected"]["stream_url"])
 
@@ -645,7 +649,7 @@ def mboxAPI_add(database,param):
            playlist["cover_images"]           = {}
            playlist["cover_images"]["active"] = "none"
            playlist["cover_images"]["upload"] = []
-           playlist["cover_images"]["web"]    = []
+           playlist["cover_images"]["url"]    = []
 
            # write playlist
            if not database in db_entries:  db_entries[database] = {}
@@ -670,7 +674,7 @@ def mboxAPI_add(database,param):
            playlist["cover_images"]           = {}
            playlist["cover_images"]["active"] = "none"
            playlist["cover_images"]["upload"] = []
-           playlist["cover_images"]["web"]    = [parameter[4]]
+           playlist["cover_images"]["url"]    = [parameter[4]]
 
            # write radio
            if not database in db_entries:  db_entries[database] = {}
@@ -722,7 +726,7 @@ def mboxAPI_images(cmd,uuid,param):
        elif (cmd == "set_active" and len(key) > 0):
 
            playlist = db_entries[key][uuid]
-           allowed  = ["upload","dir","track","web"]
+           allowed  = ["upload","dir","track","url"]
            
            if param in allowed: playlist["cover_images"]["active"] = param
            else:                data = mboxAPI_error(data, "Image type not supported: "+param)
@@ -911,7 +915,7 @@ def mboxAPI_volume(param):
             getvol = param.split(":")
             thread_music_ctrl.volume_up(int(getvol[1]))
        else:
-            data = mboxAPI_error(data, "Parameter not supported: "+param)
+            data = mboxAPI_error(data, "Parameter not supported: " + param)
             logging.warn("Parameter not supported: " + param)   
             
        data = mboxAPI_end(data,["no-statistic","no-system"])

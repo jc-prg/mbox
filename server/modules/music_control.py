@@ -47,8 +47,11 @@ class musicControlThread(threading.Thread):
       
       self.podcast              = music_podcast.podcastThread(threadID+10, "Thread Podcast", database)
       self.podcast.start()
-      self.speak                = music_speak.speakThread(threadID+10, name + " / Speak", 1, "")
+      self.speak                = music_speak.speakThread(threadID+20, name + " / Speak", 1, "")
       self.speak.start()
+      self.player               = music_player.musicPlayer(threadID+30, self.name)
+      self.player.start()
+      time.sleep(2)
 
       self.last_card_identified = ""      
       self.relevant_db          = self.music_database.databases["music"]
@@ -63,18 +66,14 @@ class musicControlThread(threading.Thread):
       last_run   = self.music_database.read("status")
       last_music = last_run["music"]
 
-      logging.info("Starting music player ("+self.name+") ...")
-      self.player = music_player.musicPlayer(self.threadID, self.name)
-      self.player.start()
-      time.sleep(2)
-
       if last_run["music"]["playing"] != 1:     
         logging.info("Don't playlist and song from last run ("+last_music["playlist_uuid"]+")...")
       
       elif last_run["music"]["playing"] == 1:
         self.music_ctrl             = last_music
         self.music_ctrl["LastCard"] = ""
-        self.music_loaded           = 1      
+        self.music_loaded           = 1
+        self.podcast.check_playing_podcast(playing=1, playing_data=self.music_ctrl)
         
         if "playlist_files" in last_music:
           self.music_list           = last_music["playlist_files"]
@@ -84,7 +83,6 @@ class musicControlThread(threading.Thread):
           
           logging.info("Load playlist and song from last run ...")
           logging.info("... "+last_music["playlist_uuid"])
-
 
       while self.running:     
 
@@ -96,7 +94,8 @@ class musicControlThread(threading.Thread):
 
          self.playlist_load_rfid()
          self.playback_save_status()
-         self.music_plays = self.player.playing()       
+         self.music_plays     = self.player.playing()
+         self.podcast.check_playing_podcast(playing=self.music_plays, playing_data=self.music_ctrl)
 
          # if new data to be loaded         
          logging.debug("Active playlist: " + str(self.music_load_new) + "; List: " + str(len(self.music_list)) + "; Position: " + str(self.music_list_p) )
@@ -144,8 +143,8 @@ class musicControlThread(threading.Thread):
             # start playback 
             if current_path.startswith("http"): 
               self.player.stop()
-              if self.music_list_p == 1 and "title" in current_stream:    self.speak.speak_text(current_stream["title"]+".", self.player.volume*100)
-              if "title" in current_info:                                 self.speak.speak_text(current_info["title"]+".", self.player.volume*100)
+              if self.music_list_p == 1 and "title" in current_stream: self.speak.speak_text(current_stream["title"]+": "+current_info["title"]+".", self.player.volume*100)
+              elif "title" in current_info:                            self.speak.speak_text(current_info["title"]+".", self.player.volume*100)
               self.player.play_stream(current_path)
                    
             else:                               
@@ -159,9 +158,11 @@ class musicControlThread(threading.Thread):
                self.player.set_position(position)
                last_load = False
 
-            # update data
-            if self.player.play_status == 1: self.music_ctrl = self.control_data(state="play",  song=current_info, playlist=current_list)
-            else:                            self.music_ctrl = self.control_data(state="error", song={}, playlist=current_list)
+            else:
+               if self.player.play_status == 1: self.music_ctrl = self.control_data(state="play",  song=current_info, playlist=current_list)
+               else:                            self.music_ctrl = self.control_data(state="error", song={}, playlist=current_list)
+               
+            self.volume(self.music_ctrl["volume"])
             
          # if no new data, check if ended
          if not self.music_load_new:
@@ -293,8 +294,8 @@ class musicControlThread(threading.Thread):
           logging.info("CardUID: "+mbox.rfid_ctrl["cardUID"])
           if mbox.rfid_ctrl["cardUID"] in database:
           
-            if "LastCard" in self.music_ctrl and self.music_ctrl["LastCard"] == self.music_list_uuid and self.play_status != 1:
-               logging.info("Card already started ("+self.music_ctrl["LastCard"]+"/"+self.music_list_uuid+")...")
+            if "LastCard" in self.music_ctrl and self.music_ctrl["LastCard"] == database[mbox.rfid_ctrl["cardUID"]][0]:
+               logging.info("Card already started ("+self.music_ctrl["LastCard"]+"/"+database[mbox.rfid_ctrl["cardUID"]][0]+")...")
 
             else:
                logging.info("Start Playlist: "+database[mbox.rfid_ctrl["cardUID"]][0]+" / "+self.music_ctrl["LastCard"])              
@@ -348,10 +349,16 @@ class musicControlThread(threading.Thread):
       '''
       write current playlist, track and position to config
       '''
-      data  = self.music_database.read("status")    
+      data        = self.music_database.read("status")    
+      data_stream = self.music_database.read_cache("radio")    
+      
       if not "_saved" in data or data["_saved"] + 3 < time.time():
-        data["music"]  = self.music_ctrl
-        data["_saved"] = time.time()
+        data["music"]                    = self.music_ctrl
+        if "album_uuid" in data["music"]["song"] and data["music"]["song"]["album_uuid"].startswith("r_"):
+           podcast_uuid = data["music"]["song"]["album_uuid"]
+           data["music"]["podcast"] = self.podcast.get_podcasts(playlist_uuid=podcast_uuid)
+           
+        data["_saved"]                   = time.time()
         self.music_database.write("status",data)
         logging.info("Save playing status: "+self.music_ctrl["state"])
 
@@ -457,7 +464,6 @@ class musicControlThread(threading.Thread):
           
 #        if song != "":
 #           thread.music_ctrl["position"]         = float(thread.player.get_time()) / 1000        
-          
         self.music_ctrl = {
           "device"        : self.music_device,
           "type"          : self.music_type,

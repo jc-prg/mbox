@@ -81,7 +81,7 @@ class speakThread (threading.Thread):
       try:
          self.play_file(filename)
          duration = self.player.get_length() / 1000
-         time.sleep(duration)
+         time.sleep(duration-0.3)
       except Exception as e:
          logging.error("Could not speak message ("+text+").")
          logging.error(" -> player error: "+str(e))

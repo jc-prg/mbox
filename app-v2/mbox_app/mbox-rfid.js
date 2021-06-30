@@ -4,11 +4,13 @@
 // list and edit rfid card infos
 //--------------------------------------
 /* INDEX:
+function mboxCardSimulate(card_uuid)
 function mboxCardWriteRFID(data,known="",list={})
 function mboxCardConnect(card,list={})
 function mboxCardConnect_exe(rfid)
 function mboxCardConnect_select(id, select, visible="block", onchange="")
 function mboxCardConnect_selectVisible(change)
+function mboxCardInfoIcon(entry_data, uuid)
 function mboxCardEditLink(uuid)
 function mboxCardEditDialog_load1(uuid)
 function mboxCardEditDialog_load2(data)
@@ -17,7 +19,9 @@ function mboxCardList_load(card_id="-")
 function mboxCardList(data)
 function mboxCardDelete(card_id,title)
 function mboxCardDelete_exec(uuid,title)
+function mboxCardPlay_exec(uuid,title)
 function mboxCardDelete_msg(data,title)
+function mboxCardPlay_msg(data,uuid)
 function mboxCardEdit_save(data)
 */
 //--------------------------------------
@@ -25,6 +29,12 @@ function mboxCardEdit_save(data)
 mboxCardUUID     = "";
 mboxCardCID      = "";
 mboxCardDetected = "";
+
+
+function mboxCardSimulate(card_uuid) {
+	appFW.requestAPI('PUT',['set-card',card_uuid],'','');
+	setTimeout(function() {appFW.requestAPI('PUT',['set-card','no_card'],'','');}, 5000);
+	}
 
 // show / hide info in <div id="edit_card">
 //---------------------------------
@@ -102,6 +112,26 @@ function mboxCardConnect_selectVisible(change) {
 
 // funct. for cards ....
 //--------------------------------------
+
+function mboxCardInfoIcon(entry_data, uuid) {
+        var text = "";
+        
+        if ("card_id" in entry_data && entry_data["card_id"] != "") {
+                text += "<div id=\"show_card\">";
+                text += mboxHtmlButton("card",  "", "green");
+                text += "</div>";
+                text += mboxCardEditLink(uuid);
+                }
+        else {
+                text += "<div id=\"show_card\">";
+                text += "</div>";
+                text += mboxCardEditLink(uuid);
+                }
+                
+	return text;
+	}
+
+//----
 
 function mboxCardEditLink(uuid) {
         var text  = "";

@@ -35,6 +35,7 @@ function mboxPlayerLocal(position=0, play=true)
 function mboxPlayerRemote(song,uuid,playing)
 function mboxPlayerControlPlaylist_advanced(uuid)
 function mboxPlayerControlPlaylist(uuid)
+function mboxPlayerControlEntry(uuid)
 function mboxPlayerControlStream(uuid)
 function mboxPlayerProgress()
 function mboxPlayerProgressPrint()
@@ -157,6 +158,31 @@ function mboxPlayerControlPlaylist(uuid) {
 
 	return text;
 	}
+
+// control buttons for entries
+//--------------------------------------
+
+function mboxPlayerControlEntry(uuid) {
+	var text = "";
+
+	if (mbox_device != "local") {
+      		text += mboxHtmlButton("play",  "appFW.requestAPI('GET',['play', '" + uuid + "'],'',mboxControl);", "blue");
+		text += mboxHtmlButton("pause", "appFW.requestAPI('GET',['pause'],'',mboxControl);",		"blue");
+        	text += mboxHtmlButton("stop",  "appFW.requestAPI('GET',['stop'],'',mboxControl);", "blue");
+        	text += mboxHtmlButton("empty");
+		}
+		
+	if (mbox_device != "remote") {
+        	text += mboxHtmlButton("play",  "mboxPlayerLocal();",	"green");
+        	text += mboxHtmlButton("pause", "mboxPlayer.pause();",	"green");
+        	text += mboxHtmlButton("stop",  "mboxPlayer.stop();",	"green");
+		text += mboxHtmlButton("empty");
+		}
+
+	return text;
+	}
+
+
 
 
 // control buttons for radio

@@ -43,7 +43,7 @@ function mboxControlGroups() {
         var onclick = [
                         "mboxAlbumAll_load();",
                         "mboxPlaylistAll_load();",
-                        "mboxStream_load();"
+                        "mboxStreamsAll_load();"
                         ];
 
         text += "<div style='width:325px;margin:auto;'>";
@@ -312,7 +312,7 @@ function mboxControlShowUUID(uuid) {
 	// reload and open album / playlist entry
 	if (uuid.indexOf("p_") >= 0) 		{ mboxPlaylistAll_load("",uuid); }
 	else if (uuid.indexOf("a_") >= 0) 	{ mboxAlbumAll_load("",uuid); }
-	else if (uuid.indexOf("r_") >= 0) 	{ mboxStream_load(uuid); }
+	else if (uuid.indexOf("r_") >= 0) 	{ mboxStreamsAll_load(uuid); }
 	}
 
 

@@ -172,7 +172,7 @@ function mboxSettingsStatus (data) {
 
 	text += "<hr/></center>";
 	question = "Load Card UUID?";
-	onclick  = "var card_uuid = document.getElementById(#card_uuid#).value;appFW.requestAPI(#PUT#,[#set-card#,card_uuid],##,##);";
+	onclick  = "var card_uuid = document.getElementById(#card_uuid#).value;mboxCardSimulate(card_uuid);";
 	cmd      = "appMsg.confirm('" + question + "','" + onclick + "', 260);";
 
 	text += mboxHtmlTable("start");

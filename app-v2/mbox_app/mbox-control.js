@@ -42,8 +42,8 @@ function mboxControlGroups() {
         var descr   = [lang("ALBUM"),lang("PLAYLIST"),lang("PODCAST")];
         var onclick = [
                         "mboxAlbumAll_load();",
-                        "mboxPlaylistAll_load();",
-                        "mboxStreamsAll_load();"
+                        "mboxPlaylists_load();",
+                        "mboxStreams_load();"
                         ];
 
         text += "<div style='width:325px;margin:auto;'>";
@@ -109,7 +109,7 @@ function mboxControl(data) {
 		mboxSlider.set_value(Math.round(volume*100));
 
 		// Info for running music, if music box
-		if (type == "music_box" || type_sub == "Podcast") {
+		if (type != "radio") {
 			var song        = d["song"];
 			var playlist    = d["playlist"];
 			var p_position  = d["playlist_pos"];
@@ -129,11 +129,11 @@ function mboxControl(data) {
 			if (song) { if (song["info"] == "Title loaded" && playing != 0) {
 				if (song["artist"] != undefined) {
 					text += "&nbsp;<b>" + song["artist"] + "</b><br/>";
-					text += "&nbsp;" + song["title"] + " (" + p_position + "/" + p_length + ")<br/>";
+					text += "&nbsp;" + song["title"] + " (" + p_position + "/" + p_length + ")<br/>"; //+uuid;
 					}
 				else {
 					text += "&nbsp;<b>" + song["album"] + "</b><br/>";
-					text += "&nbsp;" + song["title"] + " (" + p_position + "/" + p_length + ")<br/>";
+					text += "&nbsp;" + song["title"] + " (" + p_position + "/" + p_length + ")<br/>"; //+uuid;
 					}
 				}
 
@@ -158,9 +158,6 @@ function mboxControl(data) {
 				}
 		  	else {	text += "<i>"+lang("SELECT_MUSIC_ITEM") +"</i><br/>&nbsp;";
 				}
-			}
-		else {
-			text += "<i>"+lang("DEVICE_UNKNOWN") +" ("+type+")</i><br/>&nbsp;";
 			}
 		}
 	text += "</div>";
@@ -194,7 +191,6 @@ function mboxControl(data) {
 	if (playing == 0 || playing == 1) {
 		text += mboxPlayerRemote(song,uuid,playing);
 		}
-
         setTextById("mbox_control", text);
         
         mboxPlayerProgressSet( status, song_length, song_left, song_left_s );
@@ -310,9 +306,9 @@ function mboxControlShowUUID(uuid) {
 	//document.getElementById('scrollto_'+uuid.replace(/-/g,"")).scrollIntoView();
 
 	// reload and open album / playlist entry
-	if (uuid.indexOf("p_") >= 0) 		{ mboxPlaylistAll_load("",uuid); }
+	if (uuid.indexOf("p_") >= 0) 		{ mboxPlaylists_load("",uuid); }
 	else if (uuid.indexOf("a_") >= 0) 	{ mboxAlbumAll_load("",uuid); }
-	else if (uuid.indexOf("r_") >= 0) 	{ mboxStreamsAll_load(uuid); }
+	else if (uuid.indexOf("r_") >= 0) 	{ mboxStreams_load(uuid); }
 	}
 
 

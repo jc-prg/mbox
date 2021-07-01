@@ -51,6 +51,8 @@ function mboxViews_list(type, data, selected_uuid="", filter_key="", filter_text
 	var entry_info       = data;
 	var entry_active     = selected_uuid;
 	var last_chapter     = "";
+	var entry_active_no1 = 0;
+	var entry_active_no2 = 0;
 	
 	mbox_mode            = type; 
 	mbox_cover_list      = [];		// reset cover list (to show cover of all albums, playlists, ...)
@@ -170,7 +172,7 @@ function mboxViews_list(type, data, selected_uuid="", filter_key="", filter_text
 			// check if active entry to be loaded in the end
 			if (row_per_chapter && uuid == entry_active)	{ entry_active_no1 = chapter + "_" + chapter_number; entry_active_no2 = i; }
 			else if (uuid == entry_active)		{ entry_active_no1 = entry_detail_number;            entry_active_no2 = i; }
-			else						{ entry_active_no1 = 0;                              entry_active_no2 = 0; }
+			//else						{ entry_active_no1 = 0;                              entry_active_no2 = 0; }
 
 			//.............
 			
@@ -199,8 +201,14 @@ function mboxViews_list(type, data, selected_uuid="", filter_key="", filter_text
 		mboxControlToggleFilter_show();
 		}
 
-	if (entry_active && entry_active != "") {
-		eval('mboxViews_loadDetails(pos='+entry_active_no1+', i='+entry_active_no2+', uuid='+entry_active+', callTrackList='+callTrackList+');');
+	if (entry_active && entry_active != "") {	
+		if (typeof entry_active_no1 == 'string' || entry_active_no1 instanceof String) { entry_active_no1 = "\""+entry_active_no1+"\""; }
+		if (typeof entry_active_no2 == 'string' || entry_active_no2 instanceof String) { entry_active_no2 = "\""+entry_active_no2+"\""; }
+		
+		cmd   ='mboxViews_loadDetails(pos='+entry_active_no1+', i='+entry_active_no2+', uuid=\"'+entry_active+'\", callTrackList='+callTrackList+');';
+		console.log(cmd);
+		eval(cmd);
+		//console.log(error);
 		document.getElementById('scrollto_'+entry_active.replace(/-/g,"")).scrollIntoView();
 		}
 	}

@@ -30,9 +30,9 @@ function mboxStreamAdd_msg(data)
 // Load stream views
 //--------------------------------------
 
-function mboxStreamsAll_load(stream_uuid="-")  { appFW.requestAPI("GET",["db","radio",stream_uuid],"", [mboxStreamsAll,stream_uuid]); scrollToTop(); }
-function mboxStreamsAll_reload() { mboxStreamsAll(data=mbox_list_data); }
-function mboxStreamsAll(data, uuid="") {
+function mboxStreams_load(stream_uuid="-")  { appFW.requestAPI("GET",["db","radio",stream_uuid],"", [mboxStreams,stream_uuid]); scrollToTop(); }
+function mboxStreams_reload() { mboxStreams(data=mbox_list_data); }
+function mboxStreams(data, uuid="") {
 
 	mbox_list_data   = data;
 	var entries_info = data["DATA"]["radio"];

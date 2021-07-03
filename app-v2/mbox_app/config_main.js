@@ -19,9 +19,10 @@ var app_reload_interval   = 5;  			// add your reloading interval (default=5s)
 // mbox specific initialization
 //--------------------------------
 
-var UploadScript   = "mbox_app/upload.php";
-var checkImgExists = false;
-var mboxSlider     = new jcSlider( name="mboxSlider", container="mbox_audio_slider");
+var UploadScript    = "mbox_app/upload.php";
+var checkImgExists  = false;
+var mboxSlider      = new jcSlider( name="mboxSlider", container="mbox_audio_slider");
+var internetConnect = "Started";
 
 //--------------------------------
 // create menu entries

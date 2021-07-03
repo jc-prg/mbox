@@ -9,7 +9,7 @@ var app_setting_count     = 4;
 var app_setting_style     = "setting_bg";
 var app_last_load         = 0;
 var app_title             = "jc://music-box/";	// add your app title (default defined in app-fw/app-conf.is)
-var app_version           = "v1.2.3";			// add your app version (default defined in app-fw/app-conf.is)
+var app_version           = "v1.2.5";			// add your app version (default defined in app-fw/app-conf.is)
 var app_api_dir           = "api/";			// add your api dir (default defined in app-fw/app-conf.is)
 var app_api_status        = "status";			// add your api status command (default defined in app-fw/app-conf.is)
 var app_loading_image     = ""; 			// add your loading image (default defined in app-fw/app-conf.is)
@@ -40,9 +40,9 @@ function app_menu_entries() {
 
 	var app_menu = [
 		//[lang("INDEX"),        		"link", "/index.html"],
-		[lang("ALBUM"),			"script",	"mboxAlbumAll_load(); appPrintStatus_load(); if(mbox_settings) {mboxSettingsToggle();}"],
-		[lang("PLAYLIST"),			"script",	"mboxPlaylistAll_load(); appPrintStatus_load(); if(mbox_settings) {mboxSettingsToggle();}"],
-		[lang("STREAM-PODCAST"),		"script",	"mboxStream_load(); appPrintStatus_load(); if(mbox_settings) {mboxSettingsToggle();}"],
+		[lang("ALBUM"),			"script",	"mboxAlbumAll_load();   if(mbox_settings) {mboxSettingsToggle();}"],
+		[lang("PLAYLIST"),			"script",	"mboxPlaylists_load();  if(mbox_settings) {mboxSettingsToggle();}"],
+		[lang("STREAM-PODCAST"),		"script",	"mboxStreams_load();    if(mbox_settings) {mboxSettingsToggle();}"],
 		["LINE"],
 		["Modus: "+mbox_mode,			"script",	"mboxControlToggleMode(); appPrintStatus_load(); if(mbox_settings) {mboxSettingsToggle();}"],
 		[lang("DEVICE")+": "+mbox_device,	"script",	"mboxControlToggleDevice(); appPrintStatus_load(); if(mbox_settings){mboxSettingsToggle();}"],
@@ -91,8 +91,8 @@ function app_status(data) {
 
 		// write menu entrie for 3 modes
 		if (mbox_mode == "Album")    { mboxAlbumAll_load(); }
-		if (mbox_mode == "Playlist") { mboxPlaylistAll_load(); }
-		if (mbox_mode == "Radio")    { mboxStream_load(); }
+		if (mbox_mode == "Playlist") { mboxPlaylists_load(); }
+		if (mbox_mode == "Radio")    { mboxStreams_load(); }
 
 		setNavTitle(appTitle);
 		reload = false;

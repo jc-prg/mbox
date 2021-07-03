@@ -291,6 +291,8 @@ class podcastThread (threading.Thread):
            time_stamp  = time.mktime(datetime.datetime.strptime(time_input, time_format).timetuple())           
            podcast_sort[time_stamp] = item_uuid
            
+           podcast["tracks"][item_uuid]["publication"] = datetime.datetime.fromtimestamp(time_stamp).strftime("%d.%m.%Y %H:%M")
+           
         if itunes_sub+"duration" in item:
            length_format = "%H:%M:%S"    
            podcast["tracks"][item_uuid]["duration"]    = item[itunes_sub+"duration"]

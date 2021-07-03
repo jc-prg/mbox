@@ -4,7 +4,6 @@
 // show album list and details
 //--------------------------------------
 /* INDEX:
-function mboxListCount()
 function mboxAlbumAll_load(filter="",uuid="")
 function mboxAlbumAll_reload()
 function mboxAlbumAll(data, uuid)
@@ -12,6 +11,7 @@ function mboxAlbumAll_filter(album_info,filters)
 function mboxAlbumFilterPath(data,selected)
 function mboxAlbumFilterArtist(data,selected)
 function mboxAlbumList(data)
+function mboxInfo_album_load(uuid)
 function mboxAlbumInfo_load(uuid)
 function mboxAlbumInfo_close()
 function mboxAlbumInfo(data)
@@ -20,23 +20,8 @@ function mboxAlbumDelete_exec(uuid,title)
 function mboxAlbumDelete_msg(data,title)
 function mboxAlbumTrackInfo_load(uuid)
 function mboxAlbumTrackInfo(data)
-function mboxAlbumTrackRow(id, dataTracks, album=true, artist=false, count=0, trackinfo=false)
-function mboxAlbumEmptyAll()
-function mboxAlbumEmptyBelow()
-function mboxAlbumWriteBelow(text)
 */
 //--------------------------------------
-
-function mboxListCount() {
-	var width = document.body.clientWidth;
-	var mbox_list_count;
-	
-	if (width > 1250)	{ mbox_list_count = 9; }
-	else if (width > 705)	{ mbox_list_count = 6; }
-	else			{ mbox_list_count = 3; }
-	
-	return mbox_list_count;
-	}
 
 
 // Load album views
@@ -70,7 +55,7 @@ function mboxAlbumAll(data, uuid) {
 	var sort_keys = ["artist","album"];
 
 	// create list view
-	mboxViews_list(type="Album", data=entries_info, selected_uuid=uuid, filter_key=the_filter, filter_text=filter, sort_keys=sort_keys, callTrackList="mboxAlbumList");
+	mboxViewsList(type="album", data=entries_info, selected_uuid=uuid, filter_key=the_filter, filter_text=filter, sort_keys=sort_keys, callTrackList="mboxViewsTrackList");
 	}
 	
 
@@ -157,110 +142,8 @@ function mboxAlbumFilterArtist(data,selected) {
 // List albums tracks of an album
 //--------------------------------------
 
-function mboxAlbumList(data) {
-
-	var text 	  = "";
-	//var albums        = data["answer"]["album"];
-	//var track_list    = data["answer"]["tracks"];
-	//console.log(data["DATA"]);	
-
-	var albums        = data["DATA"]["_selected"];
-	var uuid          = data["DATA"]["_selected_uuid"];
-	var track_list    = data["DATA"]["tracks"];
-	var album         = albums["album"];
-	var artist        = albums["artist"];
-	var default_cover = mbox_icon_dir + mbox_icons["album"]; //"img/cd2.png";
-
-	var length = "";
-	if (albums["albumlength"]) {
-		length = " <font color='gray'>(" + convert_second2time(Math.round(albums["albumlength"])) + ")</font>";
-		}
-
-	// fill local playlist queue
-	mbox_playlist_queue["type"]     = "album";
-	mbox_playlist_queue["album"]    = albums;
-	mbox_playlist_queue["scrollto"] = "scrollto_" + uuid.replace(/-/g,"");
-	mbox_playlist_queue["tracks"]   = track_list;
-	
-	console.debug(mbox_playlist_queue);
-
-	// Check if Cover exists
-        var cover       = mboxCoverAlbum_new(uuid,albums);
-        if (cover == "") { cover = default_cover; }
-
-	console.log("album-id: "+albums["uuid"]+"/"+uuid + " ("+cover+")");
-
-	// Write album cover
-        var onclick    = "mboxCoverAlbum_alert(\""+cover+"\");";
-	text += "<div id=\"scrollto2_"+uuid.replace(/-/g,"")+"\">";
-	text += "<div class=\"album_cover\" style=\"background:url('"+cover+"');background-size:contain;background-position:center;background-repeat:no-repeat;\" onclick='" + onclick + "'>";
-	text += "</div>";
-
-	// write album infos
-	text += "<div class=\"album_infos new\">";
-	text +=   "<b>" + artist + "</b><br/><i>" + album + "</i><br/>";
-	text +=   length;
-	text += "</div>";
-	text += mboxHtmlButton("delete",  "mboxViews_emptyBelow();mboxViews_hideTriangle(mbox_list_last);", "opac",   "small small2");
-
-        // player control (in box)
-	text += "<div class=\"album_control new\">";
-	text += mboxPlayerControlEntry(uuid);
-	text += mboxHtmlButton("info", "mboxAlbumInfo_load('"+uuid+"');", "red");
-	text += mboxCardInfoIcon(albums, uuid);
-	text += "</div>";
-	text += "<div style=\"width:100%;float:left;\"><hr/></div>";
-
-	// write tracks
-	text += "<div class=\"album_tracks\">";
-	var tracks 	= {}
-	var i      	= 0;
-	var a      	= 0;
-	var withartist    = false;
-	var withtrackinfo = false;
-
-	// check, if compilation ... than show artist in row
-	if (artist == "Compilation") { withartist = true; }
-
-        // check, how many columns in the track list are required
-	var mbox_list_count	= mboxListCount();
-	var columns            = mbox_list_count/3;
-	
-	// prepare track list
-	var sorted_tracks	= albums["tracks"];
-	var show_num		= true;
-	var max    		= albums["tracks"].length;
-	if (Math.round(max/columns) < (max/columns)) { max += 1; }
-
-	// check if more than one CD	
-	var last_cd = "";
-	for (var i=0;i<sorted_tracks.length;i++) {
-		if ("disc_num" in track_list[sorted_tracks[i]]) {
-			if (last_cd == "") { last_cd = track_list[sorted_tracks[i]]["disc_num"]; }
-			if (last_cd != track_list[sorted_tracks[i]]["disc_num"]) { withtrackinfo = true; }
-			}
-		}
-		
-	// create rows in columns
-	var row_number		= 0;
-	for (var i=0;i<sorted_tracks.length;i++) {
-		row_number++;
-		var position = row_number-1;
-		text += mboxAlbumTrackRow(id=sorted_tracks[i], dataTracks=track_list, album=show_num, artist=withartist, count=position, trackinfo=withtrackinfo);
-		if (row_number == Math.round(max/columns)) 	{ text += "</div><div class=\"album_tracks\">"; }
-		if (row_number == 2*Math.round(max/columns)) 	{ text += "</div><div class=\"album_tracks\">"; }
-		}
-		
-	text += "</div>";
-	text += "</div>";
-
-	mboxAlbumWriteBelow(text);
-	
-	setTimeout(function(){
-		document.getElementById("scrollto2_"+uuid.replace(/-/g,"")).scrollIntoView();
-		window.scrollBy(0,-100);
-		}, 1000);
-	}
+function mboxAlbumList(data)		{ mboxViewsTrackList(data, "album"); }
+function mboxInfo_album_load(uuid)	{ mboxAlbumInfo_load(uuid); }
 
 // album info as popup (incl. some settings ...)
 //--------------------------------------
@@ -406,116 +289,6 @@ function mboxAlbumTrackInfo(data) {
 		}
 
 	appMsg.confirm(text,"",msg_height);
-	}
-
-// track title row
-//--------------------------------------
-
-function mboxAlbumTrackRow(id, dataTracks, album=true, artist=false, count=0, trackinfo=false) {
-	var track    = dataTracks[id];
-	var text     = "";
-	var cmd      = "";
-	var album_id = track["album_uuid"];
-
-	var length = "";
-	if (track["length"]) { length = " <font color='gray'>(" + convert_second2time(Math.round(track["length"])) + ")</font>"; }
-
-	console.debug("Debug UUID: " + id + " / Album UUID: " + album_id + " / " + track["album"] + " / " + track["sort_pos"] + " / " + track["sort"]);
-
-	cmd  += "<div class=\"album_tracks_control\">";
-
-        //cmd += mboxHtmlButton("play",  "writeAudioPlayer('" + id + "','audioPlayer');", "green",   "small right");
-	if (mbox_device != "remote") 	{
-		cmd += mboxHtmlButton("play",  "mboxPlayerLocal(" + count + ");", "green",   "small right"); 
-		}
-	if (mbox_device != "local") 	{
-		//cmd += mboxHtmlButton("play",  "appFW.requestAPI('GET',['play', '"+id+"'],'',mboxControl);", "blue", "small right");
-		cmd += "<div class=\"player_active right\" id=\"playing3_"+id+"\" style=\"display:none;\"><img src=\"" + mbox_icon_dir + mbox_icons["playing"] + "\" style=\"width:10px;height:10px;margin:2px;\"></div>";
-		cmd += mboxHtmlButton("play",  "appFW.requestAPI('GET',['play_position', '"+album_id+"', '"+count+"'],'',mboxControl);", "blue", "small right");
-		}
-	cmd  += "</div>";
-
-	text += "<div class=\"album_tracks_title\">";
-
-	// if track in album
-	if (album) {
-	
-		text += "<table><tr><td style='width:20px;vertical-align:top;padding:0px'>";
-		if ("sort_pos" in track)  { text += track["sort_pos"] + ". "; }
-
-		var track_info = "";
-		if (trackinfo) {
-			if ("track_num" in track) { if (track["track_num"][0] > 0)	{ track_info += "Track " + track["track_num"][0]; }}
-			if ("track_num" in track) { if (track["track_num"][1] > 0)	{ track_info += "/" + track["track_num"][1]; }}
-			if ("disc_num" in track)  { if (track["disc_num"] > 0)	{ track_info += " - CD " + track["disc_num"] + " &nbsp; "; }}
-			}
-		
-		var info = "<font color='gray'>" + track_info + length + "</font>";
-		text += "</td><td>";
-		text += "<div class='album_track_title_shorten' onclick='mboxAlbumTrackInfo_load(\"" + track["uuid"] + "\")' style='cursor:pointer;'>" + track["title"] + "</div>";
-		if (artist) { text += "<div class='album_track_title_shorten'><i>"+track["artist"] + "</i></div>"; }
-		text += "<div class='album_track_length'>" + info + "</div>";
-		text += "</td></tr></table>";
-		}
-	// if track in playlist
-	else {
-		text += "<b>" +track["title"] + "</b>" + length + "<br/>";
-		text += track["artist"] + "/";
-		text += track["album"] + "<br/>";
-		}
-	text += "</div>";
-	text += cmd;
-
-	return text;
-	}
-
-
-// empty and reload
-//--------------------------------------
-
-function mboxAlbumEmptyAll() {
-	setTextById("frame1","");
-	}
-
-
-// Write / delete details info below the album in the list
-//----------------------------------------
-
-function mboxAlbumEmptyBelow() {		// delete all infos from last loading
-	var divID = "";
-	for (var i=0;i<=mbox_list_amount;i++) {
-		divID = "album_"+i;
-		if (document.getElementById(divID)) {
-			document.getElementById(divID).style.display = "none";
-			setTextById(divID, "");
-			}
-		}
-	for (var i=0;i<=mbox_list_char.length;i++) {
-		divID = "album_"+mbox_list_char[i];
-		if (document.getElementById(divID)) {
-			document.getElementById(divID).style.display = "none";
-			setTextById(divID, "");
-			}
-		}
-	}
-
-
-//--------------------------------------
-
-function mboxAlbumWriteBelow(text) {		// write details to box below
-	
-	var divID = "";
-	mboxAlbumEmptyBelow();			// delete old entries
-	divID = "album_"+mbox_list_pos;		// write album info to next slot depending on width
-
-	//console.log("--"divID+"--"+mbox_list_pos);
-	if (document.getElementById(divID)) {
-		document.getElementById(divID).style.display = "block";
-		setTextById(divID, text);
-		}
-
-	mboxControlGroups();
-	if (document.getElementById(divID)) { return divID; }
 	}
 
 

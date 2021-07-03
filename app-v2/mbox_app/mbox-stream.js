@@ -4,12 +4,11 @@
 // List radio channels
 //--------------------------------------
 /* INDEX:
-function mboxStreamsAll_load(stream_uuid="-")
-function mboxStreamsAll_reload()
-function mboxStreamsAll(data, uuid="")
-function mboxStreamList(data)
-function mboxStreamTrackRow(id, dataTracks, album=true, artist=false, count=0, trackinfo=false)
+function mboxStreams_load(stream_uuid="-")
+function mboxStreams_reload()
+function mboxStreams(data, uuid="")
 function mboxStreamWriteAudioPlayer(title,file,divid)
+function mboxInfo_radio_load(uuid)
 function mboxStreamInfo_load(uuid)
 function mboxStreamInfo(data)
 function mboxStreamTrackInfo_load(stream_uuid, track_uuid)
@@ -45,167 +44,9 @@ function mboxStreams(data, uuid="") {
 	var sort_keys = ["title"];
 
 	// create list view
-	mboxViews_list(type="Stream", data=entries_info, selected_uuid=uuid, filter_key=the_filter, filter_text=filter, sort_keys=sort_keys, callTrackList="mboxStreamList");
+	mboxViewsList(type="radio", data=entries_info, selected_uuid=uuid, filter_key=the_filter, filter_text=filter, sort_keys=sort_keys, callTrackList="mboxViewsTrackList", chapter_rows=false);
 	}
 	
-
-// List albums tracks of an album
-//--------------------------------------
-
-function mboxStreamList(data) {
-
-        if (!data["DATA"]["_selected"]) { 
-                console.error("Fehler mboxStreamList"); 
-                console.error(data);  
-                return; 
-                }
-
-        var text          = "";
-        var uuid          = data["DATA"]["_selected_uuid"];
-        var radio_data    = data["DATA"]["_selected"];
-        var default_cover = mbox_icon_dir + mbox_icons["radio"];
-
-        // log ...
-        if (radio_data) {
-	        console.debug("Show Radio Channel: " + uuid + "/" + radio_data["title"]);
-		}
-		
-        if (radio_data["podcast"] && radio_data["podcast"]["title"]) {
-		// handover data to local player
-		mbox_playlist_queue["type"]		= "podcast";
-		mbox_playlist_queue["album"]		= radio_data;
-		mbox_playlist_queue["scrollto"]	= "scrollto_" + uuid.replace(/-/g,"");
-		mbox_playlist_queue["tracks"]		= radio_data["podcast"]["tracks"];
-		mbox_playlist_queue["url"]		= undefined;
-        	}
-        else {
-		// handover data to local player
-		mbox_playlist_queue["type"]		= "stream";
-		mbox_playlist_queue["album"]		= radio_data;
-		mbox_playlist_queue["scrollto"]	= "scrollto_" + uuid.replace(/-/g,"");
-		mbox_playlist_queue["tracks"]		= {};
-		mbox_playlist_queue["url"]		= radio_data["stream_url2"];
-		}
-		
-	console.log(mbox_playlist_queue);
-
-        // check if podcast data exists		
-        podcast = false;
-        if (radio_data["podcast"] && radio_data["podcast"]["title"]) {
-        	radio_data["title"]        = radio_data["podcast"]["title"];        	
-        	radio_data["cover_images"] = radio_data["podcast"]["cover_images"];        	
-        	radio_data["description"]  = radio_data["podcast"]["description"];
-        	radio_data["description"] += "<br/><i>("+radio_data["podcast"]["track_count"]+" Tracks)</i>";
-        	radio_data["stream_info"]  = radio_data["podcast"]["stream_info"];
-        	radio_data["tracks"]       = radio_data["podcast"]["tracks"];
-        	radio_data["track_list"]   = radio_data["podcast"]["track_list"];
-		podcast = true;
-        	}
-
-        // Check if Cover exists
-        cover = mboxCoverAlbum_new(uuid,radio_data);
-        if (!cover) { cover = default_cover; }
-        
-        // Write album cover
-        var onclick    = "mboxCoverAlbum_alert(\""+cover+"\");";        
-        text += "<div class=\"album_cover\" style=\"background:url('"+cover+"');background-size:contain;background-position:center;background-repeat:no-repeat;\" onclick='" + onclick + "'>";
-        text += "</div>";
-
-        // write album infos
-        text += "<div class=\"album_infos new\">";
-        text +=   "<b>" + radio_data["title"] + "</b><br/>" + radio_data["description"] + "<br/>";
-        text += "</div>";
-        text += mboxHtmlButton("delete",  "mboxAlbumEmptyBelow();mboxAlbumHideTriangle(mbox_list_last);", "opac",   "small small2");
-
-        // player control (in box)
-	text += "<div class=\"album_control new\">";
-	text += "<div class=\"player_active big\" id=\"playing_"+uuid+"\" style=\"display:none;\"><img src=\""+mbox_icon_dir + mbox_icons["playing"]+"\" style=\"height:20px;width:20px;margin:2px;\"></div>";
-	text += mboxPlayerControlEntry(uuid);
-	text += mboxHtmlButton("info",  "mboxStreamInfo_load('"+uuid+"');", "red");
-	text += mboxCardInfoIcon(entry_data=radio_data, uuid=uuid);
-	text += "</div>";
-	text += "<div style=\"width:100%;float:left;\"><hr/></div><center>";
-	
-	// write website link
-	if (radio_data["stream_info"] != "") {
-		text += lang("WEBSITE")+": <a href=\"" + radio_data["stream_info"] + "\" target=\"_blank\">"+ radio_data["stream_info"] + "</a>";
-		text += "</center><div style=\"width:100%;float:left;\"><hr/></div>";
-		}
-
-        // write tracks
-        if (podcast) {
-        	var uuids      = radio_data["track_list"];  
-        	var max        = uuids.length;
-        	var columns    = mboxListCount_New()/3;
-        	var per_column = Math.trunc(max/columns);
-        	if (per_column != max/columns) { per_column += 1; }
-        	
-        	var column    = 1;
-		text += "<div class=\"album_tracks\">";
-        	for (var i=0; i<uuids.length; i++) {
-        		text += mboxStreamTrackRow(id=uuids[i], dataTracks=radio_data["tracks"], album=true, artist=false, count=i, trackinfo=false);        		
-        		if (i+1 == column*per_column) {
-				text   += "</div><div class=\"album_tracks\">";
-				column += 1;
-        			}
-			}
-		text += "</div>";
-		}
-	else {
-		text += "<div class=\"album_tracks\">";
-		text += "&nbsp;";
-		text += "</div>";
-		}
-
-        mboxAlbumWriteBelow(text);
-        }
-
-
-// row of podcasts
-//--------------------------------------
-
-function mboxStreamTrackRow(id, dataTracks, album=true, artist=false, count=0, trackinfo=false) {
-
-	var track       = dataTracks[id];
-	var text        = "";
-	var cmd         = "";
-	var stream_uuid = track["album_uuid"];
-
-	var length = "";
-	if (track["duration"]) { length = " <font color='gray'>(" + track["duration"] + ")</font>"; }
-
-	console.debug("Debug UUID: " + id + " / Podcast UUID: " + stream_uuid + " / " + track["album"] + " / " + track["sort_pos"] + " / " + track["sort"]);
-	console.debug(track);
-
-	// track playback control
-	cmd  += "<div class=\"album_tracks_control\">";
-	if (mbox_device != "remote") 	{
-		cmd += mboxHtmlButton("play",  "mboxPlayerLocal(" + count + ");", "green",   "small right"); 
-		}
-	if (mbox_device != "local") 	{
-		cmd += mboxHtmlButton("play",  "appFW.requestAPI('GET',['play_position', '"+stream_uuid+"', '"+count+"'],'',mboxControl);", "blue", "small right");
-		cmd += "<div class=\"player_active right\" id=\"playing3_"+id+"\" style=\"display:none;\"><img src=\"" + mbox_icon_dir + mbox_icons["playing"] + "\" style=\"width:10px;height:10px;margin:2px;\"></div>";
-		}
-	cmd  += "</div>";
-
-	text += "<div class=\"album_tracks_title\">";
-	
-	// track
-	text += "<table><tr><td style='width:20px;vertical-align:top;padding:0px'>";
-	text += (count+1);
-	text += ".</td><td>";
-	text += "<div class='album_track_title_shorten' onclick='mboxStreamTrackInfo_load(\"" + stream_uuid + "\", \"" + id + "\")' style='cursor:pointer;'><b>" + track["title"] + "</b></div><br/>";
-	text += "<div class='album_track_description_shorten'>" + track["description"] + "</div>";
-	text += "<font color='gray'>" + track["publication"] + "</font>";
-	text += length;
-	text += "</td></tr></table>";
-
-	text += "</div>";
-	text += cmd;
-
-	return text;
-	}
-
 
 // show audio player for one audio file
 //--------------------------------------
@@ -226,6 +67,8 @@ function mboxStreamWriteAudioPlayer(title,file,divid) {
 // radio info as popup (incl. some settings ...)
 //--------------------------------------
 
+
+function mboxInfo_radio_load(uuid) { mboxStreamInfo_load(uuid); }
 function mboxStreamInfo_load(uuid) { appFW.requestAPI("GET",["data",uuid,"-"],"", mboxStreamInfo ); }
 function mboxStreamInfo(data) {
         var text   = "";
@@ -339,7 +182,7 @@ function mboxStreamDelete_exec(uuid,title) {
 
 function mboxStreamDelete_msg(data,title) {
 	mboxDataReturnMsg(data,lang("STREAM_DELETED")+"<br/><b>"+title,lang("STREAM_DELETE_ERROR")+"<br/><b>"+title);
-        mboxPlaylistAll_load();
+        mboxStreams_load();
         }
 
 //----------------------------------------------------------------
@@ -385,7 +228,7 @@ function mboxStreamAdd_msg(data) {
         if (data["REQUEST"]["status"] == "success")	{ text += lang("STREAM_CREATED"); } 
         else						{ text += lang("STREAM_CREATED_ERROR"); } 
         appMsg.alert(text);
-        mboxStream_load()
+        mboxStreams_load()
         }
 
 //----------------------------------------------------------------

@@ -109,7 +109,7 @@ function mboxControl(data) {
 		mboxSlider.set_value(Math.round(volume*100));
 
 		// Info for running music, if music box
-		if (type != "radio") {
+		if (type != "radio" || d["podcast"] != {}) {
 			var song        = d["song"];
 			var playlist    = d["playlist"];
 			var p_position  = d["playlist_pos"];
@@ -118,7 +118,7 @@ function mboxControl(data) {
 			if ("playlist_uuid" in d && d["playlist_uuid"].length > 0)	{ uuid 	= d["playlist_uuid"]; }
 			else 								{ uuid 	= song["uuid_album"]; }
 			if (song)							{ uuid_song 	= song["uuid"]; }
-                        else								{ uuid_song 	= ""; }
+			else								{ uuid_song 	= ""; }
 
 			// calculate position in song
 			var song_length = Math.round(d["length"]);
@@ -149,7 +149,7 @@ function mboxControl(data) {
 			var description = d["stream"]["description"];
 			var info        = d["stream"]["stream_info"];
 			uuid            = channel["uuid"];
-			console.log(channel["uuid"]);
+			//console.log(channel["uuid"]);
 
 			if (channel && channel["uuid"] && playing != 0) {
 				if (d["channel_info"]) 	{ text += "<b>" + d["channel_info"] + "</b> (<a href=\"" + info + "\" target=\"_blank\" style=\"color:white\">www</a>) ... "+description+"<br/>"; }

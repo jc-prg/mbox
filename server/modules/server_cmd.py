@@ -1,4 +1,4 @@
-import uuid
+import uuid, requests
 import urllib.parse
 
 import modules.config_stage   as stage
@@ -6,8 +6,8 @@ import modules.config_mbox    as mbox
 import modules.jcJson         as jcJSON
 import modules.jcCouchDB      as jcCouch
 from   modules.jcRunCmd       import *
-import modules.music_load     as music_load
 from   modules.server_init    import *
+import modules.music_load     as music_load
 
 #-------------------------------------------------
 
@@ -51,10 +51,45 @@ def diskSpace(init=False):
 
 #-------------------------------------------------
 
+def connectionStatusInternet():
+    '''
+    check if connection to internet exists
+    '''
+    host_ip   = stage.server_dns
+    host      = ['spiegel.de','google.com']
+    ping_ip   = False
+    error_msg = ""
+    
+    for key in host_ip:
+        if ping(key):
+          ping_ip = True
+          break
+
+    count     = 0
+    while count < len(host):
+         try:
+            connect = ping(host[count])
+            if connect and ping_ip: error_msg = "CONNECTED"
+            elif ping_ip:           error_msg = "DNS-ERROR"
+            else:                   error_msg = "NO-CONNECTION"
+
+         except requests.exceptions.RequestException as e:
+            error_msg = "NO-CONNECTION"
+            logging.warning("Error connecting to INTERNET ("+host[count]+"): " + str(e))
+
+         count = count + 1
+
+    return error_msg
+
+
+connectionStatusLast = ""
+connectionStatusTime = 0
+
 def connectionStatus():
     '''
     read log files with connection status
-    '''
+    '''    
+    global connectionStatusLast, connectionStatusTime
     
     try:
       with open(mbox.log_connection) as f:
@@ -65,8 +100,16 @@ def connectionStatus():
       with open(mbox.log_autohotspot) as f:
               content2 = f.readlines()
     except:   content2 = [ "Autohotspot not activated" ]
-      
-    return { "CONNECT" : content1[0], "TYPE" : content2[0] }
+    
+    
+    if connectionStatusTime + 60 < time.time():
+       content3 = connectionStatusInternet()
+       connectionStatusLast = content3
+       connectionStatusTime = time.time()
+    else:
+       content3 = connectionStatusLast
+       
+    return { "CONNECT" : content1[0], "TYPE" : content2[0], "INTERNET" : content3 }
 
 #-------------------------------------------------
 # NEXT GEN: generic class start and end

@@ -64,6 +64,7 @@ function mboxSettingsStatus (data) {
 	text += mboxHtmlTable("<b>Playing:", 		data["STATUS"]["playback"]["playing"]);
 	text += mboxHtmlTable("<b>Active Device:", 	data["STATUS"]["active_device"]);
 	text += mboxHtmlTable("<b>Window:", 		document.body.clientWidth + "x" + document.body.clientHeight);
+	text += mboxHtmlTable("<b>Internet:",		internetConnect);
 	text += mboxHtmlTable("end");
 	text += "<hr/>";
 	text += mboxHtmlTable("start");

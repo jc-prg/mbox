@@ -61,19 +61,21 @@ function mboxControlGroups() {
 function mboxControl_load()            { appFW.requestAPI('GET', ["status"], "", mboxControl,"","mboxControl_load"); }
 function mboxControl(data) {
 
-	var d          = data["STATUS"]["playback"];
-	var l          = data["STATUS"];
+	var d           = data["STATUS"]["playback"];
+	var l           = data["STATUS"];
 	if (!d)	{ return; }
 	
-	var type       = d["device"];
-	var type_sub   = d["type"];
-	var volume     = d["volume"];
-	var mute       = d["mute"];
-	var status     = d["status"];
-	var playing    = d["playing"];
+	var type        = d["device"];
+	var type_sub    = d["type"];
+	var volume      = d["volume"];
+	var mute        = d["mute"];
+	var status      = d["status"];
+	var playing     = d["playing"];
 
-	var load_new     = l["reload_new"];
-	var load_all     = l["reload_all"];
+	var load_new    = l["reload_new"];
+	var load_all    = l["reload_all"];
+	
+	internetConnect = data["STATUS"]["system"]["server_connection"]["INTERNET"];
 	
 	console.debug("mboxControl: playing="+playing+" / load_new="+load_new+" / load_all="+load_all);
 	if (playing == 1 || load_new || load_all) 	{ appFW.setAutoupdateLoading(true,"mboxControl"); }

@@ -44,6 +44,7 @@ function mboxPlayerProgressSet( status, song_length, song_left, song_left_s )
 function mboxPlayerJumpToPosition(e)
 function mboxPlayerButton( button, cmd="", color="blue", small="", display="block" )
 function mboxPlayerButtonText( button, cmd="", color="blue", small="", display="block" )
+function mboxPlayerAdd2Queue(type, entry_uuid, entry, track_list={})
 */
 //--------------------------------------
 
@@ -344,6 +345,41 @@ function mboxPlayerButtonText( button, cmd="", color="blue", small="", display="
 
         return text;
         }
+
+//--------------------------------------
+// file queue
+//--------------------------------------
+
+function mboxPlayerAdd2Queue(type, entry_uuid, entry, track_list={}) {
+
+	// fill local playlist queue
+	mbox_playlist_queue["type"]     = type;
+	
+	if (type == "album" || type == "playlist") {
+		mbox_playlist_queue["album"]    	= entry;
+		mbox_playlist_queue["scrollto"] 	= "scrollto_" + entry_uuid.replace(/-/g,"");
+		mbox_playlist_queue["tracks"]   	= track_list;	
+		mbox_playlist_queue["url"]		= undefined;
+		}
+        else if (type == "radio" && entry["podcast"] && entry["podcast"]["title"]) {
+		// handover data to local player
+		mbox_playlist_queue["type"]		= "podcast";
+		mbox_playlist_queue["album"]		= entry;
+		mbox_playlist_queue["scrollto"]	= "scrollto_" + entry_uuid.replace(/-/g,"");
+		mbox_playlist_queue["tracks"]		= entry["podcast"]["tracks"];
+		mbox_playlist_queue["url"]		= undefined;
+        	}
+        else if (type == "radio") {
+		// handover data to local player
+		mbox_playlist_queue["type"]		= "stream";
+		mbox_playlist_queue["album"]		= entry;
+		mbox_playlist_queue["scrollto"]	= "scrollto_" + entry_uuid.replace(/-/g,"");
+		mbox_playlist_queue["tracks"]		= {};
+		mbox_playlist_queue["url"]		= entry["stream_url2"];
+		}
+
+	console.debug(mbox_playlist_queue);
+	}
 
 
 //--------------------------------------

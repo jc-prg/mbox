@@ -54,15 +54,6 @@ function add_link(link, description="") {
         return "<a href=\"" + link + "\" target=\"_blank\" style=\"color:white\">" + description + "</a><br/>";
         }
 
-// ------------------------------------------
-
-function clickMenu () {
-   if (window.innerWidth < 910) {
-     if (document.getElementById("menuItems").style.visibility == "hidden")     { document.getElementById("menuItems").style.visibility = "visible"; }
-     else                                                                       { document.getElementById("menuItems").style.visibility = "hidden"; }
-     }
-   else 									{ document.getElementById("menuItems").style.visibility = "visible"; }
-   }
 
 //-------------------------------------------------------------
 // mbox specific functions ...

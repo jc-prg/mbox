@@ -146,7 +146,9 @@ function app_screen_size_changed(width, height) {
 	
 	// reload views if width changes
 	if (app_screen_size_width_old != width) {
-		if (mbox_mode == "Album")    { mboxAlbumAll_reload(); }
+		if (mbox_mode == "album")		{ mboxAlbumAll_reload(); }
+		else if (mbox_mode == "radio")	{ mboxStreams_reload(); }
+		else if (mbox_mode == "playlist")	{ mboxPlaylists_reload(); }
 		}
 
 	app_screen_size_width_old  = width;

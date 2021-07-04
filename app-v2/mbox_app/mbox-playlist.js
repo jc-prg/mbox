@@ -86,7 +86,7 @@ function mboxPlaylistEdit(data) {
 	text += "<i>"+lang("TRACKS_INSIDE")+" ";
 	text += "<small onclick=\"mboxPlaylistEditTracks_load('"+uuid+sep+uuid+"');\" style=\"cursor:pointer;color:gray;\">["+lang("RELOAD")+"]</small> ...</i>";
     	text += "<div id='selectTrackList'     class='album_edit_list'>Loading ...</div>";
-	text += "<div id='playlistEditingInfo' style='color:red;'></div>";
+	text += "<div id='playlistEditingInfo' style='color:"+mbox_color[appTheme]["warning"]+";'></div>";
 
 	appMsg.confirm("<div style=\"text-align:left;\">" + text + "</div>", "", 450);
 
@@ -283,19 +283,18 @@ function mboxPlaylistInfo(data) {
 
         var edit = "";
         edit += mboxHtmlButton("image_add",  "mboxUploadImage('"+uuid+"','playlist','"+album["title"]+"');", "red");
-        edit += mboxHtmlButton("list_edit",  "mboxPlaylistEdit_load('"+album["uuid"]+"');",          "red");
-        edit += mboxHtmlButton("edit",       "mboxPlaylistEditEntry_load('"+album["uuid"]+"');",          "red");
+        edit += mboxHtmlButton("list_edit",  "mboxPlaylistEdit_load('"+album["uuid"]+"');",                  "red");
+        edit += mboxHtmlButton("edit",       "mboxPlaylistEditEntry_load('"+album["uuid"]+"');",             "red");
         edit += mboxHtmlButton("delete",     "mboxPlaylistDelete('"+uuid+"','"+album["title"]+"');",         "red");
-
 
         text += "<b>"+lang("PLAYLIST_INFORMATION")+"</b><br/>";
         text += mboxHtmlTableNew("start");
         text += "<tr><td colspan='2'><hr></td></tr>";
         text += mboxHtmlTableNew(["<i>"+lang("TITLE")+":",        album["title"] ] );
         text += mboxHtmlTableNew(["<i>"+lang("DESCRIPTION")+":",  album["description"] ] );
-        text += mboxHtmlTableNew(["<i>Tracks:",	       			album["tracks"].length ] );
-        text += mboxHtmlTableNew(["<i>UUID:",               "<a href='" + url + "/' target='_blank'>" + uuid + "</a>" ] );
-        text += mboxHtmlTableNew(["<i>Card ID:",            "<a style='cursor:pointer;' onclick='mboxCardList_load(\""+cardid+"\");'>"    + cardid + "</a>" ] );
+        text += mboxHtmlTableNew(["<i>Tracks:",	            album["tracks"].length ] );
+        text += mboxHtmlTableNew(["<i>UUID:",                     "<a href='" + url + "/' target='_blank'>" + uuid + "</a>" ] );
+        text += mboxHtmlTableNew(["<i>Card ID:",                  "<a style='cursor:pointer;' onclick='mboxCardList_load(\""+cardid+"\");'>"    + cardid + "</a>" ] );
         text += mboxHtmlTableNew(["<i>"+lang("COVER_AVAILABLE")+":",      cover ] );
         text += "<tr><td colspan='2'><hr></td></tr>";
         text += mboxHtmlTableNew(["<i>"+lang("EDIT")+":",         edit ] );

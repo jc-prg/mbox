@@ -40,6 +40,11 @@ function mboxStreams(data, uuid="") {
 	var filter     = "";
 	var the_filter = [""];
 	
+	// info if no internet connect
+	if (!internetConnect) {
+		filter = "<center><font color='red'>"+lang("NO-INTERNET-STREAMS")+"</font></center>";
+		}
+	
 	// create sort keys
 	var sort_keys = ["title"];
 

@@ -282,10 +282,10 @@ function mboxPlaylistInfo(data) {
                 }
 
         var edit = "";
-        edit += mboxHtmlButton("image_add", "mboxUploadImage('"+uuid+"','playlist','"+album["title"]+"');", "red");
-        edit += mboxHtmlButton("list_edit", "mboxPlaylistEdit_load('"+album["uuid"]+"');",          "red");
-        edit += mboxHtmlButton("edit",  	"mboxPlaylistEditEntry_load('"+album["uuid"]+"');",          "red");
-        edit += mboxHtmlButton("delete",  	"mboxPlaylistDelete('"+uuid+"','"+album["title"]+"');",         "red");
+        edit += mboxHtmlButton("image_add",  "mboxUploadImage('"+uuid+"','playlist','"+album["title"]+"');", "red");
+        edit += mboxHtmlButton("list_edit",  "mboxPlaylistEdit_load('"+album["uuid"]+"');",          "red");
+        edit += mboxHtmlButton("edit",       "mboxPlaylistEditEntry_load('"+album["uuid"]+"');",          "red");
+        edit += mboxHtmlButton("delete",     "mboxPlaylistDelete('"+uuid+"','"+album["title"]+"');",         "red");
 
 
         text += "<b>"+lang("PLAYLIST_INFORMATION")+"</b><br/>";

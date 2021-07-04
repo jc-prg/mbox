@@ -68,7 +68,7 @@ function mboxSettingsStatus (data) {
 	text += mboxHtmlTable("end");
 	text += "<hr/>";
 	text += mboxHtmlTable("start");
-	text += mboxHtmlTable("<b>Status:",	 	data["STATUS"]["playback"]["status"] + " (" + data["STATUS"]["playback"]["file"] + ")");
+	text += mboxHtmlTable("<b>Status:",	 	data["STATUS"]["playback"]["status"] + " (<a href='' onclick='alert(\"" + data["STATUS"]["playback"]["file"] + "\")'>filename</a>)");
 	text += mboxHtmlTable("end");
 	text += "<hr/>";
 	text += mboxHtmlTable("start");
@@ -76,8 +76,8 @@ function mboxSettingsStatus (data) {
 	text += mboxHtmlTable("<b>Tracks:", 		data["STATUS"]["statistic"]["tracks"] );
 	text += mboxHtmlTable("<b>Artists:", 		data["STATUS"]["statistic"]["albums"] );
 	text += mboxHtmlTable("<b>Albums:", 		data["STATUS"]["statistic"]["album_info"] );
-	text += mboxHtmlTable("<b>Playlists:",		data["STATUS"]["statistic"]["playlists"] );
-	text += mboxHtmlTable("<b>Web-Radio:",		data["STATUS"]["statistic"]["radio"] );
+	text += mboxHtmlTable("<b>Playlists:",	data["STATUS"]["statistic"]["playlists"] );
+	text += mboxHtmlTable("<b>Web-Radio:",	data["STATUS"]["statistic"]["radio"] );
 	text += mboxHtmlTable("end");
 
 	setTextById("setting1",text);

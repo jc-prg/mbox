@@ -64,16 +64,18 @@ function mboxViewsList(type, data, selected_uuid="", filter_key="", filter_text=
 	mbox_mode            = type; 
 	mbox_cover_list      = [];		// reset cover list (to show cover of all albums, playlists, ...)
 
-	// set data to place detailviews etc.
+	// preset for vars to place detailviews etc.
 	var entry_in_row     = 0;
 	var entry_next_empty = false;
-	var entries_per_row   = mboxViewsCalcRowEntries();
+	var entries_per_row  = mboxViewsCalcRowEntries();
+	var entries_total    = 0;
 	var row_per_chapter  = false;	
 	if (entries_per_row >= 9 && chapter_rows) { row_per_chapter = true; }
-	var chapter_detail  = 0;
-	var chapter_number  = 0;
+	var chapter_detail   = 0;
+	var chapter_number   = 0;
+	var chapter_total    = 0;
 	
-	// Sort entries ... define keys in sort_keys=[]
+	// sort entries ... define keys in sort_keys=[]
 	var sorted_entries = [];
 	for (var key in entry_info) {
 		var sort_string = "";
@@ -86,12 +88,34 @@ function mboxViewsList(type, data, selected_uuid="", filter_key="", filter_text=
 		}
 	sorted_entries.sort();
 	
+	// filter entries
+	var filtered_entries = [];
+	for (var a=0;a<sorted_entries.length;a++) {
+		var keys           = sorted_entries[a].split("||");
+		var uuid           = keys[sort_keys.length+1];		
+		var isvalidfilter  = false;
+		if (entry_info[uuid] && filter_key[0] in entry_info[uuid] && entry_info[uuid][filter_key[0]].indexOf(filter_key[1]) > -1) { isvalidfilter = true; }
+		if (filter_key == "" || isvalidfilter) {
+			filtered_entries.push( sorted_entries[a] );
+			}
+		}
+	if (filtered_entries != sorted_entries) { isvalidfilter = true; }
+	
+	// count chapters based on first character
+	var chapter_last = "";
+	for (var a=0;a<filtered_entries.length;a++) {
+		var chapter     = filtered_entries[a].substring(0,1);
+		if (chapter != chapter_last) { chapter_total += 1; chapter_last = chapter;}
+		}
+	entries_total = filtered_entries.length;
+	if (mbox_show_char) { entries_total += chapter_total; }
+	
 	// list albums
 	var i              = 1;
-	if (sorted_entries.length == 0) { text += "<div>" + lang("NODATA_RELOAD") + "</div>"; }
-	else { for (var a=0;a<sorted_entries.length;a++) {
+	if (filtered_entries.length == 0) { text += "<div>" + lang("NODATA_RELOAD") + "</div>"; }
+	else { for (var a=0;a<filtered_entries.length;a++) {
 	
-		var keys        = sorted_entries[a].split("||");
+		var keys        = filtered_entries[a].split("||");
 		var chapter     = keys[0].substring(0,1);
 		var uuid        = keys[sort_keys.length+1];		
 		var title       = keys[1];
@@ -105,10 +129,7 @@ function mboxViewsList(type, data, selected_uuid="", filter_key="", filter_text=
 		var entry_detail_last   = false;
 		var entry_detail_number = 0;
 		
-		if (a == sorted_entries.length-1) { entry_detail_last = true; }
-
-		var isvalidfilter	 = false;
-		if (entry_info[uuid] && filter_key[0] in entry_info[uuid] && entry_info[uuid][filter_key[0]].indexOf(filter_key[1]) > -1) { isvalidfilter = true; }
+		if (a == filtered_entries.length-1) { entry_detail_last = true; }
 
 		if (filter_key == "" || isvalidfilter) {
 			
@@ -117,7 +138,7 @@ function mboxViewsList(type, data, selected_uuid="", filter_key="", filter_text=
 
 			// print cover with charakter and empty album, if new line per chapter
 			else {
-				if (last_chapter != chapter && isvalidfilter == false) {
+				if (last_chapter != chapter) { // && isvalidfilter == false) {
 					i++;
 					chapter_number++;	
 					entry_character         = true;
@@ -146,20 +167,13 @@ function mboxViewsList(type, data, selected_uuid="", filter_key="", filter_text=
 					entry_detail_number = (Math.trunc((i-1)/entries_per_row)+1) * entries_per_row;
 					}
 				}
-			
-			if (a == sorted_entries.length) { entry_detail_number = i; }
+			if (entry_detail_number > entries_total)	{ entry_detail_number = entries_total; }
 			
 			if (entry_detail)		{ text += mboxViewsDetail( chapter_number-1, last_chapter ); }
 			if (entry_empty)	 	{ text += mboxViewsEmpty(  chapter_number, chapter ); }
 			if (entry_line)		{ text += "<hr style='float:left;width:99%;border:#aaa solid 0.5px;'/>"; }
 			if (entry_character)		{ text += mboxViewsChapter( chapter_number, chapter, last_chapter ); text += mboxHtmlEntryDetail( i-1 ); }
 			
-			//.............
-			
-			// FEHLER: wenn die letzte Reihe nicht vorständig ist, dann 'entry_detail_number' auf letztes Detail setzen ... hier nur letztes ...
-			if (entry_detail_last)  { entry_detail_number = i; }	// if (a == sorted_entries.length-1) { entry_detail_last = true; }
-										// wie letztes zu erwartendes Element vorher bestimmen?
-					
 			// define commands	
 			var cmd_play = "appFW.requestAPI('GET',['play', '" + uuid + "'],'',mboxControl);";
 			if (row_per_chapter)	{ var cmd_open = "mboxViewsLoadDetails('" + chapter + "_" + chapter_number + "','" + i + "','" + uuid + "',"+callTrackList+",'"+type+"');"; }
@@ -177,10 +191,7 @@ function mboxViewsList(type, data, selected_uuid="", filter_key="", filter_text=
 			// check if active entry to be loaded in the end
 			if (row_per_chapter && uuid == entry_active)	{ entry_active_no1 = chapter + "_" + chapter_number; entry_active_no2 = i; }
 			else if (uuid == entry_active)		{ entry_active_no1 = entry_detail_number;            entry_active_no2 = i; }
-			//else						{ entry_active_no1 = 0;                              entry_active_no2 = 0; }
 
-			//.............
-			
 			if (entry_detail_last)	{ text += mboxViewsDetail( chapter_number, chapter ); }		
 			}
 			
@@ -203,10 +214,9 @@ function mboxViewsList(type, data, selected_uuid="", filter_key="", filter_text=
 	setTextById("ontop",  print);
 
 	// set and show filter if defined
-	if (filter_text != "") {
-		setTextById("frame2", filter_text);
-		mboxControlToggleFilter_show();
-		}
+	setTextById("frame2", filter_text);
+	if (filter_text != "")	{ mboxControlToggleFilter(true); }
+	else			{ mboxControlToggleFilter(false); }
 
 	// load track list, if uuid is defined
 	if (entry_active && entry_active != "" && entry_active != "-") {	
@@ -235,7 +245,6 @@ function mboxViewsChapter(count, title, last_title) {
 	text += "<div class=\"album_cover character\" style=\"background:url('" + cover + "');\">";
 	text += "<div class=\"album_sort\">" + act_char + "</div>";
 	text += "</div>";
-//	text += "<div class=\"album_detail\" id=\"album_" + count + "\" style=\"display:none\">test " + count + " / " + document.body.clientWidth + "</div>";
 
 	return text;
 	}

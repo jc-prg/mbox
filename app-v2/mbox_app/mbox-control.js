@@ -116,7 +116,7 @@ function mboxControl(data) {
 		mboxSlider.set_value(Math.round(volume*100));
 
 		// Info for running music, if music box
-		if (type != "radio" || d["podcast"] != {}) {
+		if (type != "radio" || (d["podcast"] && d["podcast"] != {})) {
 			var song        = d["song"];
 			var playlist    = d["playlist"];
 			var p_position  = d["playlist_pos"];
@@ -159,9 +159,9 @@ function mboxControl(data) {
 			//console.log(channel["uuid"]);
 
 			if (channel && channel["uuid"] && playing != 0) {
-				if (d["channel_info"]) 	{ text += "<b>" + d["channel_info"] + "</b> (<a href=\"" + info + "\" target=\"_blank\" style=\"color:white\">www</a>) ... "+description+"<br/>"; }
-				else 				{ text += "<b>" + title + "</b>: " + description + " (<a href=\"" + info + "\" target=\"_blank\" style=\"color:white\">www</a>)<br/>"; }
-				text += "<i>" + status + "</i><br/>";  			//text += "<i>" + status + " ("+channel["uuid"]+")</i><br/>";
+				if (d["channel_info"]) 	{ text += "<b>" + d["channel_info"] + "</b><br/> (<a href=\"" + info + "\" target=\"_blank\" style=\"color:white\">www</a>) ... "+description+"<br/>"; }
+				else 				{ text += "<b>" + title + "</b><br/> " + description + ": <a href=\"" + info + "\" target=\"_blank\" style=\"color:white\">"+info+"</a><br/>"; }
+				//text += "<i>" + status + "</i><br/>";
 				}
 		  	else {	text += "<i>"+lang("SELECT_MUSIC_ITEM") +"</i><br/>&nbsp;";
 				}

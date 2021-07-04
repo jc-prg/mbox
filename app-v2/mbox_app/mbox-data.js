@@ -79,8 +79,8 @@ function mboxDataEditExecute(uuid, key_list, type) {
 			data[keys[i]] = document.getElementById('edit_'+keys[i]).value;
 			}
 		}}
-	if (type == "radio")      	{ callback = mboxStream_load; }
-	else if (type == "playlists")	{ callback = mboxPlaylistAll_load; }
+	if (type == "radio")      	{ callback = mboxStreams_load; }
+	else if (type == "playlists")	{ callback = mboxPlaylists_load; }
 	else				{ callback = appMsg.hide; }
 	
 	console.error("EDIT EXECUTE"+type);

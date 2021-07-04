@@ -46,7 +46,7 @@ function mboxStreams(data, uuid="") {
 		}
 	
 	// create sort keys
-	var sort_keys = ["title"];
+	var sort_keys = ["title","description"];
 
 	// create list view
 	mboxViewsList(type="radio", data=entries_info, selected_uuid=uuid, filter_key=the_filter, filter_text=filter, sort_keys=sort_keys, callTrackList="mboxViewsTrackList", chapter_rows=false);

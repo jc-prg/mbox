@@ -75,7 +75,12 @@ function mboxControl(data) {
 	var load_new    = l["reload_new"];
 	var load_all    = l["reload_all"];
 	
-	internetConnect = data["STATUS"]["system"]["server_connection"]["INTERNET"];
+	if (data["STATUS"]["system"] && data["STATUS"]["system"]["server_connection"] && data["STATUS"]["system"]["server_connection"]["INTERNET"]) {
+		internetConnect = data["STATUS"]["system"]["server_connection"]["INTERNET"];
+		}
+	else {
+		internetConnect = "UNKNOWN";
+		}
 	
 	console.debug("mboxControl: playing="+playing+" / load_new="+load_new+" / load_all="+load_all);
 	if (playing == 1 || load_new || load_all) 	{ appFW.setAutoupdateLoading(true,"mboxControl"); }
@@ -308,9 +313,14 @@ function mboxControlShowUUID(uuid) {
 	//document.getElementById('scrollto_'+uuid.replace(/-/g,"")).scrollIntoView();
 
 	// reload and open album / playlist entry
-	if (uuid.indexOf("p_") >= 0) 		{ mboxPlaylists_load("",uuid); }
-	else if (uuid.indexOf("a_") >= 0) 	{ mboxAlbumAll_load("",uuid); }
-	else if (uuid.indexOf("r_") >= 0) 	{ mboxStreams_load(uuid); }
+	if (uuid) {
+		if (uuid.indexOf("p_") >= 0) 		{ mboxPlaylists_load("",uuid); }
+		else if (uuid.indexOf("a_") >= 0) 	{ mboxAlbumAll_load("",uuid); }
+		else if (uuid.indexOf("r_") >= 0) 	{ mboxStreams_load(uuid); }
+		}
+	else {
+		console.warning("mboxControlShowUUID ... uuid missing");
+		}
 	}
 
 

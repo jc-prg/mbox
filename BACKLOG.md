@@ -4,15 +4,14 @@ Here you'll find a history of features implemented into hardware and software as
 
 ## ToDo
 
-- BUG srv: looses internet connection from time to time; -> check if internet connect exists first
-
 ### IN PROGRESS
 
-- BUG Play stream in local mode
+- ...
 
 ### KNOWN BUGS
 
-- BUG server - after connecting card to album the message "invalid entry connected" is spoken -> move all data to cache directly
+- BUG srv: looses internet connection from time to time; -> check if internet connect exists first
+- BUG server -> after connecting card to album, the server has to be reload <-> the message "invalid entry connected" is spoken -> move all data to cache directly?
 - BUG server - Start with STREAM and card laying on the RFID sensor leads to an error -> remove card_id, until connection is OK
 - BUG app/server - if playlist with the same title already exists, two lists with the same tracks, id, and image are displayed => check server side?
 - BUG check if audio device is connected -> show visible error message in client (restart of computer usually works)
@@ -21,6 +20,7 @@ Here you'll find a history of features implemented into hardware and software as
 
 ### FEATURE IDEAS
 
+- app/srv: check internet connection -> error message for streams, if no connection
 - jc-player: +5 / -5 ; jump to position (like in remote player)
 - app: Delete reference to picture / delete picture (if uploaded)
 - app: track view (with out albums) -> preparation for additional filters
@@ -197,6 +197,8 @@ Here you'll find a history of features implemented into hardware and software as
 * OK - BUG srv: text2speech isn't played completely on the RPi -> other docker image (in progress)
 * OK - BUG if 1 file is ready, does the next start? -> resource busy?
 * OK - BUG server - if playing and press play in a playlist, start with first song instead of actuall running song (PlaySong -> start file, not list without loading list again) - reduced the errors
+* OK - More detailed podcast information
+* OK - BUG Play stream in local mode
 
 * DECLINED - Play the whole song, not only parts // not seen any more
 * DECLINED - dont delete playlist when stop: don't unload playlist/title if stop - just rewind to first position, but display now reflects situation
@@ -360,4 +362,7 @@ Here you'll find a history of features implemented into hardware and software as
 * OK - BUG app: "empty album" isn't placed correctly for wider view incl. chapters
 * OK - faster status reload if playing a song
 * OK - Track Info for podcasts, more detailed podcast info, cover in list view
+* OK - Last run for podcasts also -> last_run podcast (save / reload former data, intelligent reload ...)
+* OK - Same list view for albums, playlists, streams - lists and tracks
+* OK - BUG filter views, show details for the last row
 

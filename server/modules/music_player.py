@@ -215,11 +215,12 @@ class musicPlayer(threading.Thread):
    def playing(self):
       '''
       translate playback status to 0/1
+      # Status description: https://www.olivieraubert.net/vlc/python-ctypes/doc/vlc.State-class.html
       '''
       old_state             = self.player_status
       self.player_status    = str(self.player.get_state())
         
-      if self.player_status == "State.Stopped" or self.player_status == "State.NothingSpecial":
+      if self.player_status == "State.Stopped" or self.player_status == "State.NothingSpecial" or self.player_status == "State.Ended":
          self.play_status = 0
          logging.debug("Playing:"+self.play_url+"..."+str(self.play_status))
       else:

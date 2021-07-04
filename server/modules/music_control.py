@@ -150,8 +150,14 @@ class musicControlThread(threading.Thread):
                p = self.music_ctrl["position"]
                self.music_ctrl["length"]   = 0
                self.music_ctrl["position"] = 0
-               if self.music_list_p == 1 and "title" in current_stream: self.speak.speak_text(current_stream["title"]+": "+current_info["title"]+".", self.player.volume*100)
-               elif "title" in current_info:                            self.speak.speak_text(current_info["title"]+".", self.player.volume*100)
+               
+               if self.music_list_p == 1 and "title" in current_stream and "title" in current_info:
+                  self.speak.speak_text(current_stream["title"] + ": 1. : " + current_info["title"] + ".", self.player.volume*100)
+               elif "title" in current_info:
+                  self.speak.speak_text(str(self.music_list_p) + ". : " + current_info["title"] + ".", self.player.volume*100)
+               elif "title" in current_stream:
+                  self.speak.speak_text(current_stream["title"] + ".", self.player.volume*100)
+                  
                self.player.play_stream(current_path)
                self.music_ctrl["length"]   = self.player.get_length()
                self.music_ctrl["position"] = p
@@ -163,7 +169,10 @@ class musicControlThread(threading.Thread):
             # if stopped device while playing, load last music
             if last_load:
                logging.debug("Jump to position in song from last run ...")
-               position  = (self.music_ctrl["position"] / self.music_ctrl["length"]) * 100
+               if self.music_ctrl["length"] == 0:
+                  position  = (self.music_ctrl["position"] / self.music_ctrl["length"]) * 100
+               else:
+                  position  = 0
                self.player.set_position(position)
                last_load = False
                

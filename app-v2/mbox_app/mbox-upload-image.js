@@ -33,8 +33,8 @@ function mboxUploadImageWrite(params) {
 	if (filename == "") { filename = "-"; }
 
 	if (param[1] == "album") 	{ appFW.requestAPI('PUT', [ 'images', 'upload', param[0], filename ], '', mboxAlbumAll_load); }
-	if (param[1] == "playlist") 	{ appFW.requestAPI('PUT', [ 'images', 'upload', param[0], filename ], '', mboxPlaylistAll_load); }
-	if (param[1] == "radio") 	{ appFW.requestAPI('PUT', [ 'images', 'upload', param[0], filename ], '', mboxStream_load); }
+	if (param[1] == "playlist") 	{ appFW.requestAPI('PUT', [ 'images', 'upload', param[0], filename ], '', mboxPlaylists_load); }
+	if (param[1] == "radio") 	{ appFW.requestAPI('PUT', [ 'images', 'upload', param[0], filename ], '', mboxStreams_load); }
 	else 				{ appFW.requestAPI('PUT', [ 'images', 'upload', param[0], filename ], ''); }
 	appMsg.hide();
 	}

@@ -201,7 +201,8 @@ function mboxViewsList(type, data, selected_uuid="", filter_key="", filter_text=
 
 	// add box to add playlist or stream
 	if (type != "album") {		
-		var onclick  = "mbox"+type+"Add_dialog(\"ADD_ENTRY\");";
+		if (type == "radio") 		{ var onclick  = "mboxStreamAdd_dialog(\"ADD_ENTRY\");"; }
+		else if (type == "playlist")	{ var onclick  = "mboxPlaylistAdd_dialog(\"ADD_ENTRY\");"; }
 		text += "<hr style='float:left;width:99%;border:#aaa solid 0.5px;'/>"; 
 		text += mboxCoverSeparator( "<img src=\""+mbox_icon_dir+"add_"+type+".png\" style=\"height:50px;width:50px;margin-top:10px;\">", onclick );
 		text += mboxHtmlEntryDetail('ADD_ENTRY');
@@ -414,7 +415,7 @@ function mboxViewsTrackList(data, type) {
 	
 	// podcast or stream info
 	if (entry["stream_info"] && entry["stream_info"] != "") {
-		text += lang("WEBSITE")+": <a href=\"" + entry["stream_info"] + "\" target=\"_blank\">"+ entry["stream_info"] + "</a>";
+		text += "<center>"+lang("WEBSITE")+": <a href=\"" + entry["stream_info"] + "\" target=\"_blank\">"+ entry["stream_info"] + "</a>";
 		text += "</center><div style=\"width:100%;float:left;\"><hr/></div>";
 		}
 

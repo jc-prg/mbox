@@ -27,7 +27,16 @@ var mbox_icons     = {
 var mbox_track_color = [ "",
 	"lightseagreen","turquoise",
 	"indianred","darksalmon"
-	]
+	];
+	
+var mbox_color = {
+	"dark"    : {
+		"warning" : "yellow"
+		},
+	"default" : {
+		"warning" : "red"
+		}
+	}	
 
 var mbox_playlist       = {};
 var mbox_playlist_queue = {};

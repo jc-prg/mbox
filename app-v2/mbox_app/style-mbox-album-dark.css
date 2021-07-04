@@ -54,4 +54,17 @@
   .album_delete_pl 		{ color : red; }
   .album_edit_select 		{ background : #dddddd; border-top : 1px solid gray; }
   .album_edit_list 		{ background : #dddddd; border-top : 1px solid gray; color : black; }
+  
+  .tooltip .tooltiptext  { 
+  	background : #914141;
+  	color      : white;
+  	border     : 1px solid white;
+  	}
+  .tooltip .triangle1	{ 
+  	border-bottom : 10px solid #914141;
+  	}
+  .tooltip .triangle2	{ 
+  	border-bottom : 10px solid white;
+  	}
+  
 }

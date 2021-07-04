@@ -20,33 +20,34 @@ function mboxCoverSeparator( content, cmd )
 //--------------------------------------
 
 function mboxCoverAlbumInfo(nr,url_list,act,uuid) {
-	var border  = "";
-	var size    = "50px";
+	var border          = "";
+	var border_selected = "border:2px solid red;";
+	var size            = "50px";
 
-	if (nr == 1) { if (act == "track")  { border = "border:2px solid red;"; } select = "track"; }
-	if (nr == 2) { if (act == "dir")    { border = "border:2px solid red;"; } select = "dir"; }
-	if (nr == 3) { if (act == "upload") { border = "border:2px solid red;"; } select = "upload"; }
-	if (nr == 4) { if (act == "url")    { border = "border:2px solid red;"; } select = "url"; }
+	if (nr == 1) { if (act == "track")  { border = border_selected; } select = "track"; }
+	if (nr == 2) { if (act == "dir")    { border = border_selected; } select = "dir"; }
+	if (nr == 3) { if (act == "upload") { border = border_selected; } select = "upload"; }
+	if (nr == 4) { if (act == "url")    { border = border_selected; } select = "url"; }
 
 	var img       = "<div class='album_cover' style='height:"+size+";width:"+size+";background:gray;cursor:default;"+border+"' title='"+select+"'></div>";
 	var close_cmd = "";
 
-	if 	(uuid.indexOf("r_")>=0) { close_cmd = "mboxStreamInfo_close"; }
-	else if (uuid.indexOf("a_")>=0) { close_cmd = "mboxAlbumInfo_close"; }
-	else if (uuid.indexOf("p_")>=0) { close_cmd = "mboxPlaylistInfo_close"; }
+	if 	(uuid.indexOf("r_")>=0)	{ close_cmd = "mboxStreamInfo_close"; }
+	else if (uuid.indexOf("a_")>=0)	{ close_cmd = "mboxAlbumInfo_close"; }
+	else if (uuid.indexOf("p_")>=0)	{ close_cmd = "mboxPlaylistInfo_close"; }
 
 	if (url_list) {
 	    if (url_list.length > 0) {
-		if (nr == 1) { url = mbox_cover_dir + url_list[0];     if (act == "track")  { border = "border:2px solid red;"; } select = "track"; }
-		if (nr == 2) { url = mbox_music_dir + url_list[0];     if (act == "dir")    { border = "border:2px solid red;"; } select = "dir"; }
-		if (nr == 3) { url = mbox_cover_upl_dir + url_list[0]; if (act == "upload") { border = "border:2px solid red;"; } select = "upload"; }
-		if (nr == 4) { url = url_list[0];                      if (act == "url")    { border = "border:2px solid red;"; } select = "url"; }
+		if (nr == 1) { url = mbox_cover_dir + url_list[0];     if (act == "track")  { border = border_selected; } select = "track"; }
+		if (nr == 2) { url = mbox_music_dir + url_list[0];     if (act == "dir")    { border = border_selected; } select = "dir"; }
+		if (nr == 3) { url = mbox_cover_upl_dir + url_list[0]; if (act == "upload") { border = border_selected; } select = "upload"; }
+		if (nr == 4) { url = url_list[0];                      if (act == "url")    { border = border_selected; } select = "url"; }
 
 		var onclick = "appFW.requestAPI('PUT',['images','set_active','"+uuid+"','"+select+"'], '', " + close_cmd + " );";
 		img = "<img src='" + url + "' class='album_cover' style='height:"+size+";width:"+size+";"+border+"' onclick=\""+onclick+"\" title=\"("+select+": 1 von "+url_list.length+")\">&nbsp;";
 
-		console.log("URL:" + url);
-        	console.log("FIRST FILE:" + url_list[0]);
+		console.debug("mboxCoverAlbumInfo - URL:" + url);
+        	console.debug("mboxCoverAlbumInfo - FIRST FILE:" + url_list[0]);
 	    }	}
 	else {
 		}
@@ -112,7 +113,7 @@ function mboxCoverAlbum_new(id,data) {
 //--------------------------------------
 
 function mboxCoverAlbum_alert(cover) {
-	var img   = "<img src='"+cover+"' width='300px' height='300px'>";
+	var img   = "<img src='"+cover+"' class='album_cover_alert'>";
 	appMsg.confirm(img,"",380);
 	}
 

@@ -131,6 +131,13 @@
    float           : left;
 }
 
+.album_cover_alert {
+   width           : 300px;
+   height          : auto;
+   border          : 1px solid lightgray;
+   border-radius   : 5px;
+}
+
 /* container for title and infos */
 
 .album_infos {

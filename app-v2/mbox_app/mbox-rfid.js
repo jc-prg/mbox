@@ -311,7 +311,7 @@ function mboxCardList(data) {
 		text    += div1; //"<div style=\"float:left;height:70px;\">";
 		text    += "<a href='"+ RESTurl + "api/data/"+card+"/-/' target='_blank'>" +card + "</a><br/><b>";
 		//text    += cards[card][1] + cards[card][2] + ".";
-		notfound = "<font color=\"red\">NOT FOUND ...</b></font><br/>("+aa+" / "+cards[card][1]+")";
+		notfound = "<font color=\""+mbox_color[appTheme]["warning"]+"\">NOT FOUND ...</b></font><br/>("+aa+" / "+cards[card][1]+")";
 
                 if (aa.indexOf("a_")>-1)   	{
 			onclick = "mboxListLoad();setTimeout(function(){mboxAlbumList_load(1,\""+aa+"\");},1000);"

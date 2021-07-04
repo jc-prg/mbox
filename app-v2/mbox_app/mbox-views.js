@@ -279,8 +279,7 @@ function mboxViewsEntry(count, uuid, title, description, cover, cmd_open, cmd_pl
 
 	// check if error	
 	if (title.indexOf("#error") >= 0) {
-		if (appTheme == "dark") 	{ title = "<font color='yellow'>" + title + "</font>"; }
-		else				{ title = "<font color='red'>" + title + "</font>"; }
+		title = "<font color='"+mbox_color[appTheme]["warning"]+"'>" + title + "</font>";
 		}
 	 
 	// write cover
@@ -303,6 +302,13 @@ function mboxViewsLoadDetails(pos, i, uuid, callTrackList, type) {
 	// define position where to show album details
 	mbox_list_last = i;
 	mbox_list_pos  = pos;
+	
+	// in case type is not given, identify type from uuid
+	if (type == undefined) {
+		if (uuid.indexOf("r_") > -1) { type = "radio"; }
+		if (uuid.indexOf("a_") > -1) { type = "album"; }
+		if (uuid.indexOf("p_") > -1) { type = "playlist"; }		
+		}
 
 	// show connecting triangle
 	mboxViewsShowTriangle(i);
@@ -319,7 +325,6 @@ function mboxViewsTrackListHeader(uuid, type, entry, title, description, length)
 
 	var text          = "";
 	var length        = "";
-	var onclick       = "mboxCoverAlbum_alert(\""+cover+"\");";
 	var default_cover = mbox_icon_dir + mbox_icons[type]; // "album" -> type
 
 	// Format length if exists
@@ -329,7 +334,8 @@ function mboxViewsTrackListHeader(uuid, type, entry, title, description, length)
 
 	// Check if Cover exists
         var cover       = mboxCoverAlbum_new(uuid,entry);
-        if (cover == "") { cover = default_cover; }
+	var onclick     = "mboxCoverAlbum_alert(\""+cover+"\");";
+        if (cover == "") { cover = default_cover; onclick = ""; }
 
 	// Write album cover
 	text += "<div id=\"scrollto2_"+uuid.replace(/-/g,"")+"\">";
@@ -345,6 +351,7 @@ function mboxViewsTrackListHeader(uuid, type, entry, title, description, length)
 
         // player control (in box)
 	text += "<div class=\"album_control new\">";
+	text += "<div class=\"player_active big\" id=\"playing_"+uuid+"\" style=\"display:none;\"><img src=\""+mbox_icon_dir+mbox_icons["playing"]+"\" style=\"height:20px;width:20px;margin:2px;\"></div>";
 	text += mboxPlayerControlEntry(uuid);
 	text += mboxHtmlButton("info", "mboxInfo_"+type+"_load('"+uuid+"');", "red");
 	text += mboxCardInfoIcon(entry, uuid);
@@ -464,20 +471,20 @@ function mboxViewsTrackList(data, type) {
 		 	if (track_list[i].includes("a_")) { title_num = title_num + track_list_album[track_list[i]].length; }
 		 	} }
 		 	
-		var k             = 0; // rename to what it is -> track_number?
+		var playlist_pos  = 0; // can differ to playlist_no if error (in playlist)
+		var playlist_no   = 0;
 		var color         = 1;
 		var column_number = 0;
 		var column_tracks = Math.round(total_tracks / columns);
-		var playlist_no   = 0;
 		
 		for (var i=0; i < track_list.length; i++) {
 		
 			// if entry is a track
 			if (track_list[i].includes("t_")) {
-				k           += 1;
-				playlist_no += 1;
-				column_number = 1 + Math.trunc((k-1) / column_tracks);		
-				console.debug(column_number + " = " + k + " / " + column_tracks);
+				playlist_pos += 1;
+				playlist_no  += 1;
+				column_number = 1 + Math.trunc((playlist_pos-1) / column_tracks);		
+				console.debug(column_number + " = " + playlist_pos + " / " + column_tracks);
 				mboxViewsTrackListRow(data=data, uuid=track_list[i], type=type, column=column_number, uuid_pl=entry_uuid, count_pl=playlist_no, color="", 	withtrackinfo=withtrackinfo, withartist=withartist );
 				}
 				
@@ -489,8 +496,8 @@ function mboxViewsTrackList(data, type) {
 				// if album exists search for tracks in the album
 				if (track_list_album[track_list[i]]) {
 					k += 1;
-					column_number = 1 + Math.trunc((k-1) / column_tracks);				
-					console.debug(column_number + " = " + k + " / " + column_tracks);
+					column_number = 1 + Math.trunc((playlist_pos-1) / column_tracks);				
+					console.debug(column_number + " = " + playlist_pos + " / " + column_tracks);
 					
 					mboxViewsTrackListLine(column_number,color);
 					mboxViewsTrackListRow(data=data, uuid=track_list[i], type=type, column=column_number, uuid_pl=entry_uuid, count_pl=playlist_no, color=(color+1));
@@ -500,10 +507,10 @@ function mboxViewsTrackList(data, type) {
 					var tracks_album2  = tracks_album1; // Album Sort server side
 					
 					for (var j=0;j<tracks_album2.length;j++) {
-						k           += 1;
-						playlist_no += 1;
-						column_number = 1 + Math.trunc((k-1) / column_tracks);				
-						console.debug(column_number + " = " + k + " / " + column_tracks);
+						playlist_pos += 1;
+						playlist_no  += 1;
+						column_number = 1 + Math.trunc((playlist_pos-1) / column_tracks);				
+						console.debug(column_number + " = " + playlist_pos + " / " + column_tracks);
 						
 						mboxViewsTrackListRow(data=data, uuid=tracks_album2[j], type=type, column=column_number, uuid_pl=entry_uuid, count_pl=playlist_no);
 						}
@@ -511,9 +518,9 @@ function mboxViewsTrackList(data, type) {
 					}
 				// else just print entry (=> error message)
 				else {
-					k += 1;
-					column_number = 1 + Math.trunc((k-1) / column_tracks);				
-					console.debug(column_number + " = " + k + " / " + column_tracks);
+					playlist_pos += 1;
+					column_number = 1 + Math.trunc((playlist_pos-1) / column_tracks);				
+					console.debug(column_number + " = " + playlist_pos + " / " + column_tracks);
 					
 					mboxViewsTrackListRow(data=data, uuid=track_list[i], type=type, column=column_number, uuid_pl=entry_uuid, count_pl=playlist_no, color=(color+1));
 					}
@@ -559,7 +566,10 @@ function mboxViewsTrackListRow( data, uuid, type, column, uuid_pl="", count_pl=0
 
 	        var length = "";
         	if (track["length"]) 	{ length = convert_second2time(Math.round(track["length"])); }
-		if (track["duration"])	{ length = track["duration"]; if (length.indexOf("00:") == 0) { length = length.replace("00:",""); } }
+		if (track["duration"])	{ 
+			if (track["duration"].indexOf(":") > -1)	{ length = track["duration"]; if (length.indexOf("00:") == 0) { length = length.replace("00:",""); } }
+			else						{ length = convert_second2time(Math.round(track["duration"])); }
+			}
 
 		// Controls to play Track ...
 		cmd += "<div class=\"album_tracks_control\"  style=\"background:"+mbox_track_color[color]+";\">";
@@ -634,8 +644,8 @@ function mboxViewsTrackListRow( data, uuid, type, column, uuid_pl="", count_pl=0
        	cmd += "</div>";
 
         	text += "<div class=\"album_tracks_title\">";
-        	if (uuid.includes("a_")) { text += "<b style='color:red'>"+lang("ALBUM")+" "+lang("NOT_FOUND")+"</b><br/>"; }
-        	else			 { text += "<b style='color:red'>"+lang("TRACK")+" "+lang("NOT_FOUND")+"</b><br/>"; }
+        	if (uuid.includes("a_"))	{ text += "<b style='color:"+mbox_color[appTheme]["warning"]+"'>"+lang("ALBUM")+" "+lang("NOT_FOUND")+"</b><br/>"; }
+        	else				{ text += "<b style='color:"+mbox_color[appTheme]["warning"]+"'>"+lang("TRACK")+" "+lang("NOT_FOUND")+"</b><br/>"; }
 		text += uuid;
        	text += "</div>" + cmd;
 		}

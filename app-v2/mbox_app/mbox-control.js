@@ -510,16 +510,14 @@ function mboxControlToggleDevice () {
 // show / hide filter
 //--------------------------------------
 
-function mboxControlToggleFilter (setting="") {
+function mboxControlToggleFilter (setting="toggle") {
 	// switch next device setting
 
-	if (setting == "") {
+	if (setting == "toggle") {
 		if (mbox_filter && !mbox_settings) 	{ mbox_filter = false; }
 		else					{ mbox_filter = true; }
 		}
-	else {
-		mbox_filter = setting;
-		}
+	else {	mbox_filter = setting; }
 		
 	mboxControlToggleFilter_show ();
 	}

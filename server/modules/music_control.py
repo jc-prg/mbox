@@ -138,19 +138,15 @@ class musicControlThread(threading.Thread):
                else:
                    current_info    = { "file" : current_path, "stream" : current_stream }
                    current_info["stream"]["uuid"] = self.music_list_uuid
-
-            # set playback metadata            
-            if not last_load:
-               if self.player.play_status == 1: self.music_ctrl = self.control_data(state="play",  song=current_info, playlist=current_list)
-               else:                            self.music_ctrl = self.control_data(state="error", song={}, playlist=current_list)
-
+           
             # start playback 
             if current_path.startswith("http"): 
                self.player.stop()
                p = self.music_ctrl["position"]
+               self.music_ctrl = self.control_data(state="play",  song=current_info, playlist=current_list)
                self.music_ctrl["length"]   = 0
                self.music_ctrl["position"] = 0
-               
+  	             
                if self.music_list_p == 1 and "title" in current_stream and "title" in current_info:
                   self.speak.speak_text(current_stream["title"] + ": 1. : " + current_info["title"] + ".", self.player.volume*100)
                elif "title" in current_info:
@@ -166,6 +162,11 @@ class musicControlThread(threading.Thread):
                self.player.stop()
                self.player.play_file(mbox.music_dir + current_path)
                
+            # set playback metadata            
+            if not last_load:
+               if self.player.play_status == 1: self.music_ctrl = self.control_data(state="play",  song=current_info, playlist=current_list)
+               else:                            self.music_ctrl = self.control_data(state="error", song={}, playlist=current_list)
+
             # if stopped device while playing, load last music
             if last_load:
                logging.debug("Jump to position in song from last run ...")

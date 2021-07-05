@@ -169,6 +169,10 @@ function mboxControl(data) {
 		}
 	text += "</div>";
 	text += "</div>";
+	
+	var color ="";
+	if (mbox_device == "local")	{ color = "green" }
+	else				{ color = "blue"; }
 
 	if (playing != 0 || mbox_device == "local") {
 	
@@ -182,7 +186,7 @@ function mboxControl(data) {
 		else			     { on_off = " off1"; }
 
 		text += "<div class='mbox_ctrl_open' id='ctrl_open' style='display:"+display_open+";'>";
-		text += mboxHtmlButton("open", "mboxControlPanel_toggle();",   "blue", "right");
+		text += mboxHtmlButton("open", "mboxControlPanel_toggle();",   color, "right");
 		text += "</div>";
 
 		text += "<div class='mbox_ctrl_open' id='ctrl_close' style='display:"+display_close+";'>";
@@ -321,6 +325,12 @@ function mboxControlShowUUID(uuid) {
 	else {
 		console.warning("mboxControlShowUUID ... uuid missing");
 		}
+	}
+	
+function mboxControlReloadView() {
+	if (mbox_mode == "album")		{ mboxAlbumAll_load("",mbox_last_uuid); }
+	else if (mbox_mode == "radio")	{ mboxStreams_load(mbox_last_uuid); }
+	else if (mbox_mode == "playlists")	{ mboxPlaylists_load("",mbox_last_uuid); }
 	}
 
 
@@ -494,9 +504,9 @@ function mboxControlSetStatus (color) {
 //--------------------------------------
 
 function mboxControlToggleMode() {
-	if (mbox_mode == "Album")         	{ mbox_mode = "Playlist"; }
-	else if (mbox_mode == "Playlist") 	{ mbox_mode = "Radio"; }
-	else                              	{ mbox_mode = "Album"; }
+	if (mbox_mode == "album")         	{ mbox_mode = "playlist"; }
+	else if (mbox_mode == "playlist") 	{ mbox_mode = "radio"; }
+	else                              	{ mbox_mode = "album"; }
 
 	//appMenu.set_title( appTitle + "/" + mbox_mode );
 	}
@@ -514,6 +524,8 @@ function mboxControlToggleDevice () {
 	else if (mbox_device == "local") 	{ mbox_device = "remote"; }
 	else if (mbox_device == "remote") 	{ mbox_device = "local"; } // both ... else only local/remote
 	else					{ mbox_device = "both"; }
+	
+	mboxControlReloadView();
 	}
 
 //--------------------------------------

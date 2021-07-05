@@ -347,7 +347,7 @@ function mboxViewsTrackListHeader(uuid, type, entry, title, description, length)
 	text += "<b>" + title + "</b><br/><i>" + description + "</i><br/>";
 	text += length;
 	text += "</div>";
-	text += mboxHtmlButton("delete",  "mboxViewsEmptyBelow();mboxViewsHideTriangle(mbox_list_last);", "opac",   "small small2");
+	text += mboxHtmlButton("delete",  "mboxViewsEmptyBelow();mboxViewsHideTriangle(mbox_list_last);mbox_last_uuid='';", "opac",   "small small2");
 
         // player control (in box)
 	text += "<div class=\"album_control new\">";
@@ -374,6 +374,8 @@ function mboxViewsTrackList(data, type) {
 	var track_list		 = entry["tracks"];
 	var track_list_complete = [];
 	var track_list_album    = {};
+
+	mbox_last_uuid = entry_uuid;
 	
 	// set type specific title, description ... and for streams additional metadata
 	if (type == "album") {
@@ -415,8 +417,8 @@ function mboxViewsTrackList(data, type) {
 		
 
 	// fill local playlist queue
-	mboxPlayerAdd2Queue(type, entry_uuid, entry, track_list);
-
+	mboxPlayerAdd2Queue(type, entry_uuid, entry, track_data);
+	
 	// header for the detail view with tracks
 	text += mboxViewsTrackListHeader(entry_uuid, type, entry, title, description);
 	

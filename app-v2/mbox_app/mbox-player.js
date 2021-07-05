@@ -62,6 +62,8 @@ function mboxPlayerLocal(position=0, play=true) {
 	mboxPlayer.activeCtrl["info_cover"] 	  = false;
 	mboxPlayer.activeCtrl["info_short"] 	  = true;
 	mboxPlayer.activeCtrl["progress_padding"] = "0";
+	mboxPlayer.buttonColor                  = "lightgreen";
+	mboxPlayer.progressColor                = "green";
 	mboxPlayer.init();
 
 	console.debug(mbox_playlist_queue);
@@ -353,6 +355,7 @@ function mboxPlayerButtonText( button, cmd="", color="blue", small="", display="
 function mboxPlayerAdd2Queue(type, entry_uuid, entry, track_list={}) {
 
 	// fill local playlist queue
+	mbox_playlist_queue             = {};
 	mbox_playlist_queue["type"]     = type;
 	
 	if (type == "album" || type == "playlist") {

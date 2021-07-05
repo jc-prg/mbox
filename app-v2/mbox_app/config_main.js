@@ -45,8 +45,8 @@ function app_menu_entries() {
 		[lang("PLAYLIST"),			"script",	"mboxPlaylists_load();  if(mbox_settings) {mboxSettingsToggle();}"],
 		[lang("STREAM-PODCAST"),		"script",	"mboxStreams_load();    if(mbox_settings) {mboxSettingsToggle();}"],
 		["LINE"],
-		["Modus: "+mbox_mode,			"script",	"mboxControlToggleMode(); appPrintStatus_load(); if(mbox_settings) {mboxSettingsToggle();}"],
-		[lang("DEVICE")+": "+mbox_device,	"script",	"mboxControlToggleDevice(); appPrintStatus_load(); if(mbox_settings){mboxSettingsToggle();}"],
+		["Modus: "+mbox_mode,			"script",	"mboxControlToggleMode();   appPrintStatus_load(); if(mbox_settings) {mboxSettingsToggle();}"],
+		[lang("DEVICE")+": "+mbox_device,	"script",	"mboxControlToggleDevice(); appPrintStatus_load(); if(mbox_settings) {mboxSettingsToggle();}"],
 		];		
 
 	if (mbox_mode == "Album") {
@@ -91,9 +91,9 @@ function app_status(data) {
 		mboxSlider.init(0,100,mbox_device);
 
 		// write menu entrie for 3 modes
-		if (mbox_mode == "Album")    { mboxAlbumAll_load(); }
-		if (mbox_mode == "Playlist") { mboxPlaylists_load(); }
-		if (mbox_mode == "Radio")    { mboxStreams_load(); }
+		if (mbox_mode == "album")    { mboxAlbumAll_load("", mbox_last_uuid); }
+		if (mbox_mode == "playlist") { mboxPlaylists_load("", mbox_last_uuid); }
+		if (mbox_mode == "radio")    { mboxStreams_load(); }
 
 		setNavTitle(appTitle);
 		reload = false;
@@ -146,9 +146,9 @@ function app_screen_size_changed(width, height) {
 	
 	// reload views if width changes
 	if (app_screen_size_width_old != width) {
-		if (mbox_mode == "album")		{ mboxAlbumAll_reload(); }
+		if (mbox_mode == "album")		{ mboxAlbumAll_reload("",mbox_last_uuid); }
 		else if (mbox_mode == "radio")	{ mboxStreams_reload(); }
-		else if (mbox_mode == "playlist")	{ mboxPlaylists_reload(); }
+		else if (mbox_mode == "playlist")	{ mboxPlaylists_reload("", mbox_last_uuid); }
 		}
 
 	app_screen_size_width_old  = width;

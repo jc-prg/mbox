@@ -497,7 +497,7 @@ function mboxViewsTrackList(data, type) {
 				
 				// if album exists search for tracks in the album
 				if (track_list_album[track_list[i]]) {
-					k += 1;
+					playlist_pos += 1;
 					column_number = 1 + Math.trunc((playlist_pos-1) / column_tracks);				
 					console.debug(column_number + " = " + playlist_pos + " / " + column_tracks);
 					

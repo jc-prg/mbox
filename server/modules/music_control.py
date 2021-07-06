@@ -170,7 +170,7 @@ class musicControlThread(threading.Thread):
             # if stopped device while playing, load last music
             if last_load:
                logging.debug("Jump to position in song from last run ...")
-               if self.music_ctrl["length"] == 0:
+               if self.music_ctrl["length"] != 0:
                   position  = (self.music_ctrl["position"] / self.music_ctrl["length"]) * 100
                else:
                   position  = 0

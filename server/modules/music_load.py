@@ -293,16 +293,19 @@ def reloadMusic_getCurrentWithoutErrors(data_current):
        else:              data_reload["artists"][x] = data_current["artists"][x]
        
     for x in data_current["files"]:
-       if "#error" in data_current["files"][x]["artist"]:       logging_msg.append("files: "+x)
-       else:                                                    data_reload["files"][x] = data_current["files"][x]
+      if data_current["files"][x]["artist"] != None
+        if "#error" in data_current["files"][x]["artist"]:       logging_msg.append("files: "+x)
+        else:                                                    data_reload["files"][x] = data_current["files"][x]
        
     for x in data_current["tracks"]:
-       if "#error" in data_current["tracks"][x]["artist"]:      logging_msg.append("tracks: "+x)
-       else:                                                    data_reload["tracks"][x] = data_current["tracks"][x]
+      if data_current["tracks"][x]["artist"] != None
+        if "#error" in data_current["tracks"][x]["artist"]:      logging_msg.append("tracks: "+x)
+        else:                                                    data_reload["tracks"][x] = data_current["tracks"][x]
        
     for x in data_current["album_info"]:
-       if "#error" in data_current["album_info"][x]["artist"]:  logging_msg.append("album_info: "+x)
-       else:                                                    data_reload["album_info"][x] = data_current["album_info"][x]
+      if data_current["album_info"][x]["artist"] != None
+        if "#error" in data_current["album_info"][x]["artist"]:  logging_msg.append("album_info: "+x)
+        else:                                                    data_reload["album_info"][x] = data_current["album_info"][x]
        
     for x in logging_msg:
        logging.info(x)

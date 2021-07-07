@@ -14,11 +14,18 @@ RUN pip3 install -r requirements.txt
 
 # install and configure VLC
 # ---------------------------
-RUN apt-get install -y vlc #--fix-missing
+RUN apt -y update 
+RUN apt install -y vlc #--fix-missing
 RUN useradd -m vlcuser
 RUN rm -rf /var/lib/apt/lists/*
 
-RUN apt -y update && apt -y install iputils-ping
+RUN apt -y install iputils-ping
+RUN apt -y install locales locales-all
+
+ENV PYTHONIOENCODING=utf-8
+ENV LANG=en_US.UTF-8
+ENV LANGUAGE=en_US:en
+ENV LC_ALL=en_US.UTF-8
 
 WORKDIR /usr/src/app
 CMD [ "/usr/bin/python3", "./server/server.py" ]

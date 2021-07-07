@@ -19,7 +19,7 @@ RUN apt install -y vlc #--fix-missing
 RUN useradd -m vlcuser
 RUN rm -rf /var/lib/apt/lists/*
 
-RUN apt -y install iputils-ping
+RUN apt -y update && apt -y install iputils-ping
 RUN apt -y install locales locales-all
 
 ENV PYTHONIOENCODING=utf-8

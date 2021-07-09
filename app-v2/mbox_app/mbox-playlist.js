@@ -18,7 +18,6 @@ function mboxPlaylistEditEntry(data)
 function mboxPlaylistDelete(uuid,title)
 function mboxPlaylistDelete_exec(uuid,title)
 function mboxPlaylistDelete_msg(data,title)
-function mboxInfo_playlist_load(uuid)
 function mboxPlaylistInfo_load(uuid)
 function mboxPlaylistInfo(data)
 function mboxPlaylistInfo_close()
@@ -254,8 +253,6 @@ function mboxPlaylistDelete_msg(data,title) {
 
 // radio info as popup (incl. some settings ...)
 //--------------------------------------
-
-function mboxInfo_playlist_load(uuid) { mboxPlaylistInfo_load(uuid); }
 
 function mboxPlaylistInfo_load(uuid) { appFW.requestAPI("GET",["data",uuid,"-"],"", mboxPlaylistInfo ); }
 function mboxPlaylistInfo(data) {

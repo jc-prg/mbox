@@ -12,6 +12,7 @@ function mboxViewsDetail(count,title)
 function mboxViewsEntry(count, uuid, title, description, cover, cmd_open, cmd_play)
 function mboxViewsLoadDetails(pos, i, uuid, callTrackList, type)
 function mboxViewsTrackListHeader(uuid, type, entry, title, description, length)
+function mboxViews_Info(uuid, type)
 function mboxViewsTrackList(data, type)
 function mboxViewsTrackListLine(column=1, color="gray")
 function mboxViewsTrackListRow( data, uuid, type, column, uuid_pl="", count_pl=0, color=0, withtrackinfo=true, withartist=true )
@@ -353,13 +354,23 @@ function mboxViewsTrackListHeader(uuid, type, entry, title, description, length)
 	text += "<div class=\"album_control new\">";
 	text += "<div class=\"player_active big\" id=\"playing_"+uuid+"\" style=\"display:none;\"><img src=\""+mbox_icon_dir+mbox_icons["playing"]+"\" style=\"height:20px;width:20px;margin:2px;\"></div>";
 	text += mboxPlayerControlEntry(uuid);
-	text += mboxHtmlButton("info", "mboxInfo_"+type+"_load('"+uuid+"');", "red");
+	text += mboxHtmlButton("info", "mboxViews_Info('"+uuid+"','"+type+"');", "red");
 	text += mboxCardInfoIcon(entry, uuid);
 	text += "</div>";
 	text += "<div style=\"width:100%;float:left;\"><hr/></div>";
 	
 	return text;
 	}
+	
+// Load info ...
+//--------------------------------------
+
+function mboxViews_Info(uuid, type) {
+	if (type == "album")		{ mboxAlbumInfo_load(uuid); }
+	else if (type == "album")	{ mboxPlaylistInfo_load(uuid); }
+	else if (type == "radio")	{ mboxStreamInfo_load(uuid); }
+	}
+
 	
 
 // List tracks of an entry

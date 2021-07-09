@@ -11,7 +11,6 @@ function mboxAlbumAll_filter(album_info,filters)
 function mboxAlbumFilterPath(data,selected)
 function mboxAlbumFilterArtist(data,selected)
 function mboxAlbumList(data)
-function mboxInfo_album_load(uuid)
 function mboxAlbumInfo_load(uuid)
 function mboxAlbumInfo_close()
 function mboxAlbumInfo(data)
@@ -143,7 +142,6 @@ function mboxAlbumFilterArtist(data,selected) {
 //--------------------------------------
 
 function mboxAlbumList(data)		{ mboxViewsTrackList(data, "album"); }
-function mboxInfo_album_load(uuid)	{ mboxAlbumInfo_load(uuid); }
 
 // album info as popup (incl. some settings ...)
 //--------------------------------------

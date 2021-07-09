@@ -8,7 +8,6 @@ function mboxStreams_load(stream_uuid="-")
 function mboxStreams_reload()
 function mboxStreams(data, uuid="")
 function mboxStreamWriteAudioPlayer(title,file,divid)
-function mboxInfo_radio_load(uuid)
 function mboxStreamInfo_load(uuid)
 function mboxStreamInfo(data)
 function mboxStreamTrackInfo_load(stream_uuid, track_uuid)
@@ -73,7 +72,6 @@ function mboxStreamWriteAudioPlayer(title,file,divid) {
 //--------------------------------------
 
 
-function mboxInfo_radio_load(uuid) { mboxStreamInfo_load(uuid); }
 function mboxStreamInfo_load(uuid) { appFW.requestAPI("GET",["data",uuid,"-"],"", mboxStreamInfo ); }
 function mboxStreamInfo(data) {
         var text   = "";

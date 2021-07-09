@@ -62,7 +62,7 @@ function mboxControl_load()            { appFW.requestAPI('GET', ["status"], "",
 function mboxControl(data) {
 
 	var d           = data["STATUS"]["playback"];
-	var l           = data["STATUS"];
+	var l           = data["STATUS"]["load_data"];
 	if (!d)	{ return; }
 	
 	var type        = d["device"];
@@ -74,7 +74,7 @@ function mboxControl(data) {
 
 	var load_new    = l["reload_new"];
 	var load_all    = l["reload_all"];
-	
+		
 	if (data["STATUS"]["system"] && data["STATUS"]["system"]["server_connection"] && data["STATUS"]["system"]["server_connection"]["INTERNET"]) {
 		internetConnect = data["STATUS"]["system"]["server_connection"]["INTERNET"];
 		}
@@ -83,7 +83,7 @@ function mboxControl(data) {
 		}
 	
 	console.debug("mboxControl: playing="+playing+" / load_new="+load_new+" / load_all="+load_all);
-	if (playing == 1 || load_new || load_all) 	{ appFW.setAutoupdateLoading(true,"mboxControl"); }
+	if (playing == 1 || load_new || load_all) 	{ appFW.setAutoupdateLoading(true, "mboxControl"); }
 	else						{ appFW.setAutoupdateLoading(false,"mboxControl"); mboxControlPlaying_show(); }
 
 	if (mbox_device == "remote") {	
@@ -466,7 +466,7 @@ function mboxControlCheckLoading(data) {
 		if (l_new == false && l_all == false) { progress = 100; l_time = 0; }
 		if (l_new)			{ text = "Load new Data: "; }
 		else if (l_all)		{ text = "Reload all Data: "; }
-		else if (progress == 100) 	{ text = "Done: "; appFW.setAutoupdateLoading(false); }
+		else if (progress == 100) 	{ text = "Done: "; }
 		setTextById("progress_info",text + Math.round(progress*100)/100+"% ("+convert_second2time(Math.round(l_time))+" min)");
 		}
 	}

@@ -1,16 +1,21 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-<link rel="stylesheet" href="upload/upload.css">
+<meta charset="ISO-8859-1"> 
+<title>jc://mbox/upload-test/</title>
 
-<script src="./modules/jc-app/jquery-2.1.3.min.js"></script>
-<script src="./mbox-app/upload.js"></script>
+<link rel="stylesheet" href="../modules/jc-upload/upload-0.3.0.css">
+<script src="../modules/jc-upload/upload-0.3.0.js"></script>
 
 </head>
 <body>
 
 	<div id="uploadform"></div>
-	<script> defaultUpload("uploadform"); </script>
+	<script>
+		appUpload = new jcUpload("appUpload","uploadform");
+		appUpload.uploadScript = "../modules/jc-upload/upload-0.3.0.php";
+		appUpload.init(uploadPath="../../mbox_img/upload_test",uploadType="",visibleValues=true,visibleButton=true);
+	</script>
 
 </body>
 </html>

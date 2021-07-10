@@ -50,6 +50,18 @@ function mboxViewsCalcRowEntries() {
 // List media
 //--------------------------------------
 
+function mboxViewsList_load(data,type) {
+	if (data["LOAD"]["UUID"])	{ var loaded_uuid = data["LOAD"]["UUID"]; }
+	else				{ var loaded_uuid = ""; }
+	
+	if (type == "album") 		{ mboxAlbumAll_load(filter="",uuid=loaded_uuid); }
+	else if (type == "playlist") 	{ mboxPlaylists_load(filter="",playlist_uuid=loaded_uuid) ; }
+	else if (type == "radio") 	{ mboxStreams_load(stream_uuid=loaded_uuid); }
+	else 				{ }
+	
+	//console.log(data);
+	}
+
 function mboxViewsList(type, data, selected_uuid="", filter_key="", filter_text="", sort_keys=[], callTrackList="", chapter_rows=true) {
 
 	var text             = "";

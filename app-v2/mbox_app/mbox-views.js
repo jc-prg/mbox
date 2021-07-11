@@ -5,6 +5,7 @@
 //--------------------------------------
 /* INDEX:
 function mboxViewsCalcRowEntries()
+function mboxViewsList_load(data,type)
 function mboxViewsList(type, data, selected_uuid="", filter_key="", filter_text="", sort_keys=[], callTrackList="", chapter_rows=true)
 function mboxViewsChapter(count, title, last_title)
 function mboxViewsEmpty(count,title)
@@ -32,7 +33,6 @@ var mbox_list_last   = 0;
 var mbox_list_char   = [];
 var mbox_list_data   = {};
 
-var mbox_playlist_queue = {};
 
 // Define Lists per row
 //--------------------------------------

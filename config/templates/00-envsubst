@@ -30,7 +30,7 @@ if [[ $MBOX_APP_VERSION == "app-v1" ]]; then
 fi
 
 # app-v2
-if [[ $MBOX_APP_VERSION == "app-v2" ]]; then
+if [[ $MBOX_APP_VERSION == "app-v2" || $MBOX_APP_VERSION == "app" ]]; then
 
   echo "> create docker & config (app-v2)"
   rm -rf ../$MBOX_APP_VERSION/mbox_app/config_stage.js

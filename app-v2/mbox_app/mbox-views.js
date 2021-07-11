@@ -379,11 +379,32 @@ function mboxViewsTrackListHeader(uuid, type, entry, title, description, length)
 
 function mboxViews_Info(uuid, type) {
 	if (type == "album")		{ mboxAlbumInfo_load(uuid); }
-	else if (type == "album")	{ mboxPlaylistInfo_load(uuid); }
+	else if (type == "playlist")	{ mboxPlaylistInfo_load(uuid); }
 	else if (type == "radio")	{ mboxStreamInfo_load(uuid); }
 	}
 
+//--------------------------------------
+
+function mboxViews_InfoTable(title, info_data, height) {
+
+	var text		= "";
+	var table		= new jcTable("info_table");
+	table.table_width	= "100%";
+	table.columns		= 2;
 	
+	text += "<b>"+title+ "</b><br/>";	
+	text += table.start();
+	text += table.row_one("<hr/>");
+	for (var i=0;i<info_data.length;i++) {
+		if (info_data[i][0] == "LINE")	{ text += table.row_one("<hr/>"); }
+		else					{ text += table.row( [ "<i>"+info_data[i][0]+":</i>", info_data[i][1] ] ); }
+		}
+	text += table.row_one("<hr/>");
+	text += table.end();
+
+	appMsg.confirm(text,"",height);
+	}
+
 
 // List tracks of an entry
 //--------------------------------------
@@ -705,6 +726,7 @@ function mboxViewsHideTriangle(i) {
 function mboxViewsEmptyAll() {
 	setTextById("frame1","");
 	}
+
 
 
 // Write / delete details info below the album in the list

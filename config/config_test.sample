@@ -13,7 +13,7 @@ export MBOX_SPEEK_MSG="yes"      # options: "yes" if the box should speek during
 export MBOX_SPEEK_ASK_WHOM="DAD" # options: who should be asked, if the box doesn't work correctly: "DAD", "MUM, "THE-ADMIN"
 
 # Stage
-export MBOX_APP_VERSION="app-v2" # options: app-v1, app-v2 (= directory name)
+export MBOX_APP_VERSION="app"    # options: => directory name
 export MBOX_CURRENT_STAGE="test" # options: prod, test, <your name>
 export MBOX_ACTIVE_STAGE="$MBOX_CURRENT_STAGE"
 export MBOX_IS_TEST="True"

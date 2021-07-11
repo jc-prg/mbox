@@ -98,36 +98,34 @@ function mboxStreamInfo(data) {
         edit += mboxHtmlButton("edit",  	"mboxStreamEdit_load('"+uuid+"');",                                                "red");
         edit += mboxHtmlButton("delete",  	"mboxAlbumDelete('"+album["title"]+": "+album["description"]+"','"+uuid+"');",   "red");
 
-        text += "<b>"+lang("STREAM_INFORMATION")+"</b><br/><br/>";
-        text += mboxHtmlTableNew("start");
-        text += "<tr><td colspan='2'><hr></td></tr>";
-        text += mboxHtmlTableNew(["<i>"+lang("TITLE")+":",		album["title"] ] );
-        text += mboxHtmlTableNew(["<i>"+lang("DESCRIPTION")+":",	album["description"] ] );
-        text += mboxHtmlTableNew(["<i>"+lang("INFORMATION")+":",	"<a href=\"" + album["stream_info"] + "\" target=\"_blank\">" + album["stream_info"] + "</a>" ] );
-        text += mboxHtmlTableNew(["<i>"+lang("STREAM")+" URL:",	"<a href=\"" + album["stream_url"] + "\" target=\"_blank\">" + album["stream_url"] + "</a>" ] );
-        text += mboxHtmlTableNew(["<i>"+lang("STREAM")+" URL2:",	"<a href=\"" + album["stream_url2"] + "\" target=\"_blank\">" + album["stream_url2"] + "</a>" ] );
-        text += mboxHtmlTableNew(["<i>"+lang("STREAM")+" UUID:",	"<a href='" + url + "/' target='_blank'>" + uuid + "</a>" ] );
-        text += mboxHtmlTableNew(["<i>"+lang("CARD_ID")+":",		"<a style='cursor:pointer;' onclick='mboxCardList_load(\""+cardid+"\");'>"    + cardid + "</a>" ] );
+        var info_data = [
+        	[ lang("TITLE"),		album["title"] ],
+        	[ lang("DESCRIPTION"),		album["description"] ],
+        	[ lang("INFORMATION"),		"<a href=\"" + album["stream_info"] + "\" target=\"_blank\">" + album["stream_info"] + "</a>" ],
+		[ lang("STREAM")+" URL",	"<a href=\"" + album["stream_url"] + "\" target=\"_blank\">" + album["stream_url"] + "</a>" ],
+		[ lang("STREAM")+" URL2",	"<a href=\"" + album["stream_url2"] + "\" target=\"_blank\">" + album["stream_url2"] + "</a>" ],
+		[ lang("STREAM")+" UUID",	"<a href='" + url + "/' target='_blank'>" + uuid + "</a>" ],
+		[ lang("CARD_ID"),		"<a style='cursor:pointer;' onclick='mboxCardList_load(\""+cardid+"\");'>"    + cardid + "</a>" ],
+		];
         
-        if (album["podcast"] && album["podcast"]["title"]) {
-		text += "<tr><td colspan='2'><center><i><hr/>Podcast Info<hr/></i></center></td></tr>";
-		text += mboxHtmlTableNew(["<i>"+lang("TITLE")+":",           album["podcast"]["title"] ] );
-		text += mboxHtmlTableNew(["<i>"+lang("DESCRIPTION")+":",     album["podcast"]["description"] ] );        	        
-		text += mboxHtmlTableNew(["<i>"+lang("TRACKS")+":",	       album["podcast"]["track_count"]+" Tracks" ] );        	        
-		text += mboxHtmlTableNew(["<i>"+lang("PUBLICATION")+":",     album["podcast"]["publication"] ] );
-		text += mboxHtmlTableNew(["<i>"+lang("UPDATE")+":",	       album["podcast"]["update_date"] ] );
-		text += mboxHtmlTableNew(["<i>"+lang("INFORMATION")+":",	"<a href=\"" + album["podcast"]["stream_info"] + "\" target=\"_blank\">" + album["podcast"]["stream_info"] + "</a>" ] );
-        	text += "<tr><td colspan='2'><hr></td></tr>";
-		}
-		
-        text += mboxHtmlTableNew(["<i>"+lang("COVER_AVAILABLE")+":", 	cover ] );
-        text += "<tr><td colspan='2'><hr></td></tr>";
-        text += mboxHtmlTableNew(["<i>"+lang("EDIT")+":",       	edit ] );
-        text += "<tr><td colspan='2'><hr></td></tr>";
-        text += mboxHtmlTableNew("end");
+        if (album["podcast"] && album["podcast"]["title"]) { var info_data_podcast = [
+        	[ "LINE" ],
+        	[ lang("TITLE"), 		album["podcast"]["title"] ],
+        	[ lang("DESCRIPTION"),		album["podcast"]["description"] ],
+        	[ lang("TRACKS"),		album["podcast"]["track_count"]+" Tracks" ],
+        	[ lang("PUBLICATION"),		album["podcast"]["publication"] ],
+        	[ lang("UPDATE"),		album["podcast"]["update_date"] ],
+        	[ lang("INFORMATION"),		"<a href=\"" + album["podcast"]["stream_info"] + "\" target=\"_blank\">" + album["podcast"]["stream_info"] + "</a>" ],
+        	[ "LINE" ] ]; 
+        	Array.prototype.push.apply( info_data, info_data_podcast );
+        	}
 
-        appMsg.confirm(text,"",450);
-        }
+	info_data.push( [ lang("COVER_AVAILABLE"),	cover ] );
+	info_data.push( [ "LINE" ] );
+	info_data.push( [ lang("EDIT"), 		edit ] );
+
+	mboxViews_InfoTable(title=lang("STREAM_INFORMATION"), info_data=info_data, height=450);
+	}
 
 //----------------------------------------
 
@@ -139,23 +137,23 @@ function mboxStreamTrackInfo(data, track_uuid) {
         var track  = stream["podcast"]["tracks"][track_uuid];
         var url    = RESTurl + "api/data/"+uuid+"/--";
 
-        text += "<b>"+lang("TRACK_INFORMATION")+"</b><br/><br/>";
-        text += mboxHtmlTableNew("start");
-        text += "<tr><td colspan='2'><hr></td></tr>";
-        
-        text += mboxHtmlTableNew(["<i>"+lang("TITLE")+":",		track["title"] ] );
-        text += mboxHtmlTableNew(["<i>"+lang("DESCRIPTION")+":",	track["description"] ] );
-        text += mboxHtmlTableNew(["<i>"+lang("DURATION")+":",	track["duration"] ] );
-        text += mboxHtmlTableNew(["<i>"+lang("PUBLICATION")+":",	track["publication"] ] );
-        text += mboxHtmlTableNew(["<i>"+lang("TRACK")+" URL:",	"<a href=\"" + track["file"] + "\" target=\"_blank\">" + track["file"] + "</a>" ] );
-        text += mboxHtmlTableNew(["<i>"+lang("TRACK")+" UUID:",	track_uuid ] );
-        text += mboxHtmlTableNew(["<i>"+lang("STREAM")+" UUID:",	"<a href='" + url + "/' target='_blank'>" + uuid + "</a>" ] );
-        
-        
-        text += "<tr><td colspan='2'><hr></td></tr>";
-        text += mboxHtmlTableNew("end");
-
-        appMsg.confirm(text,"",450);
+	var info_data = [
+		[ lang("TITLE"), 		track["title"] ],
+		[ lang("DESCRIPTION"), 	track["description"] ],
+		[ lang("DURATION"), 		track["duration"] ],
+		[ lang("PUBLICATION"),		track["publication"] ],
+		[ lang("TRACK")+" URL",	"<a href=\"" + track["file"] + "\" target=\"_blank\">" + track["file"] + "</a>" ],
+		[ lang("TRACK")+" UUID",	track_uuid ],
+		[ lang("STREAM")+" UUID",	"<a href='" + url + "/' target='_blank'>" + uuid + "</a>" ],
+		];
+		
+	if (track["image"]) {
+		cover = "<img src='"+track["image"]+"' style='height:80px;border:solid 1px black;'/>";
+		info_data.push( [ "LINE" ] );
+		info_data.push( [ lang("COVER_AVAILABLE"), cover ] );
+		}
+		
+	mboxViews_InfoTable(title=lang("TRACK_INFORMATION"), info_data=info_data, height=450);
 	}
 
 
@@ -208,25 +206,29 @@ function mboxStreamAdd() {
         }
 
 function mboxStreamAdd_dialog(i) {
-        var onclick2 = "document.getElementById('album_"+(i)+"').style.display='none';";
-        var text     = "<b>"+lang("ADD_STREAM")+":</b><br/><hr/>";
-        var width    = 150;
+	var text		= "";
+	var onclick		= "document.getElementById('album_"+(i)+"').style.display='none';";
+	var width		= 150;        
+	var table		= new jcTable("add_dialog");
+	table.table_width	= "100%";
+	table.columns 		= 2;
+	table.cells_width	= ["120px",""];
         
-	text += mboxHtmlTableNew("start");
-	text += mboxHtmlTableNew([lang("TITLE")+":",		"<input id=\"stream_title\" style=\"width:"+width+"px\"/>"]);
-	text += mboxHtmlTableNew([lang("DESCRIPTION")+":",	"<input id=\"stream_description\" style=\"width:"+width+"px\"/>"]);
-	text += mboxHtmlTableNew([lang("WEBSITE")+":",	"<input id=\"stream_radio_url\" style=\"width:"+width+"px\"/>"]);
-	text += mboxHtmlTableNew([lang("STREAM")+":",		"<input id=\"stream_stream_url\" style=\"width:"+width+"px\"/>"]);
-	text += mboxHtmlTableNew([lang("LOGO")+" URL:",	"<input id=\"stream_image_url\" style=\"width:"+width+"px\"/>"]);        
-	text += "<tr><td colspan='2'><hr/>";
-	text += button("mboxStreamAdd();",lang("ADD"),"mboxStreamAdd");
-	text += button(onclick2,lang("CLOSE"),"close_stream");
-	text += "</td></tr>";
-	text += mboxHtmlTableNew("end");
-
-        setTextById("album_"+i,text);
-        document.getElementById("album_"+i).style.display="block";
-        }
+	text += table.start();
+	text += table.row_one( "<b>"+lang("ADD_STREAM")+":</b>" );
+	text += table.row_one( "<hr/>" );
+	text += table.row( [ lang("TITLE")+":",	"<input id=\"stream_title\" style=\"width:"+width+"px\"/>" ] );
+	text += table.row( [ lang("DESCRIPTION")+":",	"<input id=\"stream_description\" style=\"width:"+width+"px\"/>" ] );
+	text += table.row( [ lang("WEBSITE")+":",	"<input id=\"stream_radio_url\" style=\"width:"+width+"px\"/>" ] );
+	text += table.row( [ lang("STREAM")+":",	"<input id=\"stream_stream_url\" style=\"width:"+width+"px\"/>"] );
+	text += table.row( [ lang("LOGO")+" URL:",	"<input id=\"stream_image_url\" style=\"width:"+width+"px\"/>"] );
+	text += table.row_one( "<hr/>" );
+	text += table.row_one( button("mboxStreamAdd();",lang("ADD"),"mboxStreamAdd") + button(onclick,lang("CLOSE"),"close_stream") );
+	text += table.end();
+        
+	setTextById("album_"+i,text);
+	document.getElementById("album_"+i).style.display="block";
+	}
 
 function mboxStreamAdd_msg(data) {
         var text = "";

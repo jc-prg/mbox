@@ -133,9 +133,10 @@ function mboxHtmlEntryDetail( count ) {
 	return text;
 	}
 
+
 //-------------------------------------------------------------
 
-function mboxHtmlTableNew( cells=[], divide=false, width="100%", height="" ) {
+function mboxHtmlTableNew( cells=[], divide=false, width="100%", height="", valign="top" ) {
 
 	var cells_width = [];
 

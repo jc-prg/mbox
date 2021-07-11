@@ -256,8 +256,7 @@ function mboxPlaylistDelete_msg(data,title) {
 
 function mboxPlaylistInfo_load(uuid) { appFW.requestAPI("GET",["data",uuid,"-"],"", mboxPlaylistInfo ); }
 function mboxPlaylistInfo(data) {
-        var text   = "";
-        
+
         if (!data["DATA"]["_selected"]) { console.log("mboxPlaylistInfo: no [DATA][_selected]"); return; }
         
         var album  = data["DATA"]["_selected"];
@@ -283,23 +282,20 @@ function mboxPlaylistInfo(data) {
         edit += mboxHtmlButton("list_edit",  "mboxPlaylistEdit_load('"+album["uuid"]+"');",                  "red");
         edit += mboxHtmlButton("edit",       "mboxPlaylistEditEntry_load('"+album["uuid"]+"');",             "red");
         edit += mboxHtmlButton("delete",     "mboxPlaylistDelete('"+uuid+"','"+album["title"]+"');",         "red");
+        
+        var info_data = [
+        	[ lang("TITLE"),		album["title"] ],
+        	[ lang("DESCRIPTION"),		album["description"] ],
+        	[ lang("TRACKS"),		album["tracks"].length ],
+        	[ "UUID",			"<a href='" + url + "/' target='_blank'>" + uuid + "</a>" ],
+        	[ "Card-ID",			"<a style='cursor:pointer;' onclick='mboxCardList_load(\""+cardid+"\");'>" + cardid + "</a>" ],
+        	[ lang("COVER_AVAILABLE"),	cover ],
+        	[ "LINE" ],
+        	[ lang("EDIT"), 		edit ],
+        	];
 
-        text += "<b>"+lang("PLAYLIST_INFORMATION")+"</b><br/>";
-        text += mboxHtmlTableNew("start");
-        text += "<tr><td colspan='2'><hr></td></tr>";
-        text += mboxHtmlTableNew(["<i>"+lang("TITLE")+":",        album["title"] ] );
-        text += mboxHtmlTableNew(["<i>"+lang("DESCRIPTION")+":",  album["description"] ] );
-        text += mboxHtmlTableNew(["<i>Tracks:",	            album["tracks"].length ] );
-        text += mboxHtmlTableNew(["<i>UUID:",                     "<a href='" + url + "/' target='_blank'>" + uuid + "</a>" ] );
-        text += mboxHtmlTableNew(["<i>Card ID:",                  "<a style='cursor:pointer;' onclick='mboxCardList_load(\""+cardid+"\");'>"    + cardid + "</a>" ] );
-        text += mboxHtmlTableNew(["<i>"+lang("COVER_AVAILABLE")+":",      cover ] );
-        text += "<tr><td colspan='2'><hr></td></tr>";
-        text += mboxHtmlTableNew(["<i>"+lang("EDIT")+":",         edit ] );
-        text += "<tr><td colspan='2'><hr></td></tr>";
-        text += mboxHtmlTableNew("end");
-
-        appMsg.confirm(text,"",450);
-        }
+	mboxViews_InfoTable(title=lang("PLAYLIST")+" "+lang("INFORMATION"), info_data=info_data, height=450);
+	}
 
 //----------------------------------------------------------------
 
@@ -354,13 +350,23 @@ function mboxPlaylistAdd() {
 //--------------------------------------
 
 function mboxPlaylistAdd_dialog(i) {
-	var onclick2 = "document.getElementById('album_"+(i)+"').style.display='none';";
-        var text  =  "<b>"+lang("ADD_PLAYLIST")+":</b><br/><br/><table>";
-        text += "<tr><td>"+lang("TITLE")+":</td><td><input id=\"playlist_title\" style=\"width:150px\"></input></td></tr>";
-        text += "<tr><td>"+lang("DESCRIPTION")+":</td><td><input id=\"playlist_description\" style=\"width:150px\"></input></td></tr>";
-        text += "</table><br/>";
-        text += button("mboxPlaylistAdd();",lang("ADD"),"mboxPlaylistAdd");
-        text += button(onclick2,lang("CLOSE"),"close_playlist");
+	var text		= "";
+	var onclick		= "document.getElementById('album_"+(i)+"').style.display='none';";
+	var width		= 150;        
+	var table		= new jcTable("add_dialog");
+	table.table_width	= "100%";
+	table.columns 		= 2;
+	table.cells_width	= ["120px",""];
+        
+	text += table.start();
+	text += table.row_one( "<b>"+lang("ADD_PLAYLIST")+":</b>" );
+	text += table.row_one( "<hr/>" );
+	text += table.row( [ lang("TITLE")+":",	"<input id=\"playlist_title\" style=\"width:"+width+"\"/>" ] );
+	text += table.row( [ lang("DESCRIPTION")+":",	"<input id=\"playlist_description\" style=\"width:"+width+"\"/>" ] );
+	text += table.row_one( "<hr/>" );
+	text += table.row_one( button("mboxPlaylistAdd();",lang("ADD"),"mboxPlaylistAdd") + button(onclick,lang("CLOSE"),"close_playlist") );
+	text += table.end();
+
 	setTextById("album_"+i,text);
 	document.getElementById("album_"+i).style.display="block";
 	}
@@ -369,8 +375,8 @@ function mboxPlaylistAdd_dialog(i) {
 
 function mboxPlaylistAdd_msg(data) {
 	mboxDataReturnMsg(data,lang("PLAYLIST_CREATED"),lang("PLAYLIST_CREATED_ERROR"));
-        mboxPlaylistAll_load();
-        }
+	mboxPlaylists_load();
+	}
 
 //---------------------------
 // EOF

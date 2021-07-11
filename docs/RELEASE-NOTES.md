@@ -2,9 +2,9 @@
 
 ## Summary v1.2.x (in progress)
 
-* Fix & optimize album list view
+* Add podcasts as streams -> URL .xml / .rss / .podcast in stream_url (itunes-format, instead of m3u)
+* Fix & optimize list view for albums, playlists and streams / podcasts
 * Create dark theme
-* Support podcasts -> URL .xml / .rss in stream_url (itunes-format, instead of m3u)
 * Optimized playback status display
 
 ## Summary v1.0.0

@@ -10,6 +10,10 @@ Here you'll find a history of features implemented into hardware and software as
 
 ### KNOWN BUGS
 
+- State Stopped -> not resetted?
+- On the box the type in some cases isn't set correctly which leads to errors
+- 
+- ....
 - BUG srv: looses internet connection from time to time; -> check if internet connect exists first
 - BUG server -> after connecting card to album, the server has to be reload <-> the message "invalid entry connected" is spoken -> move all data to cache directly?
 - BUG server - Start with STREAM and card laying on the RFID sensor leads to an error -> remove card_id, until connection is OK
@@ -199,6 +203,7 @@ Here you'll find a history of features implemented into hardware and software as
 * OK - BUG server - if playing and press play in a playlist, start with first song instead of actuall running song (PlaySong -> start file, not list without loading list again) - reduced the errors
 * OK - More detailed podcast information
 * OK - BUG Play stream in local mode
+* OK - ensure UTF-8 in the Dockerfile for filenames with special characters
 
 * DECLINED - Play the whole song, not only parts // not seen any more
 * DECLINED - dont delete playlist when stop: don't unload playlist/title if stop - just rewind to first position, but display now reflects situation

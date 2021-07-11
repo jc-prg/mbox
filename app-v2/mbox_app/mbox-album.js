@@ -62,16 +62,23 @@ function mboxAlbumAll(data, uuid) {
 //--------------------------------------
 
 function mboxAlbumAll_filter(album_info,filters) {
+
 	var filter = "";
+	var table  = new jcTable("filter_table");
+	table.table_width    = "310px";
+	table.cells_width    = ["90px","210px"];
+	table.vertical_align = "middle";
+	
 	filter += "<div class='album_filter'>";
-	filter += mboxHtmlTableNew("start",true,"310px");
-	filter += mboxHtmlTableNew(["<i>"+lang("CATEGORY")+":", 	mboxAlbumFilterPath(album_info,filters) ], ["90px","210px"] );	
-	filter += mboxHtmlTableNew("end");
+	filter += table.start();
+	filter += table.row(["<i>"+lang("CATEGORY")+":", 	mboxAlbumFilterPath(album_info,filters) ]);
+	filter += table.end();
 	filter += "</div><div class='album_filter'>";
-	filter += mboxHtmlTableNew("start",true,"310px","");
-	filter += mboxHtmlTableNew(["<i>"+lang("BAND_ARTIST")+":", 	mboxAlbumFilterArtist(album_info,filters) ], ["90px","210px"] );
-	filter += mboxHtmlTableNew("end");
+	filter += table.start();
+	filter += table.row(["<i>"+lang("BAND_ARTIST")+":", 	mboxAlbumFilterArtist(album_info,filters) ]);
+	filter += table.end();
 	filter += "</div>";
+	
 	return filter;
 	}	
 
@@ -150,7 +157,6 @@ function mboxAlbumInfo_load(uuid) { appFW.requestAPI("GET",["data",uuid,"-"],"",
 function mboxAlbumInfo_close() { setTimeout(function(){ mboxAlbumAll_load(); }, 2000); appMsg.hide(); }
 function mboxAlbumInfo(data) {
 
-	var text   = "";
 	var album  = data["DATA"]["_selected"];
 	var uuid   = data["DATA"]["_selected_uuid"];
 
@@ -184,29 +190,79 @@ function mboxAlbumInfo(data) {
         edit += mboxHtmlButton("image_add",  "mboxUploadImage('"+uuid+"','album','"+title+"');",                "red");
         edit += mboxHtmlButton("delete",     "mboxAlbumDelete('"+artist+": "+title+"','"+uuid+"');", 	"red");
 
-	text += "<b>" + lang("ALBUM") + " " + lang("INFORMATION") + "</b><br/>";
-
-	text += mboxHtmlTableNew("start");
-	text += "<tr><td colspan='2'><hr></td></tr>";
-	text += mboxHtmlTableNew(["<i>" + lang("ALBUM") + ":", 		album["album"] ] );
-	text += mboxHtmlTableNew(["<i>" + lang("BAND_ARTIST") + ":", 	album["artist"] ] );
-	text += mboxHtmlTableNew(["<i>" + lang("GENRE") + ":", 		album["genres"] ] );
-	text += mboxHtmlTableNew(["<i>" + lang("SIZE") + ":", 		size + " MByte / " + length + " min" ] );
-	text += mboxHtmlTableNew(["<i>" + lang("ALBUM") + " Dir:", 	path ] );
-//	text += mboxHtmlTableNew(["<i>" + lang("ALBUM") + " UUID:",	"<a href='" + url + uuid + "/-/' target='_blank'>" + uuid + "</a>" ] );
-	text += mboxHtmlTableNew(["<i>" + lang("CARD_ID") + ":",	cardid ] );
-	if ("error" in album) {
-		text += mboxHtmlTableNew(["<i><font color='red'>Error:</font><i>", "<i><font color='red'>"+album["error"].length + " Errors - first: " + album["error"][0]+"</font></i>" ] );
+	var info_data = [
+		[ lang("ALBUM"), 		album["album"] ],
+		[ lang("BAND_ARTIST"),		album["artist"] ],
+		[ lang("GENRE"),		album["genres"] ],
+		[ lang("SIZE"),		size + " MByte / " + length + " min" ],
+		[ lang("ALBUM") + " Dir",	path ],
+		[ lang("CARD_ID"),		cardid ],
+		];
+		
+	if ("error" in album && album["error"].length > 0) {
+		info_data.push(["<font color='red'>Error</font>", "<font color='red'>"+album["error"].length + " Errors - first: " + album["error"][0]+"</font>" ]);
 		}
-	text += mboxHtmlTableNew(["<i>" + lang("COVER_AVAILABLE") + ":",	cover ] );
-	text += "<tr><td colspan='2'><hr></td></tr>";
-	text += mboxHtmlTableNew(["<i>" + lang("EDIT") + ":",		edit ] );
-	text += "<tr><td colspan='2'><hr></td></tr>";
-	text += mboxHtmlTableNew("end");
+	info_data.push([ lang("COVER_AVAILABLE"), 	cover ]);
+	info_data.push([ "LINE" ]);
+	info_data.push([ lang("EDIT"),	 	edit ]);
 
-	appMsg.confirm(text,"",450);
+	mboxViews_InfoTable(title=lang("ALBUM")+" "+lang("INFORMATION"), info_data=info_data, height=450);
 	}
 
+
+// track info as popup
+//--------------------------------------
+
+function mboxAlbumTrackInfo_load(uuid) { appFW.requestAPI("GET",["data",uuid,"-"],"", mboxAlbumTrackInfo ); }
+function mboxAlbumTrackInfo(data) {
+
+	var track  = data["DATA"]["_selected"];
+	var uuid   = data["DATA"]["_selected_uuid"];
+
+	var size   = Math.round(track["filesize"]/1024/1024*100)/100;
+	var length = convert_second2time(Math.round(track["length"]));
+	var path   = track["file"];
+	var url    = RESTurl + "api/data/"+track["uuid"]+"/-/";
+	var url1   = RESTurl + "api/data/"+track["album_uuid"]+"/-/";
+	var url2   = "/mbox_music/";	
+	var color  = mbox_color[appTheme]["warning"];
+
+
+	if (track["artist"].indexOf("#error") == -1) {
+		var cover      = "";
+		var msg_height = 400;
+		
+		if (track["cover_images"]) 	{ cover += mboxCoverAlbumInfo(1, track["cover_images"]["track"],  track["cover_images"]["active"], uuid); }
+		else 				{ cover += lang("DATA_OLD_FORMAT"); }
+		
+		var info_data = [
+			[ lang("TITLE"), 		track["title"] ],
+			[ lang("ALBUM"), 		track["album"] ],
+			[ lang("BAND_ARTIST"), 	track["artist"] ],
+			[ lang("SIZE"), 		size + " MByte / " + length + " min" ],
+			[ lang("TRACK")+" Dir",	"<a href='" + url2 + path + "' target='_blank'>" + path + "</a>" ], 
+			[ "UUID "+lang("TRACK"),	"<a href='" + url  + "' target='_blank'>" + uuid + "</a>" ],
+			[ "UUID "+lang("ALBUM"),	"<a href='" + url1 + "' target='_blank'>" + track["album_uuid"] + "</a>" ],
+			];
+		if ("error" in track) {
+			info_data.push(["<font color='"+color+"'>"+lang("ERROR")+":</font>","<font color='"+color+"'>"+track["error"]+"</font>"]);
+			}
+		info_data.push(
+			[lang("COVER_AVAILABLE"),	cover ]
+			);
+		}
+	else {
+		var msg_height = 250;
+		var info_data = [
+			[ lang("FILE"), 		"<a href='" + url2 + path + "' target='_blank'>" + path + "</a>" ],
+			[ "UUID "+lang("TRACK"),	"<a href='" + url  + "' target='_blank'>" + uuid + "</a>" ],
+			[ "<font color='"+color+"'>"+lang("ERROR")+":</font>", "<font color='"+color+"'>"+track["error"]+"</font></i>" ],
+			[ "Decoder",			track["decoder"] ],
+			];		
+		}
+		
+	mboxViews_InfoTable(title=lang("TRACK_INFORMATION"), info_data=info_data, height=msg_height);
+	}
 
 // delete album
 //--------------------------------------
@@ -226,68 +282,6 @@ function mboxAlbumDelete_msg(data,title) {
 	mboxDataReturnMsg(data,lang("ALBUM_DELETED")+"<br/><b>"+title,lang("ALBUM_DELETE_ERROR")+"<br/><b>"+title);
         mboxAlbumAll_load();
         }
-
-
-// track info as popup
-//--------------------------------------
-
-function mboxAlbumTrackInfo_load(uuid) { appFW.requestAPI("GET",["data",uuid,"-"],"", mboxAlbumTrackInfo ); }
-function mboxAlbumTrackInfo(data) {
-
-	var text   = "";
-	var track  = data["DATA"]["_selected"];
-	var uuid   = data["DATA"]["_selected_uuid"];
-
-	var size   = Math.round(track["filesize"]/1024/1024*100)/100;
-	var length = convert_second2time(Math.round(track["length"]));
-	var path   = track["file"];
-	var url    = RESTurl + "api/data/"+track["uuid"]+"/-/";
-	var url1   = RESTurl + "api/data/"+track["album_uuid"]+"/-/";
-	var url2   = "/mbox_music/";
-
-	var msg_height = 400;
-	if (appTheme == "dark") 	{ color = "yellow"; }
-	else				{ color = "red"; }
-
-	text += "<b>"+lang("TRACK_INFORMATION")+ "</b><br/>";
-	
-	if (track["artist"].indexOf("#error") == -1) {
-		cover = "";
-		if (track["cover_images"]) 	{ cover += mboxCoverAlbumInfo(1, track["cover_images"]["track"],  track["cover_images"]["active"], uuid); }
-		else 				{ cover += lang("DATA_OLD_FORMAT"); }
-
-		text += mboxHtmlTableNew("start");
-		text += "<tr><td colspan='2'><hr></td></tr>";
-		text += mboxHtmlTableNew(["<i>"+lang("TITLE")+":", 		track["title"] ] );
-		text += mboxHtmlTableNew(["<i>"+lang("ALBUM")+":", 		track["album"] ] );
-		text += mboxHtmlTableNew(["<i>"+lang("BAND_ARTIST")+":",	track["artist"] ] );
-		text += mboxHtmlTableNew(["<i>"+lang("SIZE")+":", 		size + " MByte / " + length + " min" ] );
-		text += mboxHtmlTableNew(["<i>"+lang("TRACK")+" Dir:", 	"<a href='" + url2 + path + "' target='_blank'>" + path + "</a>" ] );
-		text += mboxHtmlTableNew(["<i>UUID "+lang("TRACK")+":",	"<a href='" + url  + "' target='_blank'>" + uuid + "</a>" ] );
-		text += mboxHtmlTableNew(["<i>UUID "+lang("ALBUM")+":", 	"<a href='" + url1 + "' target='_blank'>" + track["album_uuid"] + "</a>" ] );
-		if ("error" in track) {
-			text += mboxHtmlTableNew(["<i><font color='"+color+"'>"+lang("ERROR")+":</font><i>", "<i><font color='"+color+"'>"+track["error"]+"</font></i>" ] );
-			}
-		text += mboxHtmlTableNew(["<i>"+lang("COVER_AVAILABLE")+":", cover ] );
-		text += "<tr><td colspan='2'><hr></td></tr>";
-		text += mboxHtmlTableNew("end");
-		}
-	else {
-		text += mboxHtmlTableNew("start");
-		text += "<tr><td colspan='2'><hr></td></tr>";
-
-		text += mboxHtmlTableNew([lang("FILE")+":", 					"<a href='" + url2 + path + "' target='_blank'>" + path + "</a>" ] );
-		text += mboxHtmlTableNew(["UUID "+lang("TRACK")+":",				"<a href='" + url  + "' target='_blank'>" + uuid + "</a>" ] );
-		text += mboxHtmlTableNew(["<font color='"+color+"'>"+lang("ERROR")+":</font><i>", "<font color='"+color+"'>"+track["error"]+"</font></i>" ] );
-		text += mboxHtmlTableNew(["Decoder:",						track["decoder"] ] );
-				
-		text += "<tr><td colspan='2'><hr></td></tr>";
-		text += mboxHtmlTableNew("end");
-		msg_height = 250;
-		}
-
-	appMsg.confirm(text,"",msg_height);
-	}
 
 
 //--------------------------------------

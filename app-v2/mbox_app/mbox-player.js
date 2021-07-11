@@ -49,6 +49,7 @@ function mboxPlayerAdd2Queue(type, entry_uuid, entry, track_list={})
 //--------------------------------------
 
 var mboxPlayer;
+var mbox_playlist_queue = {};
 
 //--------------------------------------
 // LOCAL PLAYER
@@ -58,12 +59,12 @@ function mboxPlayerLocal(position=0, play=true) {
 
 	if (!mboxPlayer) { mboxPlayer = new jcPlayer("mboxPlayer","audioPlayer", mbox_music_dir, mbox_cover_dir, "modules/"); }
 
-	mboxPlayer.activeTrack              	  = position;
-	mboxPlayer.activeCtrl["info_cover"] 	  = false;
-	mboxPlayer.activeCtrl["info_short"] 	  = true;
+	mboxPlayer.activeTrack                    = position;
+	mboxPlayer.activeCtrl["info_cover"]       = false;
+	mboxPlayer.activeCtrl["info_short"]       = true;
 	mboxPlayer.activeCtrl["progress_padding"] = "0";
-	mboxPlayer.buttonColor                  = "lightgreen";
-	mboxPlayer.progressColor                = "green";
+	mboxPlayer.buttonColor                    = "lightgreen";
+	mboxPlayer.progressColor                  = "green";
 	mboxPlayer.init();
 
 	console.debug(mbox_playlist_queue);
@@ -135,7 +136,7 @@ function mboxPlayerControlPlaylist_advanced(uuid) {
 	text += mboxPlayerButton("pause","appFW.requestAPI('GET', ['pause'], 	'', mboxControl);",                    		"blue");
 	text += mboxPlayerButton("stop", "appFW.requestAPI('GET', ['stop'],  	'', mboxControl); mboxControlPanel_hide(true);",	"blue");
 	text += mboxPlayerButton("empty");
-	text += mboxPlayerButton("goto", "mboxControlShowUUID('"+uuid+"');", "blue");
+	text += mbofxPlayerButton("goto", "mboxControlShowUUID('"+uuid+"');", "blue");
 
 	appMsg.confirm( text, "", 260);
 	}
@@ -361,6 +362,7 @@ function mboxPlayerAdd2Queue(type, entry_uuid, entry, track_list={}) {
 	if (type == "album" || type == "playlist") {
 		mbox_playlist_queue["album"]    	= entry;
 		mbox_playlist_queue["scrollto"] 	= "scrollto_" + entry_uuid.replace(/-/g,"");
+		mbox_playlist_queue["goto"]		= "mboxControlShowUUID('"+entry_uuid+"');";
 		mbox_playlist_queue["tracks"]   	= track_list;	
 		mbox_playlist_queue["url"]		= undefined;
 		}
@@ -369,6 +371,7 @@ function mboxPlayerAdd2Queue(type, entry_uuid, entry, track_list={}) {
 		mbox_playlist_queue["type"]		= "podcast";
 		mbox_playlist_queue["album"]		= entry;
 		mbox_playlist_queue["scrollto"]	= "scrollto_" + entry_uuid.replace(/-/g,"");
+		mbox_playlist_queue["goto"]		= "mboxControlShowUUID('"+entry_uuid+"');";
 		mbox_playlist_queue["tracks"]		= entry["podcast"]["tracks"];
 		mbox_playlist_queue["url"]		= undefined;
         	}
@@ -377,10 +380,10 @@ function mboxPlayerAdd2Queue(type, entry_uuid, entry, track_list={}) {
 		mbox_playlist_queue["type"]		= "stream";
 		mbox_playlist_queue["album"]		= entry;
 		mbox_playlist_queue["scrollto"]	= "scrollto_" + entry_uuid.replace(/-/g,"");
+		mbox_playlist_queue["goto"]		= "mboxControlShowUUID('"+entry_uuid+"');";
 		mbox_playlist_queue["tracks"]		= {};
 		mbox_playlist_queue["url"]		= entry["stream_url2"];
 		}
-
 	console.debug(mbox_playlist_queue);
 	}
 

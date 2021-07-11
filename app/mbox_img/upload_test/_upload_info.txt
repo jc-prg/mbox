@@ -1,0 +1,3 @@
+test
+Filename: 
+ - Upload erfolgt: ../../mbox_img/upload_test/IMG_7984.jpg

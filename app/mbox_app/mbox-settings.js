@@ -106,12 +106,8 @@ function mboxSettingsStatus (data) {
 	text += table.row_one("<hr/>");
 	text += table.row( ["<b>Initial load:",		Math.round(data["STATUS"]["system"]["server_start_duration"]*10)/10+" s" ] );
 	text += table.row( ["<b>Running for:",		Math.round(data["STATUS"]["system"]["server_running"]) +" s" ] );
+
 	text += table.row_one("<hr/>");
-/*
-	text += mboxHtmlTable("<b>API request:",		Math.round(data["REQUEST"]["load-time-app"]/1000*10)/10+" s &nbsp; &nbsp; (all data)" );
-	text += mboxHtmlTable("<b>DB request:",		Math.round(data["REQUEST"]["load-time"]*1000)/1000+" s" );
-	text += mboxHtmlTable("<b>DB request per file:",	Math.round(data["REQUEST"]["load-time"]/dict_size(data["DATA"]["files"])*1000)/1000+" s &nbsp; &nbsp; ("+dict_size(data["DATA"]["files"])+")" );
-*/
 	text += table.row( ["<b>API request:", 		"<div id=\"duration_api_request\">Please Wait</div>" ] );
 	text += table.row( ["<b>DB request:",			"<div id=\"duration_db_request\">Please Wait</div>" ] );
 	text += table.row( ["<b>DB request per file:",	"<div id=\"duration_db_request_per_file\">Please Wait</div>" ] );
@@ -137,51 +133,48 @@ function mboxSettingsStatus (data) {
 	for (var key in data["DATA"]["playlists"])  { demo_p = key; }
 
 	text = "";
-
-	text += "<center><b>" + lang("RELOAD_DATA") + " ...</b>";
-	text += "<hr/>";
+	text += table.start();
+	text += table.row_one("<hr/>");
+	text += table.row_one("<center><b>" + lang("RELOAD_DATA") + "</b></center>");
+	text += table.row_one("<hr/>");
 
 	var onclick = ""; var question = ""; var cmd = "";
 
 	question = "<br/>"+lang("QUESTION_RELOAD");
 	onclick  = "appFW.setAutoupdateLoading();appFW.requestAPI(#PUT#,[#load#,#all#],##,mboxHtmlShowLoading);";
-        cmd      = "appMsg.confirm('" + question + "','" + onclick + "', 260);";
-	text    += button( cmd, "Reload Data" );
+	var cmd1 = "appMsg.confirm('" + question + "','" + onclick + "', 260);";
 
 	question = "<br/>"+lang("QUESTION_LOAD_NEW");
 	onclick  = "appFW.setAutoupdateLoading();appFW.requestAPI(#PUT#,[#load#,#new#],##,mboxHtmlShowLoading);";
-        cmd      = "appMsg.confirm('" + question + "','" + onclick + "', 260);";
-	text    += button( cmd, "Load New Data" );
+	var cmd2 = "appMsg.confirm('" + question + "','" + onclick + "', 260);";
 
 	question = "<br/>" + lang("QUESTION_LOAD_IMG");
 	onclick  = "appFW.requestAPI(#PUT#,[#load#,#images#],##,mboxHtmlShowLoading)";
-        cmd      = "appMsg.confirm('" + question + "','" + onclick + "', 260);";
-	text    += button( cmd, "Load New Images" );
+	var cmd3 = "appMsg.confirm('" + question + "','" + onclick + "', 260);";
 
-	text += "<hr/>";
+	text    += table.row_one( button( cmd1, "Reload Data" ) + button( cmd2, "Load New Data" ) + button( cmd3, "Load New Images" ));
+	text    += table.row_one("<hr/>");
 
 	question = "<br/>"+lang("QUESTION_RESTORE_JSON");
 	onclick  = "appFW.requestAPI(#PUT#,[#backup#,#json2db#],##,mboxHtmlShowJson)";
-        cmd      = "document.getElementById('json2db').disabled = true;";
-        cmd	+= "document.getElementById('json2db').innerHTML = '" + lang("PLEASE_WAIT") + "';";
-        cmd     += "appMsg.confirm('" + question + "','" + onclick + "', 260);";
-	text    += button( cmd, "Restore (JSON 2 DB)", "json2db" );
+	cmd1     = "document.getElementById('json2db').disabled = true;";
+	cmd1	+= "document.getElementById('json2db').innerHTML = '" + lang("PLEASE_WAIT") + "';";
+	cmd1    += "appMsg.confirm('" + question + "','" + onclick + "', 260);";
 
 	question = "<br/>"+lang("QUESTION_BACKUP2JSON");
 	onclick  = "appFW.requestAPI(#PUT#,[#backup#,#db2json#],##,mboxHtmlShowJson)";
-        cmd      = "document.getElementById('db2json').disabled = true;";
-        cmd	+= "document.getElementById('db2json').innerHTML = '" + lang("PLEASE_WAIT") + " ...';";
-        cmd     += "appMsg.confirm('" + question + "','" + onclick + "', 260);";
-	text    += button( cmd, "Backup (DB 2 JSON)", "db2json" );
+	cmd2     = "document.getElementById('db2json').disabled = true;";
+	cmd2    += "document.getElementById('db2json').innerHTML = '" + lang("PLEASE_WAIT") + " ...';";
+	cmd2    += "appMsg.confirm('" + question + "','" + onclick + "', 260);";
 
-	text += "</center>";
+	text    += table.row_one( button( cmd1, "Restore (JSON 2 DB)", "json2db" ) + button( cmd2, "Backup (DB 2 JSON)", "db2json" ));
+	text    += table.row_one("<hr/>");
+
 	question = "Load Card UUID?";
 	onclick  = "var card_uuid = document.getElementById(#card_uuid#).value;mboxCardSimulate(card_uuid);";
-	cmd      = "appMsg.confirm('" + question + "','" + onclick + "', 260);";
+	cmd1     = "appMsg.confirm('" + question + "','" + onclick + "', 260);";
 
-	text += table.start();
-	text += table.row_one("<hr/>");
-	text += table.row(["<input id='card_uuid' style='width:120px;'/>",button( cmd, "Simulate Card" )]);
+	text += table.row(["<input id='card_uuid' style='width:120px;'/>",button( cmd1, "Simulate Card" )]);
 	text += table.row_one("<hr/>");
 	text += table.row_one("<center><b>Development</b></center>");
 	text += table.row_one("<hr/>");

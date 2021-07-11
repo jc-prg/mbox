@@ -70,9 +70,14 @@ function mboxSettingsStatus (data) {
 	text += table.row( ["<b>Active Device:", 	data["STATUS"]["active_device"] ] );
 	text += table.row( ["<b>Window:", 		document.body.clientWidth + "x" + document.body.clientHeight ] );
 	text += table.row( ["<b>Internet:",		internetConnect ] );
-	
 	text += table.row_one("<hr/>");
-	text += table.row( ["<b>Status:",	 	data["STATUS"]["playback"]["status"] + " (<a href='' onclick='alert(\"" + data["STATUS"]["playback"]["file"] + "\")'>filename</a>)" ] );
+	
+	if (data["STATUS"]["playback"]["status"] == "") {
+		text += table.row( ["<b>Status:",	 "idle" ] );
+		}
+	else {
+		text += table.row( ["<b>Status:",	 data["STATUS"]["playback"]["status"] + " (<a href='' onclick='alert(\"" + data["STATUS"]["playback"]["file"] + "\")'>filename</a>)" ] );
+		}
 	
 	text += table.row_one("<hr/>");
 	text += table.row( ["<b>Files:", 		data["STATUS"]["statistic"]["files"] ] );

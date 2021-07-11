@@ -459,10 +459,6 @@ function mboxViewsTrackList(data, type) {
 			}
 		}
 		
-
-	// fill local playlist queue
-	mboxPlayerAdd2Queue(type, entry_uuid, entry, track_data);
-	
 	// header for the detail view with tracks
 	text += mboxViewsTrackListHeader(entry_uuid, type, entry, title, description);
 	
@@ -473,17 +469,27 @@ function mboxViewsTrackList(data, type) {
 		}
 
         // count tracks & columns
-        var columns = Math.trunc( mboxViewsCalcRowEntries() / 3 );
-        var total_tracks = track_list.length;
+        var columns          = Math.trunc( mboxViewsCalcRowEntries() / 3 );
+        var track_list_local = [];
+        var total_tracks     = track_list.length;
+        
         for (var i=0; i < track_list.length;i++) {
         	if (track_list[i].includes("a_")) {
         		if (track_list_album && track_list_album[track_list[i]]) {
 	        		total_tracks += track_list_album[track_list[i]].length;
 	        		}
+	        	Array.prototype.push.apply(track_list_local,track_list_album[track_list[i]]);
+        		}
+        	else {
+	        	track_list_local.push(track_list[i]);
         		}
         	}
         total_tracks += 1;
         
+	// fill local playlist queue
+	console.log(track_list_local);
+	mboxPlayerAdd2Queue(type, entry_uuid, entry, track_data, track_list_local);	
+
 	// create columns for tracks
         for (var i=1; i <= columns; i++) { text += "<div class=\"album_tracks\" id=\"album_tracks"+i+"\"></div>"; }
 	text += "<div class=\"album_tracks\">&nbsp;</div>";
@@ -509,7 +515,7 @@ function mboxViewsTrackList(data, type) {
 		}
 
 	// create track list
-	if (track_list.length > 0) { 
+	if (track_list.length > 0) {
 	    setTimeout(function(){
 		
 		var title_num = track_list.length;

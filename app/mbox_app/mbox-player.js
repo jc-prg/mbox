@@ -353,7 +353,7 @@ function mboxPlayerButtonText( button, cmd="", color="blue", small="", display="
 // file queue
 //--------------------------------------
 
-function mboxPlayerAdd2Queue(type, entry_uuid, entry, track_list={}) {
+function mboxPlayerAdd2Queue(type, entry_uuid, entry, track_list={}, track_list_sort=[]) {
 
 	// fill local playlist queue
 	mbox_playlist_queue             = {};
@@ -363,7 +363,8 @@ function mboxPlayerAdd2Queue(type, entry_uuid, entry, track_list={}) {
 		mbox_playlist_queue["album"]    	= entry;
 		mbox_playlist_queue["scrollto"] 	= "scrollto_" + entry_uuid.replace(/-/g,"");
 		mbox_playlist_queue["goto"]		= "mboxControlShowUUID('"+entry_uuid+"');";
-		mbox_playlist_queue["tracks"]   	= track_list;	
+		mbox_playlist_queue["tracks"]   	= track_list;
+		mbox_playlist_queue["track_sort"]   	= track_list_sort;		
 		mbox_playlist_queue["url"]		= undefined;
 		}
         else if (type == "radio" && entry["podcast"] && entry["podcast"]["title"]) {
@@ -373,6 +374,7 @@ function mboxPlayerAdd2Queue(type, entry_uuid, entry, track_list={}) {
 		mbox_playlist_queue["scrollto"]	= "scrollto_" + entry_uuid.replace(/-/g,"");
 		mbox_playlist_queue["goto"]		= "mboxControlShowUUID('"+entry_uuid+"');";
 		mbox_playlist_queue["tracks"]		= entry["podcast"]["tracks"];
+		mbox_playlist_queue["track_sort"]   	= track_list_sort;		
 		mbox_playlist_queue["url"]		= undefined;
         	}
         else if (type == "radio") {
@@ -382,6 +384,7 @@ function mboxPlayerAdd2Queue(type, entry_uuid, entry, track_list={}) {
 		mbox_playlist_queue["scrollto"]	= "scrollto_" + entry_uuid.replace(/-/g,"");
 		mbox_playlist_queue["goto"]		= "mboxControlShowUUID('"+entry_uuid+"');";
 		mbox_playlist_queue["tracks"]		= {};
+		mbox_playlist_queue["track_sort"]   	= track_list_sort;		
 		mbox_playlist_queue["url"]		= entry["stream_url2"];
 		}
 	console.debug(mbox_playlist_queue);

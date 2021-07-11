@@ -57,6 +57,7 @@ function mboxSettingsStatus (data) {
 	text += mboxHtmlTable("<b>jcMessage:",	message.appVersion);
 	text += mboxHtmlTable("<b>jcPlayer:",		player.appVersion);
 	text += mboxHtmlTable("<b>jcSlider:",		slider.appVersion);
+	text += mboxHtmlTable("<b>jcUpload:",		mbox_upload.appVersion);
 	text += mboxHtmlTable("end");
 	text += "<hr/>";
 	text += mboxHtmlTable("start");

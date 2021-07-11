@@ -81,6 +81,7 @@ function mboxSettingsStatus (data) {
 	text += table.row( ["<b>Albums:", 		data["STATUS"]["statistic"]["album_info"] ] );
 	text += table.row( ["<b>Playlists:",		data["STATUS"]["statistic"]["playlists"] ] );
 	text += table.row( ["<b>Web-Radio:",		data["STATUS"]["statistic"]["radio"] ] );
+	text += table.row_one("<hr/>");
 	text += table.end();
 
 	setTextById("setting1",text);

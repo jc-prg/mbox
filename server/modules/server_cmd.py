@@ -643,7 +643,7 @@ def mboxAPI_delete(uuid):
                data = mboxAPI_error(data, "Entry not found in DB: "+uuid+"/"+database)
 
        # delete card and unlink linked element
-       elif ","  in uuid:
+       elif ","  in uuid or "test" in uuid:
            logging.info("Delete card "+uuid)
            database = "cards"
            if uuid in db_entries[database]:

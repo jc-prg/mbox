@@ -32,6 +32,8 @@ mboxCardDetected = "";
 
 
 function mboxCardSimulate(card_uuid) {
+	if (card_uuid.indexOf(",") < 0) { card_uuid = "test-card,"+card_uuid; }
+	
 	appFW.requestAPI('PUT',['set-card',card_uuid],'','');
 	setTimeout(function() {appFW.requestAPI('PUT',['set-card','no_card'],'','');}, 5000);
 	}
@@ -384,24 +386,27 @@ function mboxCardDelete(card_id,title) {
 	appMsg.confirm(text,cmd,150,true);
 	}
 	
-function mboxCardDelete_exec(uuid,title) {
-	appFW.requestAPI('DELETE',['data',uuid],'',[mboxCardDelete_msg,title]);
+function mboxCardDelete_exec(card_id,uuid) {
+	appFW.requestAPI('DELETE',['data',card_id],'',[mboxCardDelete_msg,[card_id,uuid]]);
 	}
 
-function mboxCardPlay_exec(uuid,title) {
-	appFW.requestAPI('PUT',['set-card',uuid],'',[mboxCardPlay_msg,uuid]);
+function mboxCardPlay_exec(card_id, uuid) {
+	appFW.requestAPI('PUT',['set-card',card_id],'',[mboxCardPlay_msg,[card_id,uuid]]);
 	setTimeout(function(){ appFW.requestAPI('PUT',['set-card','no_card']); }, 5000);
 	}
 
-function mboxCardDelete_msg(data,title) {
-	mboxDataReturnMsg(data,lang("CARD_DELETED")+"<br/><b>"+title,lang("CARD_DELETE_ERROR")+"<br/><b>"+title);
-	//mboxPlaylistAll_load();
+function mboxCardDelete_msg(data,cardid_uuid) {
+	var cardid = cardid_uuid[0];
+	var uuid   = cardid_uuid[1];
+	mboxDataReturnMsg(data,lang("CARD_DELETED")+"<br/><b>"+cardid,lang("CARD_DELETE_ERROR")+"<br/><b>"+cardid);	
+	mboxControlShowUUID(uuid);
 	}
 
-function mboxCardPlay_msg(data,uuid) {
-	mboxDataReturnMsg(data,lang("CARD_STARTED")+"<br/><b>"+uuid,lang("CARD_START_ERROR")+"<br/><b>"+uuid);
-	mboxControlShowUUID(title);
-	//mboxPlaylistAll_load();
+function mboxCardPlay_msg(data,cardid_uuid) {
+	var cardid = cardid_uuid[0];
+	var uuid   = cardid_uuid[1];
+	mboxDataReturnMsg(data,lang("CARD_STARTED")+"<br/><b>"+cardid,lang("CARD_START_ERROR")+"<br/><b>"+cardid);
+	mboxControlShowUUID(uuid);
 	}
 
 // save edit dialog ...

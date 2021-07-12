@@ -312,19 +312,26 @@ function mboxControlVolumeControl(volume, mute) {
 // show album / playlist / ...
 //--------------------------------------
 
-function mboxControlShowUUID(uuid) {
+function mboxControlShowUUID(uuid="") {
 
 	// scroll to album / playlist / streaming entry
 	//document.getElementById('scrollto_'+uuid.replace(/-/g,"")).scrollIntoView();
 
 	// reload and open album / playlist entry
-	if (uuid) {
+	if (uuid != "") {
+		console.log(uuid);
 		if (uuid.indexOf("p_") >= 0) 		{ mboxPlaylists_load("",uuid); }
 		else if (uuid.indexOf("a_") >= 0) 	{ mboxAlbumAll_load("",uuid); }
 		else if (uuid.indexOf("r_") >= 0) 	{ mboxStreams_load(uuid); }
+		else if (uuid == "album")		{ mboxAlbumAll_load(); }
+		else if (uuid == "playlist")		{ mboxPlaylists_load(); }
+		else if (uuid == "radio")		{ mboxStreams_load(); }
+		else {
+			console.warn("mboxControlShowUUID ... uuid is not valid");
+			}
 		}
 	else {
-		console.warning("mboxControlShowUUID ... uuid missing");
+		console.warn("mboxControlShowUUID ... uuid missing");
 		}
 	}
 	

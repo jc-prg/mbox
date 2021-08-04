@@ -413,7 +413,6 @@ function mboxViews_InfoTable(title, info_data, height) {
 
 function mboxViewsTrackList(data, type) {   
 
-        console.log("mboxViewsTrackList: "+type);
 
 	var text		 = "";
 	var entry		 = data["DATA"]["_selected"];				// albums -> entry
@@ -422,6 +421,13 @@ function mboxViewsTrackList(data, type) {
 	var track_list		 = entry["tracks"];
 	var track_list_complete = [];
 	var track_list_album    = {};
+
+	console.log("mboxViewsTrackList: "+type+"/"+entry_uuid);
+	if (type == undefined) {
+		if (uuid.indexOf("r_") > -1) { type = "radio"; }
+		if (uuid.indexOf("a_") > -1) { type = "album"; }
+		if (uuid.indexOf("p_") > -1) { type = "playlist"; }		
+		}
 
 	mbox_last_uuid = entry_uuid;
 	

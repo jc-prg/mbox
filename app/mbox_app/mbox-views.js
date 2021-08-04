@@ -513,7 +513,7 @@ function mboxViewsTrackList(data, type) {
 		var withtrackinfo = false;
 		if (title == "Compilation") { withartist = true; }
 		for (var i=0;i<track_list.length;i++) {
-			if ("disc_num" in track_data[track_list[i]]) {
+			if (track_data[track_list[i]] && "disc_num" in track_data[track_list[i]]) {
 				if (last_cd == "") { last_cd = track_data[track_list[i]]["disc_num"]; }
 				if (last_cd != track_data[track_list[i]]["disc_num"]) { withtrackinfo = true; }
 				}

@@ -327,6 +327,7 @@ function mboxViewsLoadDetails(pos, i, uuid, callTrackList, type) {
 	mboxViewsShowTriangle(i);
 
 	// Load Album into the calculated DIV
+	console.log("mboxViewsLoadDetails: "+callTrackList+"/"+type);
 	appFW.requestAPI("GET",["data",uuid,"-"],"", [callTrackList, type] );
 	}
 
@@ -411,6 +412,8 @@ function mboxViews_InfoTable(title, info_data, height) {
 //--------------------------------------
 
 function mboxViewsTrackList(data, type) {   
+
+        console.log("mboxViewsTrackList: "+type);
 
 	var text		 = "";
 	var entry		 = data["DATA"]["_selected"];				// albums -> entry

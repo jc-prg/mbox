@@ -357,7 +357,8 @@ function mboxViewsTrackListHeader(uuid, type, entry, title, description, length)
 
 	// write album infos
 	text += "<div class=\"album_infos new\">";
-	text += "<b>" + title + "</b><br/><i>" + description + "</i><br/>";
+	text += "<b>" + title + "</b> <font color='#383838'><i>["+type+"]</i></font>";
+	text += "<br/><i>" + description + "</i><br/>";
 	text += length;
 	text += "</div>";
 	text += mboxHtmlButton("delete",  "mboxViewsEmptyBelow();mboxViewsHideTriangle(mbox_list_last);mbox_last_uuid='';", "opac",   "small small2");

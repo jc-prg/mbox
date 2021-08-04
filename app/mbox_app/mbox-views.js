@@ -424,9 +424,9 @@ function mboxViewsTrackList(data, type) {
 
 	console.log("mboxViewsTrackList: "+type+"/"+entry_uuid);
 	if (type == undefined) {
-		if (uuid.indexOf("r_") > -1) { type = "radio"; }
-		if (uuid.indexOf("a_") > -1) { type = "album"; }
-		if (uuid.indexOf("p_") > -1) { type = "playlist"; }		
+		if (entry_uuid.indexOf("r_") > -1) { type = "radio"; }
+		if (entry_uuid.indexOf("a_") > -1) { type = "album"; }
+		if (entry_uuid.indexOf("p_") > -1) { type = "playlist"; }		
 		}
 
 	mbox_last_uuid = entry_uuid;

@@ -108,7 +108,7 @@ thread_speak.start()
 thread_speak.speak_message("STARTING")
 
 logging.info("Load CouchDB ..." + time_since_start())
-couch = jcCouch.jcCouchDB()
+couch = jcCouch.jcCouchDB(stage.data_db)
 
 logging.info("Load Music Import ..." + time_since_start())
 thread_music_load = music_load.musicLoadingThread(2, "Thread Music Load", 1, couch) #  jcJSON.read("music"))

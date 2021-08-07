@@ -5,8 +5,8 @@
 #----------------------------------------
 
 version: "3"
-services:
 
+services:       
   ${MBOX_DOCKER_CLIENT}:
     image: ${MBOX_DOCKERIMAGE_CLIENT}
     container_name: ${MBOX_DOCKER_CLIENT}
@@ -21,10 +21,13 @@ services:
       - ${MBOX_DIR_DATA}/cover:/var/www/html/app/mbox_img/cover
       - ${MBOX_DIR_DATA}/cover_upload:/var/www/html/app/mbox_img/cover_upload
 #      - ${MBOX_DIR_DATA}/data:/var/www/html/app/server/data
-
     depends_on:
       - ${MBOX_DOCKER_DATABASE}
       - ${MBOX_DOCKER_SERVER}
+    networks:
+      mynet:
+        ipv4_address: ${MBOX_NETWORK}.3
+
 
 
 # CouchDB 
@@ -41,6 +44,9 @@ services:
     environment:
       - 'COUCHDB_USER=${MBOX_DB_USER}'
       - 'COUCHDB_PASSWORD=${MBOX_DB_PASSWORD}'
+    networks:
+      mynet:
+        ipv4_address: ${MBOX_NETWORK}.4
 
 
 # main server component (tested with docker-compose under Ubuntu)
@@ -65,4 +71,16 @@ services:
       - ${MBOX_SERVER_PORT}:${MBOX_SERVER_PORT}
     depends_on:
       - ${MBOX_DOCKER_DATABASE}
+    networks:
+      mynet:
+        ipv4_address: ${MBOX_NETWORK}.5
+
+
+networks:
+  mynet:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: ${MBOX_NETWORK}.0/24
+       
 

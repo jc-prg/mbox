@@ -2,17 +2,34 @@ import modules.jcJson          as jcJSON
 import modules.config_stage    as stage
 import modules.config_mbox     as mbox
 import modules.music_speak     as speak
+from   modules.jcRunCmd        import *
 
 import logging, time, uuid
 import couchdb, requests, json
 
 
 #-------------------------------------------------
+
+def createDB_URL():
+    '''
+    get IP address for internal device
+    '''
+    command = "/sbin/ip -o -4 addr list "+stage.server_ip_device+" | awk '{print $4}' | cut -d/ -f1"
+    ip, err = runCmd(command)
+    db_url  = "http://"+stage.data_db_auth+"@"+ip+":"+stage.server_port+"/"
+    logging.info("connectionInternalIP: "+db_url)
+    return ip, db_url
+    
+
+#-------------------------------------------------
 # Database Definition
 #-------------------------------------------------
 
-database   = couchdb.Server(stage.data_db)
-databases  = mbox.databases
+#db_ip, db_url    = createDB_URL()
+#database   = couchdb.Server(db_url)
+#database   = couchdb.Server(stage.data_db_test)
+#database   = couchdb.Server(stage.data_db)
+#databases  = mbox.databases
 
 #---------------------------------------------
 # database access
@@ -20,12 +37,13 @@ databases  = mbox.databases
 
 class jcCouchDB ():
 
-   def __init__(self):
+   def __init__(self, url):
       '''set initial values to vars and start radio'''
 
-      global databases
+      self.db_url     = url
+      self.databases  = mbox.databases
 
-      logging.debug("Connect to CouchDB: "+stage.data_db)
+      logging.debug("Connect to CouchDB: "+self.db_url)
 
       connects2db  = 0
       max_connects = 30
@@ -40,13 +58,13 @@ class jcCouchDB ():
 
           try:
               logging.info("Try to connect to CouchDB")
-              response = requests.get(stage.data_db)
+              response = requests.get(self.db_url)
               connects2db = max_connects+1
 
           except requests.exceptions.RequestException as e:
               connects2db += 1
-              logging.warning("Waiting 5s for connect to CouchDB: " + str(connects2db) + "/" + str(max_connects) + " ("+stage.data_db+")")
-              logging.info(   "                      ... to CouchDB: " + stage.data_db)
+              logging.warning("Waiting 5s for connect to CouchDB: " + str(connects2db) + "/" + str(max_connects) + " ("+self.db_url+")")
+              logging.info(   "                      ... to CouchDB: " + self.db_url)
 
               time.sleep(5)
 
@@ -61,8 +79,7 @@ class jcCouchDB ():
               sys.exit(1)  ### -> LEADS TO AN ERROR !!!
 
 
-      self.database      = couchdb.Server(stage.data_db)
-      self.databases     = databases
+      self.database      = couchdb.Server(self.db_url)
       self.check_db()
 
       self.changed_data  = False
@@ -71,7 +88,7 @@ class jcCouchDB ():
       self.fill_cache()
       
 
-      logging.debug("Connect to CouchDB: "+stage.data_db)
+      logging.debug("Connect to CouchDB: "+self.db_url)
 
    #--------------------------------------
 

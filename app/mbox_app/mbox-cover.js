@@ -44,7 +44,7 @@ function mboxCoverAlbumInfo(nr,url_list,act,uuid) {
 		if (nr == 4) { url = url_list[0];                      if (act == "url")    { border = border_selected; } select = "url"; }
 
 		var onclick = "appFW.requestAPI('PUT',['images','set_active','"+uuid+"','"+select+"'], '', " + close_cmd + " );";
-		img = "<img src='" + url + "' class='album_cover' style='height:"+size+";width:"+size+";"+border+"' onclick=\""+onclick+"\" title=\"("+select+": 1 von "+url_list.length+")\">&nbsp;";
+		img = "<img src=\"" + url + "\" class='album_cover' style='height:"+size+";width:"+size+";"+border+"' onclick=\""+onclick+"\" title=\"("+select+": 1 von "+url_list.length+")\">&nbsp;";
 
 		console.debug("mboxCoverAlbumInfo - URL:" + url);
         	console.debug("mboxCoverAlbumInfo - FIRST FILE:" + url_list[0]);
@@ -113,7 +113,7 @@ function mboxCoverAlbum_new(id,data) {
 //--------------------------------------
 
 function mboxCoverAlbum_alert(cover) {
-	var img   = "<img src='"+cover+"' class='album_cover_alert'>";
+	var img   = "<img src=\""+cover+"\" class='album_cover_alert'>";
 	appMsg.confirm(img,"",380);
 	}
 
@@ -162,11 +162,12 @@ function mboxCoverList( uuid, cover="", description="", cmd_open="", cmd_play=""
                 text += "</div>";
                 }
         else {
-                text += "<div class=\"album_cover\" style=\"background:url('" + cover + "');background-size:cover;background-repeat:no-repeat;vertical-align:botton;\" onclick=\"" + cmd_open + "\">";
+        	cover = cover.replace(/'/g, "\\'");
+		text += "<div class=\"album_cover\" style=\"background:url('" + cover + "');background-size:cover;background-repeat:no-repeat;vertical-align:botton;\" onclick=\"" + cmd_open + "\">";
 		text += button_play;
-                text += "<div class=\"player_active\" id=\"playing2_" + uuid + "\" style=\"display:none;\"><img src=\"" + icon_playing + "\" style=\"width:10px;height:10px;margin:2px;\"></div>";
-                text += "</div>";
-                }
+		text += "<div class=\"player_active\" id=\"playing2_" + uuid + "\" style=\"display:none;\"><img src=\"" + icon_playing + "\" style=\"width:10px;height:10px;margin:2px;\"></div>";
+		text += "</div>";
+		}
 
 	return text;
 	}
@@ -187,7 +188,8 @@ function mboxCoverListEnd() {
 	}
 
 function mboxCoverListEntry(id,cover) {
-	return "<div class=\"print_album_cover\" id=\"printCover_" + id + "\"onclick=\"document.getElementById('printCover_" + id + "').style.display='none';\" style=\"background:url('"+cover+"');background-size:cover;background-repeat:no-repeat;vertical-align:botton;\"></div>";
+        cover = cover.replace(/'/g, "\\'");
+        return "<div class=\"print_album_cover\" id=\"printCover_" + id + "\"onclick=\"document.getElementById('printCover_" + id + "').style.display='none';\" style=\"background:url('"+cover+"');background-size:cover;background-repeat:no-repeat;vertical-align:botton;\"></div>";
 	}
 
 //--------------------------------------

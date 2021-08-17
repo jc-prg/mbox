@@ -256,6 +256,7 @@ function mboxViewsChapter(count, title, last_title) {
 	last_title += " ";
 	last_char   = last_title.substring(0,1);
 
+      	cover = cover.replace(/'/g, "\\'");
 	text += "<div class=\"album_cover character\" style=\"background:url('" + cover + "');\">";
 	text += "<div class=\"album_sort\">" + act_char + "</div>";
 	text += "</div>";
@@ -352,6 +353,7 @@ function mboxViewsTrackListHeader(uuid, type, entry, title, description, length)
         if (cover == "") { cover = default_cover; onclick = ""; }
 
 	// Write album cover
+      	cover = cover.replace(/'/g, "\\'");
 	text += "<div id=\"scrollto2_"+uuid.replace(/-/g,"")+"\">";
 	text += "<div class=\"album_cover\" style=\"background:url('"+cover+"');background-size:contain;background-position:center;background-repeat:no-repeat;\" onclick='" + onclick + "'>";
 	text += "</div>";

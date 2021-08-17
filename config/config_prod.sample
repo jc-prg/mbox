@@ -18,6 +18,7 @@ export MBOX_CURRENT_STAGE="prod" # options: prod, test, <your name>
 export MBOX_ACTIVE_STAGE="$MBOX_CURRENT_STAGE"
 export MBOX_IS_TEST="False"
 export MBOX_LOGLEVEL="warning"   # options: "debug", "info", "warning", "error" (set log level for couchdb -> config/couchdb/default.ini)
+export MBOX_LOG2FILE="yes"
 
 # Settings
 export WLAN_COUNTRY="DE"

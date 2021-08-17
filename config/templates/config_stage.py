@@ -28,6 +28,7 @@ server_ip        = data_db_ip
 server_dns       = [ "${DNS01}","${DNS02}","${DNS03}"]
 
 log_level        = "${MBOX_LOGLEVEL}"
+log_to_file      = "${MBOX_LOG2FILE}"
 
 # ---------------------------------
 
@@ -44,46 +45,31 @@ def init_logging(string,logfilename="",stage="test"):
     Initialize logging and print software title
     When stage != "test" write and filename is specified, write log into file
     """
-    
-    if (log_level == "debug"): 
-      logging.basicConfig(level=logging.DEBUG)       # DEBUG, INFO, WARNING, ERROR, CRITICAL
-      logging.info("Start - Log-Level DEBUG ...")
-      logging.info("--------------------------------")
-      logging.info(string)
-      logging.info("--------------------------------")       
-       
-    elif (log_level == "info"): 
-      logging.basicConfig(level=logging.INFO)
-      logging.info("Start - Log-Level INFO ...")
-      logging.info("--------------------------------")
-      logging.info(string)
-      logging.info("--------------------------------")       
-    
-   
-    elif (log_level == "warning"): 
-      if (logfilename != "" and stage != "test"):
-         logging.basicConfig(filename=logfilename,
-                       filemode='a',
-                       format='%(asctime)s %(name)s %(levelname)s %(message)s',
-                       datefmt='%d.%m.%y %H:%M:%S',
-                       level=logging.WARNING)    
-      else:
-         logging.basicConfig(level=logging.WARNING)
 
-      logging.warning("Start ["+string+"] - Log-Level WARNING ...")
-      
-    else: 
-      if (logfilename != "" and stage != "test"):
-         logging.basicConfig(filename=logfilename,
+    if   log_level == "debug":   level = logging.DEBUG
+    elif log_level == "info":    level = logging.INFO
+    elif log_level == "warning": level = logging.WARNING
+    elif log_level == "error":   level = logging.ERROR
+    
+    if log_to_file == "yes":
+       logging.basicConfig(filename=logfilename,
                        filemode='a',
                        format='%(asctime)s %(name)s %(levelname)s %(message)s',
                        datefmt='%d.%m.%y %H:%M:%S',
-                       level=logging.ERROR)    
-      else:
-         logging.basicConfig(level=logging.ERROR)
-         
-      logging.error("Start ["+string+"] Log-Level ERROR ...")
-           
+                       level=level)
+    else:
+       logging.basicConfig(level=level)
+
+    if log_level == "debug" or log_level == "info":
+       logging.info("Start - Log-Level "+log_level+" ...")
+       logging.info("--------------------------------")
+       logging.info(string)
+       logging.info("--------------------------------")       
+    elif log_level == "warning":
+       logging.warning("Start: "+string+" ("+log_level+") ...")
+    else:
+       logging.error("Start: "+string+" ("+log_level+") ...")
+                  
     log = logging.getLogger("werkzeug")
     log.setLevel(logging.WARN)
                       

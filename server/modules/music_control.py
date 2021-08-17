@@ -64,10 +64,14 @@ class musicControlThread(threading.Thread):
       wait_time  = 0.1
       last_load  = False  
       last_run   = self.music_database.read("status")
+      
+      if not "music" in last_run:
+         last_run["music"] = { "playing" : 0, "playlist_uuid" : "no_uuid" }
+      
       last_music = last_run["music"]
 
       if last_run["music"]["playing"] != 1:     
-        logging.info("Don't playlist and song from last run ("+last_music["playlist_uuid"]+")...")
+        logging.info("Don't load playlist and song from last run ("+last_music["playlist_uuid"]+")...")
       
       elif last_run["music"]["playing"] == 1:
         self.music_ctrl             = last_music

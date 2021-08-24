@@ -226,6 +226,15 @@ class musicControlThread(threading.Thread):
       '''
       self.player.set_volume(vol)
       self.music_ctrl["volume"] = self.player.volume
+      
+      
+   def mute(self,value=""):
+      '''
+      player mute
+      '''
+      self.player.mute(value)
+      self.music_ctrl["mute"]   = self.player.volume_mute
+      logging.debug("Mute: "+str(self.music_ctrl["mute"]))
 
 
    def volume_up(self,up):

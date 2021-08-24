@@ -119,6 +119,28 @@ function mboxSettingsStatus (data) {
 	text += table.row( ["<b>System Total:",		Math.round(data["STATUS"]["system"]["space_main_available"]/1024/1024*10)/10+" GByte" ] );
 	text += table.row( ["<b>Data Used:",			Math.round(data["STATUS"]["system"]["space_usb_used"]/1024/1024*10)/10+" GByte" ] );
 	text += table.row( ["<b>Data Total:",			Math.round(data["STATUS"]["system"]["space_usb_available"]/1024/1024*10)/10+" GByte" ] );
+
+	text += table.row_one("<hr/>");
+	text += table.row_one("<center><b>" + lang("SIMULATE_CMD") + "</b></center>");
+	text += table.row_one("<hr/>");
+
+	question = "Load Card UUID?";
+	onclick  = "var card_uuid = document.getElementById(#card_uuid#).value;mboxCardSimulate(card_uuid);";
+	cmd1     = "appMsg.confirm('" + question + "','" + onclick + "', 260);";
+
+	text += table.row(["<input id='card_uuid' style='width:120px;'/>",button( cmd1, "Simulate Card" )]);
+	text += table.row_one("<hr/>");
+
+	cmd1  = "appFW.requestAPI('GET',['volume','up'],'','')";
+	cmd2  = "appFW.requestAPI('GET',['volume','down'],'','')";
+	cmd3  = "appFW.requestAPI('GET',['volume','mute'],'','')";
+	cmd4  = "appFW.requestAPI('GET',['play_next','1'],'','')";
+	cmd5  = "appFW.requestAPI('GET',['pause'],'','')";
+	cmd6  = "appFW.requestAPI('GET',['play_last','1'],'','')";
+	
+	text += table.row(["Volume",    mboxHtmlSimpleButton( cmd2, "Vol-", "", 49 ) + mboxHtmlSimpleButton( cmd3, "Mute", "", 49 )  + mboxHtmlSimpleButton( cmd1, "Vol+", "", 49 ) ]);
+	text += table.row(["Playback",  mboxHtmlSimpleButton( cmd6, "Back", "", 49 ) + mboxHtmlSimpleButton( cmd5, "Pause", "", 49 ) + mboxHtmlSimpleButton( cmd4, "Next", "", 49 ) ]);
+	
 	text += table.row_one("<hr/>");
 	text += table.end();
 
@@ -168,13 +190,7 @@ function mboxSettingsStatus (data) {
 	cmd2    += "appMsg.confirm('" + question + "','" + onclick + "', 260);";
 
 	text    += table.row_one( button( cmd1, "Restore (JSON 2 DB)", "json2db" ) + button( cmd2, "Backup (DB 2 JSON)", "db2json" ));
-	text    += table.row_one("<hr/>");
 
-	question = "Load Card UUID?";
-	onclick  = "var card_uuid = document.getElementById(#card_uuid#).value;mboxCardSimulate(card_uuid);";
-	cmd1     = "appMsg.confirm('" + question + "','" + onclick + "', 260);";
-
-	text += table.row(["<input id='card_uuid' style='width:120px;'/>",button( cmd1, "Simulate Card" )]);
 	text += table.row_one("<hr/>");
 	text += table.row_one("<center><b>Development</b></center>");
 	text += table.row_one("<hr/>");

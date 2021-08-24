@@ -41,10 +41,15 @@ function image(file) {
         
 // ------------------------------------------
 
-function button (onclick,label, id="") {
-        return "<button style=\"width:150px;margin:1px;\" onClick=\"javascript:"+onclick+"\" id=\""+id+"\">"+label+"</button>";
+function button(onclick, label, id="") {
+        var html = mboxHtmlSimpleButton(onclick,label,id);
+        return html;
+//        return "<button style=\"width:150px;margin:1px;\" onClick=\"javascript:"+onclick+"\" id=\""+id+"\">"+label+"</button>";
         }
 
+function mboxHtmlSimpleButton(onclick, label, id="", button_width=150) {
+        return "<button style=\"width:" + button_width + "px;margin:1px;\" onClick=\"javascript:"+onclick+"\" id=\""+id+"\">"+label+"</button>";
+        }
 
 // ------------------------------------------
 

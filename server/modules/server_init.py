@@ -139,8 +139,9 @@ def checkDevice():
     play_type     = thread_music_ctrl.music_ctrl["type"]
     play_position = str(thread_music_ctrl.music_list_p) + "/" + str(len(thread_music_ctrl.music_list))
     play_volume   = str(thread_music_ctrl.music_ctrl["volume"])
+    play_mute     = str(thread_music_ctrl.music_ctrl["mute"])
 
-    logging.info("Check Device: Play=" + play_status + " / Type="+ play_type + " / Pos=" + play_position + " / Vol=" + play_volume)
+    logging.info("Check Device: Play=" + play_status + " / Type="+ play_type + " / Pos=" + play_position + " / Vol=" + play_volume + " / Mute=" + play_mute)
 
     if play_type == "Stream":  mbox.active_device = "radio"
     else:                      mbox.active_device = "music_box"

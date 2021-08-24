@@ -154,15 +154,16 @@ class musicPlayer(threading.Thread):
       self.play_status = 0
 
       
-   def mute(self,value=""):
+   def mute(self,value=False):
       '''
       mute / unmute player
       '''
-      if self.volume_mute == 0 or value == True:
-          self.volume_mute = 1
+      logging.info("TEST ... "+str(value)+" / "+str(self.volume_mute))
+      if self.volume_mute == False or value == True:
           self.set_volume(0)
+          self.volume_mute = True
       else:
-          self.volume_mute = 0
+          self.volume_mute = False
           self.set_volume(self.volume)
 
       

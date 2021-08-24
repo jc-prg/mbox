@@ -951,7 +951,7 @@ def mboxAPI_volume(param):
        db_entries = {}
        data       = mboxAPI_start("volume","volume","",param,"")
        
-       if param == "mute":     thread_music_ctrl.player.mute()
+       if param == "mute":     thread_music_ctrl.mute()
        elif param == "up":     thread_music_ctrl.volume_up("up")
        elif param == "down":   thread_music_ctrl.volume_up("down")
        elif param.startswith("set"):

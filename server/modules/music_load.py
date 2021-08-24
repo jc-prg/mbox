@@ -85,7 +85,8 @@ class musicLoadingThread (threading.Thread):
             self.store_data      = self.music_database.read("album_info")
             self.store_data      = reloadCoverImages(self.store_data, self)
 
-            self.music_database.write("album_info",self.store_data)
+            for key in self.store_data:
+               self.music_database.write("album_info",self.store_data)
 
         # clean progress and reload request
         if self.reload_all or self.reload_new or self.reload_img:
@@ -99,7 +100,6 @@ class musicLoadingThread (threading.Thread):
             self.reload_all        = False
             self.reload_new        = False
             self.reload_img        = False
-
 
         time.sleep(2)
 
@@ -246,23 +246,18 @@ def reloadCoverImages(data,thread=""):
     for file in files:
 
        files_count      += 1
-       files_percentage  = float(files_count) / float(files_amount) * 100
-       if thread != "":
-          thread.reload_progress  = files_percentage
-          current_time = time.time()
-          thread.reload_time_required = time.time() - thread.reload_time_start
-          thread.reload_time_left     = thread.reload_time_required * (100 - files_percentage) / files_percentage
-       logging.info("Reload progress: "+str(files_percentage)+"%")
-
+       reloadMusic_setProgessInfo(count=files_count, total=files_amount, thread=thread)
 
        # check if image file in folder (and take last one as alternative cover)
        if os.path.isfile(file) and checkIfSupported(thread.supported_img,file) == True:
-
+       
+          file_e = file.replace("/","_")
           for key in data:
-              file_e = file.replace("/","_")
-              if (data[key]["albumpath"] in file_e):
-                  file_e = file.replace(mbox.music_dir,"")
-                  data[key]["cover_images"]["dir"].append(file_e)
+              logging.debug(key+": "+data[key]["albumpath"])
+              if data[key]["albumpath"] in file_e or data[key]["albumpath"] in file:
+                  logging.debug(file_e)
+                  file_e2 = file.replace(mbox.music_dir,"")
+                  data[key]["cover_images"]["dir"].append(file_e2)
                   data[key]["cover_images"]["active"] = "dir"
 
     return data
@@ -316,6 +311,7 @@ def reloadMusic_getCurrentWithoutErrors(data_current):
 
 def reloadMusic_setProgessInfo(count, total, thread):
     '''
+    reload ... progress information
     '''
 
     files_percentage  = float(count) / float(total) * 100

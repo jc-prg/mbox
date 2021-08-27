@@ -1,9 +1,8 @@
-FROM python:3
-#FROM armv7/armhf-ubuntu
+FROM ubuntu:18.04
 
-RUN apt-get update && apt-get install -y \
-    python3-pip
+ENV DEBIAN_FRONTEND=noninteractive
 
+RUN apt-get -y update && apt-get install -y python3 python3-distutils python3-pip python3-apt git
 
 # install required PYTHON modules
 # ---------------------------
@@ -20,10 +19,10 @@ WORKDIR /tmp
 RUN git clone https://github.com/lthiery/SPI-Py.git
 WORKDIR /tmp/SPI-Py
 RUN git checkout 8cce26b9ee6e69eb041e9d5665944b88688fca68
-RUN python setup.py install
+RUN python3 setup.py install
 
 #WORKDIR /tmp/MFRC522-python
 #CMD [ "python", "Read.py" ]
 
 WORKDIR /usr/src/app/server
-CMD [ "python", "server_rfid.py" ]
+CMD [ "python3", "server_rfid.py" ]

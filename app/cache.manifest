@@ -1,40 +1,42 @@
 CACHE MANIFEST
-# 2020-04-21 Version v0.7.0
+# 2021-07-11 Version not found
 
 CACHE:
-./mbox-upload-image.js
-./mbox-playlist.js
-./app-menu.js
-./mbox-settings.js
-./mbox-html-elements.js
-./index.html
-./mbox-conf.js
-./config_stage.js
-./app-conf.js
-./upload.php
-./mbox-rfid.js
-./mbox-control.js
-./mbox-tooltip.css
-./mbox-rfid.css
-./config_language.js
-./upload.html
-./mbox-data.js
-./mbox-stream.js
-./00-maintain.py
-./app-menu.css
-./cache.manifest
-./mbox-settings.css
-./mbox-album.js
-./app-frame.css
-./mbox-control.css
-./mbox-album.css
-./mbox-buttons.css
 ./00-index-js.txt
-./mbox-player.js
-./app-main.js
-./mbox-play.css
-./mbox-cover.js
-./mbox-player.css
+./cache.manifest
+./index.html
+./favicon.ico
+./00-maintain.py
+./favicon.png
+./mbox_app/style-mbox-player.css
+./mbox_app/style-mbox-rfid.css
+./mbox_app/style-mbox-settings.css
+./mbox_app/mbox-stream.js
+./mbox_app/mbox-rfid.js
+./mbox_app/mbox-views.js
+./mbox_app/mbox-data.js
+./mbox_app/upload.html
+./mbox_app/style-mbox-control-dark.css
+./mbox_app/mbox-cover.js
+./mbox_app/style-mbox-tooltip.css
+./mbox_app/mbox-html-elements.js
+./mbox_app/mbox-control.js
+./mbox_app/style-mbox-album.css
+./mbox_app/mbox-upload-image.js
+./mbox_app/config_stage.js
+./mbox_app/style-mbox-control.css
+./mbox_app/config_language.js
+./mbox_app/mbox-playlist.js
+./mbox_app/mbox-conf.js
+./mbox_app/config_main.js
+./mbox_app/mbox-settings.js
+./mbox_app/style-mbox-album-dark.css
+./mbox_app/style-mbox-player-dark.css
+./mbox_app/style-mbox-play.css
+./mbox_app/mbox-album.js
+./mbox_app/style-mbox-buttons.css
+./mbox_app/mbox-player.js
+./mbox_app/style-mbox-rfid-dark.css
 
 NETWORK:
 

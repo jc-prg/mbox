@@ -95,16 +95,21 @@ system_enable_services() {            # not checked yet ...
 #-----------------------------
 
 hotspot_install_script() {
+  echo
+  echo install hotspot scripts ...
+  
   cp /etc/systemd/system/autohotspot.service 	templates/backup_install/autohotspot.service$test$date
   cp /usr/bin/autohotspot 			templates/backup_install/autohotspot$test$date
   
   cat templates/autohotspot.service  		> /etc/systemd/system/autohotspot.service$test
-  cp templates/autohotspot.template               /usr/bin/autohotspot$test
+  cp templates/autohotspot                    /usr/bin/autohotspot$test
   
   sudo chmod +x /usr/bin/autohotspot$test
 }
 
 hotspot_uninstall_script() {           # not checked yet ...
+  echo
+  echo uninstall hotspot scripts ... 
 
   mv /etc/systemd/system/autohotspot.service$test 	templates/backup_uninstall/autohotspot.service$test$date
   mv /usr/bin/autohotspot$test                    	templates/backup_uninstall/autohotspot$test$date

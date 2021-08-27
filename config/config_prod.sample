@@ -13,10 +13,12 @@ export MBOX_SPEEK_MSG="yes"      # options: "yes" if the box should speek during
 export MBOX_SPEEK_ASK_WHOM="DAD" # options: who should be asked, if the box doesn't work correctly: "DAD", "MUM, "THE-ADMIN"
 
 # Stage
-export MBOX_CURRENT_STAGE="prod"
+export MBOX_APP_VERSION="app"    # options: => directory name
+export MBOX_CURRENT_STAGE="prod" # options: prod, test, <your name>
 export MBOX_ACTIVE_STAGE="$MBOX_CURRENT_STAGE"
 export MBOX_IS_TEST="False"
 export MBOX_LOGLEVEL="warning"   # options: "debug", "info", "warning", "error" (set log level for couchdb -> config/couchdb/default.ini)
+export MBOX_LOG2FILE="yes"
 
 # Settings
 export WLAN_COUNTRY="DE"
@@ -40,8 +42,10 @@ export ETH="eth0"
 export WLAN0_IP=`/sbin/ip -o -4 addr list $WLAN | awk '{print $4}' | cut -d/ -f1`
 export ETH0_IP=`/sbin/ip -o -4 addr list $ETH | awk '{print $4}' | cut -d/ -f1`
 export SERVER_IP="$WLAN0_IP"
+export SERVER_IP_DEVICE="$WLAN"
 
 # Ports
+export MBOX_NETWORK="192.168.200"
 export MBOX_CLIENT_PORT=80
 export MBOX_SERVER_PORT=5005
 export MBOX_DATABASE_PORT=5105
@@ -68,9 +72,9 @@ export MBOX_BUTTON_ACTIVE="true"
 
 # Directories
 export MBOX_DIR_DATA_ROOT="/projects_data"
-export MBOX_DIR_DATA="$MBOX_DIR_DATA_ROOT/$MBOX_CURRENT_STAGE"
+export MBOX_DIR_DATA="$MBOX_DIR_DATA_ROOT/$MBOX_CURRENT_STAGE/mbox"
 export MBOX_DIR="/projects/$MBOX_CURRENT_STAGE/mbox"
-export MBOX_DIR_CLIENT="$MBOX_DIR/app"
+export MBOX_DIR_CLIENT="$MBOX_DIR/$MBOX_APP_VERSION"
 export MBOX_DIR_SERVER="$MBOX_DIR/server"
 export MBOX_DIR_JCMODULES="/projects/$MBOX_CURRENT_STAGE/modules"
 export MBOX_DIR_DOCKERCOMPOSE="/usr/local/bin"

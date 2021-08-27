@@ -1,0 +1,48 @@
+/* Player style */
+
+@media (prefers-color-scheme: dark) {
+
+/* client player style */
+
+  .jcPlayer {
+	background     : #888888;
+	}
+
+  .mboxPlayer {
+	background     : #333333;
+	color          : white;
+	}
+
+/* Control buttons */
+
+  .mboxPlayer_button {
+	border         : solid 1px white;
+	background     : #dddddd;
+	opacity        : 1;
+	}
+
+  .mboxPlayer_button.empty {}
+  .mboxPlayer_button_image {}
+
+/* Progressbar */
+
+  #mboxPlayer_progresstime 	{}
+  #mboxPlayer_progressbar	{ background : #eeeeee; border : solid 1px white; }
+  #mboxPlayer_progress		{ background : darkblue; opacity : 0.8; }
+
+/* Table for album infos */
+
+  .mboxPlayer_table 		{}
+  .mboxPlayer_td_time		{}
+  .mboxPlayer_td_cover 	{}
+  .mboxPlayer_td_info		{ border-bottom : solid 1px white; }
+  .mboxPlayer_td_control 	{ border-bottom : solid 1px white; }
+
+/* Album infos */
+
+  .mboxPlayer_cover 		{ border : solid 1px white; }
+  .mboxPlayer_info 		{}
+  .mboxPlayer_info.short 	{}
+  .mboxPlayer_control 		{}
+  .mboxPlayer_file 		{}
+}

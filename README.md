@@ -206,11 +206,15 @@ add:
 
 ## How to update the software
 
-From the version v0.6.4 the software comes with an automatic update function in the start script.
+From the *version v0.6.4* the software comes with an automatic update function in the start script.
 
 ```bash
 ./start update
 ```
+
+If you update from version v0.7.x to *version v1.x* there are changes in the wiring. Check the 
+[Instructions](docs/INSTRUCTION_BUILD_HARDWARE.md) or backup the file 
+[server/modules_gpio/config.py](server/modules_gpio/config.py) and replace the new file with your old config file.
 
 ## Autohotspot
 

@@ -1,0 +1,385 @@
+.print_album_back {
+   height     : 100%;
+   width      : 100%;
+   background : white;
+   z-index    : 199;
+   position   : fixed;
+   top        : 0;
+   left       : 0;
+   overflow   : auto;
+   font-family : sans-serif;
+   font-size   : 10px;
+   color       : black;
+}
+
+.print_album_cover {
+   height     : 320px;
+   width      : 320px;
+   margin     : 15px;
+   float      : left;
+   background-repeat  : no-repeat;
+   background-position: center center;
+   background-size    : contain;
+   cursor             : pointer;
+}
+
+
+/* container inside the list */
+
+.album_detail {
+   color           : black;
+   width           :  313px;
+
+   padding         :   3px;
+   margin          :   3px;
+   border-radius   :   6px;   
+   border-color    : #444444;
+   border          : solid 1px;
+
+   align           : center;
+   float           : left;
+   background      : #eeeeee;
+}
+
+/* cover format */
+
+.album_cover {
+   color           : black;
+
+   width           :  95px;
+   height          :  95px;
+
+   padding         :   3px;
+   margin          :   3px;
+   border-radius   :   6px;   
+   border-color    : gray;
+   border          : solid 1px;
+
+   background-repeat  : no-repeat;
+   background-position: center center;
+   background-size    : contain;
+
+   overflow        : hidden;
+   align           : center;
+   float           : left;
+
+   cursor          : pointer;
+   }
+
+.album_filter {
+	float 	    : left;
+	width 	    : 310px;
+	margin-left : 5px;
+	}
+
+.album_filter_dropdown {
+	width : 155px;
+	}
+   
+.album_filter_button {
+	width      : 30px;
+	height     : 25px;
+	background : lightgray;
+	color      : black;
+	}
+
+.character {
+	cursor          : default;
+	}
+
+.album_triangle {
+	display		: none;
+	position	: relative;
+	top		: 104px;
+	left		: 50px;
+	z-index		: 60;
+  	width		: 0;
+  	height		: 0;
+  	border-left	: 10px solid transparent;
+  	border-right	: 10px solid transparent;
+  	border-bottom	: 10px solid #eeeeee;
+	}	
+
+.album_triangle2 {
+	display		: none;
+	position	: relative;
+	top		: 93px;
+	left		: 49px;
+	z-index		: 59;
+  	width		: 0;
+  	height		: 0;
+  	border-left	: 11px solid transparent;
+  	border-right	: 11px solid transparent;
+  	border-bottom	: 10px solid black;
+	}	
+
+.album_cover.small {
+   width           :  20px;
+   height          :  20px;
+   border-radius   :   3px;   
+}
+.album_cover.empty {
+   border          : solid lightgray 1px;
+}
+.album_cover_descr {
+   width           :  70px;
+   height          :  20px;
+   border-radius   :   3px;   
+   padding         :   3px;
+   margin-top      :   3px;
+   cursor          : pointer;
+   float           : left;
+}
+
+.album_cover_alert {
+   width           : 300px;
+   height          : auto;
+   border          : 1px solid lightgray;
+   border-radius   : 5px;
+}
+
+/* container for title and infos */
+
+.album_infos {
+   color           : black;
+   width           : 195px;
+   height          :  59px;
+   padding         :   3px;
+   margin          :   3px;
+   overflow        : hidden;
+   align           : center;
+   float           : left;
+   }
+
+/* container for buttons */
+
+.album_control {
+   color           : black;
+   width           : 195px;
+   height          :  26px;
+   padding         :   3px;
+   margin          :   3px;
+   overflow        : hidden;
+   align           : center;
+   float           : left;
+   }
+
+.album_sort {
+	font-size  : 50px;
+	font-style : bold;
+	font-family : Helvetica, sans-serif;
+	height     : 100%;
+	width      : 100%;
+	padding    : 5px;
+	text-shadow: 2px 2px #ff0000;
+	}
+
+.album_plus {
+        color       : #333333;
+	font-size   : 50px;
+	font-style  : bold;
+	font-family : Helvetica, sans-serif;
+	height      : 100%;
+	width       : 100%;
+	padding     : 5px;
+	text-shadow : 2px 2px #ff0000;
+        margin-top  : 7px;
+        margin-left : 18px;
+	}
+
+/* adaption for inside the list */
+
+.album_control.new { width : 170px; }
+.album_infos.new   { 
+	width : 170px;
+	overflow: auto;
+/*
+	overflow           : hidden;
+	display            : -webkit-box;
+	-webkit-box-orient : vertical;
+	-webkit-line-clamp : 4;
+	height             : 45px;
+*/
+	}
+
+/* .... */
+
+.album_x  {
+  color            : red;
+  width            : 20px;
+  float            : left;
+  }
+
+.album_tracks {
+   color           : black;
+   width           : 303px;
+
+   margin-left     :   4px;
+   margin-right    :   4px;
+
+   overflow        : hidden;
+
+   align           : center;
+   float           : left;
+   //border        : solid 1px;
+   }
+
+.album_tracks_headline {
+	width           : 290px;
+	float           : left;
+	margin		: 1px;
+	padding         : 4px;
+	}
+
+.album_tracks_line {
+	width           : 300px;
+	float           : left;
+	margin          : 1px;
+	padding		: 0px;
+	}
+
+.album_tracks_line hr {
+	margin          : 1px;
+	padding		: 0px;
+	}
+	
+.album_tracks_title {
+	width           : 260px;
+	float           : left;
+	margin-top      : 3px;
+	margin-bottom   : 2px;
+	}
+
+.album_track_title_shorten {
+ 	white-space	: nowrap;
+ 	overflow	: hidden;
+	width		: 240px;
+	text-overflow	: ellipsis;
+	float           : left;
+	}
+
+.album_track_description_shorten {
+	overflow           : hidden;
+	display            : -webkit-box;
+	-webkit-box-orient : vertical;
+	-webkit-line-clamp : 4;
+	height             : 60px;
+	margin-bottom      : 2px;
+	margin-top         : 2px;
+	}
+
+.album_tracks_length {
+	float           : left;
+	}
+
+.album_tracks_error {
+  width           : 310px;
+  float           : left;
+  color           : red;
+  margin          : 4px;
+  }
+
+.album_tracks_control {
+  width           : 40px;
+  float           : left;
+  text-align      : right;
+  }
+
+.album_tracks_player {
+  width           : 305px;
+  float           : left;
+  background      : #111111;
+  text-align      : center;
+  color           : white;
+  border-radius   : 3px;
+}
+
+.album_play_track {
+   color           : black;
+   width           : 310px;
+   padding         :   3px;
+   margin          :   3px;
+   overflow        : hidden;
+   align           : center;
+   float           : left;
+   }
+
+.album_edit_pl {
+   color           : blue;
+   overflow        : hidden;
+   cursor          : pointer;
+   }
+
+.album_delete_pl {
+   color           : red;
+   overflow        : hidden;
+   cursor          : pointer;
+   }
+
+.album_edit_select {
+   background : #dddddd;
+   text-align : left;
+   width      : 90%;
+   margin-top : 5px;
+   margin-bottom : 5px;
+   margin-left : 5px;
+   border     : none;
+   border-top : 1px solid gray;
+   }
+
+.album_edit_list {
+   background : #dddddd;
+   text-align : left;
+   height     : 110px;
+   width      : 90%;
+   overflow   : scroll;
+   padding    : 5px;
+   margin-top : 5px;
+   margin-left : 5px;
+   border-top : 1px solid gray;
+   }
+
+
+/* ---------------------------- */
+
+/* adapted format for iphone 5c */
+
+@media (max-width: 374px) {
+  .album_cover 		{ width : 80px;  height :  80px; }
+  .album_cover.small		{ width : 15px;  height :  15px; }
+  .album_cover_descr		{ font-size : 10px; }
+  .album_infos 		{ width : 165px; height :  80px; }
+  .album_detail        	{ width : 268px; }
+  .album_infos.new     	{ width : 140px; }
+  .album_tracks        	{ width : 280px; }
+  .album_tracks_title  	{ width : 205px; }
+  }
+
+/* adapted format for iphone Xs */
+
+@media (min-width: 375px) {
+  /* DEFAULT */
+  }
+
+/* adapted format for iphone XS landscape */
+
+@media (min-width: 705px) {
+
+  .album_detail        { width : 640px; }
+  .album_control.new   { width : 495px; }
+  .album_infos.new     { width : 495px; }
+  .album_tracks_player { width : 630px; }
+
+  }
+
+/* adapted format for Laptop & Bigger */
+
+@media (min-width: 1250px) {
+
+  .album_detail        { width : 970px; }
+  .album_control.new   { width : 825px; }
+  .album_infos.new     { width : 825px; }
+  .album_tracks_player { width : 960px; }
+
+  }
+

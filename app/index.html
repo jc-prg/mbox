@@ -2,138 +2,148 @@
 <!doctype html>
 <html><!-- manifest="cache.manifest"> -->
 <head>
-<title>jc://music-box/</title>
+<title id="title">jc://music-box/</title>
 
 <META charset="utf-8"> 
 <META http-equiv="content-type" content="text/html; charset=utf-8">
 <META name="apple-mobile-web-app-capable" content="yes" />
 <META name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=0.3, maximum-scale=1.0" /> 
 
-<LINK rel=apple-touch-icon             href="icon/mbox_icon.png" />
-<LINK rel=apple-touch-icon-precomposed href="icon/mbox_icon.png" />
+<LINK rel=apple-touch-icon             href="favicon.png" />
+<LINK rel=apple-touch-icon-precomposed href="favicon.png" />
 
 <!-- jcResources START -->
 
-<script src="apps/jc-app/jc-app-1.3.9.js"></script>
-<script src="apps/jc-functions/jc-functions-0.1.2.js"></script>
-<script src="apps/jc-cookie/jc-cookie.js"></script>
-<script src="apps/jc-msg/jc-msg-1.1.5.js"></script>			<link href="apps/jc-msg/jc-msg-1.1.5.css" rel="stylesheet">
-<script src="apps/jc-player/jc-player-0.1.6.js"></script>		<link href="apps/jc-player/jc-player-0.1.6.css" rel="stylesheet">
-<script src="apps/jc-player/jc-volume-slider-0.1.1.js"></script>	<link href="apps/jc-player/jc-volume-slider-0.1.1.css" rel="stylesheet" >
-<script src="apps/jc-upload/upload.js"></script> 			<link href="apps/jc-upload/upload.css" rel="stylesheet">
+<script src="modules/jc-app/jc-app-1.4.1.js"></script>
+<script src="modules/jc-functions/jc-functions-0.1.5.js"></script>
+<script src="modules/jc-cookie/jc-cookie.js"></script>
+<script src="modules/jc-msg/jc-msg-1.1.6.js"></script>		<link href="modules/jc-msg/jc-msg-1.1.6.css" rel="stylesheet">
+<script src="modules/jc-player/jc-player-0.1.7.js"></script>		<link href="modules/jc-player/jc-player-0.1.7.css" rel="stylesheet">
+<script src="modules/jc-player/jc-volume-slider-0.1.1.js"></script>	<link href="modules/jc-player/jc-volume-slider-0.1.1.css" rel="stylesheet" >
+<script src="modules/jc-upload/upload-0.3.0.js"></script> 		<link href="modules/jc-upload/upload-0.3.0.css" rel="stylesheet">
 
 <!-- jcAppFramework START -->
 
-<script src="config_language.js"></script>
-<script src="config_stage.js"></script>
+<script src="mbox_app/config_language.js"></script>
+<script src="mbox_app/config_stage.js"></script>
+<script src="mbox_app/config_main.js"></script>
 
-<script src="app-conf.js"></script>
-<script src="app-menu.js"></script>
+<script src="framework/app-fw/app-functions.js"></script>
+<script src="framework/app-fw/app-html-elements.js"></script>
+<script src="framework/app-fw/app-language.js"></script>
 
-<link rel="stylesheet" href="app-menu.css">
-<link rel="stylesheet" href="app-frame.css">
+<script src="framework/app-fw/app-conf.js"></script>
+<script src="framework/app-fw/app-menu.js"></script>
 
-<!-- APP specific START -->
+<link rel="stylesheet" href="framework/app-fw/style-main.css">
+<link rel="stylesheet" href="framework/app-fw/style-menu.css">
+<link rel="stylesheet" href="framework/app-fw/style-frame.css">
+<link rel="stylesheet" href="framework/app-fw/style-status.css">
 
-<script src="mbox-html-elements.js"></script>
-<script src="mbox-conf.js"></script>
-<script src="mbox-data.js"></script>
-<script src="mbox-cover.js"></script>
-<script src="mbox-stream.js"></script>
-<script src="mbox-playlist.js"></script>
-<script src="mbox-upload-image.js"></script>
+<link rel="stylesheet" href="framework/app-fw/style-main-iphone.css">
+<link rel="stylesheet" href="framework/app-fw/style-main-laptop.css">
+<link rel="stylesheet" href="framework/app-fw/style-frame-iphone.css">
+<link rel="stylesheet" href="framework/app-fw/style-frame-laptop.css">
 
-<link  href="mbox-buttons.css" 	rel="stylesheet" >
-<link  href="mbox-play.css" 	rel="stylesheet" >
-<link  href="mbox-tooltip.css" 	rel="stylesheet" >
+<link rel="stylesheet" href="framework/app-fw/style-main-dark.css">
+<link rel="stylesheet" href="framework/app-fw/style-frame-dark.css">
+<link rel="stylesheet" href="framework/app-fw/style-menu-dark.css">
 
-<script src="mbox-album.js"></script>   	<link href="mbox-album.css"   	rel="stylesheet" >
-<script src="mbox-player.js"></script>  	<link href="mbox-player.css" 	rel="stylesheet" >
-<script src="mbox-control.js"></script> 	<link href="mbox-control.css"	rel="stylesheet" >
-<script src="mbox-rfid.js"></script>    	<link href="mbox-rfid.css"    	rel="stylesheet" >
-<script src="mbox-settings.js"></script>	<link href="mbox-settings.css"	rel="stylesheet" >
+<!-- APP specific scripts and style sheets // START -->
 
-<!-- enable hover for iphone, see tooltip.css also -->
+<script src="mbox_app/mbox-html-elements.js"></script>
+<script src="mbox_app/mbox-conf.js"></script>
+<script src="mbox_app/mbox-data.js"></script>
+<script src="mbox_app/mbox-cover.js"></script>
+<script src="mbox_app/mbox-stream.js"></script>
+<script src="mbox_app/mbox-views.js"></script>
+<script src="mbox_app/mbox-playlist.js"></script>
+<script src="mbox_app/mbox-upload-image.js"></script>
+
+<link  href="mbox_app/style-mbox-buttons.css" 	rel="stylesheet" >
+<link  href="mbox_app/style-mbox-play.css" 		rel="stylesheet" >
+<link  href="mbox_app/style-mbox-tooltip.css" 	rel="stylesheet" >
+
+<script src="mbox_app/mbox-album.js"></script>   	<link href="mbox_app/style-mbox-album.css"   	rel="stylesheet" >
+<script src="mbox_app/mbox-player.js"></script>  	<link href="mbox_app/style-mbox-player.css" 	rel="stylesheet" >
+<script src="mbox_app/mbox-control.js"></script> 	<link href="mbox_app/style-mbox-control.css"	rel="stylesheet" >
+<script src="mbox_app/mbox-rfid.js"></script>    	<link href="mbox_app/style-mbox-rfid.css"    	rel="stylesheet" >
+<script src="mbox_app/mbox-settings.js"></script>	<link href="mbox_app/style-mbox-settings.css"	rel="stylesheet" >
+
+<link href="mbox_app/style-mbox-album-dark.css" 	rel="stylesheet" >
+<link href="mbox_app/style-mbox-player-dark.css" 	rel="stylesheet" >
+<link href="mbox_app/style-mbox-control-dark.css" 	rel="stylesheet" >
+<link href="mbox_app/style-mbox-rfid-dark.css"    	rel="stylesheet" >
+
 
 <script>document.addEventListener("touchstart", function(){}, true);</script>
 
-<!-- END -->
+<!-- APP specific scripts and style sheets // END -->
 
 </head>
 <body>
-<div id="rm3msg"></div>
-<div id="rm3remote"></div>
+
+<!-- APP specific html elements // START -->
+
+
+<!-- APP specific html elements // END -->
 
 <nav id="nav">
 <nav-logo id="rest_status"></nav-logo>
+<nav-title id="navTitle">...</nav-title>
+
+<!-- APP specific html header elements // START -->
 
 <nav-info id="audio1"></nav-info><!--icon-->
-<nav-info id="audio2"></nav-info><!--icon-->
+<nav-info id="audio2"><img src="mbox_img/icon/header_mute.png" style="width:16px;height:16px;"></nav-info><!--icon-->
 <nav-info id="audio3">IIIIIIIIIIIIIIIIIIII</nav-info>
 <nav-info id="audio4"></nav-info><!--icon-->
 <nav-audio id="audio_ctrl"></nav-audio>
 
-<nav-title id="navTitle">...</nav-title>
+<!-- APP specific html header elements // END -->
+
 <ul>
-  <li id="navi"><div onClick="javascript:clickMenu();"  id="navi-click"><img src="icon/button.png" /></div>
-    <ul id='menuItems' style="visibility:hidden;">
-      <!-- filled by script -->
-    </ul>
+  <li id="navi"><div onClick="javascript:appClickMenu();"  id="navi-click"><img src="framework/img/button.png" /></div>
+    <ul id='menuItems' style="visibility:hidden;"><!-- drop down menu - filled by script --></ul>
   </li>
 </ul>
 </nav>
 
 <div id="statusLED"><div id="red"></div></div>
+<div id="headerRight" class="headerRight"></div>
+<div id="statusLEDload"><img src="framework/img/loading3.gif"></div>
+<div id="app_background" class="app_background" style="width:100%;">
 
-
-<div class="app_background" id="app_background" style="width:100%;">
-
-<div id='devices'></div>
-&nbsp;<br/>
-&nbsp;<br/>
+<div style="height:45px;"></div>
+<div id='reload_info'  style="width:100%;display:none;"></div>
 <div id='remote_block' style="width:100%">
   <div class='frame_block'>
     <div class='remote_nav' id='remote_nav'><nav-b>
      <ul>
       <li>
-        <ul id='menuItems2'>
-          <!-- filled by script -->
-        </ul>
+        <ul id='menuItems2'><!-- fixed menu for wide screens - filled by script --></ul>
       </li>
      </ul>
     </div>
-    <div class='frame_column wide' id='remote1'></div>
-    <div class='frame_column wide' id='remote4' style='display:none'>Filter</div>
-    <div class='frame_column wide' id='remote2' style='padding-bottom:20px;'></div>
-    <div class='frame_column wide' id='remote3'></div>
-    <div class='setting_bg' id='setting1' style='display:none'></div>
-    <div class='setting_bg' id='setting2' style='display:none'></div>
-    <div class='setting_bg' id='setting3' style='display:none'></div>
-    <div class='setting_bg' id='setting4' style='display:none'>
-      <div id='error_log'></div>
-      <div id='data_log' style='display:none'></div>
-    </div>
-    <div style='height:50px;width:100%;float:left'></div>
+    <div id='frames'></div>
+    <div id='setting_frames'></div>
   </div>
 </div>
 
-<div class="mbox_control" id="mbox_control"></div>
-<div id="audio_slider" class="audio_slider"></div>
 <div id="appMsg"></div>
+<div id="ontop"        style="display:none"></div>
+<div id="theme_check"  style="display:none"></div>
 
-<div id='buttons_all'></div>
-  <div id='cover2'>
-&nbsp;<br/>
-&nbsp;<br/>
-&nbsp;<br/>
-&nbsp;<br/>
-&nbsp;<br/>
-    <div id='error_msg'></div>
-  </div>
-</div>
-<div id="ontop" style="display:none"></div>
+<div id="mbox_audio_slider" class="audio_slider"></div>
+<div id="mbox_control"      class="mbox_control"></div>
+<div id="mbox_temp"         style="display:block"></div>
 
-<script src="app-main.js"></script>
+<script src="framework/app-fw/app-main.js"></script>
+
+<!-- APP specific html elements or scripts // START -->
+
+
+<!-- APP specific html elements or scripts // END -->
 
 &nbsp;<br/>
 &nbsp;<br/>

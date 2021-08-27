@@ -3,189 +3,354 @@
 # ------------------------
 
 import threading
-import time
-import operator
+import time, os
 import logging
 import vlc
 
-import modules.jcJson       as jcJSON
-import modules.jcCouchDB    as jcCouch
-import modules.config_stage as stage
-import modules.config_mbox  as mbox
-import modules.speakmsg     as speak
+from xml.etree import cElementTree as ET
 
-from modules.config_mbox import *
-from decimal             import *
+import modules.jcRunCmd      as runcmd
+import modules.config_stage  as stage
+import modules.config_mbox   as mbox
+import modules.music_speak   as music_speak
+import modules.music_player  as music_player
+import modules.music_podcast as music_podcast
 
-# ------------------------
-# THREADING CLASS
+from   decimal               import *
 
-class musicThread (threading.Thread):
+# ------------------------------------------
 
-   def __init__(self, threadID, name, counter, database):
-      '''set initial values to vars and start pygame.mixer'''
+class musicControlThread(threading.Thread):
 
-      # init thread
+   def __init__(self, threadID, name, device, database):
+      '''
+      set initial values to vars and start VLC
+      '''
       threading.Thread.__init__(self)
-      self.threadID     = threadID
-      self.name         = name
-      self.counter      = counter
-      self.stopProcess  = False
+      self.threadID      = threadID
+      self.name          = name
+      self.running       = True
 
-      self.music_list     = []
-      self.music_list_p   = 1
-      self.music_ctrl     = {}
-      self.music_database = database
-      self.music_loaded   = -1
-      self.music_plays    = -1
-      self.music_dir      = mbox.music_dir
-
-      self.music_ctrl["device"]  = "music_box"
-      self.music_ctrl["mute"]    = 0
-      self.music_ctrl["status"]  = "init"
-      self.music_ctrl["file"]    = ""
-      self.music_ctrl["song"]    = {}
-      self.music_ctrl["volume"]  = 0.4 # initial volume 
-      self.music_ctrl["position"]= 0
-      self.music_ctrl["length"]  = 0
-      self.music_ctrl["playing"] = 0
-      self.music_ctrl["state"]   = "Started"
+      self.music_list      = []
+      self.music_list_p    = 1
+      self.music_list_uuid = ""
+      self.music_database  = database
+      self.music_loaded    = -1
+      self.music_plays     = -1
+      self.music_dir       = mbox.music_dir
+      self.music_device    = device
+      self.music_load_new  = False
+      self.music_load_new_p= False
+      self.music_ctrl      = {}
+      self.music_ctrl      = self.control_data(state="Started")
+      self.music_type      = ""
       
-      self.music_load_new   = False
-
-      self.speak = speak.speakThread(4, "Thread speak", 1, "")  #  jcJSON.read("music"), jcJSON.read("radio"))
+      self.podcast              = music_podcast.podcastThread(threadID+10, "Thread Podcast", database)
+      self.podcast.start()
+      self.speak                = music_speak.speakThread(threadID+20, name + " / Speak", 1, "")
       self.speak.start()
+      self.player               = music_player.musicPlayer(threadID+30, self.name)
+      self.player.start()
+      time.sleep(2)
 
-      self.relevant_db  = self.music_database.databases["music"] # ["albums","album_info","tracks","files","cards"]
-      self.vol_factor   = 0.8 # factor to limit audio level (max = 1.0)
+      self.last_card_identified = ""      
+      self.relevant_db          = self.music_database.databases["music"]
 
-      if stage.rollout == "prod":     self.instance     = vlc.Instance("--quiet")
-      else:                           self.instance     = vlc.Instance()
       
-      self.player       = self.instance.media_player_new()
-      self.player.audio_set_volume(int(self.music_ctrl["volume"]*100))
-      self.player.audio_set_mute(False)
-      
-      self.last_card_identified = ""
-
-      # init mixer
-      #global music_plays, music_loaded, music_ctrl
-
    def run(self):
-      logging.info( "Starting " + self.name )
-      musicPlayList(self)
-      logging.info( "Exiting " + self.name )
+      '''
+      loop: check if track in playlist, stream ... and play status
+      '''
+      wait_time  = 0.1
+      last_load  = False  
+      last_run   = self.music_database.read("status")
+      
+      if not "music" in last_run:
+         last_run["music"] = { "playing" : 0, "playlist_uuid" : "no_uuid" }
+      
+      last_music = last_run["music"]
+
+      if last_run["music"]["playing"] != 1:     
+        logging.info("Don't load playlist and song from last run ("+last_music["playlist_uuid"]+")...")
+      
+      elif last_run["music"]["playing"] == 1:
+        self.music_ctrl             = last_music
+        self.music_ctrl["LastCard"] = ""
+        self.music_loaded           = 1
+        self.podcast.check_playing_podcast(playing=1, playing_data=self.music_ctrl)
+        
+        if "playlist_files" in last_music:
+          self.music_list           = last_music["playlist_files"]
+          self.music_list_p         = last_music["playlist_pos"]
+          self.music_load_new       = True
+          last_load                 = True
+          
+          logging.info("Load playlist and song from last run ...")
+          logging.info("... "+last_music["playlist_uuid"])
+
+      time.sleep(5)
+      while self.running:     
+
+         time.sleep(wait_time)         
+         if not self.player.connected:
+            logging.error("Player not connected!")
+            self.running = False
+            break
+
+         self.music_plays     = self.player.playing()
+         self.podcast.check_playing_podcast(playing=self.music_plays, playing_data=self.music_ctrl)
+
+         # if new data to be loaded         
+         logging.debug("Active playlist: " + str(self.music_load_new) + "; List: " + str(len(self.music_list)) + "; Position: " + str(self.music_list_p) )
+         if self.music_load_new and len(self.music_list) > 0 and int(self.music_list_p) <= len(self.music_list):
+         
+            self.music_load_new  = False
+            current_path         = self.music_list[int(self.music_list_p)-1]
+            current_list         = self.playlist_info()
+            
+            # if playlist or album
+            if not self.music_list_uuid.startswith("r_"):
+               current_info         = self.metadata_by_filename(current_path)
+               current_info["info"] = "Title loaded"
+               current_stream       = ""
+               
+            # if stream or podcast
+            else:
+               database             = self.music_database.read_cache("radio")
+                              
+               # if stream exists
+               if self.music_list_uuid in database:
+                 current_stream            = database[self.music_list_uuid]
+                 current_stream["podcast"] = self.podcast.get_podcasts(self.music_list_uuid, current_stream["stream_url"])
+               
+                 if current_stream["podcast"] != {}:
+                   current_info         = current_stream["podcast"]
+                   current_list["list"] = []
+                   for filename in current_list["files"]:
+                     track_uuid = current_info["track_url"][filename]
+                     track_info = current_info["tracks"][track_uuid]
+                     current_list["list"].append(track_info)
+                   current_uuid         = current_info["track_url"][current_path]
+                   current_info         = current_info["tracks"][current_uuid]
+                   current_info["uuid"] = current_uuid
+                   current_info["info"] = "Title loaded"                  
+                 else:
+                   current_info    = { "file" : current_path, "stream" : current_stream }
+                   current_info["stream"]["uuid"] = self.music_list_uuid               
+                        
+               # if stream_uuid not found    
+               else:
+                   current_info    = { "file" : current_path, "stream" : current_stream }
+                   current_info["stream"]["uuid"] = self.music_list_uuid
+           
+            # start playback 
+            if current_path.startswith("http"): 
+               self.player.stop()
+               p = self.music_ctrl["position"]
+               self.music_ctrl = self.control_data(state="play",  song=current_info, playlist=current_list)
+               self.music_ctrl["length"]   = 0
+               self.music_ctrl["position"] = 0
+  	             
+               if self.music_list_p == 1 and "title" in current_stream and "title" in current_info:
+                  self.speak.speak_text(current_stream["title"] + ": 1. : " + current_info["title"] + ".", self.player.volume*100)
+               elif "title" in current_info:
+                  self.speak.speak_text(str(self.music_list_p) + ". : " + current_info["title"] + ".", self.player.volume*100)
+               elif "title" in current_stream:
+                  self.speak.speak_text(current_stream["title"] + ".", self.player.volume*100)
+                  
+               self.player.play_stream(current_path)
+               self.music_ctrl["length"]   = self.player.get_length()
+               self.music_ctrl["position"] = p
+                   
+            else:                               
+               self.player.stop()
+               self.player.play_file(mbox.music_dir + current_path)
+               
+            # set playback metadata            
+            if not last_load:
+               if self.player.play_status == 1: self.music_ctrl = self.control_data(state="play",  song=current_info, playlist=current_list)
+               else:                            self.music_ctrl = self.control_data(state="error", song={}, playlist=current_list)
+
+            # if stopped device while playing, load last music
+            if last_load:
+               logging.debug("Jump to position in song from last run ...")
+               if self.music_ctrl["length"] != 0:
+                  position  = (self.music_ctrl["position"] / self.music_ctrl["length"]) * 100
+               else:
+                  position  = 0
+               self.player.set_position(position)
+               last_load = False
+               
+            self.volume(self.music_ctrl["volume"])
+            
+         # if no new data, check if ended
+         if not self.music_load_new:
+            if self.player.player_status == "State.Ended":
+            
+               if self.music_list_p < len(self.music_list):
+                 self.music_load_new = True
+                 self.music_list_p   = int(self.music_list_p)+1
+                 logging.info("Next song in list, position: " + str(self.music_list_p) + "/" + str(len(self.music_list)))
+
+               else:
+                 self.music_load_new = True
+                 self.music_list     = []
+                 self.music_list_p   = 1
+                 self.music_type     = ""
+                 self.control_data(state="Ended",song={},playlist={})
+                 logging.info("Playlist empty, stop playing.")
+
+            if self.player.play_status == 1:
+               self.music_ctrl["length"]       = float(self.player.get_length())   / 1000
+               self.music_ctrl["position"]     = float(self.player.get_position()) / 1000
+         
+         # check if rfid card and save status
+         self.playlist_load_rfid()
+         self.playback_save_status()
+            
+      logging.info("Stopped music player ("+self.name+").")     
+      
 
    def stop(self):
-      self.stopProcess = True
-
-   def reload_data(self):
-      self.music_data         = {}
-      #self.music_data["data"] = self.database.readGroup("music")
-      #self.store_data         = self.music_database.readGroup("music")
-
-   #-------------------------
-
-   def load_list(self,list):
       '''
-      load playlist by list of filenames
-      '''
-      logging.info( "Load list: " + str(len(list)) )
-      test = self.return_list(list)
-      musicStartList(self,test)
-      self.music_loaded = 1
-
-
-   def load_list_uuid(self,list):
-      '''
-      load playlist by UUID
-      '''
-      if ("r_" not in list):
-        logging.info( "Load playlist uuid: " + list )
-        test = musicGetTracks(self,list)    # veraendert die reihenfolge?
-        test = musicUuid2Files(self,test)   # veraendert die reihenfolge?
-        musicStartList(self,test)
-        self.music_ctrl["playlist_uuid"] = list
-        self.music_loaded = 1
-
-   def return_list(self,list):
-      list2 = []
-      for x in list:
-        list2.append(x)
-      return(list2)
-
-
-   def stop_playback(self):
-      '''
-      stop running song
+      Stop music control
       '''
       self.player.stop()
-      self.music_ctrl["playing"] = 0
+      self.player.running = False
+      self.running        = False
 
 
-   def pause_playback(self):
+   def volume(self,vol):
       '''
-      pause / unpause running song
+      player volume
       '''
-      logging.info("PAUSE: "+self.music_ctrl["state"])
-
-      if (self.music_ctrl["state"] == "State.Playing"):
-          self.player.pause()
-          self.music_plays = 0
-          self.music_ctrl["status"] = "pause"
-
-      if (self.music_ctrl["state"] == "State.Paused"):
-          self.player.play()
-          self.music_plays = 1
-          self.music_ctrl["status"] = "play"
-
-      logging.info("PAUSE: "+self.music_ctrl["state"])
-
-
-   def music_vol(self,up):
+      self.player.set_volume(vol)
+      self.music_ctrl["volume"] = self.player.volume
+      
+      
+   def mute(self,value=""):
       '''
-      control volume ...
+      player mute
       '''
-      vol = float(self.music_ctrl["volume"])
-      logging.info("MUSIC VOL: "+str(vol)+"/"+str(self.vol_factor)+"//"+str(up))
-
-      if (up == "up" and vol < 1.0):
-        vol = vol + 0.05
-        print("up")
-        
-      elif (up == "down" and vol > 0.0):
-        vol = vol - 0.05
-        print("down")
-        
-      elif (isinstance(up, int) and up >= 0 and up <= 100):
-        vol = up / 100
-        print("set vol:"+str(vol))
-        logging.warn("test ..."+str(vol))
+      self.player.mute(value)
+      self.music_ctrl["mute"]   = self.player.volume_mute
+      logging.debug("Mute: "+str(self.music_ctrl["mute"]))
 
 
-      logging.info("MUSIC VOL:"+str(vol)+"/"+str(self.vol_factor))
-
-      self.player.audio_set_volume(int(vol*100))
-      self.music_ctrl["mute"]   = 0
-      self.music_ctrl["volume"] = vol
-
-
-   def music_mute(self):
+   def volume_up(self,up):
       '''
-      set to mute / unmute
+      player volume
       '''
-      if self.music_ctrl["mute"] == 0:
-          self.music_ctrl["mute"] = 1
-          self.player.audio_set_volume(0)
+      self.player.volume_up(up)
+      self.music_ctrl["volume"] = self.player.volume
+
+
+   def playlist_info(self):
+      '''
+      prepare playlist info based on loaded playlist
+      ''' 
+      current_list = {}
+      current_list["uuid"]       = ""
+      current_list["position"]   = self.music_list_p
+      current_list["length"]     = len(self.music_list)
+      current_list["files"]      = self.music_list
+      current_list["list"]       = []
+      for filename in self.music_list: 
+        if not filename.startswith("http"):
+          file_info = self.metadata_by_filename(filename)
+          current_list["list"].append(file_info)
+      return current_list
+
+
+   def playlist_load_uuid(self, playlist_uuid, position=1):
+      '''
+      load list from album, playlist or stream -> put to playlist array
+      '''
+      logging.info("Load Playlist "+playlist_uuid+"/"+str(position)+" ...")
+      
+      if playlist_uuid == self.music_list_uuid:
+         self.music_list_p    = int(position)
+         self.music_load_new  = True
+         self.music_load_new_p= True
+         return
       else:
-          self.music_ctrl["mute"] = 0
-          logging.info("VOL: "+str(self.music_ctrl["volume"]))
-          self.player.audio_set_volume(int(self.music_ctrl["volume"]*100))
+         self.music_list_p    = int(position)
+         self.music_load_new  = True
+         self.music_list      = []
+         self.music_list_uuid = playlist_uuid
 
+      if playlist_uuid.startswith("a_"):   self.music_type   = "Album"
+      elif playlist_uuid.startswith("p_"): self.music_type   = "Playlist"
+      elif playlist_uuid.startswith("t_"): self.music_type   = "Track"
+      elif playlist_uuid.startswith("r_"): self.music_type   = "Stream"
+      else:                                self.music_type   = ""
+      
+      if self.music_type == "Stream":      self.music_device = "radio"
+      else:                                self.music_device = "music_box"
 
+      if self.music_device == "music_box":
+         track_list           = self.playlist_by_uuid(playlist_uuid)
+         track_db             = self.music_database.read_cache("tracks")
+         
+      else:
+         podcast              = self.podcast.get_podcasts(playlist_uuid)
+         track_list           = []
+         if "track_list" in podcast:
+           track_list           = podcast["track_list"]
+           track_db             = podcast["tracks"]
+           if len(track_list) > 0:
+             self.music_type   = "Podcast"
+         else:
+           track_list          = self.playlist_by_uuid(playlist_uuid)
+           track_db            = {}
+      
+      for track in track_list:
+        if track in track_db and "file" in track_db[track]:
+           self.music_list.append(track_db[track]["file"])
+        if track.startswith("http"):
+           self.music_list.append(track)
+                   
+
+            
+   def playlist_load_rfid(self):
+      '''
+      check rfid card value and load connected playlist -> put to playlist array
+      '''
+      if "cardUID" in mbox.rfid_ctrl:
+      
+        logging.debug("Load UUID from RFID-Card: " + mbox.rfid_ctrl["cardUID"])
+        database = self.music_database.read_cache("cards")
+
+        if (mbox.rfid_ctrl["cardUID"] != ""):
+
+          logging.info("CardUID: "+mbox.rfid_ctrl["cardUID"])
+          if mbox.rfid_ctrl["cardUID"] in database:
+          
+            if "LastCard" in self.music_ctrl and self.music_ctrl["LastCard"] == database[mbox.rfid_ctrl["cardUID"]][0]:
+               logging.info("Card already started ("+self.music_ctrl["LastCard"]+"/"+database[mbox.rfid_ctrl["cardUID"]][0]+")...")
+
+            else:
+               logging.info("Start Playlist: "+database[mbox.rfid_ctrl["cardUID"]][0]+" / "+self.music_ctrl["LastCard"])              
+               self.playlist_load_uuid(database[mbox.rfid_ctrl["cardUID"]][0])
+               self.music_ctrl["LastCard"]  = database[mbox.rfid_ctrl["cardUID"]][0]
+              
+
+          else:
+            self.player.stop()
+            self.music_ctrl["LastCard"]       = ""
+            self.control_data(state="error")
+
+            if mbox.rfid_ctrl["cardUID"] != self.last_card_identified:
+              logging.info("No Entry connected.")
+              self.last_card_identified = mbox.rfid_ctrl["cardUID"]
+          
+              if mbox.rfid_ctrl["cardUID"] not in database: 
+                 self.speak.speak_message("NO-MUSIC-CONNECTED-TO-CARD")
+        
+                 
    def playlist_next(self,step):
       '''
-      step back (-1) or forward (1)
+      jump within the playlist
       '''
       logging.debug("Next song: "+str(step)+"+"+str(self.music_list_p)+" ("+str(len(self.music_list))+")" )
 
@@ -210,364 +375,172 @@ class musicThread (threading.Thread):
         self.music_load_new      = False
 
       return "not found"
+
       
-   def playing_jump(self,percentage):
+   def playback_save_status(self):
       '''
-      jump to position in playing song
+      write current playlist, track and position to config
       '''
-      percentage = float(percentage)   
-      if percentage >= 0 and percentage <= 100:
-          self.player.set_position(percentage/100)
-          return "done"
-      return "not found"
+      data        = self.music_database.read("status")    
+      data_stream = self.music_database.read_cache("radio")    
       
-   def play_file(self, filename):
+      if not "_saved" in data or data["_saved"] + 3 < time.time():
+        data["music"]                    = self.music_ctrl
+        if "album_uuid" in data["music"]["song"] and data["music"]["song"]["album_uuid"].startswith("r_"):
+           podcast_uuid = data["music"]["song"]["album_uuid"]
+           data["music"]["podcast"] = self.podcast.get_podcasts(playlist_uuid=podcast_uuid)
+           
+        data["_saved"]                   = time.time()
+        self.music_database.write("status",data)
+        logging.info("Save playing status: "+self.music_ctrl["state"])
+
+      
+   def metadata_by_filename(self,filename):
       '''
-      play file via filename
+      return metadata from db by filename
       '''
-      file = filename
-      self.player.audio_set_volume(99)
-      self.media = self.instance.media_new( file ) #str(file.encode('utf-8')) )
-      self.player.set_media(self.media)
-      self.player.play()
+      database = self.music_database.read_cache("files")
+      filename = filename.replace(mbox.music_dir, "")
+      if not filename in database:
+         logging.error("Filename not in DB ("+filename+").")
+         return {}
+      else:
+         return database[filename]
+
       
-      time.sleep(2)
+   def metadata_by_uuid(self,get_uuid):
+      '''
+      return metadata from db by filename
+      '''
+      database = self.music_database.read_cache("tracks")
+      if not get_uuid.startswith("t_"):
+         logging.error("It's not a track.")
+         return {}
+      elif not get_uuid in database:
+         logging.error("Track not found in DB.")
+         return {}
+      else:
+         return database[get_uuid]
+
       
-      state = ""
-      while state == "State.Playing":
-        state = self.player.get_state()
-        if state != "State.Ended" and state != "State.Playing": 
-          self.player.audio_set_volume(int(self.music_ctrl["volume"]*100))
-          return "Error"
-        
-      self.player.audio_set_volume(int(self.music_ctrl["volume"]*100))
-      return "Ended"
-
-#------------------
-
-def musicLoadRfidList(thread):
-    '''
-    load list connected to rfid
-    '''
-    if "cardUID" in mbox.rfid_ctrl:
-      logging.debug("#################### " + mbox.rfid_ctrl["cardUID"])
-      cardDB = thread.music_database.read_cache("cards")
-
-      # check if card detected ...
-      if (mbox.rfid_ctrl["cardUID"] != ""):
-        logging.info("CardUID: "+mbox.rfid_ctrl["cardUID"])
-
-        # check if playlist connected to card (and not radio)
-        if (mbox.rfid_ctrl["cardUID"] in cardDB and not "r_" in cardDB[rfid_ctrl["cardUID"]][0]):
-
-          if ("LastCard" not in thread.music_ctrl or thread.music_ctrl["LastCard"] != cardDB[mbox.rfid_ctrl["cardUID"]][0]):
-            logging.info("Start Playlist: "+cardDB[mbox.rfid_ctrl["cardUID"]][0])
-            thread.load_list_uuid(cardDB[mbox.rfid_ctrl["cardUID"]][0])
-            thread.music_ctrl["LastCard"]      = cardDB[mbox.rfid_ctrl["cardUID"]][0]
-            thread.music_load_new       = True
-
-          else:
-            logging.info("Card already started ...")
-
-        # else stop playing
-        else:
-          thread.music_ctrl["LastCard"]       = ""
-          thread.music_ctrl["playlist_uuid"]  = ""
-          thread.player.stop()
-          if mbox.rfid_ctrl["cardUID"] != thread.last_card_identified:
-             logging.info("No Entry connected.")
-             thread.last_card_identified = mbox.rfid_ctrl["cardUID"]
-          
-             if mbox.rfid_ctrl["cardUID"] not in cardDB: 
-                thread.speak.speak_message("NO-MUSIC-CONNECTED-TO-CARD")
-             
-#          if not "r_" in cardDB[rfid_ctrl["cardUID"]][0]:  thread.speak.speak_message("NO-MUSIC-CONNECTED-TO-CARD")
-
-#------------------
-
-def musicPlaying(thread):
-        '''
-        Translate playback status to 0/1
-        '''
-        old_state                     = thread.music_ctrl["state"]
-        thread.music_ctrl["state"]    = str(thread.player.get_state())
-        
-        if thread.music_ctrl["state"] == "State.Playing" or thread.music_ctrl["state"] == "State.Paused":
-            thread.music_plays = 1
-            logging.debug("Playing 01:"+thread.music_ctrl["state"]+"..."+str(thread.music_ctrl["playing"]))
-        else:
-            thread.music_plays = 0
-            logging.debug("Playing 02:"+thread.music_ctrl["state"]+"..."+str(thread.music_ctrl["playing"]))
-
-        thread.music_ctrl["playing"]  = thread.music_plays
-
-#------------------
-
-def musicSaveStatus(thread):
-    '''
-    Save playback status in the database
-    '''
-    data  = thread.music_database.read("status")
-    
-    if not "_saved" in data or data["_saved"] + 3 < time.time():
-    
-      data["music"]  = thread.music_ctrl
-      data["_saved"] = time.time()
-
-      if thread.music_ctrl["state"] == "State.Playing" or thread.music_ctrl["state"] == "State.Paused": 
-        data["_device"] = "music"
-    
-      thread.music_database.write("status",data)
-
-#------------------
-
-def musicPlayList(thread):
-    '''
-    Play list, detect end of file and than play next
-    '''
-    wait_time = 0.5
-    running   = True
-    last_load = False  
-    last_run  = thread.music_database.read("status")
-    
-    if "_device" in last_run and last_run["_device"] == "music" and last_run["music"]["playing"] == 1:
-      logging.info("Load playlist and song from last run ...")
-      last_load           = True
-      last_music          = last_run["music"]
-      thread.music_ctrl   = last_music
-      thread.music_loaded = 1
-      
-      if "playlist_files" in last_music:
-         thread.music_list     = last_music["playlist_files"]
-         thread.music_list_p   = last_music["playlist_pos"]
-         thread.music_load_new = True
-         time.sleep(4)
+   def playlist_by_uuid(self,get_uuid):
+      '''
+      return tracks from db by uuid
+      '''
+      track_list = []      
+      if get_uuid.startswith("t_"):
+         track_list = [ get_uuid ]
          
-    while running and not thread.stopProcess:
-
-      # wait a moment ...
-      time.sleep(wait_time)
-      logging.debug("List active: " + str(thread.music_load_new) + "; List: " + str(len(thread.music_list)) + "; Position: " + str(thread.music_list_p) )
-
-      musicLoadRfidList(thread)     # check if RFID card detected -> load playlist, if new
-      musicPlaying(thread)          # check player state
-      musicSaveStatus(thread)       # save playback status to database
-
-      # start playing a new song ?
-      logging.debug("CHECK: " + str(len(thread.music_list)) + "/" + str(thread.music_load_new))
-
-      file    = ""
-      # if additional song in the list and change detected ...
-      if len(thread.music_list) > 0 and thread.music_load_new: 
-
-        file = music_dir + thread.music_list[thread.music_list_p-1]
-        logging.info("Play: " + file)
-
-        thread.media = thread.instance.media_new( file ) #str(file.encode('utf-8')) )
-        thread.player.set_media(thread.media)
-        thread.player.play()
-        time.sleep(2)
-        
-        # Jump to position if first load ...
-        if last_load:
-           position = (thread.music_ctrl["position"] / thread.music_ctrl["length"]) * 100
-           thread.playing_jump(position)
-           last_load = False
-
-        # check player state
-        musicPlaying(thread)
-
-        # if music is still playing ... get playback status
-        if thread.music_ctrl["playing"] != 0:
-
-           thread.music_ctrl["file"]             = file
-           thread.music_ctrl["song"]             = {}
-           thread.music_ctrl["song"]             = musicGetInfo(thread,file.replace(music_dir,""))
-           thread.music_ctrl["song"]["info"]     = "Title loaded"
-           thread.music_ctrl["playlist"]         = musicGetInfoList(thread,thread.music_list)
-           thread.music_ctrl["playlist_pos"]     = thread.music_list_p
-           thread.music_ctrl["playlist_len"]     = len(thread.music_list)
-           thread.music_ctrl["playlist_files"]   = thread.music_list           
-           thread.music_ctrl["status"]           = "play"
-           thread.music_ctrl["length"]           = float(thread.player.get_length()) / 1000
-           thread.music_ctrl["position"]         = float(thread.player.get_time()) / 1000
-           thread.music_load_new                 = False
-
-        # if music is not playing
-        else:
-
-           thread.music_ctrl["file"]         = file
-           thread.music_ctrl["song"]         = {}
-           thread.music_ctrl["status"]       = "error"
-           thread.music_ctrl["position"]     = -1 #thread.music.mixer.get_pos()
-           thread.music_ctrl["length"]       = -1 #thread.music.mixer.get_length()
-
-      # if song is playing ...
-      if thread.music_load_new == False: 
+      elif get_uuid.startswith("a_"):
+         database = self.music_database.read_cache("album_info")
+         if get_uuid in database: 
+            track_list = database[get_uuid]["tracks"]
+         else: 
+            logging.error("Album not found: "+get_uuid)
+            track_list = []
+         
+      elif get_uuid.startswith("p_"):
+         database_p = self.music_database.read_cache("playlists")
+         database_a = self.music_database.read_cache("album_info")
+         if get_uuid in database_p: 
+            tracks     = database_p[get_uuid]["tracks"]
+            track_list = []
+            for track in tracks:
+               if track.startswith("t_"):                            track_list.append(track)
+               elif track.startswith("a_") and track in database_a:  track_list.extend(database_a[track]["tracks"])
+         else:
+            logging.error("Album / track not found: "+get_uuid)
+            track_list = []
       
-          thread.music_ctrl["length"]    = float(thread.player.get_length()) / 1000
-          thread.music_ctrl["position"]  = float(thread.player.get_time()) / 1000
+      elif get_uuid.startswith("r_"):         
+         database = self.music_database.read_cache("radio")        
+         if get_uuid in database: 
+            stream_url = database[get_uuid]["stream_url"]
+            
 
-          if thread.music_ctrl["state"] == "State.Ended":
+                      
+            if stream_url.endswith(".m3u"):   track_list = [ stream_url ]
+            elif stream_url.endswith(".mp3"): track_list = [ stream_url ]
+            else: 
+              is_podcast = False
+              for end in music_podcast.podcast_ending:
+                if stream_url.endswith(end): is_podcast = True           
+                
+              if is_podcast:  
+                  self.podcast.get_tracks_rss(rss_url=stream_url, playlist_uuid=get_uuid)
+                  logging.warning("RSS Feed / Podcast-List not implemented yet!")
+                  track_list = []
+              else: 
+                  logging.warning("Unknown URL format. Try out ...")
+                  track_list = [ stream_url ]
 
-            if thread.music_list_p < len(thread.music_list):     # If there are more tracks in the queue...
-
-               thread.music_load_new = True
-               thread.music_list_p = thread.music_list_p+1
-               logging.info("Next song in list, position: " + str(thread.music_list_p))
-
-            else:
-               thread.music_load_new = True
-               thread.music_list = []
-               logging.info("Playlist empty, stop playing.")
-
-#------------------
-
-def musicStartList(thread,list):
-    '''
-    Play Songs from List, if Songs in List
-    '''
-    for x in list:
-      logging.debug("Add 2 Playlist: " + x)
-
-    logging.debug("Start List: "+str(len(list)) + "/" + str(len(thread.music_list)))
-    thread.music_list   = list
-    thread.music_list_p = 1
-
-    # reset data that the loop reloads the playlist
-    if len(thread.music_list) > 0:
-       thread.player.stop()
-       thread.music_plays    = 0
-       thread.music_load_new = True
-
-    # set data to show that playlist is empty
-    else:
-       thread.music_loaded   = 0
-       thread.music_plays    = 0
-       thread.music_load_new = True
-
-
-#------------------
-
-def musicGetInfoList(thread,file_list):
-    '''
-    get info for list of tracks based on filenames
-    '''
-    list_info  = []
-    for x in file_list:
-      file_info = musicGetInfo(thread,x)
-      list_info.append(file_info)
-    return list_info
-
-#------------------
-
-def musicGetInfo(thread,file):
-    '''
-    get info for a track based on filename
-    '''
-    file_info         = {}
-    file_info["test"] = file
-
-    songs = thread.music_database.read_cache("files")
-    if file in songs:
-      file_info = songs[file]
-
-    return file_info
-
-#------------------
-
-def musicGetTracks(thread,album_uuid):
-    '''
-    return uuid form tracks for an album
-    '''
-    logging.debug("Read infos for album UUID: "  + album_uuid)
-
-    # set vars
-    tracks      = []
-    track_list  = []
-    track_order = {}
-
-    #db            = thread.music_database.readGroup("music")
-    db_album_info  = thread.music_database.read_cache("album_info")
-    db_playlists   = thread.music_database.read_cache("playlists")
-    db_tracks      = thread.music_database.read_cache("tracks")
-
-    logging.debug("test // " + album_uuid)
-
-    # read data from db IF Album
-    if "a_" in album_uuid and album_uuid in db_album_info:
-       songs       = db_album_info                      # db["album_info"]
-       tracks      = songs[album_uuid]["tracks"]
-       track_info  = db_tracks                          # db["tracks"]
-       track_list  = sortAlbumTracks(tracks,track_info)
-
-    # read data from db IF Playlist
-    elif "p_" in album_uuid and album_uuid in db_playlists:
-       songs       = db_playlists                       # db["playlists"]
-       tracks1     = songs[album_uuid]["tracks"]
-       tracks      = []
-       track_info  = db_tracks                          # db["tracks"]
-
-       for key in tracks1:
-         if "t_"   in key: tracks.append(key)
-         elif "a_" in key:
-           tracks2 = db_album_info[key]["tracks"]       # db["album_info"][key]["tracks"]
-           tracks2 = sortAlbumTracks(tracks2,track_info)
-           for key2 in tracks2: tracks.append(key2)
-
-       track_list = tracks
-       
-    else:
-       thread.speak.speak_message("UNVALID-ENTRY-CONNECTED-TO-CARD")
-
-    return track_list
+      else:
+         logging.error("Unknown ID Type!")
+      
+      return track_list
+            
+      
+   def control_data(self,state,song={},playlist={}):
+      '''
+	      set and return control data
+      '''
+      if state != "Started" and playlist != {}:
+        if "LastCard" in self.music_ctrl: last_card = self.music_ctrl["LastCard"]
+        else:                             last_card = ""
+        
+        if "stream" in song:
+          stream = song["stream"]
+          song   = {}
+        else:
+          stream = {}
+          
+#        if song != "":
+#           thread.music_ctrl["position"]         = float(thread.player.get_time()) / 1000        
+        self.music_ctrl = {
+          "device"        : self.music_device,
+          "type"          : self.music_type,
+          "mute"          : self.player.volume_mute,
+          "status"        : self.player.player_status,
+          "connected"     : self.player.connected,
+          "file"          : self.player.play_url,
+          "song"          : song,
+          "stream"        : stream,
+          "playlist"      : playlist["list"],
+          "playlist_pos"  : playlist["position"],
+          "playlist_len"  : playlist["length"],
+          "playlist_files": playlist["files"],
+          "playlist_uuid" : self.music_list_uuid,
+          "volume"        : self.player.volume,
+          "position"      : self.player.get_position(),
+          "length"        : self.player.get_length(),
+          "playing"       : self.player.playing(),
+          "state"         : state,
+          "LastCard"      : last_card
+          }
+      else:
+        self.music_ctrl = {
+          "device"        : self.music_device,
+          "mute"          : False,
+          "status"        : "",
+          "connected"     : False,
+          "file"          : "",
+          "song"          : {},
+          "stream"        : {},
+          "playlist"      : [],
+          "playlist_pos"  : -1,
+          "playlist_len"  : -1,
+          "playlist_files": [],
+          "playlist_uuid" : "",
+          "volume"        : 0.4,
+          "position"      : -1,
+          "length"        : -1,
+          "playing"       : -1,
+          "state"         : state,
+          "type"          : "",
+          "LastCard"      : ""
+          }
+      return self.music_ctrl
 
 
-def sortAlbumTracks(tracks,track_info):
-     '''
-     sort albums bei track number
-     '''
-     track_order = {}
-     track_list  = []
-
-     # check / read track order
-     for x in tracks:
-
-        if x not in track_info: return tracks
-        track_i = track_info[x]                # produces errors -> added check before
-
-        if "track_num" not in track_i: return tracks	
-        track_o = track_i["track_num"][0]
-
-        if "/" in str(track_o):
-          track_o = track_o.split("/")[0]
-
-        try:
-          track_order[x] = int(track_o)
-        except:
-          return tracks
-
-     track_order = sorted(track_order.items(), key=operator.itemgetter(1))
-
-     for x in track_order:
-        track_list.append(x[0])
-
-     return track_list
 
 
-#------------------
-
-def musicUuid2Files(thread,uuid_list):
-    '''
-    return filenames based on an uuid names for a list
-    '''
-    file_list = []
-    songs = thread.music_database.read_cache("tracks")
-    for x in uuid_list:
-      #print songs[x]["file"]
-      if x in songs:
-        file_list.append(songs[x]["file"])
-
-    return file_list
-
-#------------------

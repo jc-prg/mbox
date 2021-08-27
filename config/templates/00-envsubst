@@ -75,6 +75,7 @@ echo "> create autohotspot"
 if [[ $WIFI_PWD != "" ]] ; then
    rm -rf autohotspot/templates/autohotspot
    envsubst < "templates/autohotspot.template" > "autohotspot/templates/autohotspot"
+   envsubst < "templates/autohotspot.config" > "autohotspot/config"
    chmod 755 autohotspot/templates/autohotspot
 
    rm -rf autohotspot/templates/wpa_supplicant.conf

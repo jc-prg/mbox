@@ -1,0 +1,109 @@
+<html>
+<head>
+<title>jc://music-box/help/</title>
+</head>
+<body>
+
+<hr/>
+<h1>Inhalte hinzufügen</h1>
+<hr/>
+<h2>Music hinzufügen</h2>
+<pre>
+1. Music Box ausschalten, USB-Stick entnehmen
+2. Audio-Dateien auf den USB Stick in das entsprechende Unterverzeichnis kopieren:
+   Ein Unterverzeichnis je Album
+3. Music Box starten (muss über WLAN gekoppelt sein)
+4. Music Box über Browser starten: http://music-box/ oder http://&lt;IP4-Adresse&gt;/
+5. Settings öffnen, ggf. etwas warten bis Tasten bedienbar werden
+6. "Load new music" drücken und warten
+</pre>
+
+<h2>RFID Karten verknüpfen</h2>
+<pre>
+1. Music Box starten (muss über WLAN gekoppelt sein)
+2. Music Box über Browser starten: http://music-box/ oder http://&lt;IP4-Adresse&gt;/
+3. Neue RFID Karte auflegen
+4. Blaue LED geht an, in der App erscheint ein Dialog zur Auswahl
+5. Zu koppelndes Album, Playlist oder Stream auswählen und bestätigen
+6. Zum Testen erst andere Karte und dann neue RFID Karte auflegen
+</pre>
+
+
+<h2>Streams / Podcasts hinzufügen</h2>
+<pre>
+1. Music Box starten (muss über WLAN gekoppelt sein)
+2. Music Box über Browser starten: http://music-box/ oder http://&lt;IP4-Adresse&gt;/
+3. Podcast auswählen
+4. Über "+" Dialog öffnen und geforderte Date eingeben
+   (a) STREAM  -> https-Link auf .m3u-File
+   (b) PODCAST -> https-Link auf XML-File in itunes Format
+</pre>
+   
+<h2>Playlist anlegen</h2>
+<pre>
+1. Music Box starten (muss über WLAN gekoppelt sein)
+2. Music Box über Browser starten: http://music-box/ oder http://&lt;IP4-Adresse&gt;/
+3. Podcast auswählen
+4. Über "+" Dialog öffnen und Name + Beschreibung eingeben
+5. Erst Playlist und dann über "i" Info zur Playlist öffnen
+6. Icon zum Bearbeiten betätigen -> Dialog zum Hinfügen / Entfernen von Titeln bzw. Alben öffnet sich
+</pre>
+
+<br/>
+<br/>
+
+<hr/>
+<h1>Mit WLAN verbinden und Updaten</h1>
+<hr/>
+<h2>Login Linux [default]</h2>
+<pre>
+user: pi
+pwd:  raspberry
+</pre>
+
+<h2>Login internes WLAN [default]</h2>
+<pre>
+SSID: JCmbox
+pwd:  0123456789
+</pre>
+
+
+<h2>Verbinde mit WLAN</h2>
+<pre>
+1. Verbinde via internes WLAN (alternativ direkt mit Monitor und Tastatur und weiter mit 3.)
+2. Connect via ssh:
+   $ ssh pi@10.0.0.5
+3. Login mit Daten sh. oben (Login Linux)
+4. Wechsle zu root:
+   $ sudo -i
+5. Wechsle Verzeichnis: 
+   $ cd /projects/prod/mbox/config
+6. Editiere Datei config_prod -> WIFI_SSID und WIFI_PWD
+   $ nano config_prod
+7. Erzeuge neu Konfiguration
+   $ ./create prod
+8. Wechsle Verzeichnis eine Ebene höher:
+   $ cd ../
+9. Starte Music Box neu
+   $ ./start restart   
+</pre>
+
+
+<h2>Update Music Box</h2>
+<pre>
+1. Verbinde via WLAN mit Internet-Verbindung
+2. Connect via ssh via hostname "music-box" oder IP4-Adresse
+   $ ssh pi@music-box
+3. Login mit Daten sh. oben (Login Linux)
+4. Wechsle zu root:
+   $ sudo -i
+5. Wechsle Verzeichnis: 
+   $ cd /projects/prod/mbox
+6. Starte Update:
+   $ ./start update
+7. Starte Music Box
+   $ ./start docker
+</pre>
+
+</body>
+</html>

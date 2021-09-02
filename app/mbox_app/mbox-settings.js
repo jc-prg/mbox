@@ -55,6 +55,7 @@ function mboxSettingsStatus (data) {
 	text += table.row_one("<hr/>");
 	text += table.row( ["<b>mBox-Client:",	appTitle + " " + appVersion + "<br/>(" + stage + ")"] );
 	text += table.row( ["<b>mBox-Server:",	data["API"]["name"] + " " + data["API"]["version"] + "<br/>(" + data["API"]["stage"] + ")"] );
+	text += table.row( ["<b>mBox-Help (Beta):",	"<a href='/mbox_help/help_DE.html' target='_blank'>Deutsche Hilfe (German)</a>"] );
 
 	text += table.row_one("<hr/>");
 	text += table.row( ["<b>jcApp:",		appFW.appVersion ] );

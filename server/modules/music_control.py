@@ -70,8 +70,11 @@ class musicControlThread(threading.Thread):
       
       last_music = last_run["music"]
 
-      if last_run["music"]["playing"] != 1:     
+      if last_run["music"]["playing"] != 1 and "playlist_uuid" in last_music:     
         logging.info("Don't load playlist and song from last run ("+last_music["playlist_uuid"]+")...")
+      
+      if last_run["music"]["playing"] != 1:     
+        logging.info("Don't load playlist and song from last run ...")
       
       elif last_run["music"]["playing"] == 1:
         self.music_ctrl             = last_music

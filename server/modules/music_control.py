@@ -373,9 +373,9 @@ class musicControlThread(threading.Thread):
 
       # stop playing if beginning or end ...
       else:
-        self.player.stop()
-        self.music_list_p        = 0                              # set new position in playlist
         self.music_load_new      = False
+#        self.player.stop()
+#        self.music_list_p        = 0                              # set new position in playlist
 
       return "not found"
 

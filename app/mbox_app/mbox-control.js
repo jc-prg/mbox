@@ -232,25 +232,27 @@ function mboxControlVolumeSet(volume) {
 //---------------------------------------------
 
 function mboxControlVolumeShow(volume,mute) {
-	var vol_col = "white";
+	return;
 
+	// NOT USED ANY MORE ... ->  mboxControlVolumeControl
+
+	var vol_col = "white";
 	// check volume and show in navigation bar
 	if (mbox_device == "local") {
 		var vol_color = "lightgreen";
-		if (mboxPlayer) { volume = mboxPlayer.volume; if (mboxPlayer.audio.muted) { mute = 1; } else { mute = 0; }}
+		if (mboxPlayer) { volume = mboxPlayer.volume; if (mboxPlayer.audio.muted) { mute = true; } else { mute = false; }}
 		else		{ volume = 0; }
 		}
-
         // check audio status and show in navigation bar
-        if (Math.round(volume*20/1) < 1 || mute == 1) {
-                document.getElementById("audio1").style.display = "block";
-                document.getElementById("audio2").style.display = "none";
+        if (Math.round(volume*20/1) < 1 || mute == true || mute == 1) {
+                document.getElementById("audio1").style.display = "none";
+                document.getElementById("audio2").style.display = "block";
                 if (mbox_device != "local") 	{ vol_color = "gray"; }
 		else				{ vol_color = "green"; }
                 }
         else {
-                document.getElementById("audio1").style.display = "none";
-                document.getElementById("audio2").style.display = "block";
+                document.getElementById("audio1").style.display = "block";
+                document.getElementById("audio2").style.display = "none";
                 }
 
 	// check volume and show in navigation bar
@@ -278,17 +280,19 @@ function mboxControlVolumeControl(volume, mute) {
 		if (mboxPlayer) { volume = mboxPlayer.volume; if (mboxPlayer.audio.muted) { mute = 1; } else { mute = 0; } }
 		else		{ volume = 0; }
 		}
+		
+console.log("----------------->> "+mute + " / " + volume);
 
         // check audio status and show in navigation bar
-        if (Math.round(volume*20/1) < 1 || mute == 1) { // CHECK !!! 1 -> true ???
-                document.getElementById("audio1").style.display = "block";
-                document.getElementById("audio2").style.display = "none";
+        if (Math.round(volume*20/1) < 1 || mute == 1 || mute == true) { // CHECK !!! 1 -> true ???
+                document.getElementById("audio1").style.display = "none";
+                document.getElementById("audio2").style.display = "block";
                 if (mbox_device != "local") 	    { vol_color = "gray"; }
 		else				    { vol_color = "green"; }
                 }
         else {	// mute
-                document.getElementById("audio1").style.display = "none";
-                document.getElementById("audio2").style.display = "block";
+                document.getElementById("audio1").style.display = "block";
+                document.getElementById("audio2").style.display = "none";
                 }
 
 	// check volume and show in navigation bar

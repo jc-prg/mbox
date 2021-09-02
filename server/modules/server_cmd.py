@@ -1021,9 +1021,11 @@ def mboxAPI_next(step):
        db_entries = {}
        data       = mboxAPI_start("next","next","",step,"")
        
-       position      = thread_music_ctrl.music_list_p + int(step)
-       playlist_uuid = thread_music_ctrl.music_ctrl["playlist_uuid"]       
-       thread_music_ctrl.playlist_load_uuid(playlist_uuid=playlist_uuid, position=position)
+       thread_music_ctrl.playlist_next(step=step)
+       
+       #position      = thread_music_ctrl.music_list_p + int(step)
+       #playlist_uuid = thread_music_ctrl.music_ctrl["playlist_uuid"]       
+       #thread_music_ctrl.playlist_load_uuid(playlist_uuid=playlist_uuid, position=position)
                    
        data = mboxAPI_end(data,["no-statistic","no-system"])
        return(data)
@@ -1036,9 +1038,12 @@ def mboxAPI_last(step):
        db_entries = {}
        data       = mboxAPI_start("last","last","",step,"")
        
-       position      = thread_music_ctrl.music_list_p - int(step)
-       playlist_uuid = thread_music_ctrl.music_ctrl["playlist_uuid"]       
-       thread_music_ctrl.playlist_load_uuid(playlist_uuid=playlist_uuid, position=position)
+       step       = step * -1
+       thread_music_ctrl.playlist_next(step=step)
+       
+       #position      = thread_music_ctrl.music_list_p - int(step)
+       #playlist_uuid = thread_music_ctrl.music_ctrl["playlist_uuid"]       
+       #thread_music_ctrl.playlist_load_uuid(playlist_uuid=playlist_uuid, position=position)
             
        data = mboxAPI_end(data,["no-statistic","no-system"])
        return(data)

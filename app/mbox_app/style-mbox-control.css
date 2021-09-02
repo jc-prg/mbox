@@ -1,3 +1,13 @@
+#audio1 {
+	position : absolute;
+	right : 145px;
+	}
+
+#audio2 {
+	position : absolute;
+	right : 145px;
+	}
+
 @keyframes control_on {
   from {bottom: -110px;}
   to   {bottom: -20px;}

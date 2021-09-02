@@ -93,9 +93,12 @@ class musicPlayer(threading.Thread):
       set volume - step up or down
       '''
       vol = float(self.volume)
-      if (up == "up" and vol < 100):                         vol = vol + 0.05
+      if (up == "up" and vol < 1):                           vol = vol + 0.05
       elif (up == "down" and vol > 0):                       vol = vol - 0.05
       elif (isinstance(up, int) and up >= 0 and up <= 100):  vol = up / 100
+      
+      if vol > 1:   vol = 1
+      elif vol < 0: vol = 0
 
       self.set_volume(vol)
       self.volume_mute   = False
@@ -158,9 +161,10 @@ class musicPlayer(threading.Thread):
       '''
       mute / unmute player
       '''
-      logging.info("TEST ... "+str(value)+" / "+str(self.volume_mute))
+      logging.debug("Mute ... "+str(value)+" / "+str(self.volume_mute) + " / " + str(self.volume))
       if self.volume_mute == False or value == True:
-          self.set_volume(0)
+          #self.set_volume(0)
+          self.player.audio_set_volume(0)
           self.volume_mute = True
       else:
           self.volume_mute = False

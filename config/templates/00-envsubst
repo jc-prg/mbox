@@ -4,55 +4,28 @@
 
 echo ">> create files from templates for $MBOX_APP_VERSION ..."
 
-# app-v1
-if [[ $MBOX_APP_VERSION == "app-v1" ]]; then
 
-  echo "> create docker & config (app-v1)"
-  rm -rf ../$MBOX_APP_VERSION/config_stage.js
-  envsubst < "templates/config_stage.js" > "../$MBOX_APP_VERSION/config_stage.js"
+echo "> create docker & config"
+rm -rf ../$MBOX_APP_VERSION/mbox_app/config_stage.js
+envsubst < "templates/config_stage.js" > "../$MBOX_APP_VERSION/mbox_app/config_stage.js"
 
-  rm -rf ../docker-compose.yml
-  envsubst < "templates/docker-compose-v1.yml" > "../docker-compose.yml"
+rm -rf ../docker-compose.yml
+envsubst < "templates/docker-compose-v2.yml" > "../docker-compose.yml"
 
-  rm -rf ../docker-compose-rpi.yml
-  envsubst < "templates/docker-compose-rpi.yml" > "../docker-compose-rpi.yml"
+rm -rf ../docker-compose-rpi.yml
+envsubst < "templates/docker-compose-rpi.yml" > "../docker-compose-rpi.yml"
 
-  rm -rf ../server/modules/config_stage.py
-  envsubst < "templates/config_stage.py" > "../server/modules/config_stage.py"
+rm -rf ../server/modules/config_stage.py
+envsubst < "templates/config_stage.py" > "../server/modules/config_stage.py"
 
-  rm -rf $MBOX_DIR_DATA_ROOT/active.json
-  envsubst < "templates/active.json" > "$MBOX_DIR_DATA_ROOT/active.json"
+rm -rf $MBOX_DIR_DATA_ROOT/active.json
+envsubst < "templates/active.json" > "$MBOX_DIR_DATA_ROOT/active.json"
 
-  echo "> create start script (app-v1)"
-  rm -rf ../start
-  envsubst < "templates/start_mbox-v1" > "../start"
-  chmod 755 ../start
-fi
 
-# app-v2
-if [[ $MBOX_APP_VERSION == "app-v2" || $MBOX_APP_VERSION == "app" ]]; then
-
-  echo "> create docker & config (app-v2)"
-  rm -rf ../$MBOX_APP_VERSION/mbox_app/config_stage.js
-  envsubst < "templates/config_stage.js" > "../$MBOX_APP_VERSION/mbox_app/config_stage.js"
-
-  rm -rf ../docker-compose.yml
-  envsubst < "templates/docker-compose-v2.yml" > "../docker-compose.yml"
-
-  rm -rf ../docker-compose-rpi.yml
-  envsubst < "templates/docker-compose-rpi.yml" > "../docker-compose-rpi.yml"
-
-  rm -rf ../server/modules/config_stage.py
-  envsubst < "templates/config_stage.py" > "../server/modules/config_stage.py"
-
-  rm -rf $MBOX_DIR_DATA_ROOT/active.json
-  envsubst < "templates/active.json" > "$MBOX_DIR_DATA_ROOT/active.json"
-
-  echo "> create start script (app-v2)"
-  rm -rf ../start
-  envsubst < "templates/start_mbox-v2" > "../start"
-  chmod 755 ../start
-fi
+echo "> create start script (app-v2)"
+rm -rf ../start
+envsubst < "templates/start_mbox-v2" > "../start"
+chmod 755 ../start
 
 # log dir
 echo "> create log directory"

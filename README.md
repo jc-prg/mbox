@@ -54,7 +54,7 @@ If you want to use a fresh Raspberry Pi image, additional guidance can be found 
 In order to use jc://music-box/ as it is you must have installed:
 
 1. git
-2. docker, docker-compose
+2. docker, docker-compose (see [config/install/install-docker](config/install/install-docker))
 
 The *server software* has been tested on a Raspberry Pi 3B+/4B with [Raspbian](docs/INSTRUCTION_PREPARE_RPI.md) and on an Ubuntu Desktop. RFID reader, LED and Buttons only tested on the Raspberry Pi.
 
@@ -62,23 +62,24 @@ The *client software* has been tested with Chrome 70.0, Firefox 68.0 and Safari 
 
 ### How to install, configure and run the software
 
-**1. Recommended directory structure**
+**1. Create directories. Recommended directory structure:**
 
   * *project directories:*
     * /projects/prod/
     * /projects/prod/mbox/
-    * /projects/prod/modules/
 
   * *data directory:*
-    * /projects_data/prod/
+    * /projects_data/prod/mbox/
 
 
-**2. Clone this repository and the modules**
+**2. Clone this repository and the modules:**
 
 ```bash
 $ cd /projects/prod
 $ git clone https://github.com/jc-prg/mbox.git
-$ git clone https://github.com/jc-prg/modules.git
+
+$ cd mbox
+$ git submodule update --init
 ```
 
 
@@ -129,35 +130,22 @@ $ cd install
 $ ./install-datadir          
 ```
 
-**6. Set the maximum loudness of the Raspberry to 100% (per default it's too low):**
+**6. Set the maximum loudness of the Raspberry to 100%**
+
+  Per default the volume is too low. Try out the following commands, one should work:
 
 ```bash
 $ amixer set PCM -- 100%
+$ amixer set Headphone -- 100%
 ```
 
+**7. Copy music files** 
 
-**7. Optional - mount USB device for music data**
-
-```bash
-$ cd /media
-$ mkdir usb
-$ mount /dev/sda1 /media/usb/
-```
+  Copy files to the directory *./music/* (see suggested structure above) or to the USB device. 
+  Using an USB device makes it easier to add or change the music files ...
 
 
-**8. Optional - Create a symlink to the right directory on you USB stick**
-
-```bash
-$ ln -s /media/usb/music /projects_data/prod/music
-```
-
-
-**9. Copy music files** 
-
-  Copy files to the directory *./music/* (see suggested structure above) or to the USB device. Using an USB device makes it easier to add or change the music files ...
-
-
-**10. Start server and client**
+**8. Start server and client**
 
 ```bash
 $ cd /projects/prod/mbox
@@ -165,7 +153,7 @@ $ ./start start
 ```
 
 
-**11. Open client and start "Reload Data" in the settings**
+**9. Open client and start "Reload Data" in the settings**
 
    Relevant default URLs are (the ports can be changed in the config file):
 
@@ -174,26 +162,17 @@ $ ./start start
   * http://localhost:5105/_utils  - Fauxton CouchDB access (default user:mbox; pwd:mbox)
 
 
-**12. Optional - mount USB device during start up**
 
-  To mount the device during start up add the line above to the /etc/rc.local - or alternatively add the following line to /etc/fstab:
+**10. Optional - enable auto-start**
 
-```bash
-/dev/sda1 /media/usb auto nosuid,nodev,nofail 0 0
-
-```
-
-
-**13. Optional - enable auto-start**
-
-  Add the following to */etc/rc.local* before the "exit 0" or use the script *config/install-rclocal*. This script will be generated, when you create your configuration.
+  Add the following to */etc/rc.local* before the "exit 0" or use the script [config/install/install-rclocal](config/install/install-rclocal). This script will be generated, when you create your configuration.
 
 ```bash
 # jc://mbox/ client, database and server components (except the 2 above)
 /projects/prod/mbox/start start &
 ```
 
-**14. Optional - add automatic restart on connection errors to crontab (once a minute)**
+**11. Optional - add automatic restart on connection errors to crontab (once a minute)**
 
 ```bash
 $ crontab -e
@@ -216,6 +195,7 @@ If you update from version v0.7.x to *version v1.x* there are changes in the wir
 [Instructions](docs/INSTRUCTION_BUILD_HARDWARE.md) or backup the file 
 [server/modules_gpio/config.py](server/modules_gpio/config.py) and replace the new file with your old config file.
 
+
 ## Autohotspot
 
 Experimental feature: Usually the box is used in our home wifi. But as my kids like the box we take it with us when we travel.
@@ -235,6 +215,7 @@ The following packages are used within this software (thanks to the authors):
 * Autohotspot: https://www.raspberryconnect.com/
 * Mutagen and Eye3D
 * ...
+
 
 ## Disclaimer
 

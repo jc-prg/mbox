@@ -280,7 +280,7 @@ function mboxControlVolumeControl(volume, mute) {
 		}
 
         // check audio status and show in navigation bar
-        if (Math.round(volume*20/1) < 1 || mute == 1) {
+        if (Math.round(volume*20/1) < 1 || mute == 1) { // CHECK !!! 1 -> true ???
                 document.getElementById("audio1").style.display = "block";
                 document.getElementById("audio2").style.display = "none";
                 if (mbox_device != "local") 	    { vol_color = "gray"; }

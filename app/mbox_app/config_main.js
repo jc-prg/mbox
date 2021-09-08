@@ -60,6 +60,7 @@ function app_menu_entries() {
 		[lang("COVER_IMAGES"),			"script",	"mboxCoverTogglePrint();"],
 		["LINE"],
 		[lang("SETTINGS"),  			"script", 	"mboxSettingsToggle(); mboxSettingsStatus_load(); appPrintStatus_load();" ],
+		[lang("HELP")+" (German)",		"link",	"/mbox_help/help_DE.html"],
 		]);
 			
 	return app_menu;

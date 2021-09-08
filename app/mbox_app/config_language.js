@@ -156,6 +156,7 @@ var language_app = {
 		"ERROR"		: "Error",
 		"GENRE"		: "Genre",
 		"HERE"			: "here",
+		"HELP"			: "Help",
 		"INFORMATION"		: "Information",
 		"LIST_CONNECTED"	: "Playlist is already connected.",
 		"LIST_CONNECTED_WITH"	: "Playlist is already connected with:",

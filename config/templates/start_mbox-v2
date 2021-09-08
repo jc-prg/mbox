@@ -194,7 +194,7 @@ elif [ ${DOLLAR}option == "server" ]; then
 
   echo "... IMPLEMENTATION NOT READY YET!"
   echo "... mount usb if available and not done already."
-  mount ${DOLLAR}usb_dev ${DOLLAR}usb_mount
+  mount -o utf8 ${DOLLAR}usb_dev ${DOLLAR}usb_mount
   
   echo "... start server"
   ${MBOX_DIR}/server/server.py &

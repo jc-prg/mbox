@@ -11,6 +11,7 @@ mkdir ${MBOX_CURRENT_STAGE}
 cd ${MBOX_CURRENT_STAGE}
 mkdir data
 mkdir couchdb
+mkdir couchdb_backup
 mkdir cover
 mkdir cover_upload
 chmod 777 cover_upload

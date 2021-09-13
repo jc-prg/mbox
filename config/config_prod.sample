@@ -9,6 +9,8 @@ export MBOX_LANGUAGE="EN"        # options: "EN" if English, "DE" if German
 export MBOX_WITH_RPI="yes"       # options: "yes" if is Raspberry, "no" if not
 export MBOX_WITH_HARDWARE="yes"  # options_ "yes" if harware, "no" if software only
 export MBOX_DATA_USB="yes"       # options: "yes" if music data on usb stick - default mount point is /media/usb, "no" if not
+export MBOX_DATA_USB_TYPE="auto" # options: "auto", "vfat", "ext2", "ext3", "ext4", "nfs" ... or see "man mount"
+export MBOX_DATA_USB_CODE="utf8" # options: "utf8" .. remove to use default or see "man mount"
 export MBOX_SPEEK_MSG="yes"      # options: "yes" if the box should speek during startup and on errors, "no" if not
 export MBOX_SPEEK_ASK_WHOM="DAD" # options: who should be asked, if the box doesn't work correctly: "DAD", "MUM, "THE-ADMIN"
 

@@ -5,6 +5,8 @@ is_rpi="${MBOX_WITH_RPI}"
 hardware="${MBOX_WITH_HARDWARE}"
 usb_dev="${MBOX_MOUNT_USB}"
 usb_mount="${MBOX_MOUNT_DATA}"
+usb_mount_type="${MBOX_DATA_USB_TYPE}"
+usb_mount_code="${MBOX_DATA_USB_CODE}"
 
 echo
 echo "-------------------------------------"
@@ -109,7 +111,12 @@ check_dns() {
 if [ ${DOLLAR}option == "docker" ]; then
 
   echo "... mount usb if available and not done already."
-  mount ${DOLLAR}usb_dev ${DOLLAR}usb_mount
+
+  if [ ${DOLLAR}usb_mount_code != "" ]; then
+     mount -t ${DOLLAR}usb_mount_type -o ${DOLLAR}usb_mount_code ${DOLLAR}usb_dev ${DOLLAR}usb_mount
+  else
+     mount -t ${DOLLAR}usb_mount_type ${DOLLAR}usb_dev ${DOLLAR}usb_mount
+  fi
   
   if [ ${DOLLAR}is_rpi == "yes" ]; then
     if [ ${DOLLAR}hardware == "yes" ]; then

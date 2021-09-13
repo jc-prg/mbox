@@ -22,9 +22,9 @@ if [ ! ${DOLLAR}option ]; then
   echo " 'd' - docker start           [docker]"
   echo " 'r' - docker restart         [restart]"
   echo " 'c' - install crontab        [cron]"
-  echo " 'a' - install autohotspopt   [autohotspot]"
 #  echo " 'i' - install directories    [install]"
   echo " 'u' - update from GitHub     [update]"
+  echo " 'a' - install/update autohotspot    (experimental)"
 #  echo " 's' - server (in progress)   [server]"
   echo
   echo " ... additional parameter:    [check-dns]"
@@ -56,7 +56,11 @@ if [ ! ${DOLLAR}option ]; then
        break
     elif [[ ${DOLLAR}k = a ]] ; then
        option="autohotspot"
-       printf "\n... install mbox via crontab.\n"
+       printf "\n... install autohotspot.\n"
+       break
+    elif [[ ${DOLLAR}k = b ]] ; then
+       option="autohotspot-update"
+       printf "\n... install autohotspot.\n"
        break
     else
        ((count=${DOLLAR}count+1))
@@ -113,8 +117,10 @@ if [ ${DOLLAR}option == "docker" ]; then
   echo "... mount usb if available and not done already."
 
   if [ ${DOLLAR}usb_mount_code != "" ]; then
+     echo "mount -t ${DOLLAR}usb_mount_type -o ${DOLLAR}usb_mount_code ${DOLLAR}usb_dev ${DOLLAR}usb_mount"
      mount -t ${DOLLAR}usb_mount_type -o ${DOLLAR}usb_mount_code ${DOLLAR}usb_dev ${DOLLAR}usb_mount
   else
+     echo "mount -t ${DOLLAR}usb_mount_type ${DOLLAR}usb_dev ${DOLLAR}usb_mount"
      mount -t ${DOLLAR}usb_mount_type ${DOLLAR}usb_dev ${DOLLAR}usb_mount
   fi
   

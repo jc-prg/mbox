@@ -26,7 +26,8 @@ echo " 'q' - exit"
 echo " 't' - test install"
 echo " 's' - test uninstall"
 echo " 'i' - install"
-echo " 'u' - uninstall"
+echo " 'r' - remove"
+echo " 'u' - update configuration"
 echo
 
 count=0
@@ -49,9 +50,13 @@ while : ; do
        printf "\nStart installation ...\n"
        option="install"
        break
-   elif [[ $k = u ]] ; then
+   elif [[ $k = r ]] ; then
        printf "\nStart deinstallation ...\n"
        option="uninstall"
+       break
+   elif [[ $k = u ]] ; then
+       printf "\nUpdate configuration ...\n"
+       option="update"
        break
    else
        ((count=$count+1))
@@ -274,8 +279,21 @@ if [[ $option = "install" ]]; then
     hotspot_enable_crontab
   fi
   
-fi
-if [[ $option = "uninstall" ]]; then
+elif [[ $option = "update" ]]; then
+
+  hotspot_disable_script
+  
+  hotspot_install_script
+  hotspot_config_on_dnsmasq
+  hotspot_config_on_hostapd
+  hotspot_config_on_dhcp
+  hotspot_config_on_interfaces
+  hotspot_config_on_wpa
+
+  hotspot_enable_script
+
+
+elif [[ $option = "uninstall" ]]; then
 
   if [[ $test = "1" ]]; then
     hotspot_disable_crontab

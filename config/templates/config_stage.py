@@ -28,12 +28,34 @@ server_ip        = data_db_ip
 server_dns       = [ "${DNS01}","${DNS02}","${DNS03}"]
 
 log_level        = "${MBOX_LOGLEVEL}"
+log_level_data   = "${MBOX_LOGLEVEL_LOAD}"
 log_filename     = "${MBOX_LOGFILENAME}"
-logging_level    = ""
 log_to_file      = "${MBOX_LOG2FILE}"
+
+logging_level      = ""
+logging_level_data = ""
 
 # ---------------------------------
 
 if rollout == "test": test  = True
 else:                 test  = False
+
+# ---------------------------------
+
+import logging
+
+log_level      = log_level.upper()
+log_level_data = log_level_data.upper()
+
+if   log_level_data == "DEBUG":    logging_level_data = logging.DEBUG
+elif log_level_data == "INFO":     logging_level_data = logging.INFO
+elif log_level_data == "WARNING":  logging_level_data = logging.WARNING
+elif log_level_data == "ERROR":    logging_level_data = logging.ERROR
+elif log_level_data == "CRITICAL": logging_level_data = logging.CRITICAL
+    
+if   log_level == "DEBUG":         logging_level = logging.DEBUG
+elif log_level == "INFO":          logging_level = logging.INFO
+elif log_level == "WARNING":       logging_level = logging.WARNING
+elif log_level == "ERROR":         logging_level = logging.ERROR
+elif log_level == "CRITICAL":      logging_level = logging.CRITICAL
 

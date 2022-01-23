@@ -7,6 +7,8 @@ from   modules.jcRunCmd        import *
 import logging, time, uuid
 import couchdb, requests, json
 
+cdb_logging = logging.getLogger("couch-db")
+cdb_logging.setLevel = stage.logging_level
 
 #-------------------------------------------------
 
@@ -17,7 +19,7 @@ def createDB_URL():
     command = "/sbin/ip -o -4 addr list "+stage.server_ip_device+" | awk '{print $4}' | cut -d/ -f1"
     ip, err = runCmd(command)
     db_url  = "http://"+stage.data_db_auth+"@"+ip+":"+stage.server_port+"/"
-    logging.info("connectionInternalIP: "+db_url)
+    cdb_logging.info("connectionInternalIP: "+db_url)
     return ip, db_url
     
 
@@ -43,7 +45,7 @@ class jcCouchDB ():
       self.db_url     = url
       self.databases  = mbox.databases
 
-      logging.debug("Connect to CouchDB: "+self.db_url)
+      cdb_logging.debug("Connect to CouchDB: "+self.db_url)
 
       connects2db  = 0
       max_connects = 30
@@ -57,14 +59,14 @@ class jcCouchDB ():
               self.speak.speak_message("WAITING-FOR-DB")
 
           try:
-              logging.info("Try to connect to CouchDB")
+              cdb_logging.info("Try to connect to CouchDB")
               response = requests.get(self.db_url)
               connects2db = max_connects+1
 
           except requests.exceptions.RequestException as e:
               connects2db += 1
-              logging.warning("Waiting 5s for connect to CouchDB: " + str(connects2db) + "/" + str(max_connects) + " ("+self.db_url+")")
-              logging.info(   "                      ... to CouchDB: " + self.db_url)
+              cdb_logging.warning("Waiting 5s for connect to CouchDB: " + str(connects2db) + "/" + str(max_connects) + " ("+self.db_url+")")
+              cdb_logging.info(   "                      ... to CouchDB: " + self.db_url)
 
               time.sleep(5)
 
@@ -75,7 +77,7 @@ class jcCouchDB ():
               if stage.speak_ask_whom != "ASK--FOR-HELP":
                  self.speak.speak_message(stage.speak_ask_whom)
 
-              logging.warning("Error connecting to CouchDB, give up.")
+              cdb_logging.warning("Error connecting to CouchDB, give up.")
               sys.exit(1)  ### -> LEADS TO AN ERROR !!!
 
 
@@ -88,7 +90,7 @@ class jcCouchDB ():
       self.fill_cache()
       
 
-      logging.debug("Connect to CouchDB: "+self.db_url)
+      cdb_logging.debug("Connect to CouchDB: "+self.db_url)
 
    #--------------------------------------
 
@@ -97,13 +99,13 @@ class jcCouchDB ():
        for cat_key in self.databases:
            for db_key in self.databases[cat_key]:
                if db_key in self.database and "main" in self.database[db_key]:
-                   logging.debug("OK: DB " + db_key + " exists.")
+                   cdb_logging.debug("OK: DB " + db_key + " exists.")
                else:
-                   logging.debug("OK: DB " + db_key + " have to be created ...")
+                   cdb_logging.debug("OK: DB " + db_key + " have to be created ...")
                    try:
                      self.create(db_key)
                    except Exception as e:
-                     logging.error("CouchDB - Could not create DB " + db_key + "! " + str(e))
+                     cdb_logging.error("CouchDB - Could not create DB " + db_key + "! " + str(e))
 
    #--------------------------------------
 
@@ -119,18 +121,18 @@ class jcCouchDB ():
 
        # create DB
        if db_key in self.database:
-           logging.warn("CouchDB "+db_key+" exists.")
+           cdb_logging.warn("CouchDB "+db_key+" exists.")
            db = self.database[db_key]
        else:
            try:
                db = self.database.create(db_key)
            except Exception as e:
-               logging.error("CouchDB - Could not create DB "+db_key+"! " + str(e))
+               cdb_logging.error("CouchDB - Could not create DB "+db_key+"! " + str(e))
                return
 
        # create initial data
        if "main" in self.database[db_key]:
-           logging.warn("CouchDB - Already data in "+db_key+"!")
+           cdb_logging.warn("CouchDB - Already data in "+db_key+"!")
            return
        else:
            doc = db.get("main")
@@ -145,11 +147,11 @@ class jcCouchDB ():
            try:
                db.save(doc)
            except Exception as e:
-               logging.error("CouchDB - Could not save after create: " + db_key + "  " + str(e))
+               cdb_logging.error("CouchDB - Could not save after create: " + db_key + "  " + str(e))
                return
 
        # success
-       logging.info("CouchDB created: " + db_key + " " +str(time.time()))
+       cdb_logging.info("CouchDB created: " + db_key + " " +str(time.time()))
        return
 
    #--------------------------------------
@@ -162,7 +164,7 @@ class jcCouchDB ():
            self.changed_data = False
 
        except:
-           logging.warn("CouchDB ERROR read group: " + db_key + " " +str(time.time()))
+           cdb_logging.warn("CouchDB ERROR read group: " + db_key + " " +str(time.time()))
 
        return data
 
@@ -177,7 +179,7 @@ class jcCouchDB ():
        elif db_key in self.cache:
            return self.cache[db_key][entry_key]
 
-       logging.debug("CouchDB read cache: " + db_key + " " +str(time.time()))
+       cdb_logging.debug("CouchDB read cache: " + db_key + " " +str(time.time()))
 
        return
 
@@ -188,7 +190,7 @@ class jcCouchDB ():
        start_time = time.time()
        if db_key in self.database:
 
-           logging.debug("CouchDB read: " + db_key + " - " + str(int(start_time - time.time())) + "s")
+           cdb_logging.debug("CouchDB read: " + db_key + " - " + str(int(start_time - time.time())) + "s")
            
            try:
              db = self.database[db_key]
@@ -198,11 +200,11 @@ class jcCouchDB ():
              
            except Exception as e:
              if (db_key != "_users" and db_key != "_replicator"):
-               logging.error("CouchDB ERROR read: " + db_key + "/" + entry_key + " - " + str(e))
+               cdb_logging.error("CouchDB ERROR read: " + db_key + "/" + entry_key + " - " + str(e))
 
 
        else:
-           logging.warn("CouchDB ERROR read: " + db_key + " - " + str(int(start_time - time.time())) + "s")
+           cdb_logging.warn("CouchDB ERROR read: " + db_key + " - " + str(int(start_time - time.time())) + "s")
            data = {}
            self.create(db_key) #, data)
            return self.database[db_key]["main"]["data"]
@@ -236,17 +238,17 @@ class jcCouchDB ():
        try:
            db.save(doc)
        except Exception as e:
-           logging.warn("CouchDB ERROR save: " + key + " " + str(e))
+           cdb_logging.warn("CouchDB ERROR save: " + key + " " + str(e))
            return
        self.cache[key] = self.read(key)
 
-       logging.debug("CouchDB save: " + key + " " +str(time.time()))
+       cdb_logging.debug("CouchDB save: " + key + " " +str(time.time()))
        return
 
    #--------------------------------------
 
    def backupToJson(self):
-       logging.info("BACKUP to JSON")
+       cdb_logging.info("BACKUP to JSON")
        for db_key in self.databases:
            for key in self.databases[db_key]:
                db  = self.database[key]
@@ -254,7 +256,7 @@ class jcCouchDB ():
                jcJSON.write(key,doc["data"])
 
    def restoreFromJson(self):
-       logging.info("RESTORE from JSON")
+       cdb_logging.info("RESTORE from JSON")
        self.changed_data = True
        for db_key in self.databases:
            for key in self.databases[db_key]:
@@ -276,9 +278,9 @@ class jcCouchDB ():
 
                try:
                    db.save(doc)
-                   logging.warn("save: ..." + key)
+                   cdb_logging.warn("save: ..." + key)
                except:
-                   logging.error("save ERROR: " + key)
+                   cdb_logging.error("save ERROR: " + key)
                    return
           
 

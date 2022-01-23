@@ -47,16 +47,22 @@ class musicPlayer(threading.Thread):
       self.speak          = speak.speakThread(4, name + " VLC Player / Speak", 1, "") 
       self.speak.start()
 
+      self.logging = logging.getLogger("player")
+      self.logging.setLevel = stage.logging_level
+
       
    def run(self):
       '''
       run player
       '''
-      logging.info("Starting VLC player ("+self.name+") ...")
+      self.logging.info("Starting VLC player ("+self.name+") ...")
       try:
-        logging.info("Connecting to audio device via VLC ...")
+        self.logging.info("Connecting to audio device via VLC ...")
         if stage.rollout == "prod":     self.instance     = vlc.Instance("--quiet")
         else:                           self.instance     = vlc.Instance()
+        
+#        devices = self.instance.audio_output_enumerate_devices()
+#        self.logging.warning(str(devices))
       
         self.connected    = True
         self.player       = self.instance.media_player_new()
@@ -65,13 +71,13 @@ class musicPlayer(threading.Thread):
         
       except Exception as e:
         self.connected    = False
-        logging.error("VLC-error connecting to audio device: "+str(e))
+        self.logging.error("VLC-error connecting to audio device: "+str(e))
 
       while self.running:
          time.sleep(0.5)
          self.play_status = self.playing()
 
-      logging.info("Stopped VLC player ("+self.name+").")
+      self.logging.info("Stopped VLC player ("+self.name+").")
       return
       
       
@@ -79,13 +85,13 @@ class musicPlayer(threading.Thread):
       '''
       set volume
       '''
-      logging.info("-> "+str(vol))
+      self.logging.info("-> "+str(vol))
       if self.player != "":
         self.player.audio_set_volume(int(vol * self.volume_factor * 100))
         self.volume_mute   = False
         self.volume        = vol
       else:
-        logging.warning("Player not loaded yet")
+        self.logging.warning("Player not loaded yet")
 
 
    def volume_up(self,up):
@@ -161,7 +167,7 @@ class musicPlayer(threading.Thread):
       '''
       mute / unmute player
       '''
-      logging.debug("Mute ... "+str(value)+" / "+str(self.volume_mute) + " / " + str(self.volume))
+      self.logging.debug("Mute ... "+str(value)+" / "+str(self.volume_mute) + " / " + str(self.volume))
       if self.volume_mute == False or value == True:
           #self.set_volume(0)
           self.player.audio_set_volume(0)
@@ -189,13 +195,13 @@ class musicPlayer(threading.Thread):
         self.set_volume(self.volume)
         
       except Exception as e:
-        logging.error("Player ("+self.name+"): Could not start playback - "+path+" - "+str(e))
+        self.logging.error("Player ("+self.name+"): Could not start playback - "+path+" - "+str(e))
         self.speak.speak_message("COULD-NOT-START-PLAYBACK")
         return "Error"
       
       time.sleep(2)
       if self.play_status == 0:
-         logging.error("Player ("+self.name+"): Could not start playback - " + str(self.play_status))
+         self.logging.error("Player ("+self.name+"): Could not start playback - " + str(self.play_status))
          self.speak.speak_message("UNKNOWN-ERROR")
          return "Error"
 
@@ -227,11 +233,11 @@ class musicPlayer(threading.Thread):
         
       if self.player_status == "State.Stopped" or self.player_status == "State.NothingSpecial" or self.player_status == "State.Ended":
          self.play_status = 0
-         logging.debug("Playing:"+self.play_url+"..."+str(self.play_status))
+         self.logging.debug("Playing:"+self.play_url+"..."+str(self.play_status))
       else:
          self.play_status = 1
 
-      logging.debug("Playing:"+old_state+" -> "+self.player_status+" ("+str(self.play_status)+")")        
+      self.logging.debug("Playing:"+old_state+" -> "+self.player_status+" ("+str(self.play_status)+")")        
       return self.play_status
       
       
@@ -239,13 +245,13 @@ class musicPlayer(threading.Thread):
       '''
       get mp3 file from url with m3u
       '''
-      logging.info("Load playlist URL from m3u ("+url+")")
+      self.logging.info("Load playlist URL from m3u ("+url+")")
 
       try:
         response = requests.get(url)
         playlist = response.text
       except requests.exceptions.RequestException as e:
-        logging.debug("Can't open the playlist from m3u: " + str(e))
+        self.logging.debug("Can't open the playlist from m3u: " + str(e))
         self.speak.speak_message("CANT-OPEN-STREAM")
         return ""
         
@@ -255,17 +261,17 @@ class musicPlayer(threading.Thread):
 
       i=0
       for stream in streams:
-        logging.info("... line: "+stream)
+        self.logging.info("... line: "+stream)
         if "#" in stream: 
-           logging.info("... comment: "+stream)
+           self.logging.info("... comment: "+stream)
 
         elif "http" in stream and i==0: 
-           logging.info("... url: "+stream)
+           self.logging.info("... url: "+stream)
            return_url = stream
            i=1
 
       if return_url == "":
-        logging.debug("No URL found in m3u-file:"+url)
+        self.logging.debug("No URL found in m3u-file:"+url)
         self.speak.speak_message("CANT-OPEN-STREAM")
         
       return return_url
@@ -280,13 +286,13 @@ class musicPlayer(threading.Thread):
       ping_ip   = False
       error_msg = ""
 
-      logging.debug("check if internet is connected - ping dns server")
+      self.logging.debug("check if internet is connected - ping dns server")
       for key in host_ip:
         if runcmd.ping(key):
           ping_ip = True
           break
 
-      logging.debug("check if dns is working correctly - ping domain names")
+      self.logging.debug("check if dns is working correctly - ping domain names")
       count     = 0
       while count < len(host):
          try:
@@ -294,33 +300,33 @@ class musicPlayer(threading.Thread):
             if connect and ping_ip:
                 error_msg = "CONNECTED"
                 self.internet_connection_error(error_msg)
-                logging.warning("Internet connection OK: " + host[count])
+                self.logging.warning("Internet connection OK: " + host[count])
                 return error_msg
 
             elif ping_ip:
                 error_msg = "DNS-ERROR"
                 self.internet_connection_error(error_msg)
-                logging.warning("Connection OK, DNS for Domain doesnt work: "+host[count])
+                self.logging.warning("Connection OK, DNS for Domain doesnt work: "+host[count])
 
             else:
                 error_msg = "NO-CONNECTION"
                 self.internet_connection_error(error_msg)
-                logging.warning("Internet connection ERROR: " + host[count])
+                self.logging.warning("Internet connection ERROR: " + host[count])
 
          except requests.exceptions.RequestException as e:
             error_msg = "NO-CONNECTION"
-            logging.warning("Error connecting to INTERNET ("+host[count]+"): " + str(e))
+            self.logging.warning("Error connecting to INTERNET ("+host[count]+"): " + str(e))
 
          count = count + 1
       
       if error_msg == "DNS-ERROR":
-          logging.error("Could not connect to INTERNET!")
+          self.logging.error("Could not connect to INTERNET!")
           self.speak.speak_message("CONNECTION-ERROR-RESTART-SHORTLY")
           time.sleep(20)
           return False
           
       elif error_msg != "CONNECTED":
-          logging.error("Could not connect to INTERNET!")
+          self.logging.error("Could not connect to INTERNET!")
           self.speak.speak_message("NO-INTERNET-CONNECTION")
           time.sleep(0.5)
           self.speak.speak_message("TRY-AGAIN-IN-A-MINUTE")

@@ -281,7 +281,7 @@ function mboxControlVolumeControl(volume, mute) {
 		else		{ volume = 0; }
 		}
 		
-console.log("----------------->> "+mute + " / " + volume);
+	console.log("---------->> mboxControlVolume: mute="+mute + " / volume=" + volume);
 
         // check audio status and show in navigation bar
         if (Math.round(volume*20/1) < 1 || mute == 1 || mute == true) { // CHECK !!! 1 -> true ???

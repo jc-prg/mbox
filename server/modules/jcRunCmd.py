@@ -6,11 +6,12 @@ import urllib
 import logging
 import platform    # For getting the operating system name
 import pythonping
+import time
 
 import modules.config_stage    as stage
 
 run_logging = logging.getLogger("run-cmd")
-run_logging.setLevel = stage.logging_level
+run_logging.setLevel(stage.logging_level)
 
 # execute command incl. "&"
 #--------------------------
@@ -42,19 +43,37 @@ def runCmd(cmd_line):
 # init logging settings
 #--------------------------
 
+def file_logging(logging_string, logging_file="/log/load_metadata.log"):
+    '''
+    write string into logging file
+    '''
+    file1 = open(logging_file, "a")
+    file1.write(logging_string+"\n")
+    file1.close()
+    return
+    
+
+
+def file_logging_init(logging_file="/log/load_metadata.log"):
+    '''
+    write string into logging file
+    '''
+    ts = time.gmtime()
+    readable = time.strftime("%Y-%m-%d %H:%M:%S", ts)
+    file1 = open(logging_file, "w")
+    file1.write(readable+"\n")
+    file1.close()
+    return
+
+    
 def init_logging(log_string,logfilename=""):
     """
     Initialize logging and print software title
     Log-level: DEBUG, INFO, WARNING, ERROR, CRITICAL
     """
     
-    log_level = stage.log_level
-    log_level = log_level.upper()
-    
-    if   log_level == "DEBUG":   level = logging.DEBUG
-    elif log_level == "INFO":    level = logging.INFO
-    elif log_level == "WARNING": level = logging.WARNING
-    elif log_level == "ERROR":   level = logging.ERROR
+    level_data = stage.logging_level_data
+    level      = stage.logging_level
     
     if stage.log_to_file == "yes":
     
@@ -87,7 +106,8 @@ def init_logging(log_string,logfilename=""):
     log = logging.getLogger("charset_normalizer")
     log.setLevel(logging.WARNING)
                       
-    logging_level = level
+    logging_level      = level
+    logging_level_data = level_data
 
 # ping a server e.g. to check internet connection
 #--------------------------

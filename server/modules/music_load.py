@@ -9,6 +9,8 @@ import modules.jcCouchDB      as jcCouch
 import modules.jcRunCmd       as jcRunCmd
 import modules.music_metadata as music_metadata
 
+from modules.jcRunCmd import *
+
 import os
 import uuid
 import logging
@@ -18,8 +20,7 @@ import time
 #---------------------------------
 
 load_logging = logging.getLogger("load")
-#load_logging.setLevel(stage.logging_level)
-load_logging.setLevel(logging.DEBUG)
+load_logging.setLevel(stage.logging_level_data)
 
 #---------------------------------
 
@@ -49,7 +50,7 @@ class musicLoadingThread (threading.Thread):
       self.supported_mpX     = [".mp3",".MP3",".mp4",".m4a",".MP4",".M4A"]
 
       self.logging = logging.getLogger("load")
-      self.logging.setLevel = stage.logging_level
+      self.logging.setLevel(stage.logging_level)
 
    #------
 
@@ -131,6 +132,8 @@ def readFiles(dir):
     
     command = "find -L "+dir+" -maxdepth 4"
     load_logging.info("Read files: " + command)
+    file_logging("----------------------------------------------")
+    file_logging("Read files: " + command)
       
     list,error=jcRunCmd.runCmd(command)
     files=list.splitlines()
@@ -155,6 +158,7 @@ def readFiles(dir):
           files_return.append(filename)
 
     load_logging.info("Dont scan directories: "+str(noscan))
+    file_logging("Dont scan directories: "+str(noscan))
     
     return files_return
 
@@ -247,7 +251,12 @@ def reloadCoverImages(data,thread=""):
     files_count      = 0
     files_img_found  = 0
     files_percentage = 0
+    
     load_logging.info("reloadCoverImages: Start to scan for new cover images ...")
+
+    file_logging_init()
+    file_logging(     "----------------------------------------------")
+    file_logging(     "reloadCoverImages: Start to scan for new cover images ...")
 
     # remove old entries
     for key in data:
@@ -260,6 +269,7 @@ def reloadCoverImages(data,thread=""):
        if not os.path.isfile(filename):
           reloadMusic_setProgessInfo(count=files_count, total=files_amount, thread=thread, show=True)
           load_logging.debug("Check Images: "+filename.replace(stage.data_dir,""))
+          file_logging(      "Check Images: "+filename.replace(stage.data_dir,""))
 
        # check if image file in folder (and take last one as alternative cover)
        if os.path.isfile(filename) and checkIfSupported(thread.supported_img,filename) == True:
@@ -273,11 +283,14 @@ def reloadCoverImages(data,thread=""):
                   files_img_found += 1
                   file_e2 = filename.replace(mbox.music_dir,"")
                   load_logging.debug(" . Found: "+filename.replace(mbox.music_dir,""))
+                  file_logging(      " . Found: "+filename.replace(mbox.music_dir,""))
                   load_logging.debug(" . Found: "+key+" | "+data[key]["album"])
+                  file_logging(      " . Found: "+key+" | "+data[key]["album"])
                   data[key]["cover_images"]["dir"].append(file_e2)
                   data[key]["cover_images"]["active"] = "dir"
     
     load_logging.info("reloadCoverImages: found "+str(files_img_found)+" files ("+str(files_count)+")")
+    file_logging(     "reloadCoverImages: found "+str(files_img_found)+" files ("+str(files_count)+")")
     return data
 
 
@@ -295,6 +308,7 @@ def reloadMusic_getCurrentWithoutErrors(data_current):
     logging_msg = []
     
     load_logging.info("Remove entries with errors for reload ...")
+    file_logging(     "Remove entries with errors for reload ...")
     
     for key in data_keys:
        data_reload[key] = {}
@@ -324,6 +338,7 @@ def reloadMusic_getCurrentWithoutErrors(data_current):
        
     for x in logging_msg:
        load_logging.debug(x)
+       file_logging(x)
        
     return data_reload
 
@@ -493,6 +508,10 @@ def reloadMusic(data, load_all=True, thread=""):
 
     load_logging.info("reloadMusic: Start reloading music data: " + mbox.music_dir + " | all=" + str(load_all))
     
+    file_logging_init()
+    file_logging(     "----------------------------------------------")
+    file_logging(     "reloadMusic: Start reloading music data: " + mbox.music_dir + " | all=" + str(load_all))
+    
     keys_media  = mbox.databases["music"]
     data_reload = {}    
     for key in keys_media:
@@ -512,11 +531,13 @@ def reloadMusic(data, load_all=True, thread=""):
     files_loaded     = 0
     
     load_logging.info("reloadMusic: Starting (load_all="+str(load_all)+") - " + str(files_amount) + " files found.")
+    file_logging(     "reloadMusic: Starting (load_all="+str(load_all)+") - " + str(files_amount) + " files found.")
         
     for path2file in media_files_reload:
     
       if not os.path.isfile(path2file):
          load_logging.info("Read: "+path2file)
+         file_logging(     "Read: "+path2file)
          reloadMusic_setProgessInfo(count=files_count, total=len(media_files_reload), thread=thread, show=True)
 
       elif os.path.isfile(path2file) and checkIfSupported(thread.supported_mpX,path2file) == True:
@@ -529,6 +550,7 @@ def reloadMusic(data, load_all=True, thread=""):
          file_read  = (load_all or (not load_all and not file_exist))
 
          load_logging.debug(" . Check: read=" + str(file_read) + " | " + filename)
+         file_logging(      " . Check: read=" + str(file_read) + " | " + filename)
       
          if file_read:
             files_loaded += 1
@@ -537,10 +559,11 @@ def reloadMusic(data, load_all=True, thread=""):
             data_reload["tracks"]["t_"+file_uuid]             = data_reload["files"][filename]
             data_reload["tracks"]["t_"+file_uuid]["uuid"]     = "t_"+file_uuid
             data_reload["files"][filename]["uuid"]            = "t_"+file_uuid
-
                      
-    # recreate album_infos based on tracks
     load_logging.info("reloadMusic: loaded data from "+str(files_loaded)+" files ("+str(len(media_files_reload))+")")
+    file_logging(     "reloadMusic: loaded data from "+str(files_loaded)+" files ("+str(len(media_files_reload))+")")
+    
+    # recreate album_infos based on tracks
     load_logging.info("reloadMusic: recreate album_infos based on tracks")
     data_reload["album_info"], data_reload["tracks"] = reloadMusic_createAlbumInfo(track_data=data_reload["tracks"])
     
@@ -594,6 +617,7 @@ def reloadMusic(data, load_all=True, thread=""):
            os.remove(x)
 
     load_logging.info("reloadMusic: finished ... " + mbox.music_dir + " | all=" + str(all) + " | albums=" + str(len(data["albums"])))
+    file_logging(     "reloadMusic: finished ... " + mbox.music_dir + " | all=" + str(all) + " | albums=" + str(len(data["albums"])))
     return data_reload
 
     

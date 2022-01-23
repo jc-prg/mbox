@@ -1,14 +1,13 @@
 #!/bin/bash
 
 dir="${MBOX_DIR_DATA_ROOT}"
+dir_data="${MBOX_DIR_DATA}"
 usb_dev="${MBOX_MOUNT_USB}"
 usb_mount="${MBOX_MOUNT_DATA}"
 
-mkdir ${DOLLAR}dir
+mkdir -p ${DOLLAR}dir_data
+cd ${DOLLAR}dir_data
 
-cd ${DOLLAR}dir
-mkdir ${MBOX_CURRENT_STAGE}
-cd ${MBOX_CURRENT_STAGE}
 mkdir data
 mkdir couchdb
 mkdir couchdb_backup

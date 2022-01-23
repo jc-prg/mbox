@@ -28,50 +28,12 @@ server_ip        = data_db_ip
 server_dns       = [ "${DNS01}","${DNS02}","${DNS03}"]
 
 log_level        = "${MBOX_LOGLEVEL}"
+log_filename     = "${MBOX_LOGFILENAME}"
+logging_level    = ""
 log_to_file      = "${MBOX_LOG2FILE}"
 
 # ---------------------------------
 
 if rollout == "test": test  = True
 else:                 test  = False
-
-
-# ---------------------------------
-
-import logging
-
-def init_logging(string,logfilename="",stage="test"):
-    """
-    Initialize logging and print software title
-    When stage != "test" write and filename is specified, write log into file
-    """
-
-    if   log_level == "debug":   level = logging.DEBUG
-    elif log_level == "info":    level = logging.INFO
-    elif log_level == "warning": level = logging.WARNING
-    elif log_level == "error":   level = logging.ERROR
-    
-    if log_to_file == "yes":
-       logging.basicConfig(filename=logfilename,
-                       filemode='a',
-                       format='%(asctime)s %(name)s %(levelname)s %(message)s',
-                       datefmt='%d.%m.%y %H:%M:%S',
-                       level=level)
-    else:
-       logging.basicConfig(level=level)
-
-    if log_level == "debug" or log_level == "info":
-       logging.info("Start - Log-Level "+log_level+" ...")
-       logging.info("--------------------------------")
-       logging.info(string)
-       logging.info("--------------------------------")       
-    elif log_level == "warning":
-       logging.warning("Start: "+string+" ("+log_level+") ...")
-    else:
-       logging.error("Start: "+string+" ("+log_level+") ...")
-                  
-    log = logging.getLogger("werkzeug")
-    log.setLevel(logging.WARN)
-                      
-
 

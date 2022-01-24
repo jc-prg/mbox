@@ -116,12 +116,15 @@ class podcastThread (threading.Thread):
       self.playing          = 0
       self.playing_uuid     = ""   
 
+      self.logging = logging.getLogger("podcast")
+      self.logging.setLevel = stage.logging_level
+
 
    def run(self):
       '''
       run thread (nothing special at the moment)
       '''
-      logging.info( "Starting " + self.name )
+      self.logging.info( "Starting " + self.name )
       
       count_error = 0
       time.sleep(2)
@@ -155,11 +158,11 @@ class podcastThread (threading.Thread):
                      self.temp_podcasts[stream_uuid] = podcast
                   
              else: 
-               logging.warning("No Stream_URL for "+stream_uuid)
+               self.logging.warning("No Stream_URL for "+stream_uuid)
                  
          time.sleep(1)
         
-      logging.info( "Exiting " + self.name )
+      self.logging.info( "Exiting " + self.name )
 
 
    def stop(self):
@@ -208,16 +211,16 @@ class podcastThread (threading.Thread):
       podcast = {}
        
       try:
-        logging.info("Read podcast:" + rss_url)     
+        self.logging.info("Read podcast:" + rss_url)     
         response = requests.get(rss_url)
         response.encoding = response.apparent_encoding
-        #logging.info(response.encoding)
+        #self.logging.info(response.encoding)
         playlist = response.text                            #### -> UTF-8 ???
         playlist = playlist.encode('utf-8')
         
          
       except requests.exceptions.RequestException as e:
-        logging.error("Can't open the podcast info from RSS/XML: " + str(e))
+        self.logging.error("Can't open the podcast info from RSS/XML: " + str(e))
         #self.speak.speak_message("CANT-OPEN-STREAM")
         return ""
       
@@ -227,8 +230,8 @@ class podcastThread (threading.Thread):
     
       itunes_sub = "{http://www.itunes.com/dtds/podcast-1.0.dtd}"
     
-#      logging.info(".")     
-#      logging.info(str(data_all))     
+#      self.logging.info(".")     
+#      self.logging.info(str(data_all))     
         
       update_date = datetime.datetime.now()
       podcast = {
@@ -316,7 +319,7 @@ class podcastThread (threading.Thread):
         
       podcast["track_list"] = podcast["track_list"][::-1]
     
-      logging.debug(str(podcast))  
+      self.logging.debug(str(podcast))  
       return podcast
     
     

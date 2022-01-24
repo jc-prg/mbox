@@ -16,3 +16,4 @@ couchdb
 setuptools
 uuid
 eyed3
+pythonping

@@ -3,9 +3,11 @@
 # ---------------------------------
 # ${THIS_IS_THE_PROJECT_TEMPLATE}
 # ---------------------------------
-# this script will be replace by
-# the rollout script for PROD stage
-
+# template:
+# ./config/templates/config_stage.py
+# create configuration:
+# $ cd ./config
+# $ ./create
 
 rollout        = "${MBOX_CURRENT_STAGE}"
 
@@ -23,55 +25,42 @@ language       = "${MBOX_LANGUAGE}"
 speak_msg      = "${MBOX_SPEEK_MSG}"
 speak_ask_whom = "ASK-${MBOX_SPEEK_ASK_WHOM}-FOR-HELP"
 
-server_port      = ${MBOX_SERVER_PORT}
-server_ip        = data_db_ip
-server_dns       = [ "${DNS01}","${DNS02}","${DNS03}"]
+server_port    = ${MBOX_SERVER_PORT}
+server_ip      = data_db_ip
+server_dns     = [ "${DNS01}","${DNS02}","${DNS03}"]
 
-log_level        = "${MBOX_LOGLEVEL}"
-log_to_file      = "${MBOX_LOG2FILE}"
+log_level         = "${MBOX_LOGLEVEL}"
+log_to_file       = "${MBOX_LOG2FILE}"
+log_filename      = "${MBOX_LOG2FILE_PATH}"
+
+log_level_data    = "${MBOX_LOGLEVEL_LOAD}"
+log_to_file_data  = "${MBOX_LOG2FILE_LOAD}"
+log_filename_data = "${MBOX_LOG2FILE_LOAD_PATH}"
+
+logging_level      = ""
+logging_level_data = ""
 
 # ---------------------------------
 
 if rollout == "test": test  = True
 else:                 test  = False
 
-
 # ---------------------------------
 
 import logging
 
-def init_logging(string,logfilename="",stage="test"):
-    """
-    Initialize logging and print software title
-    When stage != "test" write and filename is specified, write log into file
-    """
+log_level      = log_level.upper()
+log_level_data = log_level_data.upper()
 
-    if   log_level == "debug":   level = logging.DEBUG
-    elif log_level == "info":    level = logging.INFO
-    elif log_level == "warning": level = logging.WARNING
-    elif log_level == "error":   level = logging.ERROR
+if   log_level_data == "DEBUG":    logging_level_data = logging.DEBUG
+elif log_level_data == "INFO":     logging_level_data = logging.INFO
+elif log_level_data == "WARNING":  logging_level_data = logging.WARNING
+elif log_level_data == "ERROR":    logging_level_data = logging.ERROR
+elif log_level_data == "CRITICAL": logging_level_data = logging.CRITICAL
     
-    if log_to_file == "yes":
-       logging.basicConfig(filename=logfilename,
-                       filemode='a',
-                       format='%(asctime)s %(name)s %(levelname)s %(message)s',
-                       datefmt='%d.%m.%y %H:%M:%S',
-                       level=level)
-    else:
-       logging.basicConfig(level=level)
-
-    if log_level == "debug" or log_level == "info":
-       logging.info("Start - Log-Level "+log_level+" ...")
-       logging.info("--------------------------------")
-       logging.info(string)
-       logging.info("--------------------------------")       
-    elif log_level == "warning":
-       logging.warning("Start: "+string+" ("+log_level+") ...")
-    else:
-       logging.error("Start: "+string+" ("+log_level+") ...")
-                  
-    log = logging.getLogger("werkzeug")
-    log.setLevel(logging.WARN)
-                      
-
+if   log_level == "DEBUG":         logging_level = logging.DEBUG
+elif log_level == "INFO":          logging_level = logging.INFO
+elif log_level == "WARNING":       logging_level = logging.WARNING
+elif log_level == "ERROR":         logging_level = logging.ERROR
+elif log_level == "CRITICAL":      logging_level = logging.CRITICAL
 

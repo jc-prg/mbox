@@ -5,28 +5,31 @@
 #----------------------------------------------
 import time
 import logging
-import modules.config_stage    as stage
-import modules.config_mbox     as mbox
-
-# set start time and write title/version/stage
-#----------------------------------------------
-mbox.start_time = time.time()
 
 # start and configure logging
 #----------------------------------------------
+start_time = time.time()
+import modules.config_stage    as stage
+import modules.config_mbox     as mbox
+mbox.start_time = start_time
 
-stage.init_logging( mbox.APIname + mbox.APIversion + "   (" + str(stage.rollout) + "/"+str(stage.log_level)+")", '/log/server.log',stage.rollout )
+print("----------------------------------------------------------------")
+print(mbox.APIname + mbox.APIversion + "   (" + str(stage.rollout) + "/"+str(stage.log_level).upper()+")")
+print("----------------------------------------------------------------")
+
+import modules.jcRunCmd        as run
+run.init_logging( mbox.APIname + mbox.APIversion + "   (" + str(stage.rollout) + "/" + str(stage.log_level) + ")", "" )
+
+import modules.server_init     as init
+
 
 # load API modules
 #----------------------------------------------
 import connexion
-from connexion.resolver import RestyResolver
-from flask_cors         import CORS
-
-import modules.server_init as init
+from connexion.resolver     import RestyResolver
+from flask_cors             import CORS
 
 #----------------------------------------------
-
 # create the application instance
 logging.info("Start Server ..." + init.time_since_start())
 app = connexion.App(__name__, specification_dir="./")

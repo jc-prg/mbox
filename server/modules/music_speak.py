@@ -39,6 +39,10 @@ class speakThread (threading.Thread):
             
       self.player       = self.instance.media_player_new()
 
+      self.logging = logging.getLogger("speak")
+      self.logging.setLevel = stage.logging_level
+
+
       # init mixer
       #global music_plays, music_loaded, music_ctrl
 
@@ -75,18 +79,18 @@ class speakThread (threading.Thread):
          tts = gtts.gTTS(text=text, lang=language)
          tts.save(filename)      
       except Exception as e:
-         logging.error("Could not speak message ("+text+").")
-         logging.error(" -> gtts error: "+str(e))
+         self.logging.error("Could not speak message ("+text+").")
+         self.logging.error(" -> gtts error: "+str(e))
     
       try:
          self.play_file(filename)
          duration = self.player.get_length() / 1000
          time.sleep(duration-0.3)
       except Exception as e:
-         logging.error("Could not speak message ("+text+").")
-         logging.error(" -> player error: "+str(e))
+         self.logging.error("Could not speak message ("+text+").")
+         self.logging.error(" -> player error: "+str(e))
 
-      logging.info("Speak_text: "+str(text)+" ("+str(duration)+")")
+      self.logging.info("Speak_text: "+str(text)+" ("+str(duration)+")")
 
     
    def speak_message(self, message, volume=-1):

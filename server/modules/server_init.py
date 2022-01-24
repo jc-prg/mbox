@@ -39,13 +39,6 @@ ExitPrg    = False
 Stage      = mbox.initial_stage
 
 #-------------------------------------------------
-
-if stage.test:
-    if mbox.DEBUG: logging.basicConfig(level=logging.DEBUG)  # DEBUG, INFO, WARNING, ERROR, CRITICAL
-    else:          logging.basicConfig(level=logging.INFO)   # DEBUG, INFO, WARNING, ERROR, CRITICAL
-else:              logging.basicConfig(level=logging.WARN)   # DEBUG, INFO, WARNING, ERROR, CRITICAL
-
-#-------------------------------------------------
 # basic server functions
 #-------------------------------------------------
 

@@ -19,8 +19,15 @@ export MBOX_APP_VERSION="app"    # options: => directory name
 export MBOX_CURRENT_STAGE="prod" # options: prod, test, <your name>
 export MBOX_ACTIVE_STAGE="$MBOX_CURRENT_STAGE"
 export MBOX_IS_TEST="False"
-export MBOX_LOGLEVEL="warning"   # options: "debug", "info", "warning", "error" (set log level for couchdb -> config/couchdb/default.ini)
-export MBOX_LOG2FILE="yes"
+
+# Logging
+export MBOX_LOGLEVEL="warning"     # set general log-level - options: "debug", "info", "warning", "error"  (set log level for couchdb -> config/couchdb/default.ini)
+export MBOX_LOG2FILE="yes"         # write logging to file - options: "yes", "no"        
+export MBOX_LOG2FILE_PATH="/log/server.log"   # log-file name -> "/log/" is mapped to directory ./log 
+
+export MBOX_LOGLEVEL_LOAD="info"   # set log-level for loading data - options: "debug", "info", "warning", "error"  (set log level for couchdb -> config/couchdb/default.ini)
+export MBOX_LOG2FILE_LOAD="yes"    # write logging for loading data to file - options: "yes", "no"
+export MBOX_LOG2FILE_LOAD_PATH="/log/load_metadata.log" # log-file name -> "/log/" is mapped to directory ./log 
 
 # Settings
 export WLAN_COUNTRY="DE"

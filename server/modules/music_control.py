@@ -56,6 +56,9 @@ class musicControlThread(threading.Thread):
       self.last_card_identified = ""      
       self.relevant_db          = self.music_database.databases["music"]
 
+      self.logging = logging.getLogger("control")
+      self.logging.setLevel = stage.logging_level
+
       
    def run(self):
       '''
@@ -71,10 +74,10 @@ class musicControlThread(threading.Thread):
       last_music = last_run["music"]
 
       if last_run["music"]["playing"] != 1 and "playlist_uuid" in last_music:     
-        logging.info("Don't load playlist and song from last run ("+last_music["playlist_uuid"]+")...")
+        self.logging.info("Don't load playlist and song from last run ("+last_music["playlist_uuid"]+")...")
       
       if last_run["music"]["playing"] != 1:     
-        logging.info("Don't load playlist and song from last run ...")
+        self.logging.info("Don't load playlist and song from last run ...")
       
       elif last_run["music"]["playing"] == 1:
         self.music_ctrl             = last_music
@@ -88,15 +91,15 @@ class musicControlThread(threading.Thread):
           self.music_load_new       = True
           last_load                 = True
           
-          logging.info("Load playlist and song from last run ...")
-          logging.info("... "+last_music["playlist_uuid"])
+          self.logging.info("Load playlist and song from last run ...")
+          self.logging.info("... "+last_music["playlist_uuid"])
 
       time.sleep(5)
       while self.running:     
 
          time.sleep(wait_time)         
          if not self.player.connected:
-            logging.error("Player not connected!")
+            self.logging.error("Player not connected!")
             self.running = False
             break
 
@@ -104,7 +107,7 @@ class musicControlThread(threading.Thread):
          self.podcast.check_playing_podcast(playing=self.music_plays, playing_data=self.music_ctrl)
 
          # if new data to be loaded         
-         logging.debug("Active playlist: " + str(self.music_load_new) + "; List: " + str(len(self.music_list)) + "; Position: " + str(self.music_list_p) )
+         self.logging.debug("Active playlist: " + str(self.music_load_new) + "; List: " + str(len(self.music_list)) + "; Position: " + str(self.music_list_p) )
          if self.music_load_new and len(self.music_list) > 0 and int(self.music_list_p) <= len(self.music_list):
          
             self.music_load_new  = False
@@ -176,7 +179,7 @@ class musicControlThread(threading.Thread):
 
             # if stopped device while playing, load last music
             if last_load:
-               logging.debug("Jump to position in song from last run ...")
+               self.logging.debug("Jump to position in song from last run ...")
                if self.music_ctrl["length"] != 0:
                   position  = (self.music_ctrl["position"] / self.music_ctrl["length"]) * 100
                else:
@@ -193,7 +196,7 @@ class musicControlThread(threading.Thread):
                if self.music_list_p < len(self.music_list):
                  self.music_load_new = True
                  self.music_list_p   = int(self.music_list_p)+1
-                 logging.info("Next song in list, position: " + str(self.music_list_p) + "/" + str(len(self.music_list)))
+                 self.logging.info("Next song in list, position: " + str(self.music_list_p) + "/" + str(len(self.music_list)))
 
                else:
                  self.music_load_new = True
@@ -201,7 +204,7 @@ class musicControlThread(threading.Thread):
                  self.music_list_p   = 1
                  self.music_type     = ""
                  self.control_data(state="Ended",song={},playlist={})
-                 logging.info("Playlist empty, stop playing.")
+                 self.logging.info("Playlist empty, stop playing.")
 
             if self.player.play_status == 1:
                self.music_ctrl["length"]       = float(self.player.get_length())   / 1000
@@ -211,7 +214,7 @@ class musicControlThread(threading.Thread):
          self.playlist_load_rfid()
          self.playback_save_status()
             
-      logging.info("Stopped music player ("+self.name+").")     
+      self.logging.info("Stopped music player ("+self.name+").")     
       
 
    def stop(self):
@@ -237,7 +240,7 @@ class musicControlThread(threading.Thread):
       '''
       self.player.mute(value)
       self.music_ctrl["mute"]   = self.player.volume_mute
-      logging.debug("Mute: "+str(self.music_ctrl["mute"]))
+      self.logging.debug("Mute: "+str(self.music_ctrl["mute"]))
 
 
    def volume_up(self,up):
@@ -269,7 +272,7 @@ class musicControlThread(threading.Thread):
       '''
       load list from album, playlist or stream -> put to playlist array
       '''
-      logging.info("Load Playlist "+playlist_uuid+"/"+str(position)+" ...")
+      self.logging.info("Load Playlist "+playlist_uuid+"/"+str(position)+" ...")
       
       if playlist_uuid == self.music_list_uuid:
          self.music_list_p    = int(position)
@@ -321,19 +324,19 @@ class musicControlThread(threading.Thread):
       '''
       if "cardUID" in mbox.rfid_ctrl:
       
-        logging.debug("Load UUID from RFID-Card: " + mbox.rfid_ctrl["cardUID"])
+        self.logging.debug("Load UUID from RFID-Card: " + mbox.rfid_ctrl["cardUID"])
         database = self.music_database.read_cache("cards")
 
         if (mbox.rfid_ctrl["cardUID"] != ""):
 
-          logging.info("CardUID: "+mbox.rfid_ctrl["cardUID"])
+          self.logging.info("CardUID: "+mbox.rfid_ctrl["cardUID"])
           if mbox.rfid_ctrl["cardUID"] in database:
           
             if "LastCard" in self.music_ctrl and self.music_ctrl["LastCard"] == database[mbox.rfid_ctrl["cardUID"]][0]:
-               logging.info("Card already started ("+self.music_ctrl["LastCard"]+"/"+database[mbox.rfid_ctrl["cardUID"]][0]+")...")
+               self.logging.info("Card already started ("+self.music_ctrl["LastCard"]+"/"+database[mbox.rfid_ctrl["cardUID"]][0]+")...")
 
             else:
-               logging.info("Start Playlist: "+database[mbox.rfid_ctrl["cardUID"]][0]+" / "+self.music_ctrl["LastCard"])              
+               self.logging.info("Start Playlist: "+database[mbox.rfid_ctrl["cardUID"]][0]+" / "+self.music_ctrl["LastCard"])              
                self.playlist_load_uuid(database[mbox.rfid_ctrl["cardUID"]][0])
                self.music_ctrl["LastCard"]  = database[mbox.rfid_ctrl["cardUID"]][0]
               
@@ -344,7 +347,7 @@ class musicControlThread(threading.Thread):
             self.control_data(state="error")
 
             if mbox.rfid_ctrl["cardUID"] != self.last_card_identified:
-              logging.info("No Entry connected.")
+              self.logging.info("No Entry connected.")
               self.last_card_identified = mbox.rfid_ctrl["cardUID"]
           
               if mbox.rfid_ctrl["cardUID"] not in database: 
@@ -355,7 +358,7 @@ class musicControlThread(threading.Thread):
       '''
       jump within the playlist
       '''
-      logging.debug("Next song: "+str(step)+"+"+str(self.music_list_p)+" ("+str(len(self.music_list))+")" )
+      self.logging.debug("Next song: "+str(step)+"+"+str(self.music_list_p)+" ("+str(len(self.music_list))+")" )
 
       # back // if position > 0
       if step < 0 and self.music_list_p + step > 0:
@@ -395,7 +398,7 @@ class musicControlThread(threading.Thread):
            
         data["_saved"]                   = time.time()
         self.music_database.write("status",data)
-        logging.info("Save playing status: "+self.music_ctrl["state"])
+        self.logging.info("Save playing status: "+self.music_ctrl["state"])
 
       
    def metadata_by_filename(self,filename):
@@ -405,7 +408,7 @@ class musicControlThread(threading.Thread):
       database = self.music_database.read_cache("files")
       filename = filename.replace(mbox.music_dir, "")
       if not filename in database:
-         logging.error("Filename not in DB ("+filename+").")
+         self.logging.error("Filename not in DB ("+filename+").")
          return {}
       else:
          return database[filename]
@@ -417,10 +420,10 @@ class musicControlThread(threading.Thread):
       '''
       database = self.music_database.read_cache("tracks")
       if not get_uuid.startswith("t_"):
-         logging.error("It's not a track.")
+         self.logging.error("It's not a track.")
          return {}
       elif not get_uuid in database:
-         logging.error("Track not found in DB.")
+         self.logging.error("Track not found in DB.")
          return {}
       else:
          return database[get_uuid]
@@ -439,7 +442,7 @@ class musicControlThread(threading.Thread):
          if get_uuid in database: 
             track_list = database[get_uuid]["tracks"]
          else: 
-            logging.error("Album not found: "+get_uuid)
+            self.logging.error("Album not found: "+get_uuid)
             track_list = []
          
       elif get_uuid.startswith("p_"):
@@ -452,7 +455,7 @@ class musicControlThread(threading.Thread):
                if track.startswith("t_"):                            track_list.append(track)
                elif track.startswith("a_") and track in database_a:  track_list.extend(database_a[track]["tracks"])
          else:
-            logging.error("Album / track not found: "+get_uuid)
+            self.logging.error("Album / track not found: "+get_uuid)
             track_list = []
       
       elif get_uuid.startswith("r_"):         
@@ -471,14 +474,14 @@ class musicControlThread(threading.Thread):
                 
               if is_podcast:  
                   self.podcast.get_tracks_rss(rss_url=stream_url, playlist_uuid=get_uuid)
-                  logging.warning("RSS Feed / Podcast-List not implemented yet!")
+                  self.logging.warning("RSS Feed / Podcast-List not implemented yet!")
                   track_list = []
               else: 
-                  logging.warning("Unknown URL format. Try out ...")
+                  self.logging.warning("Unknown URL format. Try out ...")
                   track_list = [ stream_url ]
 
       else:
-         logging.error("Unknown ID Type!")
+         self.logging.error("Unknown ID Type!")
       
       return track_list
             

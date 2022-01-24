@@ -23,6 +23,7 @@ var UploadScript    = "mbox_app/upload.php";
 var checkImgExists  = false;
 var mboxSlider      = new jcSlider( name="mboxSlider", container="mbox_audio_slider");
 var internetConnect = "Started";
+reloadInterval      = app_reload_interval;
 
 //--------------------------------
 // create menu entries

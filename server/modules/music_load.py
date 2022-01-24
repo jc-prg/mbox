@@ -517,22 +517,25 @@ def reloadMusic(data, load_all=True, thread=""):
     for key in keys_media:
       data_reload[key] = {}
       
+    # reload files incl. metadata and images -> tracks and files
     media_files_exist  = data["files"].keys()
     media_files_reload = readFiles(mbox.music_dir)
     image_files_reload = readFiles(mbox.music_cover)
 
-    if not load_all:
-       data_reload = reloadMusic_getCurrentWithoutErrors(data_current=data)
-       
-    # reload files incl. metadata and images -> tracks and files
-    files_amount     = len(media_files_reload)
-    files_count      = 0
-    files_percentage = 0
-    files_loaded     = 0
+    files_amount       = len(media_files_reload)
+    files_count        = 0
+    files_percentage   = 0
+    files_loaded       = 0
+    files_error        = {}
     
     load_logging.info("reloadMusic: Starting (load_all="+str(load_all)+") - " + str(files_amount) + " files found.")
     file_logging(     "reloadMusic: Starting (load_all="+str(load_all)+") - " + str(files_amount) + " files found.")
         
+    if not load_all:
+       data_reload        = reloadMusic_getCurrentWithoutErrors(data_current=data)
+       media_files_exist  = data_reload["files"].keys()
+       file_logging("reloadMusic: Removed files with errors from list of existing files ("+str(len(media_files_exist))+")")
+       
     for path2file in media_files_reload:
     
       if not os.path.isfile(path2file):
@@ -559,6 +562,9 @@ def reloadMusic(data, load_all=True, thread=""):
             data_reload["tracks"]["t_"+file_uuid]             = data_reload["files"][filename]
             data_reload["tracks"]["t_"+file_uuid]["uuid"]     = "t_"+file_uuid
             data_reload["files"][filename]["uuid"]            = "t_"+file_uuid
+            
+            if "#error" in data_reload["files"][filename]["artist"]:
+               files_error[filename] = data_reload["files"][filename]["artist"]
                      
     load_logging.info("reloadMusic: loaded data from "+str(files_loaded)+" files ("+str(len(media_files_reload))+")")
     file_logging(     "reloadMusic: loaded data from "+str(files_loaded)+" files ("+str(len(media_files_reload))+")")
@@ -615,6 +621,11 @@ def reloadMusic(data, load_all=True, thread=""):
        for x in image_files_reload:
          if os.path.isfile(x):
            os.remove(x)
+    
+    if files_error != {}:
+       file_logging("reloadMusic: found files with errors:")
+       for filename in files_error:
+          file_logging(" - "+filename+" | "+files_error[filename])
 
     load_logging.info("reloadMusic: finished ... " + mbox.music_dir + " | all=" + str(all) + " | albums=" + str(len(data["albums"])))
     file_logging(     "reloadMusic: finished ... " + mbox.music_dir + " | all=" + str(all) + " | albums=" + str(len(data["albums"])))

@@ -3,9 +3,11 @@
 # ---------------------------------
 # ${THIS_IS_THE_PROJECT_TEMPLATE}
 # ---------------------------------
-# this script will be replace by
-# the rollout script for PROD stage
-
+# template:
+# ./config/templates/config_stage.py
+# create configuration:
+# $ cd ./config
+# $ ./create
 
 rollout        = "${MBOX_CURRENT_STAGE}"
 
@@ -23,14 +25,17 @@ language       = "${MBOX_LANGUAGE}"
 speak_msg      = "${MBOX_SPEEK_MSG}"
 speak_ask_whom = "ASK-${MBOX_SPEEK_ASK_WHOM}-FOR-HELP"
 
-server_port      = ${MBOX_SERVER_PORT}
-server_ip        = data_db_ip
-server_dns       = [ "${DNS01}","${DNS02}","${DNS03}"]
+server_port    = ${MBOX_SERVER_PORT}
+server_ip      = data_db_ip
+server_dns     = [ "${DNS01}","${DNS02}","${DNS03}"]
 
-log_level        = "${MBOX_LOGLEVEL}"
-log_level_data   = "${MBOX_LOGLEVEL_LOAD}"
-log_filename     = "${MBOX_LOGFILENAME}"
-log_to_file      = "${MBOX_LOG2FILE}"
+log_level         = "${MBOX_LOGLEVEL}"
+log_to_file       = "${MBOX_LOG2FILE}"
+log_filename      = "${MBOX_LOG2FILE_PATH}"
+
+log_level_data    = "${MBOX_LOGLEVEL_LOAD}"
+log_to_file_data  = "${MBOX_LOG2FILE_LOAD}"
+log_filename_data = "${MBOX_LOG2FILE_LOAD_PATH}"
 
 logging_level      = ""
 logging_level_data = ""

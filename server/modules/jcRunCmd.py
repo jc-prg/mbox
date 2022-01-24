@@ -43,14 +43,22 @@ def runCmd(cmd_line):
 # init logging settings
 #--------------------------
 
-def file_logging(logging_string, logging_file="/log/load_metadata.log"):
+def file_logging(logging_string, logging_file=""):
     '''
     write string into logging file
     '''
-    file1 = open(logging_file, "a")
-    file1.write(logging_string+"\n")
-    file1.close()
-    return
+    if stage.log_to_file_data != "yes":
+      return
+    
+    if logging_file == "" and stage.log_filename_data != "":
+      logging_file = stage.log_filename_data
+    
+    try:
+      file1 = open(logging_file, "a")
+      file1.write(logging_string+"\n")
+      file1.close()      
+    except:
+      return
     
 
 
@@ -58,12 +66,25 @@ def file_logging_init(logging_file="/log/load_metadata.log"):
     '''
     write string into logging file
     '''
+    if stage.log_to_file_data != "yes":
+      run_logging.debug("Log metadata to file is deactivated")
+      return
+
+    if logging_file == "" and stage.log_filename_data != "":
+      logging_file = stage.log_filename_data    
+      
     ts = time.gmtime()
     readable = time.strftime("%Y-%m-%d %H:%M:%S", ts)
-    file1 = open(logging_file, "w")
-    file1.write(readable+"\n")
-    file1.close()
-    return
+    
+    try:
+      file1 = open(logging_file, "w")
+      file1.write("----------------------------------------------\n")
+      file1.write("Load time: "+readable+"\n")
+      file1.write("Log level: "+stage.log_level_data+"\n")
+      file1.close()
+    except Exception as e:
+      run_logging.warning("Could not initiate log-file to log metadata loading: "+str(e))
+    
 
     
 def init_logging(log_string,logfilename=""):

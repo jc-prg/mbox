@@ -14,6 +14,7 @@ import modules.config_stage as stage
 import modules.config_mbox  as mbox
 import modules_gpio.config  as gpio
 import modules.jcJson       as jcJSON
+import modules.jcRunCmd     as jcCmd
 
 # set start time and write title/version/stage
 #----------------------------------------------
@@ -23,7 +24,7 @@ mbox.start_time = time.time()
 # start and configure logging
 #----------------------------------------------
 
-stage.init_logging( mbox.APIname_BTN + mbox.APIversion + "   (" + str(stage.rollout) + "/"+str(stage.log_level)+")", '/log/server_BUTTONS.log',stage.rollout )
+jcCmd.init_logging( mbox.APIname_BTN + mbox.APIversion + "   (" + str(stage.rollout) + "/"+str(stage.log_level)+")", '/log/server_BUTTONS.log',stage.rollout )
 
 if (stage.log_level != "error"): 
    GPIO.setwarnings(False)

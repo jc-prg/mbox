@@ -25,9 +25,13 @@ def read(file):
     d = {}
     file1 = file+".json"
     file2 = path.join(jsonAppDir,jsonPath,file1)
-    logging.debug(file2)
-    with open(file2) as json_data:
+    logging.debug("Reading JSON file ("+file2+")")
+    try:
+      with open(file2) as json_data:
         d = json.load(json_data)
+    except Exception as e:
+      logging.error("Error reading JSON file ("+file2+"): "+str(e))
+
     return d
 
 
@@ -40,9 +44,15 @@ def write(file, data):
     file1 = file+".json"
     file2 = path.join(jsonAppDir,jsonPath,file1)
 
-    with open(file2, 'wb') as outfile:
+    try:
+      with open(file2, 'wb') as outfile:
         json.dump(data, codecs.getwriter('utf-8')(outfile), ensure_ascii=False, sort_keys=True, indent=4)
         #json.dump(data, outfile, ensure_ascii=False, sort_keys=True, indent=4)
+      logging.debug("Wrote JSON file ("+file2+")")
+      
+    except Exception as e:
+      logging.error("Error writing JSON file ("+file2+"): "+str(e))
+    
 
 
 #--------------------------------------------

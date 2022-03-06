@@ -147,5 +147,7 @@ def ping(host):
     response_list = pythonping.ping(host, size=40, count=1)
     run_logging.info("PING "+host+": "+str(response_list).split("\n")[0])
 
-    if "Reply from "+host in str(response_list): return True 
-    else:                                        return False
+    if "Reply from " in str(response_list): return True 
+    else:                                   return False
+    
+    

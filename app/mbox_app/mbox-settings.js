@@ -201,6 +201,7 @@ function mboxSettingsStatus (data) {
       	text += "<li>" + add_link( RESTurl + "api/status/", "API-Link: Status") + "</li>";
       	text += "<li>" + add_link( RESTurl + "api/db/all/-/", "API-Link: List all") + "</li>";
       	text += "<li>" + add_link( RESTurl + "api/play/test/", "API-Link: Play Demo") +" </li>";
+     	text += "<li>" + add_link( RESTurl + "api/speak/LETS-GO/", "API-Link: Play Message &quot;LETS-GO&quot;") +"</li>";
       	text += "<li>" + add_link( RESTurl + "api/data/album_info/test/", "API-Link: List Album Demo") + "</li>";
       	text += "<li>" + add_link( RESTurl + "api/ui/", "API-Link: Swagger UI") + "</li>";
       	text += "<li>" + add_link( RESTurl_noport + ":" + couchdb_port +"/", "API-Link: CouchDB") + "</li>";

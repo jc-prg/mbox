@@ -3,7 +3,6 @@ import time
 import logging
 import modules.config_stage as stage
 import modules.config_mbox as mbox
-import modules.music_player as music_player
 import modules.music_podcast as music_podcast
 
 
@@ -48,6 +47,7 @@ class MusicControlThread(threading.Thread):
         """
         self.logging.info("Start Music Control ..." + self.start_time)
 
+        current_stream = {}
         wait_time = 0.1
         last_load = False
         last_run = self.music_database.read("status")
@@ -145,13 +145,11 @@ class MusicControlThread(threading.Thread):
                     self.music_ctrl["position"] = 0
 
                     if self.music_list_p == 1 and "title" in current_stream and "title" in current_info:
-                        self.speak.speak_text(current_stream["title"] + ": 1. : " + current_info["title"] + ".",
-                                              self.player.volume * 100)
+                        self.speak.speak_text(current_stream["title"] + ": 1. : " + current_info["title"] + ".")
                     elif "title" in current_info:
-                        self.speak.speak_text(str(self.music_list_p) + ". : " + current_info["title"] + ".",
-                                              self.player.volume * 100)
+                        self.speak.speak_text(str(self.music_list_p) + ". : " + current_info["title"] + ".")
                     elif "title" in current_stream:
-                        self.speak.speak_text(current_stream["title"] + ".", self.player.volume * 100)
+                        self.speak.speak_text(current_stream["title"] + ".")
 
                     self.player.play_stream(current_path)
                     self.music_ctrl["length"] = self.player.get_length()
@@ -242,12 +240,13 @@ class MusicControlThread(threading.Thread):
         """
         prepare playlist info based on loaded playlist
         """
-        current_list = {}
-        current_list["uuid"] = ""
-        current_list["position"] = self.music_list_p
-        current_list["length"] = len(self.music_list)
-        current_list["files"] = self.music_list
-        current_list["list"] = []
+        current_list = {
+            "uuid": "",
+            "position": self.music_list_p,
+            "length": len(self.music_list),
+            "files": self.music_list,
+            "list": []
+        }
         for filename in self.music_list:
             if not filename.startswith("http"):
                 file_info = self.metadata_by_filename(filename)
@@ -293,7 +292,6 @@ class MusicControlThread(threading.Thread):
 
         else:
             podcast = self.podcast.get_podcasts(playlist_uuid)
-            track_list = []
             if "track_list" in podcast:
                 track_list = podcast["track_list"]
                 track_db = podcast["tracks"]
@@ -318,7 +316,7 @@ class MusicControlThread(threading.Thread):
             self.logging.debug("Load UUID from RFID-Card: " + mbox.rfid_ctrl["cardUID"])
             database = self.music_database.read_cache("cards")
 
-            if (mbox.rfid_ctrl["cardUID"] != ""):
+            if mbox.rfid_ctrl["cardUID"] != "":
 
                 self.logging.info("CardUID: " + mbox.rfid_ctrl["cardUID"])
                 if mbox.rfid_ctrl["cardUID"] in database:
@@ -334,7 +332,6 @@ class MusicControlThread(threading.Thread):
                                 "LastCard"])
                         self.playlist_load_uuid(database[mbox.rfid_ctrl["cardUID"]][0])
                         self.music_ctrl["LastCard"] = database[mbox.rfid_ctrl["cardUID"]][0]
-
 
                 else:
                     self.player.stop()
@@ -410,7 +407,7 @@ class MusicControlThread(threading.Thread):
         """
         database = self.music_database.read_cache("files")
         filename = filename.replace(mbox.music_dir, "")
-        if not filename in database:
+        if filename not in database:
             self.logging.error("Filename not in DB (" + filename + ").")
             return {}
         else:
@@ -424,7 +421,7 @@ class MusicControlThread(threading.Thread):
         if not get_uuid.startswith("t_"):
             self.logging.error("It's not a track.")
             return {}
-        elif not get_uuid in database:
+        elif get_uuid not in database:
             self.logging.error("Track not found in DB.")
             return {}
         else:
@@ -473,7 +470,8 @@ class MusicControlThread(threading.Thread):
                 else:
                     is_podcast = False
                     for end in music_podcast.podcast_ending:
-                        if stream_url.endswith(end): is_podcast = True
+                        if stream_url.endswith(end):
+                            is_podcast = True
 
                     if is_podcast:
                         self.podcast.get_tracks_rss(rss_url=stream_url, playlist_uuid=get_uuid)
@@ -488,10 +486,14 @@ class MusicControlThread(threading.Thread):
 
         return track_list
 
-    def control_data(self, state, song={}, playlist={}):
+    def control_data(self, state, song=None, playlist=None):
         """
         set and return control data
         """
+        if song is None:
+            song = {}
+        if playlist is None:
+            playlist = {}
         if state != "Started" and playlist != {}:
             if "LastCard" in self.music_ctrl:
                 last_card = self.music_ctrl["LastCard"]
@@ -562,4 +564,5 @@ class MusicControlThread(threading.Thread):
         play_mute = str(self.music_ctrl["mute"])
 
         self.logging.info(
-            "Playback Status: Play=" + play_status + " / Type=" + play_type + " / Pos=" + play_position + " / Vol=" + play_volume + " / Mute=" + play_mute)
+            "Playback Status: Play=" + play_status + " / Type=" + play_type + " / Pos=" + play_position +
+            " / Vol=" + play_volume + " / Mute=" + play_mute)

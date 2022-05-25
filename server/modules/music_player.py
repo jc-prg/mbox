@@ -8,8 +8,8 @@ import os
 import logging
 import requests
 
-import modules.jcRunCmd as runcmd
 import modules.config_stage as stage
+from modules.jcRunCmd import check_internet_connect
 
 
 class MusicPlayer(threading.Thread):
@@ -58,13 +58,9 @@ class MusicPlayer(threading.Thread):
         """
         set volume
         """
-        self.logging.info("-> " + str(vol))
-        if self.player != "":
-            self.player.audio_set_volume(int(vol * self.volume_factor * 100))
-            self.volume_mute = False
-            self.volume = vol
-        else:
-            self.logging.warning("Player not loaded yet")
+        self.logging.debug("Set volume to " + str(vol))
+        self.vlc.set_volume(vol)
+        self.volume_mute = False
 
     def volume_up(self, up):
         """
@@ -78,12 +74,7 @@ class MusicPlayer(threading.Thread):
         elif isinstance(up, int) and 0 <= up <= 100:
             vol = up / 100
 
-        if vol > 1:
-            vol = 1
-        elif vol < 0:
-            vol = 0
-
-        self.set_volume(vol)
+        self.vlc.set_volume(vol)
         self.volume_mute = False
         self.volume = vol
 
@@ -139,9 +130,8 @@ class MusicPlayer(threading.Thread):
         mute / un-mute player
         """
         self.logging.debug("Mute ... " + str(value) + " / " + str(self.volume_mute) + " / " + str(self.volume))
-        if self.volume_mute == False or value == True:
-            # self.set_volume(0)
-            self.player.audio_set_volume(0)
+        if self.volume_mute is False or value is True:
+            self.vlc.set_volume(0)
             self.volume_mute = True
         else:
             self.volume_mute = False
@@ -157,15 +147,11 @@ class MusicPlayer(threading.Thread):
             self.speak.speak_message("FILE-NOT-FOUND")
             return "Error"
 
-        self.media = self.instance.media_new(path)  # str(file.encode('utf-8')) )
-        try:
-            self.player.set_media(self.media)
-            self.player.play()
+        msg = self.vlc.play(path)
+        if msg != "error":
+            self.vlc.set_volume(self.volume)
             self.play_url = path
-            self.set_volume(self.volume)
-
-        except Exception as e:
-            self.logging.error("Player (" + self.name + "): Could not start playback - " + path + " - " + str(e))
+        else:
             self.speak.speak_message("COULD-NOT-START-PLAYBACK")
             return "Error"
 
@@ -188,7 +174,6 @@ class MusicPlayer(threading.Thread):
         if url.endswith(".m3u"):
             url = self.get_stream_m3u(url)
             return self.play_file(url)
-
         else:
             return self.play_file(url)
 
@@ -200,7 +185,9 @@ class MusicPlayer(threading.Thread):
         old_state = self.player_status
         self.player_status = str(self.player.get_state())
 
-        if self.player_status == "State.Stopped" or self.player_status == "State.NothingSpecial" or self.player_status == "State.Ended":
+        if self.player_status == "State.Stopped" or \
+                self.player_status == "State.NothingSpecial" or \
+                self.player_status == "State.Ended":
             self.play_status = 0
             self.logging.debug("Playing:" + self.play_url + "..." + str(self.play_status))
         else:
@@ -248,7 +235,7 @@ class MusicPlayer(threading.Thread):
         """
         check if connection to internet exists
         """
-        error_msg = runcmd.check_internet_connect()
+        error_msg = check_internet_connect()
 
         if error_msg == "DNS-ERROR":
             self.logging.error("Could not connect to INTERNET!")

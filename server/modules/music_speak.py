@@ -16,13 +16,11 @@ class SpeakThread(threading.Thread):
         """
         threading.Thread.__init__(self)
         self.stopProcess = False
-        self.default_volume = 70
-        self.volume = self.default_volume
+        self.volume = 70
         self.running = True
-        self.start_time = start_time
 
+        self.start_time = start_time
         self.vlc_player = vlc_player
-        self.vlc_player.set_volume(self.default_volume)
 
         self.logging = logging.getLogger("speak")
         self.logging.setLevel = stage.logging_level
@@ -42,20 +40,13 @@ class SpeakThread(threading.Thread):
         """
         self.running = False
 
-    def speak_text(self, text, volume=-1):
+    def speak_text(self, text):
         """
         Use Google API to speech from text
         """
         filename = "/tmp/music-box-speech.mp3"
         language = stage.language.lower()
-        duration = -1
-
-        if volume == -1:
-            self.volume = self.default_volume
-        elif 0 <= volume <= 1:
-            self.volume = int(volume * 100)
-        else:
-            self.volume = int(volume)
+        duration = 0
 
         try:
             tts = gtts.gTTS(text=text, lang=language)
@@ -65,25 +56,29 @@ class SpeakThread(threading.Thread):
             self.logging.error(" -> gtts error: " + str(e))
 
         try:
-            self.vlc_player.play(filename, True)
-            # duration = self.player.get_length() / 1000
-            # time.sleep(duration - 0.3)
+            current_volume = self.vlc_player.volume
+            self.vlc_player.mute(False)
+            self.vlc_player.set_volume(self.volume)
+            self.vlc_player.play(filename, False)
+            duration = self.vlc_player.player.get_length() / 1000
+            time.sleep(duration - 0.3)
+            self.vlc_player.set_volume(current_volume)
         except Exception as e:
             self.logging.error("Could not speak message (" + text + ").")
             self.logging.error(" -> player error: " + str(e))
 
-        self.logging.info("Speak_text: " + str(text) + " (" + str(duration) + ")")
+        self.logging.info(" - Speak_text: " + str(text) + " (" + str(duration) + ")")
 
-    def speak_message(self, message, volume=-1):
+    def speak_message(self, message):
         """
         play spoken messages from prerecorded files
         """
-
-        self.vlc_player.set_volume(self.default_volume)
-        self.vlc_player.mute(False)
-
         if stage.speak_msg != "yes":
             return
+
+        current_volume = self.vlc_player.volume
+        self.vlc_player.mute(False)
+        self.vlc_player.set_volume(self.volume)
 
         directory_path = os.getcwd()
         filename = os.path.join(directory_path, mbox.errormsg_dir + stage.language + "_" + message + ".mp3")
@@ -101,4 +96,5 @@ class SpeakThread(threading.Thread):
             self.vlc_player.play(filename_UE_EN, True)
 
         # duration = self.vlc_player.player.get_length() / 1000
-        # time.sleep(duration)
+        # time.sleep(duration - 0.3)
+        self.vlc_player.set_volume(current_volume)

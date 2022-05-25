@@ -35,6 +35,13 @@
 <script src="framework/app-fw/app-conf.js"></script>
 <script src="framework/app-fw/app-menu.js"></script>
 
+<script>
+    try { if(jcAppTest) { console.log("jc://modules/"); } }
+    catch(e) { alert("jc://modules/ is not correctly installed!"); }
+    try { if(appFwVersion) { console.log("jc://modules/"); } }
+    catch(e) { alert("jc://framework/ is not correctly installed!"); }
+</script>
+
 <link rel="stylesheet" href="framework/app-fw/style-main.css">
 <link rel="stylesheet" href="framework/app-fw/style-menu.css">
 <link rel="stylesheet" href="framework/app-fw/style-frame.css">

@@ -6,21 +6,25 @@
 
 <META charset="utf-8"> 
 <META http-equiv="content-type" content="text/html; charset=utf-8">
-<META name="apple-mobile-web-app-capable" content="yes" />
-<META name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=0.3, maximum-scale=1.0" /> 
+<META name="apple-mobile-web-app-capable" content="yes"></META>
+<META name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=0.3, maximum-scale=1.0"></META>
 
-<LINK rel=apple-touch-icon             href="favicon.png" />
-<LINK rel=apple-touch-icon-precomposed href="favicon.png" />
+<LINK rel=apple-touch-icon href="favicon.png"></LINK>
+<LINK rel=apple-touch-icon-precomposed href="favicon.png"></LINK>
 
 <!-- jcResources START -->
 
 <script src="modules/jc-app/jc-app-1.4.1.js"></script>
 <script src="modules/jc-functions/jc-functions-0.1.5.js"></script>
 <script src="modules/jc-cookie/jc-cookie.js"></script>
-<script src="modules/jc-msg/jc-msg-1.1.6.js"></script>		<link href="modules/jc-msg/jc-msg-1.1.6.css" rel="stylesheet">
-<script src="modules/jc-player/jc-player-0.1.7.js"></script>		<link href="modules/jc-player/jc-player-0.1.7.css" rel="stylesheet">
-<script src="modules/jc-player/jc-volume-slider-0.1.1.js"></script>	<link href="modules/jc-player/jc-volume-slider-0.1.1.css" rel="stylesheet" >
-<script src="modules/jc-upload/upload-0.3.0.js"></script> 		<link href="modules/jc-upload/upload-0.3.0.css" rel="stylesheet">
+<script src="modules/jc-msg/jc-msg-1.1.6.js"></script>
+    <link href="modules/jc-msg/jc-msg-1.1.6.css" rel="stylesheet">
+<script src="modules/jc-player/jc-player-0.1.7.js"></script>
+    <link href="modules/jc-player/jc-player-0.1.7.css" rel="stylesheet">
+<script src="modules/jc-player/jc-volume-slider-0.1.1.js"></script>
+    <link href="modules/jc-player/jc-volume-slider-0.1.1.css" rel="stylesheet" >
+<script src="modules/jc-upload/upload-0.3.0.js"></script>
+    <link href="modules/jc-upload/upload-0.3.0.css" rel="stylesheet">
 
 <!-- jcAppFramework START -->
 
@@ -36,10 +40,11 @@
 <script src="framework/app-fw/app-menu.js"></script>
 
 <script>
+    ErrorMissingModules = false;
     try { if(jcAppTest) { console.log("jc://modules/"); } }
-    catch(e) { alert("jc://modules/ is not correctly installed!"); }
+    catch(e) { alert("jc://modules/ is not correctly installed!"); ErrorMissingModules = true; }
     try { if(appFwVersion) { console.log("jc://modules/"); } }
-    catch(e) { alert("jc://framework/ is not correctly installed!"); }
+    catch(e) { alert("jc://framework/ is not correctly installed!"); ErrorMissingModules = true; }
 </script>
 
 <link rel="stylesheet" href="framework/app-fw/style-main.css">
@@ -146,6 +151,13 @@
 <div id="mbox_temp"         style="display:block"></div>
 
 <script src="framework/app-fw/app-main.js"></script>
+<script>
+    if (ErrorMissingModules) {
+        document.getElementById("navTitle").innerHTML = "ERROR";
+        document.getElementById("app_background").innerHTML = "<br/><br/><br/>ERROR: install missing modules (git submodule update --init --recursive)";
+        document.getElementById("app_background").style = "color:red;text-align:center";
+    }
+</script>
 
 <!-- APP specific html elements or scripts // START -->
 

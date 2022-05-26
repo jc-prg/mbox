@@ -9,15 +9,15 @@ import modules.config_stage as stage
 RASPI = True  # True if Raspberry Pi and RFID reader connected
 DEBUG = False  # True if output logging in DEBUG level
 
-APIname = "jc://mbox/server/"
-APIname_LED = "jc://mbox/LED/"
-APIname_BTN = "jc://mbox/BUTTON/"
-APIname_RFID = "jc://mbox/RFID/"
-APIversion = "v0.9.8"
-APPversion = "v1.2.7"
-APPsupport = [APPversion,
-              "v1.2.3", "v1.2.4", "v1.2.5", "v1.2.6",
-              ]  # other supported versions
+api_name = "jc://mbox/server/"
+api_name_LED = "jc://mbox/LED/"
+api_name_BTN = "jc://mbox/BUTTON/"
+api_name_RFID = "jc://mbox/RFID/"
+api_version = "v0.9.9"
+app_version = "v1.2.7"
+app_support = [app_version,
+               "v1.2.3", "v1.2.4", "v1.2.5", "v1.2.6",
+               ]  # other supported versions
 
 # ---------------------------------
 
@@ -82,6 +82,6 @@ error_messages = {
     "501": "Could not add/set image.",
 
     "800": "Your app is up to date.",
-    "801": "Update available: " + APPversion + ".",
-    "802": "Update required: " + APPversion + ". Delete your browser cache, please."
+    "801": "Update available: " + app_version + ".",
+    "802": "Update required: " + app_version + ". Delete your browser cache, please."
 }

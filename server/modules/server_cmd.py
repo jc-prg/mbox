@@ -10,6 +10,21 @@ from modules.jcRunCmd import *
 from modules.server_init import *
 
 
+def error_msg(code, info=""):
+    if info != "": info = "(" + info + ")"
+
+    message = mbox.error_messages
+
+    if code in message:
+        if int(code) >= 300:
+            data = {"Code": code, "Msg": message[code], "Info": message[code] + " " + info}
+            return data
+        else:
+            return message[code]
+    else:
+        return "UNKNOWN ERROR CODE"
+
+
 class ServerApi:
 
     def __init__(self, db, music_ctrl, speak):
@@ -23,7 +38,7 @@ class ServerApi:
         self.initial_data = {
             "API": {
                 "name": "mBox",
-                "version": mbox.APIversion,
+                "version": mbox.api_version,
                 "stage": mbox.initial_stage,
                 "rollout": stage.rollout
                 },
@@ -84,7 +99,7 @@ class ServerApi:
         data["STATUS"]["active_device"] = mbox.active_device
 
         if "no-playback" not in reduce_data:
-            data["STATUS"]["playback"] = deviceStatus()
+            data["STATUS"]["playback"] = thread_music_ctrl.music_ctrl
 
         if "no-system" not in reduce_data:
             data["STATUS"]["system"] = {
@@ -893,9 +908,9 @@ class ServerApi:
         data = self.response_start("backup", "backup", "", param, "")
 
         if param == "json2db":
-            thread_couch.restoreFromJson()
+            thread_couch.restore_from_json()
         elif param == "db2json":
-            thread_couch.backupToJson()
+            thread_couch.backup_to_json()
         else:
             data = self.response_error(data, "Parameter is not supported.")
 
@@ -926,15 +941,15 @@ class ServerApi:
         check if APP version is supported by server
         """
         global thread_couch
-        param = mbox.APPversion
+        param = mbox.app_version
         data = self.response_start("checkVersion", "checkVersion", "", param, "")
 
-        if (APPversion == mbox.APPversion):
-            result = ErrorMsg("800")
-        elif (APPversion in mbox.APPsupport):
-            result = ErrorMsg("801")
+        if (APPversion == mbox.app_version):
+            result = error_msg("800")
+        elif (APPversion in mbox.app_support):
+            result = error_msg("801")
         else:
-            result = ErrorMsg("802")
+            result = error_msg("802")
 
         data["STATUS"]["check-version"] = result
         data = self.response_end(data, ["no-statistic", "no-playback", "no-system"])

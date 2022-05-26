@@ -8,19 +8,19 @@ import logging
 import modules.config_stage as stage
 import modules.config_mbox as mbox
 import modules.jcRunCmd as run_cmd
+import modules.server_init as server_init
+import connexion
+from flask_cors import CORS
 
 start_time = time.time()
 mbox.start_time = start_time
 
 print("----------------------------------------------------------------")
-print(mbox.APIname + mbox.APIversion + "   (" + str(stage.rollout) + "/" + str(stage.log_level).upper() + ")")
+print(mbox.api_name + mbox.api_version + "   (" + str(stage.rollout) + "/" + str(stage.log_level).upper() + ")")
 print("----------------------------------------------------------------")
 
-run_cmd.init_logging(mbox.APIname + mbox.APIversion + "   (" + str(stage.rollout) + "/" + str(stage.log_level) + ")", "")
-
-import modules.server_init as server_init
-import connexion
-from flask_cors import CORS
+run_cmd.init_logging(mbox.api_name + mbox.api_version + "   (" + str(stage.rollout) + "/" + str(stage.log_level) + ")", "")
+server_init.start_modules()
 
 logging.info("Load Server ..." + server_init.time_since_start())
 app = connexion.App(__name__, specification_dir="./")

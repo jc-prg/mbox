@@ -11,7 +11,7 @@ import requests
 import logging
 import signal
 
-import modules.jcJson       as jcJSON
+import modules.json_db       as jcJSON
 import modules.jcRunCmd     as jcCmd
 import modules.config_stage as stage
 import modules.config_mbox  as mbox
@@ -30,7 +30,7 @@ import modules_rfid.MFRC522 as MFRC522
 # start and configure logging
 #----------------------------------------------
 
-jcCmd.init_logging( mbox.APIname_RFID + mbox.APIversion + "   (" + str(stage.rollout) + "/"+str(stage.log_level)+")", '/log/server_RFID.log' )
+jcCmd.init_logging(mbox.api_name_RFID + mbox.api_version + "   (" + str(stage.rollout) + "/" + str(stage.log_level) + ")", '/log/server_RFID.log')
 
 if (stage.log_level != "error"): 
    GPIO.setwarnings(False)

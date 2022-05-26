@@ -13,7 +13,7 @@ import requests
 import logging
 import signal
 
-import modules.jcJson       as jcJSON
+import modules.json_db       as jcJSON
 import modules.config_stage as stage
 import modules.config_mbox  as mbox
 
@@ -21,7 +21,7 @@ import modules.config_mbox  as mbox
 #----------------------------------------------
 mbox.start_time = time.time()
 print("--------------------------------")
-print(mbox.APIname_RFID + mbox.APIversion + "   (" + str(stage.rollout) + ")")
+print(mbox.api_name_RFID + mbox.api_version + "   (" + str(stage.rollout) + ")")
 print("--------------------------------")
 
 #---------------------------------------------
@@ -37,7 +37,7 @@ stage.test = True
 # start and configure logging
 #----------------------------------------------
 
-stage.init_logging( mbox.APIname_RFID + mbox.APIversion + "   (test-script/"+str(stage.log_level)+")", '/log/server_RFID.log' )
+stage.init_logging(mbox.api_name_RFID + mbox.api_version + "   (test-script/" + str(stage.log_level) + ")", '/log/server_RFID.log')
    
 #-----------------------------------
 # init

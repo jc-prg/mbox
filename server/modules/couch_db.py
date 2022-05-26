@@ -1,46 +1,16 @@
-import modules.jcJson as jcJSON
+import modules.json_db as json_db
 import modules.config_stage as stage
 import modules.config_mbox as mbox
-import modules.music_speak as speak
 from modules.jcRunCmd import *
 
+import sys
 import logging
 import time
 import couchdb
 import requests
 
-cdb_logging = logging.getLogger("couch-db")
-cdb_logging.setLevel = stage.logging_level
 
-
-# -------------------------------------------------
-
-def createDB_URL():
-    """
-    get IP address for internal device
-    """
-    command = "/sbin/ip -o -4 addr list " + stage.server_ip_device + " | awk '{print $4}' | cut -d/ -f1"
-    ip, err = runCmd(command)
-    db_url = "http://" + stage.data_db_auth + "@" + ip + ":" + stage.server_port + "/"
-    cdb_logging.info("connectionInternalIP: " + db_url)
-    return ip, db_url
-
-
-# -------------------------------------------------
-# Database Definition
-# -------------------------------------------------
-
-# db_ip, db_url    = createDB_URL()
-# database   = couchdb.Server(db_url)
-# database   = couchdb.Server(stage.data_db_test)
-# database   = couchdb.Server(stage.data_db)
-# databases  = mbox.databases
-
-# ---------------------------------------------
-# database access
-# ---------------------------------------------
-
-class jcCouchDB():
+class CouchDB:
 
     def __init__(self, url, thread_speak, start_time):
         """set initial values to vars and start radio"""
@@ -69,7 +39,7 @@ class jcCouchDB():
             except requests.exceptions.RequestException as e:
                 connects2db += 1
                 self.logging.warning(" - Waiting 5s for connect to CouchDB: " + str(connects2db) + "/" + str(
-                    max_connects) + " (" + self.db_url + ")")
+                    max_connects) + " (" + self.db_url + "/" + str(e) + ")")
                 self.logging.info("                         ... to CouchDB: " + self.db_url)
 
                 time.sleep(5)
@@ -81,7 +51,7 @@ class jcCouchDB():
                     self.speak.speak_message(stage.speak_ask_whom)
 
                 self.logging.warning("Error connecting to CouchDB, give up.")
-                sys.exit(1)  ### -> LEADS TO AN ERROR !!!
+                sys.exit(1)
 
         self.database = couchdb.Server(self.db_url)
         self.check_db()
@@ -126,7 +96,7 @@ class jcCouchDB():
 
         # create initial data
         if "main" in self.database[db_key]:
-            self.logging.warn("CouchDB - Already data in " + db_key + "!")
+            self.logging.warning("CouchDB - Already data in " + db_key + "!")
             return
         else:
             doc = db.get("main")
@@ -148,32 +118,6 @@ class jcCouchDB():
         self.logging.info("CouchDB created: " + db_key + " " + str(time.time()))
         return
 
-    def readGroup(self, group_key):
-        data = {}
-        try:
-            for key in self.databases[group_key]:
-                data[key] = self.read(key)
-            self.changed_data = False
-
-        except Exception as e:
-            self.logging.warn("CouchDB ERROR read group: " + db_key + " " + str(time.time()) + " - " + str(e))
-
-        return data
-
-    def read_cache(self, db_key, entry_key=""):
-
-        if entry_key == "" and db_key in self.cache:
-            return self.cache[db_key]
-
-        elif db_key in self.cache:
-            return self.cache[db_key][entry_key]
-
-        self.logging.debug("CouchDB read cache: " + db_key + " " + str(time.time()))
-
-        return
-
-    # --------------------------------------
-
     def read(self, db_key, entry_key=""):
 
         start_time = time.time()
@@ -190,27 +134,43 @@ class jcCouchDB():
                     return db["main"]["data"][entry_key]
 
             except Exception as e:
-                if (db_key != "_users" and db_key != "_replicator"):
-                    cdb_logging.error("CouchDB ERROR read: " + db_key + "/" + entry_key + " - " + str(e))
-
+                if db_key != "_users" and db_key != "_replicator":
+                    self.logging.error("CouchDB ERROR read: " + db_key + "/" + entry_key + " - " + str(e))
 
         else:
             self.logging.warning("CouchDB ERROR read: " + db_key + " - " + str(int(start_time - time.time())) + "s")
-            data = {}
-            self.create(db_key)  # , data)
+            self.create(db_key)
             return self.database[db_key]["main"]["data"]
 
-    # --------------------------------------
-    #################### FEHLER ###########
+    def read_group(self, group_key):
+        data = {}
+        try:
+            for key in self.databases[group_key]:
+                data[key] = self.read(key)
+            self.changed_data = False
+
+        except Exception as e:
+            self.logging.warning("CouchDB ERROR read group: " + group_key + " " + str(time.time()) + " - " + str(e))
+
+        return data
+
+    def read_cache(self, db_key, entry_key=""):
+
+        if entry_key == "" and db_key in self.cache:
+            return self.cache[db_key]
+
+        elif db_key in self.cache:
+            return self.cache[db_key][entry_key]
+
+        self.logging.debug("CouchDB read cache: " + db_key + " " + str(time.time()))
+
+        return
 
     def write(self, key, data):
         self.changed_data = True
-        try:
-            db = self.database[key]
-        except:
-            db = self.database.create(key)
-            db = self.database[key]
-
+        if key not in self.database:
+            self.database.create(key)
+        db = self.database[key]
         doc = db.get("main")
         if doc is None:
             doc = {
@@ -228,29 +188,27 @@ class jcCouchDB():
         try:
             db.save(doc)
         except Exception as e:
-            self.logging.warn("CouchDB ERROR save: " + key + " " + str(e))
+            self.logging.warning("CouchDB ERROR save: " + key + " " + str(e))
             return
         self.cache[key] = self.read(key)
 
         self.logging.debug("CouchDB save: " + key + " " + str(time.time()))
         return
 
-    # --------------------------------------
-
-    def backupToJson(self):
+    def backup_to_json(self):
         self.logging.info("BACKUP to JSON")
         for db_key in self.databases:
             for key in self.databases[db_key]:
                 db = self.database[key]
                 doc = db.get("main")
-                jcJSON.write(key, doc["data"])
+                json_db.write(key, doc["data"])
 
-    def restoreFromJson(self):
+    def restore_from_json(self):
         self.logging.info("RESTORE from JSON")
         self.changed_data = True
         for db_key in self.databases:
             for key in self.databases[db_key]:
-                txt = jcJSON.read(key)
+                txt = json_db.read(key)
                 db = self.database[key]
                 doc = db.get("main")
                 if doc is None:

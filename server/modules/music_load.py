@@ -64,7 +64,7 @@ class MusicLoadingThread(threading.Thread):
             if self.reload_all:
                 self.logging.info("Starting Reload ALL")
 
-                self.store_data = self.music_database.readGroup("music")
+                self.store_data = self.music_database.read_group("music")
                 self.store_data = reloadMusic(self.store_data, True, self)
                 for key in self.store_data:
                     self.music_database.write(key, self.store_data[key])
@@ -73,7 +73,7 @@ class MusicLoadingThread(threading.Thread):
             elif self.reload_new:
                 self.logging.info("Starting Reload NEW")
 
-                self.store_data = self.music_database.readGroup("music")
+                self.store_data = self.music_database.read_group("music")
                 self.store_data = reloadMusic(self.store_data, False, self)
                 for key in self.store_data:
                     self.music_database.write(key, self.store_data[key])
@@ -576,7 +576,7 @@ def reloadMusic(data, load_all=True, thread=""):
             if file_read:
                 files_loaded += 1
 
-                data_reload["files"][filename] = music_metadata.readMetadata(mbox.music_dir + filename)
+                data_reload["files"][filename] = music_metadata.read_metadata(mbox.music_dir + filename)
                 data_reload["tracks"]["t_" + file_uuid] = data_reload["files"][filename]
                 data_reload["tracks"]["t_" + file_uuid]["uuid"] = "t_" + file_uuid
                 data_reload["files"][filename]["uuid"] = "t_" + file_uuid

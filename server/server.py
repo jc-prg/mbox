@@ -22,11 +22,11 @@ print("----------------------------------------------------------------")
 run_cmd.init_logging(mbox.api_name + mbox.api_version + "   (" + str(stage.rollout) + "/" + str(stage.log_level) + ")", "")
 server_init.start_modules()
 
-logging.info("Load Server ..." + server_init.time_since_start())
+logging.info("Load server on port "+str(stage.client_port)+" ..." + server_init.time_since_start())
 app = connexion.App(__name__, specification_dir="./")
 CORS(app.app)
 
-logging.info("Load API Specification ..." + server_init.time_since_start())
+logging.info("Load REST API on port "+str(stage.database_port)+" ..." + server_init.time_since_start())
 app.add_api("modules/server_api.yml")
 
 

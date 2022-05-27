@@ -6,6 +6,7 @@ import logging
 import modules.music_podcast as music_podcast
 import modules.config_stage as stage
 import modules.config_mbox as mbox
+import modules.jcRunCmd as run_cmd
 from modules.jcRunCmd import *
 from modules.server_init import *
 
@@ -94,7 +95,7 @@ class ServerApi:
         """
         data["REQUEST"]["load-time"] = time.time() - data["REQUEST"]["start-time"]
 
-        out = check_disk_space()
+        out = run_cmd.check_disk_space()
 
         data["STATUS"]["active_device"] = mbox.active_device
 
@@ -112,7 +113,7 @@ class ServerApi:
                 "server_start": mbox.start_time,
                 "server_start_duration": mbox.start_duration,
                 "server_running": time.time() - mbox.start_time,
-                "server_connection": connection_status()
+                "server_connection": run_cmd.connection_status()
             }
         data["STATUS"]["load_data"] = {
             "reload_new": thread_music_load.reload_new,
@@ -121,14 +122,14 @@ class ServerApi:
             "reload_time_left": thread_music_load.reload_time_left
         }
 
-        if "no-statistic" not in reduce_data:
-            data["STATUS"]["statistic"] = {}
-            for database in thread_couch.database:
-                temp = thread_couch.read_cache(database)
-                try:
-                    data["STATUS"]["statistic"][database] = len(temp.keys())
-                except:
-                    data["STATUS"]["statistic"][database] = "error"
+        #if "no-statistic" not in reduce_data:
+        #    data["STATUS"]["statistic"] = {}
+        #    for database in thread_couch.database:
+        #        temp = thread_couch.read_cache(database)
+        #        try:
+        #            data["STATUS"]["statistic"][database] = len(temp.keys())
+        #        except:
+        #            data["STATUS"]["statistic"][database] = "error"
 
         if "no-request" in reduce_data:
             del data["REQUEST"]

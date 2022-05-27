@@ -63,6 +63,10 @@ class CouchDB:
         self.fill_cache()
 
     def check_db(self):
+        """
+        Check if required databases exist, and create if not
+        """
+        self.logging.info("Check if DB exists ...")
         self.keys = []
         for cat_key in self.databases:
             for db_key in self.databases[cat_key]:
@@ -84,6 +88,7 @@ class CouchDB:
     def create(self, db_key):
 
         # create DB
+        self.logging.info("- Create DB " + db_key)
         if db_key in self.database:
             self.logging.warning("CouchDB " + db_key + " exists.")
             db = self.database[db_key]

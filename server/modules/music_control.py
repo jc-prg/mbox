@@ -381,7 +381,7 @@ class MusicControlThread(threading.Thread):
         data = self.music_database.read("status")
 
         if "_saved" not in data or data["_saved"] + 3 < time.time():
-            if "file" in data["music"]["song"]:
+            if "song" in data["music"] and "file" in data["music"]["song"]:
                 old_state = data["music"]["state"] + " " + str(data["music"]["song"]["file"])
             else:
                 old_state = data["music"]["state"] + " " + str(data["music"]["song"])

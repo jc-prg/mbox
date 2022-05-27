@@ -55,6 +55,7 @@ def check_disk_space(init=False):
             run_logging.warning("  - " + mbox.diskuse + stage.mount_data)
 
         disk_free, err = runCmd(mbox.diskfree + stage.mount_data)
+        run_logging.warning(str(err))
         try:
             out[1] = disk_free.split("\n")[1]
             out[1] = float(filter(str.isdigit, out[1]))
@@ -82,7 +83,7 @@ def check_disk_space(init=False):
     if init:
         mbox.checkdisk = out
 
-    run_logging.info("check_disk_space: "+str(out))
+    run_logging.debug("check_disk_space: "+str(out))
     return out
 
 

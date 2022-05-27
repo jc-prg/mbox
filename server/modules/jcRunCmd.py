@@ -45,7 +45,7 @@ def runCmd(cmd_line):
 def check_disk_space(init=False):
     out = mbox.checkdisk
 
-    if stage.mount_data != "" and stage.mount_system != stage.mount_data:
+    if stage.mount_data != "" and stage.mount_system != stage.mount_data and os.path.exists(stage.mount_data):
 
         disk_use, err = runCmd(mbox.diskuse + stage.mount_data)
         try:
@@ -55,7 +55,6 @@ def check_disk_space(init=False):
             run_logging.warning("  - " + mbox.diskuse + stage.mount_data)
 
         disk_free, err = runCmd(mbox.diskfree + stage.mount_data)
-        run_logging.warning(str(err))
         try:
             out[1] = disk_free.split("\n")[1]
             out[1] = float(filter(str.isdigit, out[1]))
@@ -63,7 +62,7 @@ def check_disk_space(init=False):
             run_logging.warning("1 Error in reading disk spaces (data drive) ..." + str(e))
             run_logging.warning("  - " + mbox.diskfree + stage.mount_data)
 
-    if stage.mount_system != "":
+    if stage.mount_system != "" and os.path.exists(stage.mount_data):
 
         if init:
             disk_use_mount, err = runCmd(mbox.diskuse + stage.mount_system)

@@ -66,18 +66,19 @@ class CouchDB:
         """
         Check if required databases exist, and create if not
         """
-        self.logging.info("Check if DB exists ...")
+        self.logging.info("- Check if DB exist: "+str(self.databases))
         self.keys = []
         for cat_key in self.databases:
             for db_key in self.databases[cat_key]:
                 if db_key in self.database and "main" in self.database[db_key]:
-                    self.logging.debug("OK: DB " + db_key + " exists.")
+                    self.logging.info("  OK: DB " + db_key + " exists.")
                 else:
-                    self.logging.debug("OK: DB " + db_key + " have to be created ...")
+                    self.logging.info("  OK: DB " + db_key + " have to be created ...")
                     try:
                         self.create(db_key)
+                        self.logging.info("  -> Created DB " + db_key + ". ")
                     except Exception as e:
-                        self.logging.error("CouchDB - Could not create DB " + db_key + "! " + str(e))
+                        self.logging.error("  -> Could not create DB " + db_key + "! " + str(e))
 
     def fill_cache(self):
         self.keys = []
@@ -88,15 +89,15 @@ class CouchDB:
     def create(self, db_key):
 
         # create DB
-        self.logging.info("- Create DB " + db_key)
+        self.logging.info("   -> create DB " + db_key)
         if db_key in self.database:
-            self.logging.warning("CouchDB " + db_key + " exists.")
+            self.logging.warning("   -> DB " + db_key + " exists.")
             db = self.database[db_key]
         else:
             try:
                 db = self.database.create(db_key)
             except Exception as e:
-                self.logging.error("CouchDB - Could not create DB " + db_key + "! " + str(e))
+                self.logging.error("   -> Could not create DB " + db_key + "! " + str(e))
                 return
 
         # create initial data

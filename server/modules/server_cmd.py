@@ -95,35 +95,32 @@ class ServerApi:
         """
         data["REQUEST"]["load-time"] = time.time() - data["REQUEST"]["start-time"]
 
-        try:
-            out = run_cmd.check_disk_space()
+        out = run_cmd.check_disk_space()
 
-            data["STATUS"]["active_device"] = mbox.active_device
+        data["STATUS"]["active_device"] = mbox.active_device
 
-            if "no-playback" not in reduce_data:
-                data["STATUS"]["playback"] = thread_music_ctrl.music_ctrl
+        if "no-playback" not in reduce_data:
+            data["STATUS"]["playback"] = thread_music_ctrl.music_ctrl
 
-            if "no-system" not in reduce_data:
-                data["STATUS"]["system"] = {
-                    "space_usb_used": out[0],
-                    "space_usb_available": out[1],
-                    "space_usb_mount": stage.mount_data,
-                    "space_main_used": out[2],
-                    "space_main_available": out[3],
-                    "space_main_mount": stage.mount_system,
-                    "server_start": mbox.start_time,
-                    "server_start_duration": mbox.start_duration,
-                    "server_running": time.time() - mbox.start_time,
-                    "server_connection": run_cmd.connection_status()
-                }
-            data["STATUS"]["load_data"] = {
-                "reload_new": thread_music_load.reload_new,
-                "reload_all": thread_music_load.reload_all,
-                "reload_progress": thread_music_load.reload_progress,
-                "reload_time_left": thread_music_load.reload_time_left
+        if "no-system" not in reduce_data:
+            data["STATUS"]["system"] = {
+                "space_usb_used": out[0],
+                "space_usb_available": out[1],
+                "space_usb_mount": stage.mount_data,
+                "space_main_used": out[2],
+                "space_main_available": out[3],
+                "space_main_mount": stage.mount_system,
+                "server_start": mbox.start_time,
+                "server_start_duration": mbox.start_duration,
+                "server_running": time.time() - mbox.start_time,
+                "server_connection": run_cmd.connection_status()
             }
-        except:
-            data["STATUS"]["statistic"][database] = "error"
+        data["STATUS"]["load_data"] = {
+            "reload_new": thread_music_load.reload_new,
+            "reload_all": thread_music_load.reload_all,
+            "reload_progress": thread_music_load.reload_progress,
+            "reload_time_left": thread_music_load.reload_time_left
+        }
 
         if "no-statistic" not in reduce_data:
             data["STATUS"]["statistic"] = {}
@@ -149,8 +146,11 @@ class ServerApi:
         return system and playback status (see server_api.yml)
         """
         data = self.response_start("status", "status", "", "", "")
-        data = self.check_active_card(data)
-        data = self.response_end(data)
+        try:
+            data = self.check_active_card(data)
+            data = self.response_end(data)
+        except Exception as e:
+            self.logging.error("!! "+str(e))
         return data
 
     def volume(self, param):

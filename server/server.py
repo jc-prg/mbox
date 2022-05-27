@@ -7,7 +7,7 @@ import time
 import logging
 import modules.config_stage as stage
 import modules.config_mbox as mbox
-import modules.jcRunCmd as run_cmd
+import modules.run_cmd as run_cmd
 import modules.server_init as server_init
 import connexion
 from flask_cors import CORS

@@ -590,7 +590,7 @@ paths:
 
   /speak/{message}/:
     get:
-      operationId: modules.server_cmd.api_calls.speak
+      operationId: modules.server_cmd.api_calls.speak_message
       tags:
         - maintain
       summary: speak message

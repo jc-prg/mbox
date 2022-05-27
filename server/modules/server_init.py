@@ -1,8 +1,8 @@
 import time
 import logging
+
 import modules.config_stage as stage
 import modules.config_mbox as mbox
-
 import modules.couch_db as couch_db
 import modules.music_load as music_load
 import modules.music_control as music_ctrl
@@ -11,17 +11,15 @@ import modules.music_speak as music_speak
 import modules.music_player as music_player
 import modules.music_podcast as music_podcast
 
-from modules.jcRunCmd import *
-
 
 Status = "Starting"
 ExitPrg = False
 Stage = mbox.initial_stage
 
 thread_vlc = None
+thread_couch = None
 thread_speak = None
 thread_player = None
-thread_couch = None
 thread_podcast = None
 thread_music_load = None
 thread_music_ctrl = None

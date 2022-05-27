@@ -14,7 +14,7 @@ import signal
 import subprocess
 
 import modules.json_db       as jcJSON
-import modules.jcRunCmd     as jcCmd
+import modules.run_cmd     as jcCmd
 import modules.config_stage as stage
 import modules.config_mbox  as mbox
 import modules_gpio.light   as led

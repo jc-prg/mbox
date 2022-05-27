@@ -9,7 +9,7 @@ var couchdb_port 	= '5106';
 var server_port 	= '5006';
 var log_level          = 'info';
 
-LANG                    = 'EN';
+LANG                    = 'DE';
 
 if (rollout === "test")	{ test = true; }
 

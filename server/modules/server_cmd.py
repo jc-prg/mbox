@@ -3,16 +3,17 @@ import uuid
 import urllib.parse
 import logging
 
-import modules.music_podcast as music_podcast
 import modules.config_stage as stage
 import modules.config_mbox as mbox
-import modules.jcRunCmd as run_cmd
-from modules.jcRunCmd import *
+import modules.run_cmd as run_cmd
+import modules.server_init as server_init
+from modules.run_cmd import *
 from modules.server_init import *
 
 
 def error_msg(code, info=""):
-    if info != "": info = "(" + info + ")"
+    if info != "":
+        info = "(" + info + ")"
 
     message = mbox.error_messages
 
@@ -28,13 +29,15 @@ def error_msg(code, info=""):
 
 class ServerApi:
 
-    def __init__(self, db, music_ctrl, speak):
+    def __init__(self, couch_db, podcast, music_ctrl, music_load, speak):
         """
         init server API (used via server_api.yml / swagger-file)
         """
-        # self.db = db
-        # self.speak = speak
-        # self.ctrl = music_ctrl
+        self.couch = couch_db
+        self.speak = speak
+        self.podcast = podcast
+        self.music_ctrl = music_ctrl
+        self.music_load = music_load
 
         self.initial_data = {
             "API": {
@@ -58,18 +61,18 @@ class ServerApi:
         self.logging.warning(data["REQUEST"]["c-name"] + " ERROR:" + error)
         return data
 
-    def response_start(self, cName, cmd1, cmd2, param1, param2):
+    def response_start(self, call_name, cmd1, cmd2, param1, param2):
         """
         set initial overarching data for the API response
         """
-        self.logging.debug(cName + " START ...")
+        self.logging.debug(call_name + " START ...")
 
         data = self.initial_data
         data["REQUEST"] = {}
         data["REQUEST"]["status"] = "success"
-        data["REQUEST"]["command"] = "mBox " + cName + ": " + str(cmd1) + ":" + str(cmd2) + " / " + str(param1) + ":" + str(
-            param2)
-        data["REQUEST"]["c-name"] = cName
+        data["REQUEST"]["command"] = "mBox " + call_name + ": " + str(cmd1) + ":" + \
+                                     str(cmd2) + " / " + str(param1) + ":" + str(param2)
+        data["REQUEST"]["c-name"] = call_name
         data["REQUEST"]["c-param"] = str(param1) + " " + str(param2)
         data["REQUEST"]["start-time"] = time.time()
 
@@ -89,10 +92,13 @@ class ServerApi:
             data["LOAD"]["UUID"] = param1
         return data
 
-    def response_end(self, data, reduce_data=[]):
+    def response_end(self, data, reduce_data=None):
         """
         set closing overarching data for the API response, delete unnecessary data
         """
+        if reduce_data is None:
+            reduce_data = []
+
         data["REQUEST"]["load-time"] = time.time() - data["REQUEST"]["start-time"]
 
         out = run_cmd.check_disk_space()
@@ -100,7 +106,7 @@ class ServerApi:
         data["STATUS"]["active_device"] = mbox.active_device
 
         if "no-playback" not in reduce_data:
-            data["STATUS"]["playback"] = thread_music_ctrl.music_ctrl
+            data["STATUS"]["playback"] = self.music_ctrl.music_ctrl
 
         if "no-system" not in reduce_data:
             data["STATUS"]["system"] = {
@@ -116,15 +122,15 @@ class ServerApi:
                 "server_connection": run_cmd.connection_status()
             }
         data["STATUS"]["load_data"] = {
-            "reload_new": thread_music_load.reload_new,
-            "reload_all": thread_music_load.reload_all,
-            "reload_progress": thread_music_load.reload_progress,
-            "reload_time_left": thread_music_load.reload_time_left
+            "reload_new": self.music_load.reload_new,
+            "reload_all": self.music_load.reload_all,
+            "reload_progress": self.music_load.reload_progress,
+            "reload_time_left": self.music_load.reload_time_left
         }
 
         if "no-statistic" not in reduce_data:
-            for database in thread_couch.database:
-                temp = thread_couch.read_cache(database)
+            for database in self.couch.database:
+                temp = self.couch.read_cache(database)
                 if "statistic" not in data["STATUS"]:
                     data["STATUS"]["statistic"] = {}
                 try:
@@ -161,14 +167,14 @@ class ServerApi:
         data = self.response_start("volume", "volume", "", param, "")
 
         if param == "mute":
-            thread_music_ctrl.mute()
+            self.music_ctrl.mute()
         elif param == "up":
-            thread_music_ctrl.volume_up("up")
+            self.music_ctrl.volume_up("up")
         elif param == "down":
-            thread_music_ctrl.volume_up("down")
+            self.music_ctrl.volume_up("down")
         elif param.startswith("set"):
             get_vol = param.split(":")
-            thread_music_ctrl.volume_up(int(get_vol[1]))
+            self.music_ctrl.volume_up(int(get_vol[1]))
         else:
             data = self.response_error(data, "Parameter not supported: " + param)
             self.logging.warning("Parameter not supported: " + param)
@@ -180,31 +186,29 @@ class ServerApi:
         """
         start playback of track via API call (see server_api.yml)
         """
-        global thread_couch, thread_music_ctrl
-
         uuid = self.test_uuid("album_info", uuid)
         data = self.response_start("play", "play", "", uuid, "")
 
         mbox.active_device = "music_box"
         if "a_" in uuid:
-            database = thread_couch.read_cache("album_info")
+            database = self.couch.read_cache("album_info")
         elif "p_" in uuid:
-            database = thread_couch.read_cache("playlists")
+            database = self.couch.read_cache("playlists")
         elif "t_" in uuid:
-            database = thread_couch.read_cache("tracks")
+            database = self.couch.read_cache("tracks")
         elif "r_" in uuid:
-            database = thread_couch.read_cache("radio")
+            database = self.couch.read_cache("radio")
         else:
             database = {}
 
         if database != {}:
             if uuid in database:
-                if "playlist_uuid" in thread_music_ctrl.music_ctrl:
-                    uuid_current = thread_music_ctrl.music_ctrl["playlist_uuid"]
-                    if uuid == uuid_current and "Paused" in thread_music_ctrl.music_ctrl["status"]:
-                        thread_music_ctrl.player.pause()
+                if "playlist_uuid" in self.music_ctrl.music_ctrl:
+                    uuid_current = self.music_ctrl.music_ctrl["playlist_uuid"]
+                    if uuid == uuid_current and "Paused" in self.music_ctrl.music_ctrl["status"]:
+                        self.music_ctrl.player.pause()
                     else:
-                        thread_music_ctrl.playlist_load_uuid(uuid)
+                        self.music_ctrl.playlist_load_uuid(uuid)
             else:
                 data = self.response_error(data, "UUID not found: " + uuid)
         else:
@@ -220,7 +224,7 @@ class ServerApi:
         """
         data = self.play(uuid)
         position = int(position) + 1
-        thread_music_ctrl.playlist_load_uuid(playlist_uuid=uuid, position=position)
+        self.music_ctrl.playlist_load_uuid(playlist_uuid=uuid, position=position)
         data = self.response_end(data, ["no-statistic", "no-system"])
         return data
 
@@ -229,7 +233,7 @@ class ServerApi:
         pause playback via API call (see server_api.yml)
         """
         data = self.response_start("pause", "pause", "", "", "")
-        thread_music_ctrl.player.pause()
+        self.music_ctrl.player.pause()
         data = self.response_end(data, ["no-statistic", "no-system"])
         return data
 
@@ -238,8 +242,8 @@ class ServerApi:
         stop playback via API call (see server_api.yml)
         """
         data = self.response_start("stop", "stop", "", "", "")
-        thread_music_ctrl.control_data(state="Ended", song={}, playlist={})
-        thread_music_ctrl.player.stop()
+        self.music_ctrl.control_data(state="Ended", song={}, playlist={})
+        self.music_ctrl.player.stop()
         data = self.response_end(data, ["no-statistic", "no-system"])
         return data
 
@@ -248,7 +252,7 @@ class ServerApi:
         jump to last position forward in playlist via API call (see server_api.yml)
         """
         data = self.response_start("next", "next", "", step, "")
-        thread_music_ctrl.playlist_next(step=step)
+        self.music_ctrl.playlist_next(step=step)
         data = self.response_end(data, ["no-statistic", "no-system"])
         return data
 
@@ -258,7 +262,7 @@ class ServerApi:
         """
         data = self.response_start("last", "last", "", step, "")
         step = step * -1
-        thread_music_ctrl.playlist_next(step=step)
+        self.music_ctrl.playlist_next(step=step)
         data = self.response_end(data, ["no-statistic", "no-system"])
         return data
 
@@ -267,7 +271,7 @@ class ServerApi:
         jump with playback to new position via API call (see server_api.yml)
         """
         data = self.response_start("jump", "jump", "", percentage, "")
-        thread_music_ctrl.player.set_position(int(percentage))
+        self.music_ctrl.player.set_position(int(percentage))
         data = self.response_end(data, ["no-statistic", "no-system"])
         return data
 
@@ -275,7 +279,6 @@ class ServerApi:
         """
         read data from database
         """
-        global thread_couch
         param = databases
         uuid = ""
         data = self.response_start("readDB", "readDB", "", param, "")
@@ -298,9 +301,9 @@ class ServerApi:
 
         # read complete databases
         for database in db_list:
-            if database in thread_couch.database:
-                if "main" in thread_couch.database[database]:
-                    data["DATA"][database] = thread_couch.read_cache(database)
+            if database in self.couch.database:
+                if "main" in self.couch.database[database]:
+                    data["DATA"][database] = self.couch.read_cache(database)
                 else:
                     data = self.response_error(data, "Database empty: " + database)
             else:
@@ -317,12 +320,12 @@ class ServerApi:
                 stream_url = data["DATA"]["radio"][stream_uuid]["stream_url"]
 
                 is_podcast = False
-                for end in music_podcast.podcast_ending:
+                for end in self.podcast.podcast_ending:
                     if stream_url.endswith(end):
                         is_podcast = True
 
                 if is_podcast:
-                    podcast = thread_music_ctrl.podcast.get_podcasts(playlist_uuid=stream_uuid)
+                    podcast = self.music_ctrl.podcast.get_podcasts(playlist_uuid=stream_uuid)
                     data["DATA"]["radio"][stream_uuid]["podcast"] = podcast
                     if "_selected_uuid" in data and stream_uuid == uuid:
                         data["DATA"]["_selected"]["podcast"] = podcast
@@ -330,9 +333,9 @@ class ServerApi:
                             data["DATA"]["_selected"]["cover_images"] = podcast["cover_images"]
 
                 elif stream_url.endswith(".m3u"):
-                    data["DATA"]["radio"][stream_uuid]["stream_url2"] = thread_music_ctrl.player.get_stream_m3u(stream_url)
+                    data["DATA"]["radio"][stream_uuid]["stream_url2"] = self.music_ctrl.player.get_stream_m3u(stream_url)
                     if "_selected_uuid" in data and stream_uuid == uuid:
-                        data["DATA"]["_selected"]["stream_url2"] = thread_music_ctrl.player.get_stream_m3u(stream_url)
+                        data["DATA"]["_selected"]["stream_url2"] = self.music_ctrl.player.get_stream_m3u(stream_url)
 
         # .... check for errors!
         if databases == "artists":
@@ -343,7 +346,8 @@ class ServerApi:
                 album = {"album": album_info["albumname"], "uuid": key}
 
                 if "#error" not in artist:
-                    if artist not in artists: artists[artist] = []
+                    if artist not in artists:
+                        artists[artist] = []
                     artists[artist].append(album)
 
             data["DATA"]["artists"] = artists
@@ -358,8 +362,6 @@ class ServerApi:
         """
         read a specific entry from the database
         """
-        global thread_couch, thread_music_ctrl
-
         # identify database
         if "a_" in uuid:
             database = "album_info"
@@ -382,12 +384,12 @@ class ServerApi:
         data = self.response_start("readEntry", "readEntry", "", param, param2)
 
         # read entry from database
-        if database in thread_couch.database:
-            temp_tracks = thread_couch.read_cache("tracks")
-            temp_albums = thread_couch.read_cache("album_info")
+        if database in self.couch.database:
+            temp_tracks = self.couch.read_cache("tracks")
+            temp_albums = self.couch.read_cache("album_info")
 
-            if "main" in thread_couch.database[database]:
-                temp = thread_couch.read_cache(database)
+            if "main" in self.couch.database[database]:
+                temp = self.couch.read_cache(database)
 
                 if uuid in temp:
                     data["DATA"]["_selected_uuid"] = uuid
@@ -404,13 +406,16 @@ class ServerApi:
                         data["DATA"]["_selected"]["tracks"] = {}
 
                     if "tracks" in temp[uuid]:
-                        if "tracks" not in data["DATA"]: data["DATA"]["tracks"] = {}
-                        if "album_info" not in data["DATA"]: data["DATA"]["album_info"] = {}
+                        if "tracks" not in data["DATA"]:
+                            data["DATA"]["tracks"] = {}
+                        if "album_info" not in data["DATA"]:
+                            data["DATA"]["album_info"] = {}
                         self.logging.info("-> " + str(len(temp[uuid]["tracks"])) + " tracks")
                         for key in temp[uuid]["tracks"]:
                             self.logging.debug(key)
                             # if track add track info
-                            if key in temp_tracks: data["DATA"]["tracks"][key] = temp_tracks[key]
+                            if key in temp_tracks:
+                                data["DATA"]["tracks"][key] = temp_tracks[key]
                             # if album add album info and track information
                             if key in temp_albums:
                                 data["DATA"]["album_info"][key] = temp_albums[key]
@@ -422,11 +427,11 @@ class ServerApi:
 
                     # special handling for streams and podcast (read up-to-date data)
                     if uuid.startswith("r_"):
-                        temp[uuid]["podcast"] = thread_music_ctrl.podcast.get_podcasts(playlist_uuid=uuid)
+                        temp[uuid]["podcast"] = self.music_ctrl.podcast.get_podcasts(playlist_uuid=uuid)
                         if "cover_images" in temp[uuid]["podcast"]:
                             data["DATA"]["_selected"]["cover_images"] = temp[uuid]["podcast"]["cover_images"]
                         if data["DATA"]["_selected"]["stream_url"].endswith(".m3u"):
-                            data["DATA"]["_selected"]["stream_url2"] = thread_music_ctrl.player.get_stream_m3u(
+                            data["DATA"]["_selected"]["stream_url2"] = self.music_ctrl.player.get_stream_m3u(
                                 data["DATA"]["_selected"]["stream_url"])
 
                 else:
@@ -441,7 +446,6 @@ class ServerApi:
         return data
 
     def edit(self, uuid, entry_data):
-        global thread_couch
         database = ""
         databases = ["files", "tracks", "albums", "album_info", "cards", "playlists", "radio", "artists"]
         db_entries = {}
@@ -449,7 +453,7 @@ class ServerApi:
 
         # read all data from DB
         for name in databases:
-            db_entries[name] = thread_couch.read(name)
+            db_entries[name] = self.couch.read(name)
 
         # identify database
         if "a_" in uuid:
@@ -476,22 +480,19 @@ class ServerApi:
 
         # write change data to DB
         for name in databases:
-            thread_couch.write(name, db_entries[name])
+            self.couch.write(name, db_entries[name])
 
         data = self.response_end(data, ["no-statistic", "no-playback", "no-system"])
         return data
 
     def delete(self, uuid):
-        global couch
-        database = ""
         databases = ["files", "tracks", "albums", "album_info", "cards", "playlists", "radio", "artists"]
-        databases_changed = []
         db_entries = {}
         data = self.response_start("delete", "delete", "", uuid, "")
 
         # read all data from DB
         for name in databases:
-            db_entries[name] = thread_couch.read_cache(name)
+            db_entries[name] = self.couch.read_cache(name)
 
         # delete album, tracks, files, link to card
         if "a_" in uuid:
@@ -503,7 +504,8 @@ class ServerApi:
                     card = entry["card_id"]
                     if card in db_entries["cards"] and db_entries["cards"][card][0]:
                         if db_entries["cards"][card][0] == uuid:
-                            if card in db_entries["cards"]: del db_entries["cards"][card]
+                            if card in db_entries["cards"]:
+                                del db_entries["cards"][card]
 
                 for track in entry["tracks"]:
                     file = db_entries["tracks"][track]["file"]
@@ -526,7 +528,8 @@ class ServerApi:
             if uuid in db_entries[database]:
                 entry = db_entries[database][uuid]
                 file = entry["file"]
-                if file in db_entries["file"]: del db_entries["files"][file]
+                if file in db_entries["file"]:
+                    del db_entries["files"][file]
                 del db_entries[database][uuid]
             else:
                 data = self.response_error(data, "Entry not found in DB: " + uuid + "/" + database)
@@ -581,7 +584,7 @@ class ServerApi:
 
             # write change data to DB
         for name in databases:
-            thread_couch.write(name, db_entries[name])
+            self.couch.write(name, db_entries[name])
 
         data = self.response_end(data, ["no-statistic", "no-playback", "no-system"])
         return data
@@ -590,7 +593,6 @@ class ServerApi:
         """
         add playlist or podcast
         """
-        global thread_couch
         db_entries = {}
         databases = ["playlists", "radio"]
         data = self.response_start("add", "add", database, param, "")
@@ -598,7 +600,7 @@ class ServerApi:
 
         # read all data from DB
         for name in databases:
-            db_entries[name] = thread_couch.read(name)
+            db_entries[name] = self.couch.read(name)
 
         if database == "playlists":
             uuid_p = "p_" + str(uuid.uuid1())
@@ -620,7 +622,8 @@ class ServerApi:
                 playlist["description"] = parameter[1]
 
             # write playlist
-            if not database in db_entries:  db_entries[database] = {}
+            if database not in db_entries:
+                db_entries[database] = {}
             db_entries[database][uuid_p] = playlist
             data["LOAD"]["UUID"] = uuid_p
 
@@ -629,23 +632,30 @@ class ServerApi:
             parameter = param.split("||")
 
             # create radio
-            playlist = {}
-            playlist["uuid"] = uuid_r
-            playlist["title"] = parameter[0]
+            playlist = {
+                "uuid": uuid_r,
+                "title": parameter[0],
+                "description": "",
+                "stream_info": "",
+                "stream_url": "",
+                "stream_url2": "",
+                "cover_images": {
+                    "active": "none",
+                    "upload": [],
+                    "url": [parameter[4]]
+                }
+            }
+
             if len(parameter) > 0:
                 playlist["description"] = parameter[1]
             if len(parameter) > 1:
                 playlist["stream_info"] = parameter[2]
             if len(parameter) > 2:
                 playlist["stream_url"] = parameter[3]
-            playlist["stream_url2"] = ""
-            playlist["cover_images"] = {}
-            playlist["cover_images"]["active"] = "none"
-            playlist["cover_images"]["upload"] = []
-            playlist["cover_images"]["url"] = [parameter[4]]
 
             # write radio
-            if database not in db_entries:  db_entries[database] = {}
+            if database not in db_entries:
+                db_entries[database] = {}
             db_entries[database][uuid_r] = playlist
             data["LOAD"]["UUID"] = uuid_r
 
@@ -654,13 +664,12 @@ class ServerApi:
 
         # write change data to DB
         for name in db_entries:
-            thread_couch.write(name, db_entries[name])
+            self.couch.write(name, db_entries[name])
 
         data = self.response_end(data, ["no-statistic", "no-playback", "no-system"])
         return data
 
     def images(self, cmd, uuid, param):
-        global thread_couch
         data = self.response_start("images", "images", cmd, uuid, param)
 
         # identify UUID type
@@ -676,7 +685,7 @@ class ServerApi:
             return data
 
         # read data from DB
-        db_entries = {key: thread_couch.read(key)}
+        db_entries = {key: self.couch.read(key)}
 
         # add image from download
         if cmd == "upload" and len(key) > 0:
@@ -706,26 +715,27 @@ class ServerApi:
             self.logging.warning("Command or UUID is not valid: " + uuid + "/" + param)
 
         # write change data to DB
-        thread_couch.write(key, db_entries[key])
+        self.couch.write(key, db_entries[key])
 
         data = self.response_end(data, ["no-statistic", "no-playback", "no-system"])
         return data
 
     def playlist_items(self, cmd, uuid, param):
-        global thread_couch
         db_entries = {}
         databases = ["playlists", "tracks", "album_info"]
         data = self.response_start("playlist_items", "playlist_items", cmd, uuid, param)
 
         # read all data from DB
         for name in databases:
-            db_entries[name] = thread_couch.read(name)
+            db_entries[name] = self.couch.read(name)
 
         if cmd == "add":
             if uuid in db_entries["playlists"]:
                 playlist = db_entries["playlists"][uuid]
-                if "tracks" not in playlist: playlist["tracks"] = []
-                if "tracks_ref" not in playlist: playlist["tracks_ref"] = []
+                if "tracks" not in playlist:
+                    playlist["tracks"] = []
+                if "tracks_ref" not in playlist:
+                    playlist["tracks_ref"] = []
 
                 # add track to playlist
                 if param in db_entries["tracks"]:
@@ -765,13 +775,12 @@ class ServerApi:
 
         # write change data to DB
         for name in databases:
-            thread_couch.write(name, db_entries[name])
+            self.couch.write(name, db_entries[name])
 
         data = self.response_end(data, ["no-statistic", "no-playback", "no-system"])
         return data
 
     def cards(self, uuid, param):
-        global thread_couch
         db_entries = {}
         data = self.response_start("cards", "cards", "", uuid, param)
         databases = ["cards", "album_info", "playlists", "radio"]
@@ -779,7 +788,7 @@ class ServerApi:
 
         # read all data from DB
         for name in databases:
-            db_entries[name] = thread_couch.read(name)
+            db_entries[name] = self.couch.read(name)
 
         # check if card already used for different album
         if param in db_entries["cards"]:
@@ -819,20 +828,19 @@ class ServerApi:
 
         # write change data to DB
         for name in databases:
-            thread_couch.write(name, db_entries[name])
+            self.couch.write(name, db_entries[name])
 
         data = self.response_end(data, ["no-statistic", "no-playback", "no-system"])
         return data
 
     def card_info(self, filter):
-        global thead_couch
         db_entries = {}
         data = self.response_start("cards", "cards", "", "", "")
         databases = ["cards", "album_info", "playlists", "radio"]
 
         # read all data from DB
         for name in databases:
-            db_entries[name] = thread_couch.read_cache(name)
+            db_entries[name] = self.couch.read_cache(name)
             data["DATA"][name] = {}
 
         data["DATA"]["cards"] = db_entries["cards"]
@@ -848,11 +856,12 @@ class ServerApi:
                 data["DATA"]["playlists"][id] = db_entries["playlists"][id]
 
         for name in databases:
-            if filter in db_entries[name]: data["DATA"][name][filter] = db_entries[name][filter]
+            if filter in db_entries[name]:
+                data["DATA"][name][filter] = db_entries[name][filter]
 
         if "," in filter:
             data["DATA"]["_selected_uuid"] = filter
-        elif not "_" in filter:
+        elif "_" not in filter:
             data["DATA"]["_selected_filter"] = filter
 
         data = self.response_end(data, ["no-statistic", "no-playback", "no-system"])
@@ -873,13 +882,12 @@ class ServerApi:
         data = self.response_end(data)
         return data
 
-    def speak(self, message):
+    def speak_message(self, message):
         """
         set card UID by microservice to central var
         """
-        global thread_speak
         data = self.response_start("speak", "speak", "", message, "")
-        thread_speak.speak_message(message)
+        self.speak.speak_message(message)
         data = self.response_end(data)
         return data
 
@@ -896,11 +904,11 @@ class ServerApi:
             mbox.rfid_ctrl["buttonID"] = param
 
         if mbox.active_device == "music_box" and param == "next":
-            thread_music_ctrl.playlist_next(1)
+            self.music_ctrl.playlist_next(1)
         elif mbox.active_device == "music_box" and param == "back":
-            thread_music_ctrl.playlist_next(-1)
+            self.music_ctrl.playlist_next(-1)
         elif mbox.active_device == "music_box" and param == "pause":
-            thread_music_ctrl.player.pause()
+            self.music_ctrl.player.pause()
 
         data = self.response_end(data)
         return data
@@ -909,13 +917,12 @@ class ServerApi:
         """
         create or restore backup for couchDB
         """
-        global thread_couch
         data = self.response_start("backup", "backup", "", param, "")
 
         if param == "json2db":
-            thread_couch.restore_from_json()
+            self.couch.restore_from_json()
         elif param == "db2json":
-            thread_couch.backup_to_json()
+            self.couch.backup_to_json()
         else:
             data = self.response_error(data, "Parameter is not supported.")
 
@@ -926,15 +933,14 @@ class ServerApi:
         """
         reload metadata from music files or images
         """
-        global thread_couch
         data = self.response_start("load", "load", "", param, "")
 
         if param == "new":
-            thread_music_load.reload_new = True
+            self.music_load.reload_new = True
         elif param == "all":
-            thread_music_load.reload_all = True
+            self.music_load.reload_all = True
         elif param == "images":
-            thread_music_load.reload_img = True
+            self.music_load.reload_img = True
         else:
             data = self.response_error(data, "Parameter is not supported.")
 
@@ -945,13 +951,12 @@ class ServerApi:
         """
         check if APP version is supported by server
         """
-        global thread_couch
         param = mbox.app_version
         data = self.response_start("checkVersion", "checkVersion", "", param, "")
 
-        if (APPversion == mbox.app_version):
+        if APPversion == mbox.app_version:
             result = error_msg("800")
-        elif (APPversion in mbox.app_support):
+        elif APPversion in mbox.app_support:
             result = error_msg("801")
         else:
             result = error_msg("802")
@@ -960,59 +965,37 @@ class ServerApi:
         data = self.response_end(data, ["no-statistic", "no-playback", "no-system"])
         return data
 
-    def template_read(self, param):
-        data = self.response_start("template_read", "template_read", "", param, "")
-        data = self.response_end(data, ["no-statistic", "no-playback", "no-system"])
-        return data
-
-    def template_edit(self, database, param):
-        global thread_couch
-        db_entries = {}
-        data = self.response_start("template_edit", "template_edit", "", param, "")
-
-        # read all data from DB
-        for name in databases:
-            db_entries[name] = thread_couch.read(name)
-        # write change data to DB
-        for name in databases:
-            thread_couch.write(name, db_entries[name])
-
-        data = self.response_end(data, ["no-statistic", "no-playback", "no-system"])
-        return data
-
-    @staticmethod
-    def test_uuid(database, uuid):
+    def test_uuid(self, database, uuid):
         """
         if uuid is "test", get uuid from first dataset in database
         """
-        global thread_couch
         if "test" in uuid:
-            temp = thread_couch.read_cache(database)
+            temp = self.couch.read_cache(database)
             for key in temp:
                 uuid = key
                 break
         return uuid
 
-    @staticmethod
-    def check_active_card(data):
+    def check_active_card(self, data):
         """
         check if card already is connected, otherwise return signal and list of available items ...
         """
         if data["LOAD"]["RFID"] == "":
             return data
         card = data["LOAD"]["RFID"]
-        cards = thread_couch.read_cache("cards")
+        cards = self.couch.read_cache("cards")
         if card not in cards:
             data["LOAD"]["CARD"] = "unknown"
             db_list = ["album_info", "playlists", "radio"]
             for db in db_list:
-                temp_db = thread_couch.read_cache(db)
+                temp_db = self.couch.read_cache(db)
                 data["DATA"]["SHORT"][db] = {}
                 for entry in temp_db:
                     if "title" in temp_db[entry]:
                         data["DATA"]["SHORT"][db][entry] = temp_db[entry]["title"]
                     elif "album" in temp_db[entry]:
-                        data["DATA"]["SHORT"][db][entry] = temp_db[entry]["album"] + " (" + temp_db[entry]["artist"] + ")"
+                        data["DATA"]["SHORT"][db][entry] = temp_db[entry]["album"] + \
+                                                           " (" + temp_db[entry]["artist"] + ")"
         else:
             data["LOAD"]["CARD"] = "known"
         return data
@@ -1026,4 +1009,5 @@ class ServerApi:
         return data
 
 
-api_calls = ServerApi(thread_couch, thread_music_ctrl, thread_speak)
+api_calls = ServerApi(server_init.thread_couch, server_init.thread_podcast, server_init.thread_music_ctrl,
+                      server_init.thread_music_load, server_init.thread_speak)

@@ -10,8 +10,7 @@ from mutagen.mp4 import MP4, MP4Cover
 
 import modules.config_mbox as mbox
 import modules.config_stage as stage
-
-from modules.jcRunCmd import *
+import modules.run_cmd as run_cmd
 
 
 md_logging = logging.getLogger("metadata")
@@ -26,6 +25,12 @@ if stage.logging_level != logging.DEBUG:
     id3_logging.setLevel(logging.ERROR)
     id3_logging = logging.getLogger("eyed3.mp3.headers")
     id3_logging.setLevel(logging.ERROR)
+
+
+class ExtractMetadata:
+
+    def __init__(self):
+        return
 
 
 def md5_hash(filename):
@@ -48,16 +53,17 @@ def set_metadata_error(error, filename, error_msg="", decoder=""):
     directory = directory.replace(mbox.music_dir, "")
     filename = temp[len(temp) - 1]
 
-    tags = {}
-    tags["uuid"] = "t_" + str(uuid.uuid1())
-    tags["file"] = directory + filename
-    tags["filesize"] = 0
-    tags["artist"] = "#error: " + directory
-    tags["album"] = error
-    tags["albumsize"] = 0
-    tags["title"] = filename + " (error: " + error + ")"
-    tags["error"] = error
-    tags["sort"] = "00000" + filename
+    tags = {
+        "uuid": "t_" + str(uuid.uuid1()),
+        "file": directory + filename,
+        "filesize": 0,
+        "artist": "#error: " + directory,
+        "album": error,
+        "albumsize": 0,
+        "title": filename + " (error: " + error + ")",
+        "error": error,
+        "sort": "00000" + filename
+    }
 
     if decoder != "":
         md_logging.warning(" ... ERROR: " + error + ": " + filename + " (decoder: " + decoder + ")")
@@ -82,7 +88,7 @@ def read_metadata(path_to_file):
     filepath = path_to_file.replace(stage.data_dir, "")
 
     md_logging.debug(" .. Read: " + filepath)
-    file_logging(" .. Read: " + filepath)
+    run_cmd.file_logging(" .. Read: " + filepath)
 
     # check if file is empty
     file_stats = os.stat(path_to_file)
@@ -130,11 +136,13 @@ def read_metadata(path_to_file):
 
     tags["MD5"] = md5_hash(path_to_file)
 
-    if "track_no" in tags: del tags["track_no"]
-    if "disc_no" in tags: del tags["disc_no"]
+    if "track_no" in tags:
+        del tags["track_no"]
+    if "disc_no" in tags:
+        del tags["disc_no"]
 
     md_logging.debug(" ..... Album/Artist: " + tags["album"] + " / " + tags["artist"])
-    file_logging(" ..... Album/Artist: " + tags["album"] + " / " + tags["artist"])
+    run_cmd.file_logging(" ..... Album/Artist: " + tags["album"] + " / " + tags["artist"])
     md_logging.debug(" ..... MD5: " + tags["MD5"])
     return tags
 
@@ -259,7 +267,7 @@ def read_metadata_id3(filename, album_id="", album_nr=""):
     read metadata from mp3 file, for available tags see https://eyed3.readthedocs.io/en/latest/eyed3.id3.html?highlight=images#eyed3.id3.tag.Tag.images
     """
     md_logging.debug(" ... Read ID3 (eyed3::mp3)")
-    file_logging(" ... Read ID3 (eyed3::mp3)")
+    run_cmd.file_logging(" ... Read ID3 (eyed3::mp3)")
     found = True
 
     # load data from audio file
@@ -300,7 +308,7 @@ def read_metadata_id3(filename, album_id="", album_nr=""):
         except Exception as e:
             tags["track_total"] = ""
             md_logging.debug(" ... Error in 'track_total': " + str(e))
-            file_logging(" ... Error in 'track_total': " + str(e))
+            run_cmd.file_logging(" ... Error in 'track_total': " + str(e))
 
         try:
             if "," in tags["track_num"]:
@@ -312,7 +320,7 @@ def read_metadata_id3(filename, album_id="", album_nr=""):
                     tags["track_total"] = temp[1]
         except Exception as e:
             md_logging.debug(" ... Error decoding 'track_num': " + str(e))
-            file_logging(" ... Error decoding 'track_num': " + str(e))
+            run_cmd.file_logging(" ... Error decoding 'track_num': " + str(e))
 
         try:
             tags["disc_num"] = audiofile.tag.disc  # disc number
@@ -321,7 +329,7 @@ def read_metadata_id3(filename, album_id="", album_nr=""):
             tags["disc_num"] = "0"
             tags["disc_total"] = "0"
             md_logging.debug(" ... Error in 'disc_num' or 'disc_total': " + str(e))
-            file_logging(" ... Error in 'disc_num' or 'disc_total': " + str(e))
+            run_cmd.file_logging(" ... Error in 'disc_num' or 'disc_total': " + str(e))
 
         try:
             tags["genre"] = str(audiofile.tag.genre)
@@ -329,7 +337,7 @@ def read_metadata_id3(filename, album_id="", album_nr=""):
         except Exception as e:
             tags["genre"] = ""
             md_logging.debug(" ... Error in 'genre': " + str(e))
-            file_logging(" ... Error in 'genre': " + str(e))
+            run_cmd.file_logging(" ... Error in 'genre': " + str(e))
 
         tags["file"] = filename.replace(mbox.music_dir, "")
         tags["uuid"] = "t_" + str(uuid.uuid1())
@@ -342,14 +350,14 @@ def read_metadata_id3(filename, album_id="", album_nr=""):
                 tags["track_num"])
         except Exception as e:
             md_logging.debug(" ... Error in 'track_num' (" + str(tags["track_num"]) + "): " + str(e))
-            file_logging(" ... Error in 'track_num' (" + str(tags["track_num"]) + "): " + str(e))
+            run_cmd.file_logging(" ... Error in 'track_num' (" + str(tags["track_num"]) + "): " + str(e))
 
         try:
             if "disc_num" in tags and tags["disc_num"] != None and int(tags["disc_num"]) > 0:   tags["sort"] += int(
                 tags["disc_num"]) * 1000
         except Exception as e:
             md_logging.debug(" ... Error in 'disc_num' (" + str(tags["disc_num"]) + "): " + str(e))
-            file_logging(" ... Error in 'disc_num' (" + str(tags["disc_num"]) + "): " + str(e))
+            run_cmd.file_logging(" ... Error in 'disc_num' (" + str(tags["disc_num"]) + "): " + str(e))
 
         tags["sort"] = str(tags["sort"]).zfill(5) + tags["file"]
 
@@ -372,7 +380,7 @@ def read_metadata_id3(filename, album_id="", album_nr=""):
                         tags["cover_image"] = 1
                 except Exception as e:
                     md_logging.debug(" ... Error writing 'cover_images': " + str(e))
-                    file_logging(" ... Error writing 'cover_images': " + str(e))
+                    run_cmd.file_logging(" ... Error writing 'cover_images': " + str(e))
 
         else:
             tags["cover_image"] = 0
@@ -404,7 +412,7 @@ def save_image_as_file(name, idata):
 
     dtype = type(idata)
     md_logging.debug(" ... Write Image: " + name + " (" + str(dtype) + ")")
-    file_logging(" ... Write Image: " + name + " (" + str(dtype) + ")")
+    run_cmd.file_logging(" ... Write Image: " + name + " (" + str(dtype) + ")")
 
     if "id3.APIC" in str(dtype):  # <class 'mutagen.id3.APIC'>
         data = idata.data
@@ -425,3 +433,4 @@ def save_mp4_image_as_file(uuid, target_file):
 
     filename = mbox.music_cover + uuid + ".jpg"
     return filename
+

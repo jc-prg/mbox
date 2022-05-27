@@ -9,7 +9,7 @@ import logging
 import requests
 
 import modules.config_stage as stage
-from modules.jcRunCmd import check_internet_connect
+import modules.run_cmd as run_cmd
 
 
 class MusicPlayer(threading.Thread):
@@ -235,7 +235,7 @@ class MusicPlayer(threading.Thread):
         """
         check if connection to internet exists
         """
-        error_msg = check_internet_connect()
+        error_msg = run_cmd.check_internet_connect()
 
         if error_msg == "DNS-ERROR":
             self.logging.error("Could not connect to INTERNET!")

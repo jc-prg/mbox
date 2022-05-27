@@ -9,90 +9,7 @@ from xml.etree import cElementTree as ET
 from collections import defaultdict
 
 import modules.config_stage as stage
-import modules.config_mbox as mbox
-import modules.music_speak as music_speak
-import modules.jcRunCmd as runcmd
-
-
-# ####################### -> Speak to be updated!
-
-podcast_ending = [".xml", ".podcast", ".rss", "feed/mp3"]
-
-
-def internet_connection():
-    """
-    check if connection to internet exists
-    """
-    host_ip = stage.server_dns
-    host = ['spiegel.de', 'google.com']
-    ping_ip = False
-    error_msg = ""
-
-    speak = music_speak.SpeakThread(thread_vlc)
-    speak.start()
-
-    logging.debug("check if internet is connected - ping dns server")
-    for key in host_ip:
-        if runcmd.ping(key, "podcast1"):
-            ping_ip = True
-            break
-
-    logging.debug("check if dns is working correctly - ping domain names")
-    count = 0
-    while count < len(host):
-        try:
-            connect = runcmd.ping(host[count], "podcast2")
-            if connect and ping_ip:
-                error_msg = "CONNECTED"
-                internet_connection_error(error_msg)
-                logging.info("Internet connection OK: " + host[count])
-                return error_msg
-
-            elif ping_ip:
-                error_msg = "DNS-ERROR"
-                internet_connection_error(error_msg)
-                logging.warning("Connection OK, DNS for Domain doesnt work: " + host[count])
-
-            else:
-                error_msg = "NO-CONNECTION"
-                internet_connection_error(error_msg)
-                logging.warning("Internet connection ERROR: " + host[count])
-
-        except requests.exceptions.RequestException as e:
-            error_msg = "NO-CONNECTION"
-            logging.warning("Error connecting to INTERNET (" + host[count] + "): " + str(e))
-
-        count = count + 1
-
-    if error_msg == "DNS-ERROR":
-        logging.error("Could not connect to INTERNET!")
-        speak.speak_message("CONNECTION-ERROR-RESTART-SHORTLY")
-        time.sleep(20)
-        return False
-
-    elif error_msg != "CONNECTED":
-        logging.error("Could not connect to INTERNET!")
-        speak.speak_message("NO-INTERNET-CONNECTION")
-        time.sleep(0.5)
-        speak.speak_message("TRY-AGAIN-IN-A-MINUTE")
-        time.sleep(20)
-        music_ctrl["LastCard"] = ""
-        return False
-
-    else:
-        logging.info("Internet connected.")
-
-    speak.stop()
-    return True
-
-
-def internet_connection_error(info):
-    """
-    write error message to log file
-    """
-    f = open("/log/internet_connect", "w+")
-    f.write(info)
-    f.close()
+import modules.run_cmd as run_cmd
 
 
 class PodcastThread(threading.Thread):
@@ -103,11 +20,13 @@ class PodcastThread(threading.Thread):
         """
         threading.Thread.__init__(self)
         self.database = thread_database
+        self.speak = thread_speak
         self.running = True
         self.temp_podcasts = {}
         self.update_interval = 60 * 60
         self.playing = 0
         self.playing_uuid = ""
+        self.podcast_ending = [".xml", ".podcast", ".rss", "feed/mp3"]
 
         self.logging = logging.getLogger("podcast")
         self.logging.setLevel = stage.logging_level
@@ -132,7 +51,7 @@ class PodcastThread(threading.Thread):
                     if "stream_url" in stream:
                         stream_url = stream["stream_url"]
 
-                        for end in podcast_ending:
+                        for end in self.podcast_ending:
                             if stream_url.endswith(end):
                                 if stream_uuid not in self.temp_podcasts:
                                     podcast = self.get_tracks_rss(rss_url=stream_url, playlist_uuid=stream_uuid)
@@ -184,7 +103,7 @@ class PodcastThread(threading.Thread):
         if playlist_uuid in self.temp_podcasts:
             return self.temp_podcasts[playlist_uuid]
 
-        for end in podcast_ending:
+        for end in self.podcast_ending:
             if stream_url.endswith(end):
                 get_rss = self.get_tracks_rss(stream_url, playlist_uuid)
                 if get_rss != "":
@@ -197,7 +116,7 @@ class PodcastThread(threading.Thread):
         """
         get tracks from rrs feed (itunes-format)
         """
-        if not internet_connection:
+        if not self.internet_connection():
             return
 
         try:
@@ -210,7 +129,7 @@ class PodcastThread(threading.Thread):
 
         except requests.exceptions.RequestException as e:
             self.logging.error("Can't open the podcast info from RSS/XML: " + str(e))
-            # self.speak.speak_message("CANT-OPEN-STREAM")
+            self.speak.speak_message("CANT-OPEN-STREAM")
             return ""
 
         e = ET.XML(playlist)
@@ -314,8 +233,34 @@ class PodcastThread(threading.Thread):
         self.logging.debug(str(podcast))
         return podcast
 
+    def internet_connection(self):
+        """
+        check if connection to internet exists
+        """
+        error_msg = run_cmd.check_internet_connect()
+
+        if error_msg == "DNS-ERROR":
+            self.logging.error("Could not connect to INTERNET!")
+            self.speak.speak_message("CONNECTION-ERROR-RESTART-SHORTLY")
+            time.sleep(20)
+            return False
+
+        elif error_msg != "CONNECTED":
+            self.logging.error("Could not connect to INTERNET!")
+            self.speak.speak_message("NO-INTERNET-CONNECTION")
+            time.sleep(0.5)
+            self.speak.speak_message("TRY-AGAIN-IN-A-MINUTE")
+            time.sleep(20)
+            self.music_ctrl["LastCard"] = ""
+            return False
+
+        return True
+
 
 def etree_to_dict(t):
+    """
+    convert XML structure to dict
+    """
     d = {t.tag: {} if t.attrib else None}
     children = list(t)
     if children:

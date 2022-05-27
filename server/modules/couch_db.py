@@ -1,7 +1,7 @@
 import modules.json_db as json_db
 import modules.config_stage as stage
 import modules.config_mbox as mbox
-from modules.jcRunCmd import *
+from modules.run_cmd import *
 
 import sys
 import logging
@@ -38,10 +38,8 @@ class CouchDB:
 
             except requests.exceptions.RequestException as e:
                 connects2db += 1
-                self.logging.warning(" - Waiting 5s for connect to CouchDB: " + str(connects2db) + "/" + str(
-                    max_connects) + " (" + self.db_url + "/" + str(e) + ")")
-                self.logging.info("                         ... to CouchDB: " + self.db_url)
-
+                self.logging.warning(" - Waiting 5s for next connect to CouchDB: " + str(connects2db) + "/" + str(max_connects))
+                self.logging.warning("   -> " + str(e))
                 time.sleep(5)
 
             if connects2db == max_connects:
@@ -66,7 +64,7 @@ class CouchDB:
         """
         Check if required databases exist, and create if not
         """
-        self.logging.info("- Check if DB exist: "+str(self.databases))
+        self.logging.info(" - Check if DB exist ... ")
         self.keys = []
         for cat_key in self.databases:
             for db_key in self.databases[cat_key]:

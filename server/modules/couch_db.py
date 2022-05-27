@@ -73,10 +73,9 @@ class CouchDB:
                 if db_key in self.database and "main" in self.database[db_key]:
                     self.logging.info("  OK: DB " + db_key + " exists.")
                 else:
-                    self.logging.info("  OK: DB " + db_key + " have to be created ...")
+                    self.logging.info("  -> DB " + db_key + " have to be created ...")
                     try:
                         self.create(db_key)
-                        self.logging.info("  -> Created DB " + db_key + ". ")
                     except Exception as e:
                         self.logging.error("  -> Could not create DB " + db_key + "! " + str(e))
 
@@ -121,7 +120,7 @@ class CouchDB:
                 return
 
         # success
-        self.logging.info("CouchDB created: " + db_key + " " + str(time.time()))
+        self.logging.info("  -> DB created: " + db_key + " " + str(time.time()))
         return
 
     def read(self, db_key, entry_key=""):

@@ -59,8 +59,7 @@ log_autohotspot = "/log/autohotspot.status"
 # ---------------------------------
 
 databases = {"radio": ["radio"],
-             "music": ["albums", "album_info", "cards", "files", "tracks", "playlists", "artists"],
-             "overarching": ["music"]
+             "music": ["albums", "album_info", "cards", "files", "tracks", "playlists", "artists"]
              }
 
 # ---------------------------------

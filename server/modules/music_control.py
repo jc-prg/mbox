@@ -381,7 +381,7 @@ class MusicControlThread(threading.Thread):
         data = self.music_database.read("status")
 
         if "music" not in data:
-            self.logging.warning("DB doesn't contain music information yet, not playback status to save.")
+            self.logging.debug("DB doesn't contain music information yet, not playback status to save.")
             return
 
         if "_saved" not in data or data["_saved"] + 3 < time.time():

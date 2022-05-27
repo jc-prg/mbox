@@ -123,9 +123,10 @@ class ServerApi:
         }
 
         if "no-statistic" not in reduce_data:
-            data["STATUS"]["statistic"] = {}
             for database in thread_couch.database:
                 temp = thread_couch.read_cache(database)
+                if "statistic" not in data["STATUS"]:
+                    data["STATUS"]["statistic"] = {}
                 try:
                     data["STATUS"]["statistic"][database] = len(temp.keys())
                 except:

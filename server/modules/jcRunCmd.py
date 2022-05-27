@@ -51,27 +51,31 @@ def check_disk_space(init=False):
             out[0] = float(disk_use.split("\t")[0])
         except Exception as e:
             run_logging.warning("0 Error in reading disk spaces (data drive) ..." + str(e))
+            run_logging.warning("  - "+disk_use)
 
         disk_free, err = runCmd(mbox.diskfree + stage.mount_data)
         try:
             out[1] = float(disk_free.split("\n")[1])
         except Exception as e:
             run_logging.warning("1 Error in reading disk spaces (data drive) ..." + str(e))
+            run_logging.warning("  - "+disk_free)
 
     if stage.mount_system != "":
 
         if init:
-            out[2], err = runCmd(mbox.diskuse + stage.mount_system)
+            disk_use_mount, err = runCmd(mbox.diskuse + stage.mount_system)
             try:
-                out[2] = float(out[2].split("\t")[0])
+                out[2] = float(disk_use_mount.split("\t")[0])
             except Exception as e:
                 run_logging.warning("2 Error in reading disk spaces (system drive) ..." + str(e))
+                run_logging.warning("  - "+disk_use_mount)
 
-        out[3], err = runCmd(mbox.diskfree + stage.mount_system)
+        disk_free_mount, err = runCmd(mbox.diskfree + stage.mount_system)
         try:
             out[3] = float(out[3].split("\n")[1])
         except Exception as e:
             run_logging.warning("3 Error in reading disk spaces (system drive) ..." + str(e))
+            run_logging.warning("  - " + disk_free_mount)
 
     if init:
         mbox.checkdisk = out

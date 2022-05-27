@@ -380,8 +380,12 @@ class MusicControlThread(threading.Thread):
         """
         data = self.music_database.read("status")
 
+        if "music" not in data:
+            self.logging.warning("DB doesn't contain music information yet, not playback status to save.")
+            return
+
         if "_saved" not in data or data["_saved"] + 3 < time.time():
-            if "song" in data["music"] and "file" in data["music"]["song"]:
+            if "file" in data["music"]["song"]:
                 old_state = data["music"]["state"] + " " + str(data["music"]["song"]["file"])
             else:
                 old_state = data["music"]["state"] + " " + str(data["music"]["song"])

@@ -55,7 +55,9 @@ def check_disk_space(init=False):
 
         disk_free, err = runCmd(mbox.diskfree + stage.mount_data)
         try:
-            out[1] = float(disk_free.split("\n")[1])
+            out[1] = disk_free.split("\n")[1]
+            out[1] = out[1].replace(" ", "")
+            out[1] = float(out[1])
         except Exception as e:
             run_logging.warning("1 Error in reading disk spaces (data drive) ..." + str(e))
             run_logging.warning("  - " + mbox.diskfree + stage.mount_data)

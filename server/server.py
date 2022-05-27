@@ -26,7 +26,7 @@ logging.info("Load web server on port "+str(stage.client_port)+" ..." + server_i
 app = connexion.App(__name__, specification_dir="./")
 CORS(app.app)
 
-logging.info("Load REST API on port "+str(stage.database_port)+" ..." + server_init.time_since_start())
+logging.info("Load REST API on port "+str(stage.server_port)+" ..." + server_init.time_since_start())
 app.add_api("modules/server_api.yml")
 
 

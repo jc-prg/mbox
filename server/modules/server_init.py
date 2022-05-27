@@ -56,7 +56,8 @@ def start_modules():
     thread_music_load = music_load.MusicLoadingThread(thread_couch, time_since_start())
     thread_music_load.start()
 
-    thread_music_ctrl = music_ctrl.MusicControlThread("music_box", thread_couch, thread_player, thread_speak, thread_podcast, time_since_start())
+    thread_music_ctrl = music_ctrl.MusicControlThread("music_box", thread_couch, thread_player, thread_speak,
+                                                      thread_podcast, time_since_start())
     thread_music_ctrl.start()
 
 
@@ -64,6 +65,7 @@ def end_modules():
     """
     Stop all threads (if pressed Ctrl+C)
     """
+    global thread_vlc, thread_speak, thread_player, thread_couch, thread_podcast, thread_music_load, thread_music_ctrl
     logging.warning("Stop Application")
 
     thread_vlc.stop()

@@ -76,6 +76,7 @@ class VlcThread(threading.Thread):
         time.sleep(1)
         try:
             state = self.player_status
+            self.logging.info(" ... " + str(self.player.get_length() / 1000))
             self.logging.info(" ... " + str(state))
         except Exception as e:
             self.logging.warning("Could not get playing status: "+str(e))

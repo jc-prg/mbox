@@ -155,13 +155,6 @@ class MusicPlayer(threading.Thread):
             self.speak.speak_message("COULD-NOT-START-PLAYBACK")
             return "Error"
 
-        #time.sleep(2)
-        #if self.play_status == 0:
-        #    self.logging.error(
-        #        "Player (" + self.name + "): Could not start playback - " + path + " - " + str(self.play_status))
-        #    self.speak.speak_message("UNKNOWN-ERROR")
-        #    return "Error"
-
         return "Play"
 
     def play_stream(self, url):

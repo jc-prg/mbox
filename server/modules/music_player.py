@@ -147,7 +147,7 @@ class MusicPlayer(threading.Thread):
             self.speak.speak_message("FILE-NOT-FOUND")
             return "Error"
 
-        msg = self.vlc.play(path)
+        msg = self.vlc.play(path, True)
         if msg != "error":
             self.vlc.set_volume(self.volume)
             self.play_url = path

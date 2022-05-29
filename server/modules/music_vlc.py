@@ -57,7 +57,7 @@ class VlcThread(threading.Thread):
         play file using VLC
         """
         state = ""
-        self.logging.info("Load file '" + filename + "' (wait="+str(wait)+",vol="+str(self.volume)+")..")
+        self.logging.info("Load file '" + filename + "' (wait="+str(wait)+",vol="+str(self.volume)+") ...")
         if "http" not in filename and not os.path.isfile(filename):
             self.logging.error("Didn't find file  " + filename)
             return "error"
@@ -74,7 +74,7 @@ class VlcThread(threading.Thread):
         time.sleep(2)
         try:
             state = self.player.get_state()
-            self.logging.debug(" ... " + str(state))
+            self.logging.info(" ... " + str(state))
         except Exception as e:
             self.logging.warning("Could not get playing status: "+str(e))
 
@@ -85,7 +85,7 @@ class VlcThread(threading.Thread):
                     return "error"
                 time.sleep(1)
                 state = self.player.get_state()
-                self.logging.debug(" ... "+state)
+                self.logging.info(" ... "+state)
             return "ended"
         else:
             return "play"

@@ -67,6 +67,7 @@ class VlcThread(threading.Thread):
             self.media = self.instance.media_new(filename)  # str(file.encode('utf-8')) )
             self.player.set_media(self.media)
             self.player.play()
+            time.sleep(1)
             length = self.player.get_length()
 
         except Exception as e:
@@ -74,7 +75,7 @@ class VlcThread(threading.Thread):
             self.logging.error(" - Status: " + self.player_status)
             return "error"
 
-        time.sleep(2)
+        time.sleep(1)
         try:
             state = self.player_status
             self.logging.info(" ... " + str(length / 1000))

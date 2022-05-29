@@ -73,7 +73,7 @@ class VlcThread(threading.Thread):
             self.logging.error(" - Status: " + self.player_status)
             return "error"
 
-        time.sleep(1)
+        time.sleep(2)
         try:
             state = self.player_status
             self.logging.info(" ... " + str(self.player.get_length() / 1000))

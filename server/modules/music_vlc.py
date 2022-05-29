@@ -81,6 +81,8 @@ class VlcThread(threading.Thread):
         except Exception as e:
             self.logging.warning("Could not get playing status: "+str(e))
 
+        # IDEE: auf Länge aufsetzen; while-loop -> Stop: set playing status to end loop
+
         if wait:
             while self.play_status == 1:
 #                if self.player_status != "State.Ended" and self.player_status != "State.Playing":

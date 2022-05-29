@@ -141,7 +141,7 @@ class MusicPlayer(threading.Thread):
         """
         play audio file, react on position var
         """
-        self.player.stop()
+        # self.vlc.stop()
 
         if not os.path.exists(path.encode('utf-8')) and not path.startswith("http"):
             self.speak.speak_message("FILE-NOT-FOUND")

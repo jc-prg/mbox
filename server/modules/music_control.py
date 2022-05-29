@@ -32,6 +32,7 @@ class MusicControlThread(threading.Thread):
         self.music_ctrl = {}
         self.music_ctrl = self.control_data(state="Started")
         self.music_type = ""
+        self.music_last_msg = ""
 
         time.sleep(2)
 
@@ -185,16 +186,19 @@ class MusicControlThread(threading.Thread):
                     if self.music_list_p < len(self.music_list):
                         self.music_load_new = True
                         self.music_list_p = int(self.music_list_p) + 1
-                        self.logging.info(
-                            "Next song in list, position: " + str(self.music_list_p) + "/" + str(len(self.music_list)))
+                        message = "Next song in list, position: " + str(self.music_list_p) + "/" + str(len(self.music_list))
+                        self.logging.info(message)
+                        self.music_last_msg = message
 
-                    else:
+                    elif "empty" not in self.music_last_msg:
                         self.music_load_new = True
                         self.music_list = []
                         self.music_list_p = 1
                         self.music_type = ""
                         self.control_data(state="Ended", song={}, playlist={})
-                        self.logging.info("Playlist empty, stop playing.")
+                        message = "Playlist empty, stop playing."
+                        self.logging.info(message)
+                        self.music_last_msg = "Playlist empty, stop playing."
 
                 if self.player.play_status == 1:
                     self.music_ctrl["length"] = float(self.player.get_length()) / 1000

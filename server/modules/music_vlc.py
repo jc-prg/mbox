@@ -64,8 +64,10 @@ class VlcThread(threading.Thread):
             self.media = self.instance.media_new(filename)  # str(file.encode('utf-8')) )
             self.player.set_media(self.media)
             self.player.play()
+
         except Exception as e:
             self.logging.error("Could not start playback - " + filename + " (" + str(e) + ")")
+            self.logging.error(" - Status: " + self.player_status)
             return "error"
 
         time.sleep(1)

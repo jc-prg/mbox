@@ -70,14 +70,15 @@ class VlcThread(threading.Thread):
             self.logging.error(" - Status: " + self.player_status)
             return "error"
 
-        time.sleep(1)
+        time.sleep(2)
         if wait:
-            state = ""
+            state = self.player.get_state()
             while state == "State.Playing":
                 if self.player_status != "State.Ended" and self.player_status != "State.Playing":
                     self.logging.error("Error during playback - " + filename + " (" + state + ")")
                     return "error"
                 time.sleep(1)
+                state = self.player.get_state()
             return "ended"
         else:
             return "play"

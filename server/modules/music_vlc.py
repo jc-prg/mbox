@@ -67,6 +67,7 @@ class VlcThread(threading.Thread):
             self.media = self.instance.media_new(filename)  # str(file.encode('utf-8')) )
             self.player.set_media(self.media)
             self.player.play()
+            length = self.player.get_length()
 
         except Exception as e:
             self.logging.error("Could not start playback - " + filename + " (" + str(e) + ")")
@@ -76,7 +77,7 @@ class VlcThread(threading.Thread):
         time.sleep(2)
         try:
             state = self.player_status
-            self.logging.info(" ... " + str(self.player.get_length() / 1000))
+            self.logging.info(" ... " + str(length / 1000))
             self.logging.info(" ... " + str(state))
         except Exception as e:
             self.logging.warning("Could not get playing status: "+str(e))

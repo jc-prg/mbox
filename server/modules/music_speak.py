@@ -26,7 +26,7 @@ class SpeakThread(threading.Thread):
         self.logging.setLevel = stage.logging_level
 
     def run(self):
-        """
+        """        except Exception as e:
         run, get state
         """
         self.logging.info("Start SpeakMsg ... " + self.start_time)
@@ -61,7 +61,7 @@ class SpeakThread(threading.Thread):
             self.vlc_player.set_volume(self.volume)
             self.vlc_player.play(filename, False)
             duration = self.vlc_player.player.get_length() / 1000
-            time.sleep(duration - 0.3)
+            time.sleep(duration)
             self.vlc_player.set_volume(current_volume)
         except Exception as e:
             self.logging.error("Could not speak message (" + text + ").")

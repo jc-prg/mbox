@@ -43,6 +43,7 @@ class VlcThread(threading.Thread):
                 self.play_status = 1
             else:
                 self.play_status = 0
+            time.sleep(0.5)
         self.player.stop()
         self.logging.info("Stopped VLC control.")
 
@@ -71,18 +72,18 @@ class VlcThread(threading.Thread):
             self.logging.error(" - Status: " + self.player_status)
             return "error"
 
-        time.sleep(2)
-        try:
-            state = self.player.get_state()
-            self.logging.info(" ... " + str(state))
-        except Exception as e:
-            self.logging.warning("Could not get playing status: "+str(e))
+        time.sleep(1)
+#        try:
+#            state = self.player.get_state()
+#            self.logging.info(" ... " + str(state))
+#        except Exception as e:
+#            self.logging.warning("Could not get playing status: "+str(e))
 
         if wait:
-            while state == "State.Playing":
-                if self.player_status != "State.Ended" and self.player_status != "State.Playing":
-                    self.logging.error("Error during playback - " + filename + " (" + state + ")")
-                    return "error"
+            while self.play_status == 1:
+#                if self.player_status != "State.Ended" and self.player_status != "State.Playing":
+#                    self.logging.error("Error during playback - " + filename + " (" + state + ")")
+#                    return "error"
                 time.sleep(1)
                 state = self.player.get_state()
                 self.logging.info(" ... "+state)

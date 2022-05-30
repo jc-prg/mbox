@@ -431,9 +431,9 @@ class MusicLoadMetadata:
                             album_data["genre"].append(track_info["genre"])
                         if "cover_images" in track_info:
                             if "dir" in track_info["cover_images"]:
-                                album_data["cover_images"]["dir"].extend(track_info["cover_images"]["dir"].copy())
+                                album_data["cover_images"]["dir"].extend(track_info["cover_images"]["dir"])
                             if "track" in track_info["cover_images"]:
-                                album_data["cover_images"]["track"].extend(track_info["cover_images"]["track"].copy())
+                                album_data["cover_images"]["track"].extend(track_info["cover_images"]["track"])
 
             if len(album_data["cover_images"]["dir"]) == 0 and len(album_data["cover_images"]["track"]) > 0:
                 album_data["cover_images"]["active"] = "track"

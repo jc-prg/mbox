@@ -425,12 +425,12 @@ def save_image_as_file(name, idata):
     file = open(filename, "wb")
     file.write(data)
     file.close()
-    return filename
+    return filename.copy()
 
 
 def save_mp4_image_as_file(uuid, target_file):
     """ write image data from mp4-file to file """
 
     filename = mbox.music_cover + uuid + ".jpg"
-    return filename
+    return filename.copy()
 

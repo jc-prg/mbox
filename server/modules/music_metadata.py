@@ -346,15 +346,15 @@ def read_metadata_id3(filename, album_id="", album_nr=""):
         tags["sort"] = 0
 
         try:
-            if "track_num" in tags and tags["track_num"] != None and int(tags["track_num"]) > 0:  tags["sort"] += int(
-                tags["track_num"])
+            if "track_num" in tags and tags["track_num"] is not None and int(tags["track_num"]) > 0:
+                tags["sort"] += int(tags["track_num"])
         except Exception as e:
             md_logging.debug(" ... Error in 'track_num' (" + str(tags["track_num"]) + "): " + str(e))
             run_cmd.file_logging(" ... Error in 'track_num' (" + str(tags["track_num"]) + "): " + str(e))
 
         try:
-            if "disc_num" in tags and tags["disc_num"] != None and int(tags["disc_num"]) > 0:   tags["sort"] += int(
-                tags["disc_num"]) * 1000
+            if "disc_num" in tags and tags["disc_num"] is not None and int(tags["disc_num"]) > 0:
+                tags["sort"] += int(tags["disc_num"]) * 1000
         except Exception as e:
             md_logging.debug(" ... Error in 'disc_num' (" + str(tags["disc_num"]) + "): " + str(e))
             run_cmd.file_logging(" ... Error in 'disc_num' (" + str(tags["disc_num"]) + "): " + str(e))
@@ -372,8 +372,8 @@ def read_metadata_id3(filename, album_id="", album_nr=""):
             for IMAGE in images:
                 count += 1
                 try:
-                    image_url = save_image_as_file(tags["uuid"] + "_" + str(count), IMAGE.image_data).replace(mbox.music_cover,
-                                                                                                      "")
+                    image_url = save_image_as_file(tags["uuid"] + "_" + str(count),
+                                                   IMAGE.image_data).replace(mbox.music_cover, "")
                     if image_url:
                         tags["cover_images"]["track"].append(image_url)
                         tags["cover_images"]["active"] = "track"

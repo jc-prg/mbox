@@ -364,10 +364,12 @@ class MusicLoadMetadata:
                 album_uuid = "a_" + str(uuid.uuid1())
 
             album_data = self.album_data_structure.copy()
+            album_data["tracks"] = []
             album_data["uuid"] = album_uuid
             album_data["albumpath"] = album_path
 
             album_data_error = self.album_data_structure.copy()
+            album_data_error["tracks"] = []
             album_data_error["uuid"] = album_uuid + "_error"
             album_data_error["albumpath"] = album_path
 
@@ -400,7 +402,7 @@ class MusicLoadMetadata:
                             album_data["artist"] = "Compilation"
                             album_data["compilation"] = True
 
-                        elif not "#error" in track_info["artist"] and track_info["album"] == "":
+                        elif "#error" not in track_info["artist"] and track_info["album"] == "":
                             album_data["album"] = track_info["album"]
                             album_data["albumname"] = track_info["album"]
                             album_data["artist"] = track_info["artist"]

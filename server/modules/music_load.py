@@ -434,12 +434,13 @@ class MusicLoadMetadata:
             sorted_tracks = {}
             album_data = album_info[album_uuid]
             for track_uuid in album_data["tracks"]:
-                track = track_data[track_uuid]
-                if "sort" not in track:
-                    track["sort"] = "00000"
-                if track["sort"] not in sorted_tracks:
-                    sorted_tracks[track["sort"]] = []
-                sorted_tracks[track["sort"]].append(track_uuid)
+                if track_uuid in track_data:
+                    track = track_data[track_uuid]
+                    if "sort" not in track:
+                        track["sort"] = "00000"
+                    if track["sort"] not in sorted_tracks:
+                        sorted_tracks[track["sort"]] = []
+                    sorted_tracks[track["sort"]].append(track_uuid)
 
             # add position of track to track data as "sort_pos"
             track_list_sorted = []

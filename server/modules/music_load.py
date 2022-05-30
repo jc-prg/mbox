@@ -30,7 +30,7 @@ class MusicLoadMetadata:
             "cover_images": {}
         }
         self.album_image_structure = {"active": "dir", "active_pos": 0, "upload": [], "dir": [], "track": []}
-
+        self.album_data_structure["cover_images"] = self.album_image_structure.copy()
         self.data_keys = ["albums", "album_info", "artists", "files", "tracks"]
 
         self.logging = logging.getLogger("load-md")
@@ -67,20 +67,23 @@ class MusicLoadMetadata:
         if not load_all:
             data_reload = self.get_current_without_errors(data_current=data)
             media_files_exist = data_reload["files"].keys()
-            run_cmd.file_logging("- Removed files with errors from list of existing files (" + str(len(media_files_exist)) + ")")
+            run_cmd.file_logging(
+                "- Removed files with errors from list of existing files (" + str(len(media_files_exist)) + ")")
 
         for path2file in media_files_reload:
 
             if not os.path.isfile(path2file):
                 self.logging.info("- Read: " + path2file)
                 run_cmd.file_logging("- Read: " + path2file)
-                self.set_progress_information(count=files_count, total=len(media_files_reload), thread=thread, show=True)
+                self.set_progress_information(count=files_count, total=len(media_files_reload), thread=thread,
+                                              show=True)
 
             elif os.path.isfile(path2file) and self.check_if_format_supported(thread.supported_mpX, path2file) is True:
                 file_uuid = str(uuid.uuid1())
                 filename = path2file.replace(mbox.music_dir, "")
                 files_count += 1
-                self.set_progress_information(count=files_count, total=len(media_files_reload), thread=thread, show=False)
+                self.set_progress_information(count=files_count, total=len(media_files_reload), thread=thread,
+                                              show=False)
 
                 file_exist = (filename in media_files_exist)
                 file_read = (load_all or (not load_all and not file_exist))
@@ -99,12 +102,15 @@ class MusicLoadMetadata:
                     if "#error" in data_reload["files"][filename]["artist"]:
                         files_error[filename] = data_reload["files"][filename]["artist"]
 
-        self.logging.info("reloadMusic: loaded data from " + str(files_loaded) + " files (" + str(len(media_files_reload)) + ")")
-        run_cmd.file_logging("reloadMusic: loaded data from " + str(files_loaded) + " files (" + str(len(media_files_reload)) + ")")
+        self.logging.info(
+            "reloadMusic: loaded data from " + str(files_loaded) + " files (" + str(len(media_files_reload)) + ")")
+        run_cmd.file_logging(
+            "reloadMusic: loaded data from " + str(files_loaded) + " files (" + str(len(media_files_reload)) + ")")
 
         # recreate album_infos based on tracks
         self.logging.info("reloadMusic: recreate album_infos based on tracks")
-        data_reload["album_info"], data_reload["tracks"] = self.create_album_information(track_data=data_reload["tracks"])
+        data_reload["album_info"], data_reload["tracks"] = self.create_album_information(
+            track_data=data_reload["tracks"])
 
         # recreate album hierarchy based on album info
         self.logging.info("reloadMusic: recreate album hierarchy")
@@ -136,9 +142,10 @@ class MusicLoadMetadata:
             cards_temp = data["cards"]
             for album_uuid in data_reload["album_info"]:
                 cards_temp, card_id = self.check_if_card_exists(data_cards=cards_temp,
-                                                        album=data_reload["album_info"][album_uuid]["albumname"],
-                                                        artist=data_reload["album_info"][album_uuid]["artist"],
-                                                        uuid=album_uuid)
+                                                                album=data_reload["album_info"][album_uuid][
+                                                                    "albumname"],
+                                                                artist=data_reload["album_info"][album_uuid]["artist"],
+                                                                uuid=album_uuid)
                 data_reload["album_info"][album_uuid]["card_id"] = card_id
             data_reload["cards"] = cards_temp
 
@@ -149,7 +156,8 @@ class MusicLoadMetadata:
                 position = 0
                 for entry_uuid in data["playlists"][playlist_uuid]["tracks"]:
                     entry_ref = data["playlists"][playlist_uuid]["tracks_ref"][position]
-                    check_uuid = self.check_if_entry_in_playlist(data_reload, entry_uuid=entry_uuid, entry_ref=entry_ref)
+                    check_uuid = self.check_if_entry_in_playlist(data_reload, entry_uuid=entry_uuid,
+                                                                 entry_ref=entry_ref)
                     if check_uuid != "NOT FOUND" and check_uuid != entry_uuid:
                         data["playlists"][playlist_uuid]["tracks"][position] = check_uuid
                     position += 1
@@ -359,7 +367,7 @@ class MusicLoadMetadata:
         # recreate album_infos based on tracks:
         #   (2) get album information from tracks and check if it's a compilation (more than 1 artist)
         for album_path in album_dir:
-            self.logging.info("- Create album for "+album_path)
+            self.logging.info("- Create album for " + album_path)
 
             album_uuid = album_dir[album_path]
             if album_uuid == "NEW_ENTRY":
@@ -422,10 +430,10 @@ class MusicLoadMetadata:
                         if "genre" in track_info and track_info["genre"] not in album_data["genre"]:
                             album_data["genre"].append(track_info["genre"])
                         if "cover_images" in track_info:
-                            if "dir" in track_info["cover_images"]:   album_data["cover_images"]["dir"].extend(
-                                track_info["cover_images"]["dir"])
-                            if "track" in track_info["cover_images"]: album_data["cover_images"]["track"].extend(
-                                track_info["cover_images"]["track"])
+                            if "dir" in track_info["cover_images"]:
+                                album_data["cover_images"]["dir"].extend(track_info["cover_images"]["dir"].copy())
+                            if "track" in track_info["cover_images"]:
+                                album_data["cover_images"]["track"].extend(track_info["cover_images"]["track"].copy())
 
             if len(album_data["cover_images"]["dir"]) == 0 and len(album_data["cover_images"]["track"]) > 0:
                 album_data["cover_images"]["active"] = "track"

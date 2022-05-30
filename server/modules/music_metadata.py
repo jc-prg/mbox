@@ -74,7 +74,7 @@ def set_metadata_error(error, filename, error_msg="", decoder=""):
     if error_msg != "":
         tags["error"] = error_msg
 
-    return tags
+    return tags.copy()
 
 
 def read_metadata(path_to_file):
@@ -259,7 +259,7 @@ def read_metadata_mutagen(filename, file_type="mp4"):
             data["cover_images"]["active"] = "track"
 
     data["decoder"] = "mutagen::" + file_type
-    return data
+    return data.copy()
 
 
 def read_metadata_id3(filename, album_id="", album_nr=""):
@@ -404,7 +404,7 @@ def read_metadata_id3(filename, album_id="", album_nr=""):
         tags["length"] = filelength
 
     tags["decoder"] = "eyed3"
-    return tags
+    return tags.copy()
 
 
 def save_image_as_file(name, idata):
@@ -425,7 +425,7 @@ def save_image_as_file(name, idata):
     file = open(filename, "wb")
     file.write(data)
     file.close()
-    return filename.copy()
+    return filename
 
 
 def save_mp4_image_as_file(uuid, target_file):

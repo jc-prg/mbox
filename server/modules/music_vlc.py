@@ -58,22 +58,22 @@ class VlcThread(threading.Thread):
         play file using VLC
         """
         state = ""
+        length = 0
         self.logging.info("Load file '" + filename + "' (wait="+str(wait)+",vol="+str(self.volume)+") ...")
         if "http" not in filename and not os.path.isfile(filename):
             self.logging.error("Didn't find file  " + filename)
             return "error"
 
-        try:
-            self.media = self.instance.media_new(filename)  # str(file.encode('utf-8')) )
-            self.player.set_media(self.media)
-            self.player.play()
-            time.sleep(1)
-            length = self.player.get_length()
+        # try:
+        self.media = self.instance.media_new(filename)  # str(file.encode('utf-8')) )
+        self.player.set_media(self.media)
+        self.player.play()
+        length = self.player.get_length()
 
-        except Exception as e:
-            self.logging.error("Could not start playback - " + filename + " (" + str(e) + ")")
-            self.logging.error(" - Status: " + self.player_status)
-            return "error"
+        # except Exception as e:
+        #    self.logging.error("Could not start playback - " + filename + " (" + str(e) + ")")
+        #    self.logging.error(" - Status: " + self.player_status)
+        #    return "error"
 
         time.sleep(1)
         try:

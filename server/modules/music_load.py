@@ -374,13 +374,13 @@ class MusicLoadMetadata:
                 album_uuid = "a_" + str(uuid.uuid1())
 
             album_data = self.album_data_structure.copy()
-            album_data["cover_images"] = self.album_image_structure.copy()
+            album_data["cover_images"] = {"active": "dir", "active_pos": 0, "upload": [], "dir": [], "track": []}
             album_data["tracks"] = []
             album_data["uuid"] = album_uuid
             album_data["albumpath"] = album_path
 
             album_data_error = self.album_data_structure.copy()
-            album_data_error["cover_images"] = self.album_image_structure.copy()
+            album_data_error["cover_images"] = {"active": "dir", "active_pos": 0, "upload": [], "dir": [], "track": []}
             album_data_error["tracks"] = []
             album_data_error["uuid"] = album_uuid + "_error"
             album_data_error["albumpath"] = album_path

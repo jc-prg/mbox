@@ -250,8 +250,9 @@ class MusicLoadMetadata:
                 if scan is True:
                     files_return.append(filename)
 
-        self.logging.info("Don't scan directories: " + str(no_scan))
-        run_cmd.file_logging("Don't scan directories: " + str(no_scan))
+        if len(no_scan) > 0:
+            self.logging.info("Don't scan sub-directories: " + str(no_scan))
+            run_cmd.file_logging("Don't scan sub-directories: " + str(no_scan))
         return files_return
 
     def get_album_from_path(self, file):
@@ -356,6 +357,7 @@ class MusicLoadMetadata:
         # recreate album_infos based on tracks:
         #   (2) get album information from tracks and check if it's a compilation (more than 1 artist)
         for album_path in album_dir:
+            self.logging.info("Create data for album in "+album_path)
 
             album_uuid = album_dir[album_path]
             if album_uuid == "NEW_ENTRY":

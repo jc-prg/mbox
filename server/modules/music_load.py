@@ -362,11 +362,11 @@ class MusicLoadMetadata:
             if album_uuid == "NEW_ENTRY":
                 album_uuid = "a_" + str(uuid.uuid1())
 
-            album_data = self.album_data_structure
+            album_data = self.album_data_structure.copy()
             album_data["uuid"] = album_uuid
             album_data["albumpath"] = album_path
 
-            album_data_error = self.album_data_structure
+            album_data_error = self.album_data_structure.copy()
             album_data_error["uuid"] = album_uuid + "_error"
             album_data_error["albumpath"] = album_path
 

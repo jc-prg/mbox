@@ -341,7 +341,6 @@ class MusicLoadMetadata:
         """
         album_info = {}
         album_dir = {}
-        sorted_tracks = {}
 
         # recreate album_infos based on tracks: (1) get all paths from tracks
         for track in track_data:
@@ -453,7 +452,7 @@ class MusicLoadMetadata:
 
             album_info[album_uuid]["tracks"] = track_list_sorted.copy()
 
-        return album_info, track_data
+        return album_info.copy(), track_data.copy()
 
     def check_if_entry_in_playlist(self, data, entry_uuid, entry_ref):
         """

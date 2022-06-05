@@ -38,11 +38,11 @@ class VlcThread(threading.Thread):
         """
         self.logging.info("Start VLC control ... "+self.start_time)
         while self.running:
-            #self.player_status = self.player.get_state()
-            #if self.player_status == "State.Playing":
-            #    self.play_status = 1
-            #else:
-            #    self.play_status = 0
+            self.player_status = self.player.get_state()
+            if self.player_status == "State.Playing":
+                self.play_status = 1
+            else:
+                self.play_status = 0
             time.sleep(0.5)
         self.player.stop()
         self.logging.info("Stopped VLC control.")

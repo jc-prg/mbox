@@ -74,6 +74,7 @@ class VlcThread(threading.Thread):
         while True:
             if str(media.get_parsed_status()) == 'MediaParsedStatus.done':
                 break  # Might be a good idea to add a failsafe in here.
+            time.sleep(0.5)
         parsed = media.get_parsed_status()
         length = self.player.get_length()
         self.player.play()

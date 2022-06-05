@@ -139,6 +139,7 @@ class MusicControlThread(threading.Thread):
 
                 # start playback
                 if current_path.startswith("http"):
+                    self.logging.info(" ... stop / run / startswith http; start new")
                     self.player.stop()
                     p = self.music_ctrl["position"]
                     self.music_ctrl = self.control_data(state="play", song=current_info, playlist=current_list)
@@ -157,6 +158,7 @@ class MusicControlThread(threading.Thread):
                     self.music_ctrl["position"] = p
 
                 else:
+                    self.logging.info(" ... stop / run / startswith http; else")
                     self.player.stop()
                     self.player.play_file(mbox.music_dir + current_path)
 
@@ -214,6 +216,7 @@ class MusicControlThread(threading.Thread):
         """
         Stop music control
         """
+        self.logging.info(" ... stop")
         self.player.stop()
         self.player.running = False
         self.running = False
@@ -358,6 +361,7 @@ class MusicControlThread(threading.Thread):
 
         # back // if position > 0
         if step < 0 and self.music_list_p + step > 0:
+            self.logging.info(" ! stop / playlist next / if step < 0 and self.music_list_p + step > 0")
             self.player.stop()
             self.music_list_p = self.music_list_p + step  # set new position in playlist
             self.music_load_new = True
@@ -365,6 +369,7 @@ class MusicControlThread(threading.Thread):
 
         # forward // if position < length of list
         elif step > 0 and self.music_list_p + step <= len(self.music_list):
+            self.logging.info(" ! stop / playlist next / elif step > 0 and self.music_list_p + step <= len(self.music_list)")
             self.player.stop()
             self.music_list_p = self.music_list_p + step  # set new position in playlist
             self.music_load_new = True

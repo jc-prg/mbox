@@ -68,6 +68,7 @@ class VlcThread(threading.Thread):
             return "error"
 
         # try:
+        self.player.pause()
         media = self.instance.media_new(filename)  # str(file.encode('utf-8')) )
         self.player.set_media(media)
         self.player.play()

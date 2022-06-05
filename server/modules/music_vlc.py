@@ -94,7 +94,7 @@ class VlcThread(threading.Thread):
             self.logging.info(" ... Access: " + str(os.access(filename, os.R_OK)))
             self.logging.info(" ... Size:   " + str(os.path.getsize(filename)))
             self.logging.info(" ... Length: " + str(length / 1000))
-            self.logging.info(" ... State:  " + str(state))
+            self.logging.info(" ... State:  " + str(self.player.get_state()))
         except Exception as e:
             self.logging.warning("Could not get playing status: "+str(e))
 

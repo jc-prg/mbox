@@ -108,7 +108,7 @@ class VlcThread(threading.Thread):
                 elif time.time() > start_time + length:
                     break
                 time.sleep(1)
-                self.logging.info(" ... "+state)
+                self.logging.info(" ... "+state+"-"+str(start_time+len())+"/"+str(time.time()))
             return "ended"
         else:
             return "play"

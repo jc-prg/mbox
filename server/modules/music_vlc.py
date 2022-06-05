@@ -63,6 +63,9 @@ class VlcThread(threading.Thread):
         if "http" not in filename and not os.path.isfile(filename):
             self.logging.error("Didn't find file  " + filename)
             return "error"
+        elif "http" not in filename not os.access(filename, os.R_OK):
+            self.logging.error("Couldn't access file  " + filename)
+            return "error"
 
         # try:
         media = self.instance.media_new(filename)  # str(file.encode('utf-8')) )

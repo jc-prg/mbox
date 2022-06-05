@@ -72,12 +72,12 @@ class VlcThread(threading.Thread):
         media = self.instance.media_new(filename)  # str(file.encode('utf-8')) )
         self.player.set_media(media)
         while True:
-            if str(media.get_parsed_status()) == 'MediaParsedStatus.done':
+            parsed = media.get_parsed_status()
+            length = self.player.get_length()
+            if parsed == 'MediaParsedStatus.done' or length >= 0:
                 break  # Might be a good idea to add a failsafe in here.
-            self.logging.info(str(media.get_parsed_status()))
+            self.logging.info(str(media.get_parsed_status()) + " - " + str(length))
             time.sleep(0.1)
-        parsed = media.get_parsed_status()
-        length = self.player.get_length()
         self.player.play()
 
         try:

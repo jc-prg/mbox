@@ -77,6 +77,7 @@ class VlcThread(threading.Thread):
 
         try:
             state = self.player_status
+            self.logging.info(" ... Parsed: " + str(media.get_parsed_status()))
             self.logging.info(" ... Access: " + str(os.access(filename, os.R_OK)))
             self.logging.info(" ... Size:   " + str(os.path.getsize(filename)))
             self.logging.info(" ... Length: " + str(length / 1000))

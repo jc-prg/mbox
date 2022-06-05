@@ -81,6 +81,7 @@ class VlcThread(threading.Thread):
         length = media.get_duration()
         self.player.set_media(media)
         self.player.play()
+        self.play_status = 1
 
         try:
             state = self.player_status
@@ -93,11 +94,15 @@ class VlcThread(threading.Thread):
             self.logging.warning("Could not get playing status: "+str(e))
 
         # IDEE: auf Länge aufsetzen; while-loop -> Stop: set playing status to end loop
-
+        start_time = time.time()
         if wait:
-            while self.player.is_playing():
+            while True:
+                state = str(self.play_status) + "-" + str(self.player_status)
+                if self.play_status == 0:
+                    break
+                elif time.time() > start_time + length:
+                    break
                 time.sleep(1)
-                state = self.player_status
                 self.logging.info(" ... "+state)
             return "ended"
         else:

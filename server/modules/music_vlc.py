@@ -100,15 +100,18 @@ class VlcThread(threading.Thread):
 
         # IDEE: auf Länge aufsetzen; while-loop -> Stop: set playing status to end loop
         start_time = time.time()
+        self.logging.info(" ... " + str(start_time) + "-" + str(length))
         if wait:
             while True:
                 state = str(self.play_status) + "-" + str(self.player.get_state())
                 if self.play_status == 0:
                     break
-                elif time.time() > start_time + length:
+                elif "Ended" in state:
+                    break
+                elif time.time() > start_time + (length/1000):
                     break
                 time.sleep(1)
-                self.logging.info(" ... "+state+"-"+str(start_time+len())+"/"+str(time.time()))
+                self.logging.info(" ... "+state+"-"+str(start_time+length)+"/"+str(time.time()))
             return "ended"
         else:
             return "play"

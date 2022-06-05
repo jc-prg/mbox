@@ -108,9 +108,12 @@ class VlcThread(threading.Thread):
                     break
                 elif "Ended" in state:
                     break
+                elif "Stopped" in state:
+                    self.logging.info(" ... Stopped for some reason?!")
+                    break
                 elif time.time() > start_time + (length/1000):
                     break
-                time.sleep(1)
+                time.sleep(0.5)
                 self.logging.info(" ... "+state+"-"+str(start_time+length)+"/"+str(time.time()))
             return "ended"
         else:

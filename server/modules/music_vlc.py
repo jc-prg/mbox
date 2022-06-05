@@ -82,6 +82,8 @@ class VlcThread(threading.Thread):
         time.sleep(1)
         try:
             state = self.player_status
+            self.logging.info(" ... Access: " + str(os.access(filename, os.R_OK)))
+            self.logging.info(" ... Size:   " + str(os.path.getsize(filename)))
             self.logging.info(" ... Length: " + str(length / 1000))
             self.logging.info(" ... State:  " + str(state))
         except Exception as e:

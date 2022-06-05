@@ -361,16 +361,16 @@ class MusicControlThread(threading.Thread):
 
         # back // if position > 0
         if step < 0 and self.music_list_p + step > 0:
-            #self.logging.info(" ! stop / playlist next / if step < 0 and self.music_list_p + step > 0")
-            #self.player.stop()
+            self.logging.info(" ! stop / playlist next / if step < 0 and self.music_list_p + step > 0")
+            self.player.stop()
             self.music_list_p = self.music_list_p + step  # set new position in playlist
             self.music_load_new = True
             return "done"
 
         # forward // if position < length of list
         elif step > 0 and self.music_list_p + step <= len(self.music_list):
-            #self.logging.info(" ! stop / playlist next / elif step > 0 and self.music_list_p + step <= len(self.music_list)")
-            #self.player.stop()
+            self.logging.info(" ! stop / playlist next / elif step > 0 and self.music_list_p + step <= len(self.music_list)")
+            self.player.stop()
             self.music_list_p = self.music_list_p + step  # set new position in playlist
             self.music_load_new = True
             return "done"

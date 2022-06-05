@@ -102,7 +102,7 @@ class VlcThread(threading.Thread):
         start_time = time.time()
         if wait:
             while True:
-                state = str(self.play_status) + "-" + str(self.player_status)
+                state = str(self.play_status) + "-" + str(self.player.get_state())
                 if self.play_status == 0:
                     break
                 elif time.time() > start_time + length:

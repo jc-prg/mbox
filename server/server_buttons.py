@@ -123,7 +123,7 @@ def call_api(button, param=None):
 
     try:
         if button == "error":
-            request_url = url + "error_button/" + str(param[0]) + "/" + str(param[1]) + "/"
+            request_url = url + "button_error/" + str(param[0]) + "/" + str(param[1]) + "/"
             response = requests.put(request_url)
             logging.info(request_url)
 

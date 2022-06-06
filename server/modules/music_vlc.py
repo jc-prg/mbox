@@ -80,7 +80,7 @@ class VlcThread(threading.Thread):
                 self.logging.error("Could not read media file: "+filename)
                 return "error"
 
-            self.logging.info(".." + parsed)
+            self.logging.debug(" ... " + parsed)
             time.sleep(0.1)
 
         length = media.get_duration()
@@ -90,17 +90,17 @@ class VlcThread(threading.Thread):
 
         try:
             state = self.player_status
-            self.logging.info(" ... Parsed: " + str(parsed))
-            self.logging.info(" ... Access: " + str(os.access(filename, os.R_OK)))
-            self.logging.info(" ... Size:   " + str(os.path.getsize(filename)))
-            self.logging.info(" ... Length: " + str(length / 1000))
-            self.logging.info(" ... State:  " + str(self.player.get_state()))
+            self.logging.debug(" ... Parsed: " + str(parsed))
+            self.logging.debug(" ... Access: " + str(os.access(filename, os.R_OK)))
+            self.logging.debug(" ... Size:   " + str(os.path.getsize(filename)))
+            self.logging.debug(" ... Length: " + str(length / 1000))
+            self.logging.debug(" ... State:  " + str(self.player.get_state()))
         except Exception as e:
             self.logging.warning("Could not get playing status: "+str(e))
 
         # IDEE: auf Länge aufsetzen; while-loop -> Stop: set playing status to end loop
         start_time = time.time()
-        self.logging.info(" ... " + str(start_time) + "-" + str(length))
+        self.logging.debug(" ... " + str(start_time) + "-" + str(length))
         if wait:
             while True:
                 state = str(self.play_status) + "-" + str(self.player.get_state())
@@ -114,7 +114,7 @@ class VlcThread(threading.Thread):
                 elif time.time() > start_time + (length/1000):
                     break
                 time.sleep(0.5)
-                self.logging.info(" ... "+state+"-"+str(start_time+length)+"/"+str(time.time()))
+                self.logging.debug(" ... "+state+"-"+str(start_time+length)+"/"+str(time.time()))
             return "ended"
         else:
             return "play"

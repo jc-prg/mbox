@@ -356,27 +356,28 @@ class MusicControlThread(threading.Thread):
         """
         jump within the playlist
         """
-        self.logging.debug(
-            "Next song: " + str(step) + "+" + str(self.music_list_p) + " (" + str(len(self.music_list)) + ")")
+        self.logging.debug("Next song: " + str(step) + "+" + str(self.music_list_p) +
+                           " (" + str(len(self.music_list)) + ")")
 
         # back // if position > 0
         if step < 0 and self.music_list_p + step > 0:
-            self.logging.info(" ! stop / playlist next / if step < 0 and self.music_list_p + step > 0")
-            self.player.stop()
+            self.logging.debug("playlist_next // back // if position > 0")
+            #self.player.stop()
             self.music_list_p = self.music_list_p + step  # set new position in playlist
             self.music_load_new = True
             return "done"
 
         # forward // if position < length of list
         elif step > 0 and self.music_list_p + step <= len(self.music_list):
-            self.logging.info(" !! stop / playlist next / elif step > 0 and self.music_list_p + step <= len(self.music_list)")
-            self.player.stop()
+            self.logging.debug("playlist_next // forward // if position < length of list")
+            #self.player.stop()
             self.music_list_p = self.music_list_p + step  # set new position in playlist
             self.music_load_new = True
             return "done"
 
         # stop playing if beginning or end ...
         else:
+            self.logging.debug("playlist_next // forward // if position < length of list")
             self.music_load_new = False
         #        self.player.stop()
         #        self.music_list_p        = 0                              # set new position in playlist

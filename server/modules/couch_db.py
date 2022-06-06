@@ -124,7 +124,7 @@ class CouchDB:
     def read(self, db_key, entry_key=""):
 
         start_time = time.time()
-        if db_key in self.database:
+        if db_key in self.database and "global_changes" not in db_key:
 
             self.logging.debug("CouchDB read: " + db_key + " - " + str(int(start_time - time.time())) + "s")
 

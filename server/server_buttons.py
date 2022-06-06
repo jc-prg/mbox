@@ -31,12 +31,10 @@ if stage.log_level != "error":
     GPIO.setwarnings(False)
 
 
-# -----------------------------------
-# init
-# -----------------------------------
-
-# read from file, which stage should be use ... to switch between stages during runtime
 def get_active_stage():
+    """
+    read from file, which stage should be used ... to switch between stages during runtime
+    """
     settings = jcJSON.read("../../active")
     return settings["active_stage"]
 
@@ -90,17 +88,17 @@ def loop():
 
             # if active check input
             for key in pins:
-                if GPIO.input(pins[key]) == GPIO.LOW:  # Check whether the button is pressed or not.
+                if last_key == key:
+                    last_key = ""
+                    same_key = 0
+
+                elif GPIO.input(pins[key]) == GPIO.LOW:  # Check whether the button is pressed or not.
                     call_api(key)
                     print(key)
                     if last_key != key:
                         last_key = key
                     else:
                         same_key += 1
-
-                elif last_key == key:
-                    last_key = ""
-                    same_key = 0
 
             if same_key > error_time:
                 logging.warning("Same key is pressed for more than " + str(error_time * wait) + "s!")

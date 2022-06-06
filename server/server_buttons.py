@@ -134,9 +134,9 @@ def call_api(button, param=None):
         else:
             response = requests.put(url + "set-button/no_button/")
 
-        if response:
+        if response and button == "error":
             data = response.json()
-            logging.debug("Volume: " + str(round(data["STATUS"]["playback"]["volume"] * 10)))
+            logging.info("response: " + str(data))
 
     except requests.exceptions.RequestException as e:
         logging.debug("Error connecting to API: " + str(e))

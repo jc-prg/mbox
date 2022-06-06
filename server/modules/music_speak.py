@@ -44,6 +44,7 @@ class SpeakThread(threading.Thread):
         """
         Use Google API to speech from text
         """
+        self.logging.debug("speak_text // " + text)
         filename = "/tmp/music-box-speech.mp3"
         language = stage.language.lower()
         duration = 0
@@ -76,6 +77,7 @@ class SpeakThread(threading.Thread):
         if stage.speak_msg != "yes":
             return
 
+        self.logging.debug("speak_message // " + message)
         current_volume = self.vlc_player.volume
         self.vlc_player.mute(False)
         self.vlc_player.set_volume(self.volume)

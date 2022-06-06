@@ -49,7 +49,7 @@ class MusicControlThread(threading.Thread):
         self.logging.info("Start Music Control ..." + self.start_time)
 
         current_stream = {}
-        wait_time = 0.1
+        wait_time = 0.5
         last_load = False
         last_run = self.music_database.read("status")
 
@@ -382,7 +382,7 @@ class MusicControlThread(threading.Thread):
         data = self.music_database.read("status")
 
         if "music" not in data:
-            self.logging.debug("DB doesn't contain music information yet, not playback status to save.")
+            self.logging.info("DB doesn't contain music information yet, no playback status to save.")
             return
 
         if "_saved" not in data or data["_saved"] + 3 < time.time():
@@ -402,9 +402,10 @@ class MusicControlThread(threading.Thread):
                 new_state = data["music"]["state"] + " " + str(data["music"]["song"]["file"])
             else:
                 new_state = data["music"]["state"] + " " + str(data["music"]["song"])
-            if old_state != new_state:
-                self.logging.info("Save playing status: ")
-                self.logging.info(" - " + new_state)
+
+            #if old_state != new_state:
+            self.logging.info("Save playing status: ")
+            self.logging.info(" - " + new_state)
 
     def metadata_by_filename(self, filename):
         """

@@ -387,10 +387,11 @@ class MusicControlThread(threading.Thread):
         #    return
 
         if "_saved" not in data or data["_saved"] + 3 < time.time():
-            if "file" in data["music"]["song"]:
-                old_state = data["music"]["state"] + " " + str(data["music"]["song"]["file"])
-            else:
-                old_state = data["music"]["state"] + " " + str(data["music"]["song"])
+            if "music" in data:
+                if "file" in data["music"]["song"]:
+                    old_state = data["music"]["state"] + " " + str(data["music"]["song"]["file"])
+                else:
+                    old_state = data["music"]["state"] + " " + str(data["music"]["song"])
 
             data["music"] = self.music_ctrl
             if "album_uuid" in data["music"]["song"] and data["music"]["song"]["album_uuid"].startswith("r_"):
@@ -404,9 +405,9 @@ class MusicControlThread(threading.Thread):
             else:
                 new_state = data["music"]["state"] + " " + str(data["music"]["song"])
 
-            #if old_state != new_state:
-            self.logging.info("Save playing status: ")
-            self.logging.info(" - " + new_state)
+            if old_state != new_state:
+                self.logging.info("Save playing status: ")
+                self.logging.info(" - " + new_state)
 
     def metadata_by_filename(self, filename):
         """

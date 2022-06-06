@@ -140,7 +140,6 @@ class MusicControlThread(threading.Thread):
                 # start playback
                 if current_path.startswith("http"):
                     self.logging.debug(" run // startswith http; play stream or podcast")
-                    #self.player.stop()
                     p = self.music_ctrl["position"]
                     self.music_ctrl = self.control_data(state="play", song=current_info, playlist=current_list)
                     self.music_ctrl["length"] = 0
@@ -159,7 +158,6 @@ class MusicControlThread(threading.Thread):
 
                 else:
                     self.logging.debug("run // is a file; start playback")
-                    #self.player.stop()
                     self.player.play_file(mbox.music_dir + current_path)
 
                 # set playback metadata

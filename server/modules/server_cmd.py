@@ -919,7 +919,7 @@ class ServerApi:
         """
         data = self.response_start("button_error", "button_error", "", duration, "")
         if float(duration) > 0:
-            self.logging.warning("Button '" + button + "' is pressed for " + str(duration) + "s!")
+            self.logging.warning("Button '" + button + "' is pressed for " + str(round(duration, 1)) + "s!")
         data = self.response_end(data)
         return data
 

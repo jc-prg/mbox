@@ -27,6 +27,8 @@ app/icon_backup/Thumbs.db:encryptable
 
 app/icon_backup/Thumbs.db
 
+app/mbox_app/config_stage.js
+
 *~
 
 config/install/install-datadir

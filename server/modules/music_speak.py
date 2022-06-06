@@ -1,123 +1,102 @@
+import logging
 import os
-# ------------------------
-# control music playback
-# ------------------------
-
+import os.path
 import threading
 import time
-import logging
-import vlc
-import os.path
 import gtts
-
+import modules.config_mbox as mbox
 import modules.config_stage as stage
-import modules.config_mbox  as mbox
-
-from decimal             import *
-
-#import operator
-
-# ------------------------
-# THREADING CLASS
-
-class speakThread (threading.Thread):
-
-   def __init__(self, threadID, name, counter, database):
-      '''set initial values to vars and start pygame.mixer'''
-
-      # init thread
-      threading.Thread.__init__(self)
-      self.threadID       = threadID
-      self.name           = name
-      self.counter        = counter
-      self.stopProcess    = False
-      self.default_volume = 70
-      self.volume         = self.default_volume
-      
-      if stage.rollout == "prod":     self.instance     = vlc.Instance("--quiet")
-      else:                           self.instance     = vlc.Instance()
-            
-      self.player       = self.instance.media_player_new()
-
-      self.logging = logging.getLogger("speak")
-      self.logging.setLevel = stage.logging_level
 
 
-      # init mixer
-      #global music_plays, music_loaded, music_ctrl
+class SpeakThread(threading.Thread):
 
-   def play_file(self, filename):
-      self.media = self.instance.media_new( filename ) #str(file.encode('utf-8')) )
-      self.player.set_media(self.media)
-      self.player.audio_set_volume(self.volume)
-      self.player.play()
-      
-      time.sleep(2)
-      
-      state = ""
-      while state == "State.Playing":
-        state = self.player.get_state()
-        if state != "State.Ended" and state != "State.Playing": 
-          return "Error"
-        
-      return "Ended"
-      
-      
-   def speak_text(self, text, volume=-1):
-      '''
-      Use google API to speech from text
-      '''
-      filename = "/tmp/music-box-speech.mp3"
-      language = stage.language.lower()
-      duration = -1
-      
-      if volume == -1:                    self.volume = self.default_volume
-      elif volume >= 0 and volume <= 1:   self.volume = int(volume*100)
-      else:                               self.volume = int(volume)
-      
-      try:
-         tts = gtts.gTTS(text=text, lang=language)
-         tts.save(filename)      
-      except Exception as e:
-         self.logging.error("Could not speak message ("+text+").")
-         self.logging.error(" -> gtts error: "+str(e))
-    
-      try:
-         self.play_file(filename)
-         duration = self.player.get_length() / 1000
-         time.sleep(duration-0.3)
-      except Exception as e:
-         self.logging.error("Could not speak message ("+text+").")
-         self.logging.error(" -> player error: "+str(e))
+    def __init__(self, vlc_player, start_time):
+        """
+        set initial values to vars and start pygame.mixer
+        """
+        threading.Thread.__init__(self)
+        self.stopProcess = False
+        self.volume = 70
+        self.running = True
 
-      self.logging.info("Speak_text: "+str(text)+" ("+str(duration)+")")
+        self.start_time = start_time
+        self.vlc_player = vlc_player
 
-    
-   def speak_message(self, message, volume=-1):
-      '''
-      play spoken messages from prerecorded files
-      '''
-      
-      self.player.audio_set_volume(self.default_volume)
-      self.player.audio_set_mute(False)
+        self.logging = logging.getLogger("speak")
+        self.logging.setLevel = stage.logging_level
 
-      if stage.speak_msg != "yes": return
-   
-      fname       = mbox.errormsg_dir + stage.language + "_" + message + ".mp3"
-      fname_EN    = mbox.errormsg_dir + "EN_" + message + ".mp3"
-      fname_UE    = mbox.errormsg_dir + stage.language + "_UNKNOWN-ERROR.mp3"
-      fname_UE_EN = mbox.errormsg_dir + "EN_UNKNOWN-ERROR.mp3"
-   
-      if os.path.isfile(fname): 
-        self.play_file(fname)
-      elif os.path.isfile(fname_EN):
-        self.play_file(fname_EN)
-      elif os.path.isfile(fname_UE):
-        self.play_file(fname_UE)
-      else:
-        self.play_file(fname_UE)
+    def run(self):
+        """        except Exception as e:
+        run, get state
+        """
+        self.logging.info("Start SpeakMsg ... " + self.start_time)
+        while self.running:
+            time.sleep(1)
+        self.logging.info("Stopped SpeakMsg.")
 
-      #time.sleep(1.5)
-      duration = self.player.get_length() / 1000
-      time.sleep(duration)
+    def stop(self):
+        """
+        stop thread
+        """
+        self.running = False
 
+    def speak_text(self, text):
+        """
+        Use Google API to speech from text
+        """
+        self.logging.debug("speak_text // " + text)
+        filename = "/tmp/music-box-speech.mp3"
+        language = stage.language.lower()
+        duration = 0
+
+        try:
+            tts = gtts.gTTS(text=text, lang=language)
+            tts.save(filename)
+        except Exception as e:
+            self.logging.error("Could not speak message (" + text + ").")
+            self.logging.error(" -> gtts error: " + str(e))
+
+        try:
+            current_volume = self.vlc_player.volume
+            self.vlc_player.mute(False)
+            self.vlc_player.set_volume(self.volume)
+            self.vlc_player.play(filename, wait=False)
+            duration = self.vlc_player.media.get_duration() / 1000
+            time.sleep(duration)
+            self.vlc_player.set_volume(current_volume)
+        except Exception as e:
+            self.logging.error("Could not speak message (" + text + ").")
+            self.logging.error(" -> player error: " + str(e))
+
+        self.logging.info(" - Speak_text: " + str(text) + " (" + str(duration) + ")")
+
+    def speak_message(self, message):
+        """
+        play spoken messages from prerecorded files
+        """
+        if stage.speak_msg != "yes":
+            return
+
+        self.logging.debug("speak_message // " + message)
+        current_volume = self.vlc_player.volume
+        self.vlc_player.mute(False)
+        self.vlc_player.set_volume(self.volume)
+
+        directory_path = os.getcwd()
+        filename = os.path.join(directory_path, mbox.errormsg_dir + stage.language + "_" + message + ".mp3")
+        filename_EN = os.path.join(directory_path, mbox.errormsg_dir + "EN_" + message + ".mp3")
+        filename_UE = os.path.join(directory_path, mbox.errormsg_dir + stage.language + "_UNKNOWN-ERROR.mp3")
+        filename_UE_EN = os.path.join(directory_path, mbox.errormsg_dir + "EN_UNKNOWN-ERROR.mp3")
+
+        if os.path.isfile(filename):
+            self.vlc_player.play(filename, True)
+        elif os.path.isfile(filename_EN):
+            self.vlc_player.play(filename_EN, True)
+        elif os.path.isfile(filename_UE):
+            self.vlc_player.play(filename_UE, True)
+        else:
+            self.vlc_player.play(filename_UE_EN, True)
+
+        # duration = self.vlc_player.player.get_length() / 1000
+        # time.sleep(duration - 0.3)
+        self.vlc_player.set_volume(current_volume)

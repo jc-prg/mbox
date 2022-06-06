@@ -28,6 +28,8 @@ speak_ask_whom = "ASK-${MBOX_SPEEK_ASK_WHOM}-FOR-HELP"
 server_port    = ${MBOX_SERVER_PORT}
 server_ip      = data_db_ip
 server_dns     = [ "${DNS01}","${DNS02}","${DNS03}"]
+client_port    = ${MBOX_CLIENT_PORT}
+database_port  = ${MBOX_DATABASE_PORT}
 
 log_level         = "${MBOX_LOGLEVEL}"
 log_to_file       = "${MBOX_LOG2FILE}"

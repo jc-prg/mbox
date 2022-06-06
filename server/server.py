@@ -1,50 +1,37 @@
 #!/usr/bin/python3
-'''Main module of the server file'''
+"""
+Main module of the server file
+"""
 
-# load basic modules and configuration
-#----------------------------------------------
 import time
 import logging
+import modules.config_stage as stage
+import modules.config_mbox as mbox
+import modules.run_cmd as run_cmd
+import modules.server_init as server_init
+import connexion
+from flask_cors import CORS
 
-# start and configure logging
-#----------------------------------------------
 start_time = time.time()
-import modules.config_stage    as stage
-import modules.config_mbox     as mbox
 mbox.start_time = start_time
 
 print("----------------------------------------------------------------")
-print(mbox.APIname + mbox.APIversion + "   (" + str(stage.rollout) + "/"+str(stage.log_level).upper()+")")
+print(mbox.api_name + mbox.api_version + "   (" + str(stage.rollout) + "/" + str(stage.log_level).upper() + ")")
 print("----------------------------------------------------------------")
 
-import modules.jcRunCmd        as run
-run.init_logging( mbox.APIname + mbox.APIversion + "   (" + str(stage.rollout) + "/" + str(stage.log_level) + ")", "" )
+run_cmd.init_logging(mbox.api_name + mbox.api_version + "   (" + str(stage.rollout) + "/" + str(stage.log_level) + ")", "")
+server_init.start_modules()
 
-import modules.server_init     as init
-
-
-# load API modules
-#----------------------------------------------
-import connexion
-from connexion.resolver     import RestyResolver
-from flask_cors             import CORS
-
-#----------------------------------------------
-# create the application instance
-logging.info("Start Server ..." + init.time_since_start())
+logging.info("Load web server on port "+str(stage.client_port)+" ..." + server_init.time_since_start())
 app = connexion.App(__name__, specification_dir="./")
 CORS(app.app)
 
-# Add the swagger.yml file to configure the endpoints
-logging.info("Load API Specification ..." + init.time_since_start())
+logging.info("Load REST API on port "+str(stage.server_port)+" ..." + server_init.time_since_start())
 app.add_api("modules/server_api.yml")
 
 
 if __name__ == "__main__":
-
-  logging.info("Start WebServer ..."  + init.time_since_start())
-  mbox.start_duration = time.time() - mbox.start_time
-  init.thread_speak.speak_message("LETS-GO")
-
-  app.run(debug=mbox.DEBUG,port=stage.server_port,use_reloader=False)
-
+    logging.info("Start WebServer ..." + server_init.time_since_start())
+    mbox.start_duration = time.time() - mbox.start_time
+    server_init.thread_speak.speak_message("LETS-GO")
+    app.run(debug=mbox.DEBUG, port=stage.server_port, use_reloader=False)

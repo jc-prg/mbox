@@ -13,7 +13,7 @@ import logging
 import signal
 import subprocess
 
-import modules.jcJson       as jcJSON
+import modules.json_db       as jcJSON
 import modules.config_stage as stage
 import modules.config_mbox  as mbox
 import modules_gpio.light   as led
@@ -23,13 +23,13 @@ import modules_gpio.config  as gpio
 #----------------------------------------------
 mbox.start_time = time.time()
 print("----------------------------------------")
-print(" TEST : " + mbox.APIname_LED + mbox.APIversion + "   (" + str(stage.rollout) + ")")
+print(" TEST : " + mbox.api_name_LED + mbox.api_version + "   (" + str(stage.rollout) + ")")
 print("----------------------------------------")
 
 # start and configure logging
 #----------------------------------------------
 
-stage.init_logging( mbox.APIname_LED + mbox.APIversion + "   (test-script/"+str(stage.log_level)+")", '/log/server_LED.log' )
+stage.init_logging(mbox.api_name_LED + mbox.api_version + "   (test-script/" + str(stage.log_level) + ")", '/log/server_LED.log')
 
 
 #-----------------------------------

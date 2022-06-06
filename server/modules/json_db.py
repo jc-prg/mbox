@@ -1,0 +1,49 @@
+import json, codecs
+import logging
+from os import path
+
+import modules.config_mbox as mbox
+
+jsonPath = mbox.music_data
+jsonAppDir = path.dirname(path.abspath(__file__))
+jsonSettingsPath = ""
+
+
+def init():
+    """global settings"""
+
+    global jsonPath, jsonAppDir, jsonSettings, jsonSettingsFile, jsonSettingsPath
+    jsonSettingsPath = path.join(jsonAppDir, jsonPath)
+
+
+def read(file):
+    """read data from json file"""
+
+    d = {}
+    file1 = file + ".json"
+    file2 = path.join(jsonAppDir, jsonPath, file1)
+    logging.debug("Reading JSON file (" + file2 + ")")
+    try:
+        with open(file2) as json_data:
+            d = json.load(json_data)
+    except Exception as e:
+        logging.error("Error reading JSON file (" + file2 + "): " + str(e))
+
+    return d
+
+
+def write(file, data):
+    """write data to readable json file"""
+
+    d = {}
+    file1 = file + ".json"
+    file2 = path.join(jsonAppDir, jsonPath, file1)
+
+    try:
+        with open(file2, 'wb') as outfile:
+            json.dump(data, codecs.getwriter('utf-8')(outfile), ensure_ascii=False, sort_keys=True, indent=4)
+            # json.dump(data, outfile, ensure_ascii=False, sort_keys=True, indent=4)
+        logging.debug("Wrote JSON file (" + file2 + ")")
+
+    except Exception as e:
+        logging.error("Error writing JSON file (" + file2 + "): " + str(e))

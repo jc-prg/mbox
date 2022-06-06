@@ -139,8 +139,8 @@ class MusicControlThread(threading.Thread):
 
                 # start playback
                 if current_path.startswith("http"):
-                    self.logging.info(" ... stop / run / startswith http; start new")
-                    self.player.stop()
+                    self.logging.debug(" run // startswith http; play stream or podcast")
+                    #self.player.stop()
                     p = self.music_ctrl["position"]
                     self.music_ctrl = self.control_data(state="play", song=current_info, playlist=current_list)
                     self.music_ctrl["length"] = 0
@@ -158,8 +158,8 @@ class MusicControlThread(threading.Thread):
                     self.music_ctrl["position"] = p
 
                 else:
-                    self.logging.info(" ... stop / run / startswith http; else")
-                    self.player.stop()
+                    self.logging.debug("run // is a file; start playback")
+                    #self.player.stop()
                     self.player.play_file(mbox.music_dir + current_path)
 
                 # set playback metadata
@@ -320,7 +320,7 @@ class MusicControlThread(threading.Thread):
         """
         if "cardUID" in mbox.rfid_ctrl:
 
-            self.logging.debug("Load UUID from RFID-Card: " + mbox.rfid_ctrl["cardUID"])
+            self.logging.debug("playlist_load_rfid // load UUID from RFID-Card: " + mbox.rfid_ctrl["cardUID"])
             database = self.music_database.read_cache("cards")
 
             if mbox.rfid_ctrl["cardUID"] != "":
@@ -328,19 +328,19 @@ class MusicControlThread(threading.Thread):
                 self.logging.info("CardUID: " + mbox.rfid_ctrl["cardUID"])
                 if mbox.rfid_ctrl["cardUID"] in database:
 
-                    if "LastCard" in self.music_ctrl and self.music_ctrl["LastCard"] == \
-                            database[mbox.rfid_ctrl["cardUID"]][0]:
+                    if "LastCard" in self.music_ctrl \
+                            and self.music_ctrl["LastCard"] == database[mbox.rfid_ctrl["cardUID"]][0]:
                         self.logging.info("Card already started (" + self.music_ctrl["LastCard"] + "/" +
                                           database[mbox.rfid_ctrl["cardUID"]][0] + ")...")
 
                     else:
-                        self.logging.info(
-                            "Start Playlist: " + database[mbox.rfid_ctrl["cardUID"]][0] + " / " + self.music_ctrl[
-                                "LastCard"])
+                        self.logging.info("Start Playlist: " + database[mbox.rfid_ctrl["cardUID"]][0] + " / " +
+                                          self.music_ctrl["LastCard"])
                         self.playlist_load_uuid(database[mbox.rfid_ctrl["cardUID"]][0])
                         self.music_ctrl["LastCard"] = database[mbox.rfid_ctrl["cardUID"]][0]
 
                 else:
+                    self.logging.debug("playlist_load_rfid // no card ID given -> stopping playback")
                     self.player.stop()
                     self.music_ctrl["LastCard"] = ""
                     self.control_data(state="error")
@@ -356,31 +356,24 @@ class MusicControlThread(threading.Thread):
         """
         jump within the playlist
         """
-        self.logging.debug("Next song: " + str(step) + "+" + str(self.music_list_p) +
+        self.logging.debug("playlist_next // next song = " + str(step) + " + " + str(self.music_list_p) +
                            " (" + str(len(self.music_list)) + ")")
 
-        # back // if position > 0
         if step < 0 and self.music_list_p + step > 0:
             self.logging.debug("playlist_next // back // if position > 0")
-            #self.player.stop()
             self.music_list_p = self.music_list_p + step  # set new position in playlist
             self.music_load_new = True
             return "done"
 
-        # forward // if position < length of list
         elif step > 0 and self.music_list_p + step <= len(self.music_list):
             self.logging.debug("playlist_next // forward // if position < length of list")
-            #self.player.stop()
             self.music_list_p = self.music_list_p + step  # set new position in playlist
             self.music_load_new = True
             return "done"
 
-        # stop playing if beginning or end ...
         else:
-            self.logging.debug("playlist_next // forward // if position < length of list")
+            self.logging.debug("playlist_next // stop playing if beginning or end ...")
             self.music_load_new = False
-        #        self.player.stop()
-        #        self.music_list_p        = 0                              # set new position in playlist
 
         return "not found"
 

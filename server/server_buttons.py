@@ -91,7 +91,6 @@ def loop():
 
                 if GPIO.input(pins[key]) == GPIO.LOW:  # Check whether the button is pressed or not.
                     call_api(key)
-                    print(key)
                     if last_key != key:
                         last_key = key
                         same_key = 0
@@ -106,6 +105,7 @@ def loop():
                 logging.warning("Same key is pressed for more than " + str(error_time * wait) + "s!")
                 press_time = same_key * wait
                 call_api("error", [last_key, press_time])
+                time.sleep(1)
 
 
 def destroy():
@@ -119,7 +119,7 @@ def call_api(button, param=None):
 
     try:
         if button == "error":
-            response = requests.put(url + "error_button/" + param[0] + "/" + param[1] + "/")
+            response = requests.put(url + "error_button/" + str(param[0]) + "/" + str(param[1]) + "/")
 
         elif button != "":
             response = requests.put(url + "set-button/" + button + "/")

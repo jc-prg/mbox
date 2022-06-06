@@ -119,7 +119,9 @@ def call_api(button, param=None):
 
     try:
         if button == "error":
-            response = requests.put(url + "error_button/" + str(param[0]) + "/" + str(param[1]) + "/")
+            request_url = url + "error_button/" + str(param[0]) + "/" + str(param[1]) + "/"
+            response = requests.put(request_url)
+            logging.info(request_url)
 
         elif button != "":
             response = requests.put(url + "set-button/" + button + "/")

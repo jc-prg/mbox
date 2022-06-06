@@ -69,7 +69,7 @@ class CouchDB:
         for cat_key in self.databases:
             for db_key in self.databases[cat_key]:
                 if db_key in self.database and "main" in self.database[db_key]:
-                    self.logging.info("  OK: DB " + db_key + " exists.")
+                    self.logging.debug("  OK: DB " + db_key + " exists.")
                 else:
                     self.logging.info("  -> DB " + db_key + " have to be created ...")
                     try:

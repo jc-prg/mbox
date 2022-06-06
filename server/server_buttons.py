@@ -88,17 +88,19 @@ def loop():
 
             # if active check input
             for key in pins:
-                if last_key == key:
-                    last_key = ""
-                    same_key = 0
 
-                elif GPIO.input(pins[key]) == GPIO.LOW:  # Check whether the button is pressed or not.
+                if GPIO.input(pins[key]) == GPIO.LOW:  # Check whether the button is pressed or not.
                     call_api(key)
                     print(key)
                     if last_key != key:
                         last_key = key
+                        same_key = 0
                     else:
                         same_key += 1
+
+#                if last_key == key:
+#                    last_key = ""
+#                    same_key = 0
 
             if same_key > error_time:
                 logging.warning("Same key is pressed for more than " + str(error_time * wait) + "s!")

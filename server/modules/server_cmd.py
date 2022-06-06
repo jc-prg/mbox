@@ -913,6 +913,16 @@ class ServerApi:
         data = self.response_end(data)
         return data
 
+    def button_error(self, button, duration):
+        """
+        report button error in seconds
+        """
+        data = self.response_start("button_error", "button_error", "", duration, "")
+        if float(duration) > 0:
+            self.logging.warning("Button '" + button + "' is pressed for " + str(duration) + "s!")
+        data = self.response_end(data)
+        return data
+
     def backup(self, param):
         """
         create or restore backup for couchDB

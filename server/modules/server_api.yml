@@ -683,6 +683,37 @@ paths:
               STATUS:
                 $ref: "#/definitions/STATUS"
 
+  /button_error/{button}/{duration}/:
+    put:
+      operationId: modules.server_cmd.api_calls.button_error
+      tags:
+        - maintain
+      summary: report button error
+      description: report button error in seconds
+      parameters:
+        - name: button
+          in: path
+          type: string
+          required: true
+        - name: duration
+          in: path
+          type: number
+          format: float
+          required: true
+      responses:
+        200:
+          description: Successfully reported error
+          schema:
+            properties:
+              API:
+                $ref: "#/definitions/API"
+              REQUEST:
+                $ref: "#/definitions/REQUEST"
+              LOAD:
+                $ref: "#/definitions/LOAD"
+              STATUS:
+                $ref: "#/definitions/STATUS"
+
 #------------------------ DATA MODEL DEFINITIONS ------------------------
 
 definitions:

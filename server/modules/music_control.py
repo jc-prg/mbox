@@ -380,6 +380,7 @@ class MusicControlThread(threading.Thread):
         write current playlist, track and position to config
         """
         data = self.music_database.read("status")
+        old_state = ""
 
         #if "music" not in data:
         #    self.logging.info("DB doesn't contain music information yet, no playback status to save.")

@@ -97,6 +97,10 @@ def loop():
                     else:
                         same_key += 1
 
+            if GPIO.input(pins[last_key]) == GPIO.HIGH:
+                same_key = 0
+                last_key = ""
+
 #                if last_key == key:
 #                    last_key = ""
 #                    same_key = 0

@@ -62,7 +62,7 @@ class SpeakThread(threading.Thread):
             self.vlc_player.play(filename, True)
             #duration = self.vlc_player.player.get_length() / 1000
             #time.sleep(duration)
-            #self.vlc_player.set_volume(current_volume)
+            self.vlc_player.set_volume(current_volume)
         except Exception as e:
             self.logging.error("Could not speak message (" + text + ").")
             self.logging.error(" -> player error: " + str(e))

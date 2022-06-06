@@ -91,10 +91,11 @@ class VlcThread(threading.Thread):
         try:
             state = self.player_status
             self.logging.debug(" ... Parsed: " + str(parsed))
-            self.logging.debug(" ... Access: " + str(os.access(filename, os.R_OK)))
-            self.logging.debug(" ... Size:   " + str(os.path.getsize(filename)))
             self.logging.debug(" ... Length: " + str(length / 1000))
             self.logging.debug(" ... State:  " + str(self.player.get_state()))
+            if "http" not in filename:
+                self.logging.debug(" ... Access: " + str(os.access(filename, os.R_OK)))
+                self.logging.debug(" ... Size:   " + str(os.path.getsize(filename)))
         except Exception as e:
             self.logging.warning("Could not get playing status: "+str(e))
 

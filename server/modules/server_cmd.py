@@ -324,7 +324,7 @@ class ServerApi:
                 data["DATA"]["_selected_db"] = database
                 data["DATA"]["_selected"] = data["DATA"][database][uuid]
 
-        test = False
+        test = True
         if test:
             # read podcast ...
             if databases == "radio" and "radio" in data["DATA"]:

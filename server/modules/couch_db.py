@@ -139,7 +139,6 @@ class CouchDB:
 
             try:
                 db = self.database[db_key]
-                self.cache[db_key] = db
                 if entry_key == "":
                     return db["main"]["data"].copy()
                 elif entry_key in db["main"]["data"]:
@@ -174,10 +173,10 @@ class CouchDB:
         """
         if entry_key == "" and db_key in self.cache:
             self.logging.debug("CouchDB read cache: " + db_key + " " + str(time.time()))
-            return self.cache[db_key]
+            return self.cache[db_key].copy()
         elif db_key in self.cache and entry_key in self.cache[db_key]:
             self.logging.debug("CouchDB read cache: " + db_key + "/" + entry_key + "/" + (time.time()))
-            return self.cache[db_key][entry_key]
+            return self.cache[db_key][entry_key].copy()
         else:
             self.logging.warning("CouchDB read cache: " + db_key + " doesn't exist in cache")
             return

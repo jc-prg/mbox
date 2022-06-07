@@ -26,6 +26,7 @@ class MusicControlThread(threading.Thread):
         self.music_database = thread_database
         self.music_loaded = -1
         self.music_plays = -1
+        self.music_position = None
         self.music_dir = mbox.music_dir
         self.music_device = device
         self.music_load_new = False
@@ -77,11 +78,14 @@ class MusicControlThread(threading.Thread):
             if "playlist_files" in last_music:
                 self.music_list = last_music["playlist_files"]
                 self.music_list_p = last_music["playlist_pos"]
+                self.music_position = self.music_ctrl["position"] / self.music_ctrl["length"] * 100
                 self.music_load_new = True
                 last_load = True
 
                 self.logging.info("Load playlist and song from last run ...")
                 self.logging.info("... " + last_music["playlist_uuid"])
+                self.logging.info("... list=" + str(self.music_list_p) + "/" + str(len(self.music_list)) +
+                                  " . pos=" + str(self.music_position + "%") + " . vol=" + str(last_music["volume"]))
 
         time.sleep(1)
         count = 0
@@ -178,11 +182,9 @@ class MusicControlThread(threading.Thread):
                 # if stopped device while playing, load last music
                 if last_load:
                     self.logging.debug("Jump to position in song from last run ...")
-                    if self.music_ctrl["length"] != 0:
-                        position = (self.music_ctrl["position"] / self.music_ctrl["length"]) * 100
-                    else:
-                        position = 0
-                    self.player.set_position(position)
+                    if self.music_position is not None:
+                        self.player.set_position(self.music_position)
+                        self.music_position = None
                     last_load = False
 
                 self.volume(self.music_ctrl["volume"])
@@ -557,6 +559,7 @@ class MusicControlThread(threading.Thread):
         old_state = ""
 
         if "_saved" not in data or data["_saved"] + 3 < time.time():
+            data["_saved"] = time.time()
             if "music" in data:
                 if "file" in data["music"]["song"]:
                     old_state = data["music"]["state"] + " " + str(data["music"]["song"]["file"])
@@ -581,5 +584,5 @@ class MusicControlThread(threading.Thread):
                 position = (self.music_ctrl["position"] / self.music_ctrl["length"]) * 100
                 self.logging.info("Save playing status: ")
                 self.logging.info(" - " + new_state + " (" + str(self.music_ctrl["volume"]) + ", " +
-                                  str(position) + "%)")
+                                  str(round(position, 1)) + "%)")
 

@@ -119,7 +119,7 @@ class MusicControlThread(threading.Thread):
                     if self.music_list_uuid in database:
                         current_stream = database[self.music_list_uuid]
                         current_stream["podcast"] = self.podcast.get_podcasts(self.music_list_uuid,
-                                                                              current_stream["stream_url"])
+                                                                              current_stream["stream_url"], False)
 
                         if current_stream["podcast"] != {}:
                             current_info = current_stream["podcast"]

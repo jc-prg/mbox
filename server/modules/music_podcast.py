@@ -96,14 +96,14 @@ class PodcastThread(threading.Thread):
             self.playing = 0
             self.playing_uuid = ""
 
-    def get_podcasts(self, playlist_uuid, stream_url=""):
+    def get_podcasts(self, playlist_uuid, stream_url="", show_load=True):
         """
         return info from cache
         """
         if playlist_uuid in self.temp_podcasts:
-            if "title" in self.temp_podcasts[playlist_uuid]:
+            if "title" in self.temp_podcasts[playlist_uuid] and show_load:
                 self.logging.info("Load Podcast '" + self.temp_podcasts[playlist_uuid]["title"] + "'")
-            else:
+            elif show_load:
                 self.logging.info("Load Podcast " + playlist_uuid + " / " + str(len(self.temp_podcasts[playlist_uuid])))
             return self.temp_podcasts[playlist_uuid].copy()
 

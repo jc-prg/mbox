@@ -228,6 +228,7 @@ class CouchDB:
                 db = self.database[key]
                 doc = db.get("main")
                 json_db.write(key, doc["data"])
+                self.logging.info(" -> " + key)
 
     def restore_from_json(self):
         """
@@ -259,3 +260,4 @@ class CouchDB:
                 except Exception as e:
                     self.logging.error("save ERROR: " + key + " - " + str(e))
                     return
+                self.logging.info(" -> " + key)

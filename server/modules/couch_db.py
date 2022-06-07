@@ -78,14 +78,18 @@ class CouchDB:
                         self.logging.error("  -> Could not create DB " + db_key + "! " + str(e))
 
     def fill_cache(self):
+        """
+        copy all databases to cache
+        """
         self.keys = []
         for key in self.database:
             self.cache[key] = self.read(key)
             self.keys.append(key)
 
     def create(self, db_key):
-
-        # create DB
+        """
+        create database
+        """
         self.logging.info("   -> create DB " + db_key)
         if db_key in self.database:
             self.logging.warning("   -> DB " + db_key + " exists.")
@@ -122,7 +126,9 @@ class CouchDB:
         return
 
     def read(self, db_key, entry_key=""):
-
+        """
+        read data from database and add to/update in cache
+        """
         start_time = time.time()
         if "global_changes" in db_key:
             return
@@ -161,18 +167,23 @@ class CouchDB:
         return data
 
     def read_cache(self, db_key, entry_key=""):
-
+        """
+        return data from cache
+        """
         if entry_key == "" and db_key in self.cache:
-            return self.cache[db_key]
-
+            self.logging.debug("CouchDB read cache: " + db_key + " " + str(time.time()))
+            return self.cache[db_key].copy()
         elif db_key in self.cache:
-            return self.cache[db_key][entry_key]
-
-        self.logging.debug("CouchDB read cache: " + db_key + " " + str(time.time()))
-
-        return
+            self.logging.debug("CouchDB read cache: " + db_key + "/" + str(time.time()))
+            return self.cache[db_key][entry_key].copy()
+        else:
+            self.logging.warning("CouchDB read cache: " + db_key + " doesn't exist in DB")
+            return self.read(db_key, entry_key)
 
     def write(self, key, data):
+        """
+        write data to database
+        """
         self.changed_data = True
         if key not in self.database:
             self.database.create(key)
@@ -202,6 +213,9 @@ class CouchDB:
         return
 
     def backup_to_json(self):
+        """
+        write all databases to JSON files as backup
+        """
         self.logging.info("BACKUP to JSON")
         for db_key in self.databases:
             for key in self.databases[db_key]:
@@ -210,6 +224,9 @@ class CouchDB:
                 json_db.write(key, doc["data"])
 
     def restore_from_json(self):
+        """
+        restore databases from JSON files, where files exist
+        """
         self.logging.info("RESTORE from JSON")
         self.changed_data = True
         for db_key in self.databases:

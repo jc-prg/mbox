@@ -350,11 +350,11 @@ class ServerApi:
                         stream_url2 = ""
                         try:
                             stream_url2 = self.music_ctrl.player.get_stream_m3u(stream_url)
+                            data["DATA"]["radio"][stream_uuid]["stream_url2"] = stream_url2
+                            if "_selected_uuid" in data and stream_uuid == uuid:
+                                data["DATA"]["_selected"]["stream_url2"] = stream_url2
                         except Exception as e:
                             self.logging.warning("Error reading m3u (" + stream_url + ") - "+str(e))
-                        data["DATA"]["radio"][stream_uuid]["stream_url2"] = stream_url2
-                        if "_selected_uuid" in data and stream_uuid == uuid:
-                            data["DATA"]["_selected"]["stream_url2"] = stream_url2
 
                     elif stream_url.endswith(".m3u"):
                         self.logging.warning("Key 'radio' in data['DATA'] is lost ... ")

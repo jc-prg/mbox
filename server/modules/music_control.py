@@ -54,9 +54,11 @@ class MusicControlThread(threading.Thread):
         last_load = False
         last_run = self.music_database.read("status")
 
+        while self.wait_for_other_services and self.running:
+            time.sleep(1)
+
         if "music" not in last_run:
             last_run["music"] = {"playing": 0, "playlist_uuid": "no_uuid"}
-
         last_music = last_run["music"]
 
         if last_run["music"]["playing"] != 1 and "playlist_uuid" in last_music:
@@ -70,6 +72,7 @@ class MusicControlThread(threading.Thread):
             self.music_ctrl["LastCard"] = ""
             self.music_loaded = 1
             self.podcast.check_playing_podcast(playing=1, playing_data=self.music_ctrl)
+            self.volume(self.music_ctrl["volume"])
 
             if "playlist_files" in last_music:
                 self.music_list = last_music["playlist_files"]
@@ -81,9 +84,6 @@ class MusicControlThread(threading.Thread):
                 self.logging.info("... " + last_music["playlist_uuid"])
 
         time.sleep(1)
-        while self.wait_for_other_services and self.running:
-            time.sleep(1)
-
         count = 0
         while self.running:
 

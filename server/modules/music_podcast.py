@@ -102,7 +102,7 @@ class PodcastThread(threading.Thread):
         """
         if playlist_uuid in self.temp_podcasts:
             if "title" in self.temp_podcasts[playlist_uuid]:
-                self.logging.info("Load Podcast " + self.temp_podcasts[playlist_uuid]["title"] + "(" + playlist_uuid +")")
+                self.logging.info("Load Podcast '" + self.temp_podcasts[playlist_uuid]["title"] + "'")
             else:
                 self.logging.info("Load Podcast " + playlist_uuid + " / " + str(len(self.temp_podcasts[playlist_uuid])))
             return self.temp_podcasts[playlist_uuid].copy()

@@ -85,7 +85,7 @@ class MusicControlThread(threading.Thread):
                 self.logging.info("Load playlist and song from last run ...")
                 self.logging.info("... " + last_music["playlist_uuid"])
                 self.logging.info("... list=" + str(self.music_list_p) + "/" + str(len(self.music_list)) +
-                                  " . pos=" + str(self.music_position + "%") + " . vol=" + str(last_music["volume"]))
+                                  " . pos=" + str(self.music_position) + "%" + " . vol=" + str(last_music["volume"]))
 
         time.sleep(1)
         count = 0
@@ -579,7 +579,7 @@ class MusicControlThread(threading.Thread):
             else:
                 new_state = data["music"]["state"] + " " + str(data["music"]["song"])
 
-            show_if_not_changed = True
+            show_if_not_changed = False
             if old_state != new_state or show_if_not_changed:
                 position = (self.music_ctrl["position"] / self.music_ctrl["length"]) * 100
                 self.logging.info("Save playing status: ")

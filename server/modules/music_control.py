@@ -196,7 +196,8 @@ class MusicControlThread(threading.Thread):
                     if self.music_list_p < len(self.music_list):
                         self.music_load_new = True
                         self.music_list_p = int(self.music_list_p) + 1
-                        message = "Next song in list, position: " + str(self.music_list_p) + "/" + str(len(self.music_list))
+                        message = "Next song in list, position: " + \
+                                  str(self.music_list_p) + "/" + str(len(self.music_list))
                         self.logging.info(message)
                         self.music_last_msg = message
 
@@ -585,4 +586,3 @@ class MusicControlThread(threading.Thread):
                 self.logging.info("Save playing status: ")
                 self.logging.info(" - " + new_state + " (" + str(self.music_ctrl["volume"]) + ", " +
                                   str(round(position, 1)) + "%)")
-

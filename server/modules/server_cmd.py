@@ -49,6 +49,7 @@ class ServerApi:
             }
         self.logging = logging.getLogger("api")
         self.logging.setLevel = stage.logging_level
+        self.disc_space = run_cmd.check_disk_space()
 
     def response_error(self, data, error):
         """
@@ -100,15 +101,13 @@ class ServerApi:
             reduce_data = []
 
         data["REQUEST"]["load-time"] = time.time() - data["REQUEST"]["start-time"]
-
-        out = run_cmd.check_disk_space()
-
         data["STATUS"]["active_device"] = mbox.active_device
 
         if "no-playback" not in reduce_data:
             data["STATUS"]["playback"] = self.music_ctrl.music_ctrl
 
         if "no-system" not in reduce_data:
+            out = self.disc_space
             data["STATUS"]["system"] = {
                 "space_usb_used": out[0],
                 "space_usb_available": out[1],
@@ -279,9 +278,11 @@ class ServerApi:
         """
         read data from database
         """
-        param = databases
-        uuid = ""
-        data = self.response_start("readDB", "readDB", "", param, "")
+        entry_uuid = ""
+        data = self.response_start("readDB", "readDB", "", databases, "")
+        data["DATA"]["_selected_uuid"] = entry_uuid
+        data["DATA"]["_selected_db"] = databases
+        data["DATA"]["_selected"] = {}
 
         if not self.couch.cache_filled:
             data = self.response_error(data, "Database cache not filled yet, retry in a few seconds: " + str(databases))
@@ -293,7 +294,7 @@ class ServerApi:
         else:
             the_filter = db_filter.split("||")
         if len(the_filter) > 1:
-            uuid = the_filter[1]
+            entry_uuid = the_filter[1]
 
         if databases == "all":
             db_list = ["files", "tracks", "albums", "album_info", "cards", "playlists", "radio", "artists"]
@@ -319,12 +320,11 @@ class ServerApi:
                 self.logging.info("READ error " + database + " - not found")
 
             if uuid != "" and uuid in data["DATA"][database]:
-                data["DATA"]["_selected_uuid"] = uuid
+                data["DATA"]["_selected_uuid"] = entry_uuid
                 data["DATA"]["_selected_db"] = database
                 data["DATA"]["_selected"] = data["DATA"][database][uuid]
 
         test = False
-
         if test:
             # read podcast ...
             if databases == "radio" and "radio" in data["DATA"]:
@@ -368,7 +368,7 @@ class ServerApi:
                 del data["DATA"]["album_info"]
                 del data["DATA"]["albums"]
 
-        data = self.filter(data, db_filter)
+        # data = self.filter(data, db_filter)
         data = self.response_end(data, ["no-statistic", "no-playback", "no-system"])
         return data
 

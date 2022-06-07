@@ -141,9 +141,9 @@ class CouchDB:
                 db = self.database[db_key]
                 self.cache[db_key] = db
                 if entry_key == "":
-                    return db["main"]["data"]
+                    return db["main"]["data"].copy()
                 elif entry_key in db["main"]["data"]:
-                    return db["main"]["data"][entry_key]
+                    return db["main"]["data"][entry_key].copy()
 
             except Exception as e:
                 self.logging.error("CouchDB ERROR read: " + db_key + "/" + entry_key + " - " + str(e))

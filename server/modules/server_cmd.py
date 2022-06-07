@@ -314,7 +314,7 @@ class ServerApi:
                 data["DATA"]["_selected_db"] = database
                 data["DATA"]["_selected"] = data["DATA"][database][uuid]
 
-        # TEMP ... read podcast ...
+        # read podcast ...
         if databases == "radio" and "radio" in data["DATA"]:
             self.logging.info("Start reading radio/podcast ... ")
 
@@ -332,6 +332,7 @@ class ServerApi:
                         data["DATA"]["_selected"]["podcast"] = podcast
                         if "cover_images" in podcast:
                             data["DATA"]["_selected"]["cover_images"] = podcast["cover_images"]
+
 ###### ERROR KeyError "radio" not found in 336 --> check, if data[] changes
                 elif stream_url.endswith(".m3u"):
                     data["DATA"]["radio"][stream_uuid]["stream_url2"] = self.music_ctrl.player.get_stream_m3u(stream_url)

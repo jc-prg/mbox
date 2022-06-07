@@ -100,17 +100,22 @@ class PodcastThread(threading.Thread):
         """
         return info from cache
         """
+        self.logging.info("Load Podcast " + playlist_uuid + "/" + stream_url)
         if playlist_uuid in self.temp_podcasts:
-            self.logging.info(str(self.temp_podcasts[playlist_uuid]))
+            if "title" in self.temp_podcasts:
+                self.logging.info(self.temp_podcasts[playlist_uuid]["title"])
+            else:
+                self.logging.info(str(self.temp_podcasts[playlist_uuid]))
             return self.temp_podcasts[playlist_uuid].copy()
 
-        for end in self.podcast_ending:
-            if stream_url.endswith(end):
-                get_rss = self.get_tracks_rss(stream_url, playlist_uuid)
-                if get_rss != "":
-                    return get_rss
-                else:
-                    return {}
+        elif stream_url != "":
+            for end in self.podcast_ending:
+                if stream_url.endswith(end):
+                    get_rss = self.get_tracks_rss(stream_url, playlist_uuid)
+                    if get_rss != "":
+                        return get_rss
+                    else:
+                        return {}
         return {}
 
     def get_tracks_rss(self, rss_url, playlist_uuid):

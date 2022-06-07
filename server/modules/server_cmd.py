@@ -309,7 +309,7 @@ class ServerApi:
             if database in self.couch.database:
                 if "main" in self.couch.database[database]:
                     data["DATA"][database] = self.couch.read_cache(database)
-                    self.logging.info("READ " + database + " (" + len(data["DATA"][database]) + ")")
+                    self.logging.info("READ " + database + " (" + str(len(data["DATA"][database])) + ")")
                 else:
                     data = self.response_error(data, "Database empty: " + database)
             else:

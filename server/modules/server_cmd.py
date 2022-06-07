@@ -345,8 +345,7 @@ class ServerApi:
                             if "cover_images" in podcast:
                                 data["DATA"]["_selected"]["cover_images"] = podcast["cover_images"]
 
-    ###### ERROR KeyError "radio" not found in 336 --> check, if data[] changes
-                    elif stream_url.endswith(".m3u") and "radio" in data["DATA"]:
+                    elif stream_url.endswith(".m3u"):
                         radio_data = data["DATA"]["radio"]
                         try:
                             stream_url2 = self.music_ctrl.player.get_stream_m3u(stream_url)

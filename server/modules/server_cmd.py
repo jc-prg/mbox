@@ -318,7 +318,6 @@ class ServerApi:
         if databases == "radio":
             for stream_uuid in data["DATA"]["radio"]:
                 stream_url = data["DATA"]["radio"][stream_uuid]["stream_url"]
-
                 is_podcast = False
                 for end in self.podcast.podcast_ending:
                     if stream_url.endswith(end):

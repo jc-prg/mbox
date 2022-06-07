@@ -199,8 +199,8 @@ class MusicPlayer(threading.Thread):
             response = requests.get(url)
             playlist = response.text
         except requests.exceptions.RequestException as e:
-            self.logging.debug("Can't open the playlist from m3u: " + str(e))
-            self.speak.speak_message("CANT-OPEN-STREAM")
+            self.logging.warning(" -> Can't open the playlist from m3u: " + str(e))
+            #self.speak.speak_message("CANT-OPEN-STREAM")
             return ""
 
         streams = playlist.replace("\r", "")
@@ -209,22 +209,20 @@ class MusicPlayer(threading.Thread):
 
         i = 0
         for stream in streams:
-            self.logging.info("... line: " + stream)
+            self.logging.debug("... line: " + stream)
             if "#" in stream:
-                self.logging.info("... comment: " + stream)
+                self.logging.debug("... comment: " + stream)
 
             elif "http" in stream and i == 0:
-                self.logging.info("... url: " + stream)
+                self.logging.debug("... url: " + stream)
                 return_url = stream
                 i = 1
 
-        self.logging.info(return_url)
-
         if return_url == "":
-            self.logging.debug("No URL found in m3u-file:" + url)
-            self.speak.speak_message("CANT-OPEN-STREAM")
-
-        self.logging.info(return_url)
+            self.logging.warning(" -> No URL found in m3u-file:" + url)
+            #self.speak.speak_message("CANT-OPEN-STREAM")
+        else:
+            self.logging.info(" -> " + return_url)
 
         return return_url
 

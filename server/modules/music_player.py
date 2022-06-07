@@ -218,9 +218,13 @@ class MusicPlayer(threading.Thread):
                 return_url = stream
                 i = 1
 
+        self.logging.info(return_url)
+
         if return_url == "":
             self.logging.debug("No URL found in m3u-file:" + url)
             self.speak.speak_message("CANT-OPEN-STREAM")
+
+        self.logging.info(return_url)
 
         return return_url
 

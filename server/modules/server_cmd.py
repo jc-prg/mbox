@@ -378,7 +378,7 @@ class ServerApi:
                 del data["DATA"]["album_info"]
                 del data["DATA"]["albums"]
 
-        # data = self.filter(data, db_filter)
+        data = self.filter(data, db_filter)
         data = self.response_end(data, ["no-statistic", "no-playback", "no-system"])
         return data
 

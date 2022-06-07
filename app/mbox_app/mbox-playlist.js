@@ -3,35 +3,6 @@
 //--------------------------------------
 // list and edit playlists
 //--------------------------------------
-/* INDEX:
-function mboxPlaylists_load(filter="",playlist_uuid="-")
-function mboxPlaylists_reload()
-function mboxPlaylists(data, uuid="")
-function mboxPlaylistEdit_load(uuid)
-function mboxPlaylistEdit(data)
-function mboxPlaylistEditAlbums_load(uuid)
-function mboxPlaylistEditAlbums(data)
-function mboxPlaylistEditTracks_load(uuid_filter,source="")
-function mboxPlaylistEditTracks(data)
-function mboxPlaylistEditEntry_load(uuid)
-function mboxPlaylistEditEntry(data)
-function mboxPlaylistDelete(uuid,title)
-function mboxPlaylistDelete_exec(uuid,title)
-function mboxPlaylistDelete_msg(data,title)
-function mboxPlaylistInfo_load(uuid)
-function mboxPlaylistInfo(data)
-function mboxPlaylistInfo_close()
-function mboxPlaylistDeleteTrackInfo(data)
-function mboxPlaylistDeleteTrack(data)
-function mboxPlaylistAddTrackInfo(data)
-function mboxPlaylistAdd()
-function mboxPlaylistAdd_dialog(i)
-function mboxPlaylistAdd_msg(data)
-*/
-//--------------------------------------
-
-// Load stream views
-//--------------------------------------
 
 function mboxPlaylists_load(filter="",playlist_uuid="-")  { 
 	if (filter["UUID"])     { filter = filter["UUID"]; }
@@ -40,7 +11,10 @@ function mboxPlaylists_load(filter="",playlist_uuid="-")  {
 	scrollToTop();
 	}
 	
-function mboxPlaylists_reload() { mboxPlaylists(data=mbox_list_data); }
+function mboxPlaylists_reload() {
+    mboxPlaylists(data=mbox_list_data);
+    }
+
 function mboxPlaylists(data, uuid="") {
 
 	mbox_list_data   = data;
@@ -56,19 +30,18 @@ function mboxPlaylists(data, uuid="") {
 	// create list view
 	mboxViewsList(type="playlist", data=entries_info, selected_uuid=uuid, filter_key=the_filter, filter_text=filter, sort_keys=sort_keys, callTrackList="mboxViewsTrackList", chapter_rows=false);
 	}
-	
 
-// edit playlist // NOCH DER WURM DRIN?!
-//--------------------------------------
+function mboxPlaylistEdit_load(uuid) {
+    appFW.requestAPI("GET",["data",uuid,"-"], "", mboxPlaylistEdit);
+    }
 
-function mboxPlaylistEdit_load(uuid) { appFW.requestAPI("GET",["data",uuid,"-"], "", mboxPlaylistEdit); 	} //console.log("1"+uuid);}
 function mboxPlaylistEdit(data) {
 
 	var sep    = "||";
 	var uuid   = data["DATA"]["_selected_uuid"];
 	var list   = data["DATA"]["_selected"];			//dataLists[uuid]["title"];
 	var tracks = list["tracks"];
-        var albums = data["DATA"]["albums"];			//dataAlbums;
+    var albums = data["DATA"]["albums"];			//dataAlbums;
         
 	var text  	 = "";
 	var empty_select = "<select class='album_edit_select'><option>Loading ...</option></select>";
@@ -95,11 +68,10 @@ function mboxPlaylistEdit(data) {
 		}, 1000);
 	}
 
+function mboxPlaylistEditAlbums_load(uuid) {
+    appFW.requestAPI("GET",["db","artists",uuid],"", mboxPlaylistEditAlbums );
+    }
 
-// load albums and write drop down menus
-//---------------------------
-
-function mboxPlaylistEditAlbums_load(uuid) { appFW.requestAPI("GET",["db","artists",uuid],"", mboxPlaylistEditAlbums ); }
 function mboxPlaylistEditAlbums(data) {
 
 	var selected;
@@ -153,20 +125,16 @@ function mboxPlaylistEditAlbums(data) {
 	mboxPlaylistEditTracks_load(document.getElementById("selectAlbum").value);
 	}
 
-// write track lists with edit & delete link (1) tracks of select album (2) tracks of playlist
-//---------------------------
-
-function mboxPlaylistEditTracks_load(uuid_filter,source="") { 
+function mboxPlaylistEditTracks_load(uuid_filter,source="") {
 	var sep	= "||";
 	var ids	= uuid_filter.split(sep);	// list of IDs, uuid of playlist first
 	var uuid	= ids[0];       		// id of album (selected ...)
 	var filter	= ids[1];
 	if (filter == "") { filter = "-"; }
+    if (uuid == "") { return; }
 
 	appFW.requestAPI("GET",["data",uuid,filter], "", mboxPlaylistEditTracks);
 	}
-
-//---------------------------
 
 function mboxPlaylistEditTracks(data) {
 
@@ -224,16 +192,13 @@ function mboxPlaylistEditTracks(data) {
 	return;
 	}
 
+function mboxPlaylistEditEntry_load(uuid) {
+    appFW.requestAPI("GET",["data",uuid,"uuid,title,description"],"", mboxPlaylistEditEntry );
+    }
 
-// edit single entry
-//---------------------------
-
-function mboxPlaylistEditEntry_load(uuid) { appFW.requestAPI("GET",["data",uuid,"uuid,title,description"],"", mboxPlaylistEditEntry ); }
-function mboxPlaylistEditEntry(data) { mboxDataEdit( data ); }  // -> mbox-data.js
-
-
-// delete playlist (from dialog to confirm to message)
-//---------------------------
+function mboxPlaylistEditEntry(data) {
+    mboxDataEdit( data );
+    }  // -> mbox-data.js
 
 function mboxPlaylistDelete(uuid,title) {
 	text    = lang("PLAYLIST_DELETE_ASK") + ": <b>"+title+"</b>?";
@@ -250,11 +215,10 @@ function mboxPlaylistDelete_msg(data,title) {
         mboxPlaylists_load();
         }
 
+function mboxPlaylistInfo_load(uuid) {
+    appFW.requestAPI("GET",["data",uuid,"-"],"", mboxPlaylistInfo );
+    }
 
-// radio info as popup (incl. some settings ...)
-//--------------------------------------
-
-function mboxPlaylistInfo_load(uuid) { appFW.requestAPI("GET",["data",uuid,"-"],"", mboxPlaylistInfo ); }
 function mboxPlaylistInfo(data) {
 
         if (!data["DATA"]["_selected"]) { console.log("mboxPlaylistInfo: no [DATA][_selected]"); return; }
@@ -297,16 +261,10 @@ function mboxPlaylistInfo(data) {
 	mboxViews_InfoTable(title=lang("PLAYLIST")+" "+lang("INFORMATION"), info_data=info_data, height=450);
 	}
 
-//----------------------------------------------------------------
-
 function mboxPlaylistInfo_close() {
 	setTimeout(function(){ mboxPlaylistLoad(); }, 2000);
         appMsg.hide();
         }
-
-
-// Show message and reload view when made a change
-//----------------------------------------------------------------
 
 function mboxPlaylistDeleteTrackInfo(data) {
 	var sep = "||";
@@ -335,10 +293,6 @@ function mboxPlaylistAddTrackInfo(data) {
 		}, 1000);
 	}
 
-
-// add a playlist
-//----------------------------------------------------------------
-
 function mboxPlaylistAdd() {
         var title = document.getElementById("playlist_title").value;
         var descr = document.getElementById("playlist_description").value;
@@ -346,8 +300,6 @@ function mboxPlaylistAdd() {
         document.getElementById("mboxPlaylistAdd").innerHTML = lang("PLEASE_WAIT")+" ...";
         appFW.requestAPI('POST',['data','playlists',title+'||'+descr], '', mboxPlaylistAdd_msg);
         }
-
-//--------------------------------------
 
 function mboxPlaylistAdd_dialog(i) {
 	var text		= "";
@@ -371,13 +323,8 @@ function mboxPlaylistAdd_dialog(i) {
 	document.getElementById("album_"+i).style.display="block";
 	}
 
-//--------------------------------------
-
 function mboxPlaylistAdd_msg(data) {
 	mboxDataReturnMsg(data,lang("PLAYLIST_CREATED"),lang("PLAYLIST_CREATED_ERROR"));
 	mboxPlaylists_load();
 	}
-
-//---------------------------
-// EOF
 

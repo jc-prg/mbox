@@ -382,9 +382,9 @@ function mboxViewsTrackListHeader(uuid, type, entry, title, description, length)
 //--------------------------------------
 
 function mboxViews_Info(uuid, type) {
-	if (type == "album")		{ mboxAlbumInfo_load(uuid); }
-	else if (type == "playlist")	{ mboxPlaylistInfo_load(uuid); }
-	else if (type == "radio")	{ mboxStreamInfo_load(uuid); }
+	if (type == "album")         { mboxAlbumInfo_load(uuid); }
+	else if (type == "playlist") { mboxPlaylistInfo_load(uuid); }
+	else if (type == "radio")    { mboxStreamInfo_load(uuid); }
 	}
 
 //--------------------------------------

@@ -3,28 +3,8 @@
 //--------------------------------------
 // show album list and details
 //--------------------------------------
-/* INDEX:
-function mboxAlbumAll_load(filter="",uuid="")
-function mboxAlbumAll_reload()
-function mboxAlbumAll(data, uuid)
-function mboxAlbumAll_filter(album_info,filters)
-function mboxAlbumFilterPath(data,selected)
-function mboxAlbumFilterArtist(data,selected)
-function mboxAlbumList(data)
-function mboxAlbumInfo_load(uuid)
-function mboxAlbumInfo_close()
-function mboxAlbumInfo(data)
-function mboxAlbumDelete(title,uuid)
-function mboxAlbumDelete_exec(uuid,title)
-function mboxAlbumDelete_msg(data,title)
-function mboxAlbumTrackInfo_load(uuid)
-function mboxAlbumTrackInfo(data)
-*/
-//--------------------------------------
 
-
-// Load album views
-//--------------------------------------
+var reloadInterval = app_reload_interval;
 
 function mboxAlbumAll_load(filter="",uuid="") {
 	if (filter["UUID"]) 	{ filter = ">>"+filter["UUID"]; } 	// load after API call
@@ -34,6 +14,7 @@ function mboxAlbumAll_load(filter="",uuid="") {
 	}
 	
 function mboxAlbumAll_reload() { mboxAlbumAll(data=mbox_list_data); }
+
 function mboxAlbumAll(data, uuid) {
 
 	mbox_list_data   = data;
@@ -56,10 +37,6 @@ function mboxAlbumAll(data, uuid) {
 	// create list view
 	mboxViewsList(type="album", data=entries_info, selected_uuid=uuid, filter_key=the_filter, filter_text=filter, sort_keys=sort_keys, callTrackList="mboxViewsTrackList");
 	}
-	
-
-// Filter definition
-//--------------------------------------
 
 function mboxAlbumAll_filter(album_info,filters) {
 
@@ -81,8 +58,6 @@ function mboxAlbumAll_filter(album_info,filters) {
 	
 	return filter;
 	}	
-
-//--------------------------------------
 
 function mboxAlbumFilterPath(data,selected) {
 
@@ -116,8 +91,6 @@ function mboxAlbumFilterPath(data,selected) {
 	return filter;
 	}
 
-//--------------------------------------
-
 function mboxAlbumFilterArtist(data,selected) {
 
 	var command = "mboxAlbumAll_load(document.getElementById('filter_artist').value);";
@@ -144,17 +117,12 @@ function mboxAlbumFilterArtist(data,selected) {
 	return filter;
 	}
 
-
-// List albums tracks of an album
-//--------------------------------------
-
-function mboxAlbumList(data)		{ mboxViewsTrackList(data, "album"); }
-
-// album info as popup (incl. some settings ...)
-//--------------------------------------
+function mboxAlbumList(data) { mboxViewsTrackList(data, "album"); }
 
 function mboxAlbumInfo_load(uuid) { appFW.requestAPI("GET",["data",uuid,"-"],"", mboxAlbumInfo ); }
+
 function mboxAlbumInfo_close() { setTimeout(function(){ mboxAlbumAll_load(); }, 2000); appMsg.hide(); }
+
 function mboxAlbumInfo(data) {
 
 	var album  = data["DATA"]["_selected"];
@@ -164,11 +132,15 @@ function mboxAlbumInfo(data) {
 	var url2   = RESTurl + "api/data/";
 	var size   = Math.round(album["albumsize"]/1024/1024*100)/100;
 	var length = convert_second2time(Math.round(album["albumlength"]));
-	var path   = album["albumpath"].replace(/\_/gi,"/");
+	var path   = album["albumpath"].replaceAll("_","/");
 	var cardid = album["card_id"]; 
 	
-	if (!cardid) { cardid = lang("CARD_NOT_CONNECTED"); } 
-	else { cardid =  "<div onclick='mboxCardList_load(\""+cardid+"\");' style='cursor:pointer;'>" + cardid + "</a>" ; }
+	if (!cardid) {
+	    cardid = lang("CARD_NOT_CONNECTED");
+	    }
+	else {
+	    cardid = "<div onclick='mboxCardList_load(\""+cardid+"\");' style='cursor:pointer;'>" + cardid + "</a>" ;
+	    }
 
 	var cover = "";
 	if (album["cover_images"]) {
@@ -176,19 +148,20 @@ function mboxAlbumInfo(data) {
 		cover += mboxCoverAlbumInfo(2, album["cover_images"]["dir"],    album["cover_images"]["active"], uuid);
 		cover += mboxCoverAlbumInfo(3, album["cover_images"]["upload"], album["cover_images"]["active"], uuid);
 		}
-	else {	cover += lang("DATA_OLD_FORMAT");
-		}
+	else {
+	    cover += lang("DATA_OLD_FORMAT");
+	    }
 
 	var title  = album["album"];
-	title      = title.replace( /\'/g, " " );
-	title      = title.replace( /\"/g, "&quot;" );
+	title      = title.replaceAll( "'", " " );
+	title      = title.replaceAll( "\"", "&quot;" );
 	var artist = album["artist"];
-	artist     = artist.replace( /\#/g, " " );
-	artist     = artist.replace( /\"/g, "&quot;" );
+	artist     = artist.replaceAll( "#", " " );
+	artist     = artist.replaceAll( "\"", "&quot;" );
 
 	var edit  = "";
-        edit += mboxHtmlButton("image_add",  "mboxUploadImage('"+uuid+"','album','"+title+"');",                "red");
-        edit += mboxHtmlButton("delete",     "mboxAlbumDelete('"+artist+": "+title+"','"+uuid+"');", 	"red");
+    edit += mboxHtmlButton("image_add",  "mboxUploadImage('"+uuid+"','album','"+title+"');",     "red");
+    edit += mboxHtmlButton("delete",     "mboxAlbumDelete('"+artist+": "+title+"','"+uuid+"');", "red");
 
 	var info_data = [
 		[ lang("ALBUM"), 		album["album"] ],
@@ -209,11 +182,8 @@ function mboxAlbumInfo(data) {
 	mboxViews_InfoTable(title=lang("ALBUM")+" "+lang("INFORMATION"), info_data=info_data, height=450);
 	}
 
-
-// track info as popup
-//--------------------------------------
-
 function mboxAlbumTrackInfo_load(uuid) { appFW.requestAPI("GET",["data",uuid,"-"],"", mboxAlbumTrackInfo ); }
+
 function mboxAlbumTrackInfo(data) {
 
 	var track  = data["DATA"]["_selected"];
@@ -264,9 +234,6 @@ function mboxAlbumTrackInfo(data) {
 	mboxViews_InfoTable(title=lang("TRACK_INFORMATION"), info_data=info_data, height=msg_height);
 	}
 
-// delete album
-//--------------------------------------
-
 function mboxAlbumDelete(title,uuid) {
 	text    = lang("ALBUM_DELETE_ASK") + ":<br/><b>"+title+"</b>?";
 	cmd     = "mboxAlbumDelete_exec('"+uuid+"','"+title+"')";
@@ -282,8 +249,4 @@ function mboxAlbumDelete_msg(data,title) {
 	mboxDataReturnMsg(data,lang("ALBUM_DELETED")+"<br/><b>"+title,lang("ALBUM_DELETE_ERROR")+"<br/><b>"+title);
         mboxAlbumAll_load();
         }
-
-
-//--------------------------------------
-// EOF
 

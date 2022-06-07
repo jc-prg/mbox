@@ -9,7 +9,7 @@ var app_setting_count     = 4;
 var app_setting_style     = "setting_bg";
 var app_last_load         = 0;
 var app_title             = "jc://music-box/";	// add your app title (default defined in app-fw/app-conf.is)
-var app_version           = "v1.2.7";			// add your app version (default defined in app-fw/app-conf.is)
+var app_version           = "v0.9.9";			// add your app version (default defined in app-fw/app-conf.is)
 var app_api_dir           = "api/";			// add your api dir (default defined in app-fw/app-conf.is)
 var app_api_status        = "status";			// add your api status command (default defined in app-fw/app-conf.is)
 var app_loading_image     = ""; 			// add your loading image (default defined in app-fw/app-conf.is)
@@ -23,7 +23,6 @@ var UploadScript    = "mbox_app/upload.php";
 var checkImgExists  = false;
 var mboxSlider      = new jcSlider( name="mboxSlider", container="mbox_audio_slider");
 var internetConnect = "Started";
-reloadInterval      = app_reload_interval;
 
 //--------------------------------
 // create menu entries
@@ -34,12 +33,10 @@ function app_menu_entries() {
 	// or set "app_menu = [];" if another menu functions should be used
 	
 	var mbox_filter_show = "";
-	if (mbox_filter == true)	{ mbox_filter_show = "hide"; }
-	else				{ mbox_filter_show = "show"; }
+	if (mbox_filter == true) { mbox_filter_show = "hide"; }
+	else                     { mbox_filter_show = "show"; }
 
-
-        var descr   = [lang("ALBUM"),lang("PLAYLIST"),lang("STREAM")];
-
+    var descr   = [lang("ALBUM"),lang("PLAYLIST"),lang("STREAM")];
 	var app_menu = [
 		//[lang("INDEX"),        		"link", "/index.html"],
 		[lang("ALBUM"),			"script",	"mboxAlbumAll_load();   if(mbox_settings) {mboxSettingsToggle();}"],
@@ -132,8 +129,8 @@ function app_click_menu() {
 //--------------------------------
 
 function app_theme_changed(theme) {
-	if (theme == "dark")	{ mbox_icon_dir	= "mbox_img/icon_dark/"; }
-	else			{ mbox_icon_dir	= "mbox_img/icon/"; }
+	if (theme == "dark") { mbox_icon_dir	= "mbox_img/icon_dark/"; }
+	else                 { mbox_icon_dir	= "mbox_img/icon/"; }
 	}
 	
 //--------------------------------

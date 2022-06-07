@@ -1,35 +1,21 @@
 //--------------------------------------
 // jc://music-box/, (c) Christoph Kloth
 //--------------------------------------
-// List radio channels
-//--------------------------------------
-/* INDEX:
-function mboxStreams_load(stream_uuid="-")
-function mboxStreams_reload()
-function mboxStreams(data, uuid="")
-function mboxStreamWriteAudioPlayer(title,file,divid)
-function mboxStreamInfo_load(uuid)
-function mboxStreamInfo(data)
-function mboxStreamTrackInfo_load(stream_uuid, track_uuid)
-function mboxStreamTrackInfo(data, track_uuid)
-function mboxStreamInfo_close()
-function mboxStreamEdit_load(uuid)
-function mboxStreamEdit(data)
-function mboxStreamDelete(uuid,title)
-function mboxStreamDelete_exec(uuid,title)
-function mboxStreamDelete_msg(data,title)
-function mboxStreamAdd()
-function mboxStreamAdd_dialog(i)
-function mboxStreamAdd_msg(data)
-*/
+// List radio channels and podcasts
 //--------------------------------------
 
 
-// Load stream views
-//--------------------------------------
+function mboxStreams_load(stream_uuid="-")  {
 
-function mboxStreams_load(stream_uuid="-")  { appFW.requestAPI("GET",["db","radio",stream_uuid],"", [mboxStreams,stream_uuid]); scrollToTop(); }
-function mboxStreams_reload() { mboxStreams(data=mbox_list_data); }
+    appFW.requestAPI("GET",["db","radio",stream_uuid],"", [mboxStreams,stream_uuid]);
+    scrollToTop();
+    }
+
+function mboxStreams_reload() {
+
+    mboxStreams(data=mbox_list_data);
+    }
+
 function mboxStreams(data, uuid="") {
 
 	mbox_list_data   = data;
@@ -51,10 +37,6 @@ function mboxStreams(data, uuid="") {
 	mboxViewsList(type="radio", data=entries_info, selected_uuid=uuid, filter_key=the_filter, filter_text=filter, sort_keys=sort_keys, callTrackList="mboxViewsTrackList", chapter_rows=false);
 	}
 	
-
-// show audio player for one audio file
-//--------------------------------------
-
 function mboxStreamWriteAudioPlayer(title,file,divid) {
 
         var text = "";
@@ -67,12 +49,11 @@ function mboxStreamWriteAudioPlayer(title,file,divid) {
         setTextById(divid,text);
         }
 
+function mboxStreamInfo_load(uuid) {
 
-// radio info as popup (incl. some settings ...)
-//--------------------------------------
+    appFW.requestAPI("GET",["data",uuid,"-"],"", mboxStreamInfo );
+    }
 
-
-function mboxStreamInfo_load(uuid) { appFW.requestAPI("GET",["data",uuid,"-"],"", mboxStreamInfo ); }
 function mboxStreamInfo(data) {
         var text   = "";
         var album  = data["DATA"]["_selected"];
@@ -127,9 +108,11 @@ function mboxStreamInfo(data) {
 	mboxViews_InfoTable(title=lang("STREAM_INFORMATION"), info_data=info_data, height=450);
 	}
 
-//----------------------------------------
+function mboxStreamTrackInfo_load(stream_uuid, track_uuid) {
 
-function mboxStreamTrackInfo_load(stream_uuid, track_uuid) { appFW.requestAPI("GET",["data",stream_uuid,"-"],"", [ mboxStreamTrackInfo, track_uuid ] ); }
+    appFW.requestAPI("GET",["data",stream_uuid,"-"],"", [ mboxStreamTrackInfo, track_uuid ] );
+    }
+
 function mboxStreamTrackInfo(data, track_uuid) {
         var text   = "";
         var stream = data["DATA"]["_selected"];
@@ -156,23 +139,18 @@ function mboxStreamTrackInfo(data, track_uuid) {
 	mboxViews_InfoTable(title=lang("TRACK_INFORMATION"), info_data=info_data, height=450);
 	}
 
-
-//----------------------------------------
-
 function mboxStreamInfo_close() {
 	setTimeout(function(){ mboxStreams_load(); }, 2000);
         appMsg.hide();        
         }
 
-//----------------------------------------
+function mboxStreamEdit_load(uuid)	{
 
-function mboxStreamEdit_load(uuid)	{ appFW.requestAPI("GET",["data",uuid,"uuid,title,description,stream_info,stream_url,stream_url2"],"", mboxStreamEdit ); }
+    appFW.requestAPI("GET",["data",uuid,"uuid,title,description,stream_info,stream_url,stream_url2"],"", mboxStreamEdit );
+    }
+
 function mboxStreamEdit(data) 	{ mboxDataEdit(data); }
-// -> mbox-data.js
 
-// delete playlist (dialog to confirm)
-//---------------------------
-      
 function mboxStreamDelete(uuid,title) {
 	text    = lang("STREAM_DELETE_ASK") + ": <b>"+title+"</b>?";
 	cmd     = "mboxStreamDelete_exec('"+uuid+"','"+title+"');";
@@ -180,6 +158,7 @@ function mboxStreamDelete(uuid,title) {
 	}
 	
 function mboxStreamDelete_exec(uuid,title) {
+
 	appFW.requestAPI('DELETE',['data',uuid],'',[mboxPlaylistDelete_msg,title]);
 	}
 
@@ -187,8 +166,6 @@ function mboxStreamDelete_msg(data,title) {
 	mboxDataReturnMsg(data,lang("STREAM_DELETED")+"<br/><b>"+title,lang("STREAM_DELETE_ERROR")+"<br/><b>"+title);
         mboxStreams_load();
         }
-
-//----------------------------------------------------------------
 
 function mboxStreamAdd() {
 	var fields = ["stream_description","stream_radio_url","stream_stream_url","stream_image_url"];
@@ -237,6 +214,3 @@ function mboxStreamAdd_msg(data) {
         appMsg.alert(text);
         mboxStreams_load()
         }
-
-//----------------------------------------------------------------
-// EOF

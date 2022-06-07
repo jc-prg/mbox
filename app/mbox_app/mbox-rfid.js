@@ -3,28 +3,6 @@
 //--------------------------------------
 // list and edit rfid card infos
 //--------------------------------------
-/* INDEX:
-function mboxCardSimulate(card_uuid)
-function mboxCardWriteRFID(data,known="",list={})
-function mboxCardConnect(card,list={})
-function mboxCardConnect_exe(rfid)
-function mboxCardConnect_select(id, select, visible="block", onchange="")
-function mboxCardConnect_selectVisible(change)
-function mboxCardInfoIcon(entry_data, uuid)
-function mboxCardEditLink(uuid)
-function mboxCardEditDialog_load1(uuid)
-function mboxCardEditDialog_load2(data)
-function mboxCardEditDialog(data)
-function mboxCardList_load(card_id="-")
-function mboxCardList(data)
-function mboxCardDelete(card_id,title)
-function mboxCardDelete_exec(uuid,title)
-function mboxCardPlay_exec(uuid,title)
-function mboxCardDelete_msg(data,title)
-function mboxCardPlay_msg(data,uuid)
-function mboxCardEdit_save(data)
-*/
-//--------------------------------------
 
 mboxCardUUID     = "";
 mboxCardCID      = "";
@@ -37,9 +15,6 @@ function mboxCardSimulate(card_uuid) {
 	appFW.requestAPI('PUT',['set-card',card_uuid],'','');
 	setTimeout(function() {appFW.requestAPI('PUT',['set-card','no_card'],'','');}, 5000);
 	}
-
-// show / hide info in <div id="edit_card">
-//---------------------------------
 
 function mboxCardWriteRFID(data,known="",list={}) {
 	var text = "";
@@ -67,9 +42,6 @@ function mboxCardWriteRFID(data,known="",list={}) {
 	return text;
 	}
 
-// funct. for cards ....
-//--------------------------------------
-
 function mboxCardConnect(card,list={}) {
 	var dialog   = "<b>"+lang("RFID_NEW_CARD") +":</b> " + card + "<br/>";
 	dialog	    += lang("CARD_SELECT_TO_CONNECT") + "<br/>&nbsp;<br/>.";
@@ -94,8 +66,7 @@ function mboxCardConnect_exe(rfid) {
 	uuid = getValueById('mbox_select_'+type);
 	appFW.requestAPI('PUT', ['cards', uuid, rfid ],'', mboxDataReturnMsg )
 	}
-	
-	
+
 function mboxCardConnect_select(id, select, visible="block", onchange="") {
 	var text  = "<div id='"+id+"_div' style='display:"+visible+"'><select id='"+id+"' style='width:200px;' onchange='"+onchange+"'>";
 	var order = sortDictByValue(select);
@@ -111,9 +82,6 @@ function mboxCardConnect_selectVisible(change) {
 		else			{ elementHidden("mbox_select_"+lists[i]+"_div"); }
 		}
 	}
-
-// funct. for cards ....
-//--------------------------------------
 
 function mboxCardInfoIcon(entry_data, uuid) {
         var text = "";
@@ -133,8 +101,6 @@ function mboxCardInfoIcon(entry_data, uuid) {
 	return text;
 	}
 
-//----
-
 function mboxCardEditLink(uuid) {
         var text  = "";
 
@@ -145,11 +111,16 @@ function mboxCardEditLink(uuid) {
         return text;
         }
 
-// edit dialog ... // OFFEN -> RADIO
-//---------------------------------
+function mboxCardEditDialog_load1(uuid) {
+    mboxCardUUID = uuid;
+    appFW.requestAPI("GET", ["status"], "", mboxCardEditDialog_load2);
+    }
 
-function mboxCardEditDialog_load1(uuid) { mboxCardUUID = uuid; 			appFW.requestAPI("GET",["status"],                "", mboxCardEditDialog_load2); }
-function mboxCardEditDialog_load2(data)	{ mboxCardCID = data["LOAD"]["RFID"]; 	appFW.requestAPI("GET",["cards", mboxCardUUID],   "", mboxCardEditDialog); }
+function mboxCardEditDialog_load2(data)	{
+    mboxCardCID = data["LOAD"]["RFID"];
+    appFW.requestAPI("GET",["cards", mboxCardUUID], "", mboxCardEditDialog);
+    }
+
 function mboxCardEditDialog(data) {
 
 	var exist1 = "";
@@ -261,10 +232,11 @@ function mboxCardEditDialog(data) {
 	appMsg.confirm(dialog, cmd, 250);
 	}
 
-// Show all defined RFID Cards ... later edit
-//---------------------------------
+function mboxCardList_load(card_id="-") {
+    appFW.requestAPI("GET",["cards",card_id], "", mboxCardList);
+    console.log("Load list of RFID-Cards...");
+    }
 
-function mboxCardList_load(card_id="-") { appFW.requestAPI("GET",["cards",card_id], "", mboxCardList); console.log("Load list of RFID-Cards..."); }
 function mboxCardList(data) {
 
 	console.log("Load list of RFID-Cards... DATA LOADED");
@@ -376,10 +348,6 @@ function mboxCardList(data) {
         //setTextById("remote1",text);
         }
 
-
-// delete card id ...
-//---------------------------------
-
 function mboxCardDelete(card_id,title) {
 	text    = lang("CARD_DELETE_ASK") + "?<br/> "+lang("TITLE")+": <b>"+title+"</b><br/>ID: "+card_id;
 	cmd     = "mboxCardDelete_exec('"+card_id+"','"+title+"');";
@@ -387,6 +355,7 @@ function mboxCardDelete(card_id,title) {
 	}
 	
 function mboxCardDelete_exec(card_id,uuid) {
+
 	appFW.requestAPI('DELETE',['data',card_id],'',[mboxCardDelete_msg,[card_id,uuid]]);
 	}
 
@@ -409,12 +378,8 @@ function mboxCardPlay_msg(data,cardid_uuid) {
 	mboxControlShowUUID(uuid);
 	}
 
-// save edit dialog ...
-//---------------------------------
-
 function mboxCardEdit_save(data) {
+
         mboxCardList_load();
 	}
 
-//---------------------------------
-// EOF

@@ -4,20 +4,6 @@
 // create cover for list and detail views
 // and return cover for print view
 //--------------------------------------
-/* INDEX:
-function mboxCoverAlbumInfo(nr,url_list,act,uuid)
-function mboxCoverAlbum(artist,album)
-function mboxCoverAlbum_new(id,data)
-function mboxCoverAlbum_alert(cover)
-function mboxCoverAlbum_checkFile(image_url)
-function mboxCoverTogglePrint()
-function mboxCoverList( uuid, cover="", description="", cmd_open="", cmd_play="", type="album" )
-function mboxCoverListStart()
-function mboxCoverListEnd()
-function mboxCoverListEntry(id,cover)
-function mboxCoverSeparator( content, cmd )
-*/
-//--------------------------------------
 
 function mboxCoverAlbumInfo(nr,url_list,act,uuid) {
 	var border          = "";
@@ -56,11 +42,8 @@ function mboxCoverAlbumInfo(nr,url_list,act,uuid) {
 	return img;
 	}
 
-
-// return cover for list and detail view
-//--------------------------------------
-
 function mboxCoverAlbum(artist,album) {
+    // return cover for list and detail view
 	var albums        = dataAlbums[artist][album];
 	var i             = 0;
 	var cover	  = "";
@@ -75,10 +58,8 @@ function mboxCoverAlbum(artist,album) {
 	return cover;
 	}
 	
-// return cover for list and detail view
-//--------------------------------------
-
 function mboxCoverAlbum_new(id,data) {
+    // return cover for list and detail view
 
 	var albumInfo;
 	var i             = 0;
@@ -110,14 +91,10 @@ function mboxCoverAlbum_new(id,data) {
 	else { return cover; }
 	}
 	
-//--------------------------------------
-
 function mboxCoverAlbum_alert(cover) {
 	var img   = "<img src=\""+cover+"\" class='album_cover_alert'>";
 	appMsg.confirm(img,"",380);
 	}
-
-//--------------------------------------
 
 function mboxCoverAlbum_checkFile(image_url) {
 
@@ -127,30 +104,22 @@ function mboxCoverAlbum_checkFile(image_url) {
 	return http.status != 404;
 	}
 
-
-//--------------------------------------
-// show / hide print view
-//--------------------------------------
-
 function mboxCoverTogglePrint() {
+    // show / hide print view
 	if (document.getElementById("ontop").style.display == "none") 	{ document.getElementById("ontop").style.display = "block"; }
 	else								{ document.getElementById("ontop").style.display = "none"; }
 	}
 
-//--------------------------------------
-// LIST COVER
-//--------------------------------------
-
 function mboxCoverList( uuid, cover="", description="", cmd_open="", cmd_play="", type="album" ) {
-
+    // LIST COVER
 	var text          = "";
 	var button_play   = "";
 	var default_cover = mbox_icon_dir + mbox_icons[type];
 	var icon_playing  = mbox_icon_dir + mbox_icons["playing"];
 
-        if (mbox_device == "remote") {
-		button_play = "<div class=\"player_button small white\" onclick=\"" + cmd_play + "\"><img src=\"" + mbox_icon_dir + "play.png\" style=\"width:9px;height:9px;margin:2px;\"></div>";
-		}
+    if (mbox_device == "remote") {
+        button_play = "<div class=\"player_button small white\" onclick=\"" + cmd_play + "\"><img src=\"" + mbox_icon_dir + "play.png\" style=\"width:9px;height:9px;margin:2px;\"></div>";
+    }
 
 	if (cover == "") {
                 cover = default_cover;
@@ -162,17 +131,15 @@ function mboxCoverList( uuid, cover="", description="", cmd_open="", cmd_play=""
                 text += "</div>";
                 }
         else {
-        	cover = cover.replace(/'/g, "\\'");
-		text += "<div class=\"album_cover\" style=\"background:url('" + cover + "');background-size:cover;background-repeat:no-repeat;vertical-align:botton;\" onclick=\"" + cmd_open + "\">";
-		text += button_play;
-		text += "<div class=\"player_active\" id=\"playing2_" + uuid + "\" style=\"display:none;\"><img src=\"" + icon_playing + "\" style=\"width:10px;height:10px;margin:2px;\"></div>";
-		text += "</div>";
+        	cover = cover.replace("'", "\\'");
+            text += "<div class=\"album_cover\" style=\"background:url('" + cover + "');background-size:cover;background-repeat:no-repeat;vertical-align:botton;\" onclick=\"" + cmd_open + "\">";
+            text += button_play;
+            text += "<div class=\"player_active\" id=\"playing2_" + uuid + "\" style=\"display:none;\"><img src=\"" + icon_playing + "\" style=\"width:10px;height:10px;margin:2px;\"></div>";
+            text += "</div>";
 		}
 
 	return text;
 	}
-
-//-------------------------------------------------------------
 
 function mboxCoverListStart() {
 	var print = "<div class=\"print_album_back\"><div>";
@@ -184,15 +151,14 @@ function mboxCoverListStart() {
 	}
 
 function mboxCoverListEnd() {
+
 	return "</div>";
 	}
 
 function mboxCoverListEntry(id,cover) {
-        cover = cover.replace(/'/g, "\\'");
+        cover = cover.replace("'", "\\'");
         return "<div class=\"print_album_cover\" id=\"printCover_" + id + "\"onclick=\"document.getElementById('printCover_" + id + "').style.display='none';\" style=\"background:url('"+cover+"');background-size:cover;background-repeat:no-repeat;vertical-align:botton;\"></div>";
 	}
-
-//--------------------------------------
 
 function mboxCoverSeparator( content, cmd ) {
 
@@ -202,7 +168,3 @@ function mboxCoverSeparator( content, cmd ) {
         text += "</div>";
 	return text;
 	}
-
-//--------------------------------------
-// EOF
-

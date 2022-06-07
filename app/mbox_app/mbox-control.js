@@ -131,19 +131,11 @@ function mboxControl(data) {
 		// Info for running music, if web stream / radio
 		else if (type == "radio") {
 
-		// ---------------------------- error: stream not filled
-		    if (d["stream"]["title"]) {
-			    var channel     = d["stream"];
-			    var title       = d["stream"]["title"];
-			    var description = d["stream"]["description"];
-			    var info        = d["stream"]["stream_info"];
-                }
-            else {
-                var channel     = d["song"];
-                var title       = d["song"]["title"];
-                var description = d["song"]["album"];
-                var info        = "wrong format";
-                }
+            var channel     = d["stream"];
+            var title       = d["stream"]["title"];
+            var description = d["stream"]["description"];
+            var info        = d["stream"]["stream_info"];
+
 			uuid            = channel["uuid"];
             playing_title   = title;
             playing_album   = description;

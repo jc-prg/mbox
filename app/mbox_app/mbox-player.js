@@ -5,11 +5,11 @@
 //--------------------------------------
 // local player requires modules/jc-player/jc-player-*.js
 // ... fill playlist for local player via:
-/*
+/**
 mbox_playlist_queue["type"]     = "album";
 mbox_playlist_queue["scrollto"] = "scrollto_" + uuid.replace(/-/g,"");
 mbox_playlist_queue["album"]	= {
-		"album"        : "<album-title>",
+        "album"        : "<album-title>",
 		"title"        : "<album-title>",
 		"artist"       : "<artist-name>",
 		"uuid"         : "<album-uuid>",
@@ -27,33 +27,14 @@ mbox_playlist_queue["tracks"]	= [
 			"artist" : "...",
 			"file"  : "...",
 			},
-		]
-*/
-//--------------------------------------
-/* INDEX:
-function mboxPlayerLocal(position=0, play=true)
-function mboxPlayerRemote(song,uuid,playing)
-function mboxPlayerControlPlaylist_advanced(uuid)
-function mboxPlayerControlPlaylist(uuid)
-function mboxPlayerControlEntry(uuid)
-function mboxPlayerControlStream(uuid)
-function mboxPlayerProgress()
-function mboxPlayerProgressPrint()
-function mboxPlayerProgressTime()
-function mboxPlayerProgressSet( status, song_length, song_left, song_left_s )
-function mboxPlayerJumpToPosition(e)
-function mboxPlayerButton( button, cmd="", color="blue", small="", display="block" )
-function mboxPlayerButtonText( button, cmd="", color="blue", small="", display="block" )
-function mboxPlayerAdd2Queue(type, entry_uuid, entry, track_list={})
+	    ]
 */
 //--------------------------------------
 
 var mboxPlayer;
 var mbox_playlist_queue = {};
+var mboxPlayerProgress_ID = -1;
 
-//--------------------------------------
-// LOCAL PLAYER
-//--------------------------------------
 
 function mboxPlayerLocal(position=0, play=true) {
 
@@ -74,11 +55,6 @@ function mboxPlayerLocal(position=0, play=true) {
 		mboxPlayer.play();
 		}
 	}
-
-//--------------------------------------
-// REMOTE PLAYER
-//--------------------------------------
-
 
 function mboxPlayerRemote(song,uuid,playing) {
 
@@ -114,11 +90,6 @@ function mboxPlayerRemote(song,uuid,playing) {
 	return text;
 	}
 	
-	
-// control buttons for playlist - advanced
-//--------------------------------------
-// idea ...
-
 function mboxPlayerControlPlaylist_advanced(uuid) {
 	var text = "";
 
@@ -141,10 +112,6 @@ function mboxPlayerControlPlaylist_advanced(uuid) {
 	appMsg.confirm( text, "", 260);
 	}
 
-
-// control buttons for playlist
-//--------------------------------------
-
 function mboxPlayerControlPlaylist(uuid) {
 	var text = "";
 
@@ -162,9 +129,6 @@ function mboxPlayerControlPlaylist(uuid) {
 
 	return text;
 	}
-
-// control buttons for entries
-//--------------------------------------
 
 function mboxPlayerControlEntry(uuid) {
 	var text = "";
@@ -186,12 +150,6 @@ function mboxPlayerControlEntry(uuid) {
 	return text;
 	}
 
-
-
-
-// control buttons for radio
-//--------------------------------------
-
 function mboxPlayerControlStream(uuid) {
         var text = "";
 
@@ -201,17 +159,6 @@ function mboxPlayerControlStream(uuid) {
 
         return text;
         }
-
-
-//--------------------------------------
-// PROGRESS BAR
-//--------------------------------------
-
-// ID for set Interval
-var mboxPlayerProgress_ID = -1;
-
-// set Interval if player control for box available
-//---------------------------------------------
 
 function mboxPlayerProgress() {
 	if (document.getElementById("mbox_progresstime")) {
@@ -226,8 +173,6 @@ function mboxPlayerProgress() {
 		console.log("Clear Intervall with ID "+mboxPlayerProgress_ID);
 		}
 	}
-
-//---------------------------------------------
 
 function mboxPlayerProgressPrint() {
 
@@ -250,8 +195,6 @@ function mboxPlayerProgressPrint() {
 	return player;
 	}
 
-// calculate and show time
-//----------------------------------
 function mboxPlayerProgressTime() {
 	var status	 	= document.getElementById("mbox_status").innerHTML;
 	var seconds_left 	= document.getElementById("mbox_progresstime").innerHTML;
@@ -269,9 +212,6 @@ function mboxPlayerProgressTime() {
 	document.getElementById("mboxPlayer_progress").style.width = progress + "%";
 	//console.log(hundred + " - " + progress+"%");
 	}
-
-// Update time
-//--------------------------------------
 
 function mboxPlayerProgressSet( status, song_length, song_left, song_left_s ) {
 
@@ -292,10 +232,6 @@ function mboxPlayerProgressSet( status, song_length, song_left, song_left_s ) {
 	
 	}
 
-
-// react on click -> jump to position in file
-//--------------------------------------
-
 function mboxPlayerJumpToPosition(e) {
         var xPosition   = e.clientX;
         var yPosition   = e.clientY;
@@ -314,10 +250,6 @@ function mboxPlayerJumpToPosition(e) {
 	mboxControl_load();
 	}
 
-//--------------------------------------
-// OTHER
-//--------------------------------------
-
 function mboxPlayerButton( button, cmd="", color="blue", small="", display="block" ) {
 
         var text  = "";
@@ -332,9 +264,6 @@ function mboxPlayerButton( button, cmd="", color="blue", small="", display="bloc
         return text;
         }
 
-
-//--------------------------------------
-
 function mboxPlayerButtonText( button, cmd="", color="blue", small="", display="block" ) {
 
         var text  = "";
@@ -348,10 +277,6 @@ function mboxPlayerButtonText( button, cmd="", color="blue", small="", display="
 
         return text;
         }
-
-//--------------------------------------
-// file queue
-//--------------------------------------
 
 function mboxPlayerAdd2Queue(type, entry_uuid, entry, track_list={}, track_list_sort=[]) {
 
@@ -389,7 +314,3 @@ function mboxPlayerAdd2Queue(type, entry_uuid, entry, track_list={}, track_list_
 		}
 	console.debug(mbox_playlist_queue);
 	}
-
-
-//--------------------------------------
-// EOF

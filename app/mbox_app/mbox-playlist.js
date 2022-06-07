@@ -12,6 +12,7 @@ function mboxPlaylists_load(filter="",playlist_uuid="-")  {
 	}
 	
 function mboxPlaylists_reload() {
+
     mboxPlaylists(data=mbox_list_data);
     }
 
@@ -32,6 +33,7 @@ function mboxPlaylists(data, uuid="") {
 	}
 
 function mboxPlaylistEdit_load(uuid) {
+
     appFW.requestAPI("GET",["data",uuid,"-"], "", mboxPlaylistEdit);
     }
 
@@ -69,6 +71,7 @@ function mboxPlaylistEdit(data) {
 	}
 
 function mboxPlaylistEditAlbums_load(uuid) {
+
     appFW.requestAPI("GET",["db","artists",uuid],"", mboxPlaylistEditAlbums );
     }
 
@@ -193,10 +196,12 @@ function mboxPlaylistEditTracks(data) {
 	}
 
 function mboxPlaylistEditEntry_load(uuid) {
+
     appFW.requestAPI("GET",["data",uuid,"uuid,title,description"],"", mboxPlaylistEditEntry );
     }
 
 function mboxPlaylistEditEntry(data) {
+
     mboxDataEdit( data );
     }  // -> mbox-data.js
 
@@ -207,6 +212,7 @@ function mboxPlaylistDelete(uuid,title) {
 	}
 	
 function mboxPlaylistDelete_exec(uuid,title) {
+
 	appFW.requestAPI('DELETE',['data',uuid],'',[mboxPlaylistDelete_msg,title]);
 	}
 
@@ -216,6 +222,7 @@ function mboxPlaylistDelete_msg(data,title) {
         }
 
 function mboxPlaylistInfo_load(uuid) {
+
     appFW.requestAPI("GET",["data",uuid,"-"],"", mboxPlaylistInfo );
     }
 

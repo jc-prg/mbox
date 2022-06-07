@@ -3,17 +3,11 @@
 //--------------------------------------
 // Upload image for album, playlist ...
 //--------------------------------------
-/* INDEX:
-function mboxUploadImage(uuid,category,name="")
-function mboxUploadImageWrite(params)
-*/
-//--------------------------------------
 
 var mbox_upload_script = "modules/jc-upload/upload-0.2.0.php";   // jc://modules/jc-upload/
 var mbox_upload_dir    = "../../mbox_img/cover_upload";    // dir relative to mbox_upload_script
 var mbox_upload		= new jcUpload("mbox_upload", "");
 
-//----------------------------------------------------------------
 
 function mboxUploadImage(uuid,category,name="") {
 
@@ -30,8 +24,6 @@ function mboxUploadImage(uuid,category,name="") {
 	appMsg.confirm(text,cmd,280,false);					// create dialog
 	}
 
-//----------------------------------------------------------------
-
 function mboxUploadImageWrite(params) {
         param = params.split("xXx");
 	//console.log("uuid:"+uuid);
@@ -42,6 +34,3 @@ function mboxUploadImageWrite(params) {
 	appFW.requestAPI('PUT', [ 'images', 'upload', param[0], filename ], '', [mboxViewsList_load, param[1]]);
 	appMsg.hide();
 	}
-
-//----------------------------------------------------------------
-// EOF

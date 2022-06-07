@@ -1,31 +1,8 @@
 //--------------------------------------
 // jc://music-box/, (c) Christoph Kloth
 //--------------------------------------
-/* INDEX:
-function scrollToTop()
-function image(file)
-function button (onclick,label, id="")
-function add_link(link, description="")
-function mboxHtmlButton( button, cmd="", color="blue", small="", display="block" )
-function mboxHtmlButton2( sendCmd, label )
-function mboxHtmlToolTipLeft(i)
-function mboxHtmlToolTip( type, count=0, input_text="" )
-function mboxHtmlScrollTo( type, uuid="" )
-function mboxHtmlEntryDetail( count )
-function mboxHtmlTableNew( cells=[], divide=false, width="100%", height="" )
-function mboxHtmlTable(p1,p2="",p3="",p4="")
-function mboxHtmlInputElement( name, data )
-function mboxHtmlSetNavTitle (title)
-function mboxHtmlSetButtonConfig	(data)
-function mboxHtmlShowLoading(data)
-function mboxHtmlShowDataObject(data)
-function mboxHtmlShowJson(data)
-*/
-// ------------------------------------------
-
-//-------------------------------------------------------------
-// general functions ...
-//-------------------------------------------------------------
+// selection of HTML elements
+// -------------------------------------
 
 
 function scrollToTop() {
@@ -33,14 +10,11 @@ function scrollToTop() {
 	document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
 	} 
 
-// ------------------------------------------
-
 function image(file) {
+
         return "<img src='"+mbox_icon_dir+file+"' style='height:15px;margin:0px;padding:0px;' alt='"+file+"' />";
         }
         
-// ------------------------------------------
-
 function button(onclick, label, id="") {
         var html = mboxHtmlSimpleButton(onclick,label,id);
         return html;
@@ -48,20 +22,14 @@ function button(onclick, label, id="") {
         }
 
 function mboxHtmlSimpleButton(onclick, label, id="", button_width=150) {
+
         return "<button style=\"width:" + button_width + "px;margin:1px;\" onClick=\"javascript:"+onclick+"\" id=\""+id+"\">"+label+"</button>";
         }
-
-// ------------------------------------------
 
 function add_link(link, description="") {
         if (description == "") { description = link; }
         return "<a href=\"" + link + "\" target=\"_blank\" style=\"color:white\">" + description + "</a><br/>";
         }
-
-
-//-------------------------------------------------------------
-// mbox specific functions ...
-//-------------------------------------------------------------
 
 function mboxHtmlButton( button, cmd="", color="blue", small="", display="block" ) {
 
@@ -78,14 +46,10 @@ function mboxHtmlButton( button, cmd="", color="blue", small="", display="block"
         return text;
         }
 
-// create button with sendCmd command
-//--------------------------------------
-
 function mboxHtmlButton2( sendCmd, label ) {
+
 	return "<button onclick='javascript:appFW.sendCmd(" + sendCmd + ", mboxControl)'>" + label + "</button>";
 	}
-
-//-------------------------------------------------------------
 
 function mboxHtmlToolTipLeft(i) {
         var count = 3;
@@ -97,8 +61,6 @@ function mboxHtmlToolTipLeft(i) {
         var pos = i-(Math.floor(i/mbox_list_count) * mbox_list_count);
         if (pos == 0) { return " left"; }
         }
-
-//-------------------------------------------------------------
 
 function mboxHtmlToolTip( type, count=0, input_text="" ) {
 
@@ -117,8 +79,6 @@ function mboxHtmlToolTip( type, count=0, input_text="" ) {
 	return text;
 	}
 
-//-------------------------------------------------------------
-
 function mboxHtmlScrollTo( type, uuid="" ) {
 	var text = "";
 	if (type == "start") {
@@ -130,16 +90,11 @@ function mboxHtmlScrollTo( type, uuid="" ) {
 	return text;
 	}
 
-//-------------------------------------------------------------
-
 function mboxHtmlEntryDetail( count ) {
 	var text = "";
 	text += "<div class=\"album_detail\" id=\"album_"+count+"\" style=\"display:none\">"+count+" / " + document.body.clientWidth + "</div>";
 	return text;
 	}
-
-
-//-------------------------------------------------------------
 
 function mboxHtmlTableNew( cells=[], divide=false, width="100%", height="", valign="top" ) {
 
@@ -165,9 +120,6 @@ function mboxHtmlTableNew( cells=[], divide=false, width="100%", height="", vali
 		}
         }
 
-
-//-------------------------------------------------------------
-
 function mboxHtmlTable(p1,p2="",p3="",p4="") {
 
         // set width of colums
@@ -183,9 +135,6 @@ function mboxHtmlTable(p1,p2="",p3="",p4="") {
 	else                    { return "<tr><td width=\""+w[0]+"\" style=\"vertical-align:top;\">"+p1+"</td><td width=\""+w[1]+"\">"+p2+"</td><td width=\""+w[2]+"\">"+p3+"</td><td width=\""+w[3]+"\">"+p4+"</td></tr>"; }
         }
 
-
-//-------------------------------------------------------------
-
 function mboxHtmlInputElement( name, data ) {
 	var text = "";
 
@@ -193,24 +142,21 @@ function mboxHtmlInputElement( name, data ) {
 //	else if (!data) { text += "<input id='"+name+"' name='"+name+"' value=''> (undefined)"; }
 	else if (data) {
 	        var str = JSON.stringify(data);
-        	str = str.replace(/,/g,",<br/>");
-        	str = str.replace(/{/g,"{<br/>");
-        	str = str.replace(/}/g,"}<br/>");
+        	str = str.replaceAll(",",",<br/>");
+        	str = str.replace("{","{<br/>");
+        	str = str.replace("}","}<br/>");
 		text += "<div id='"+name+"' style='border:solid 1px lightgray;background:#eeeee;width:250px;height:60px;overflow:auto;'>"+str+"</div>";
 		}
 
 	return text;
 	}
 
-//--------------------------------------
-
 function mboxHtmlSetNavTitle (title) {
+
         setTextById("navTitle", "<div onClick=\"javascript:if(mbox_settings){mboxSettingsToggle();};appCookie.erase('appCookie');\">"+title+"</div>");
         }
 
-// ------------------------------------------
-
-function mboxHtmlSetButtonConfig	(data) {
+function mboxHtmlSetButtonConfig(data) {
 
 	// definition of button color
         button_color = data["button_colors"];
@@ -222,21 +168,17 @@ function mboxHtmlSetButtonConfig	(data) {
                 }
         }
 
-//----------------------------------------------------------------
-
 function mboxHtmlShowLoading(data) {
 	var text = "<b>" + lang("RELOAD_STARTED") + ":</b><br/><br/><div id='progress_info' style='border-style:solid 1px;'>x</div>";
 	appMsg.alert(text);
 	}
 
-//-------------------------------------------------------------
-
 function mboxHtmlShowDataObject(data) {
 	if (data) {
 	        var str = JSON.stringify(data);
-        	str = str.replace(/,/g,",<br/>");
-        	str = str.replace(/{/g,"{<br/>");
-        	str = str.replace(/}/g,"}<br/>");
+        	str = str.replace(",",",<br/>");
+        	str = str.replace("{","{<br/>");
+        	str = str.replace("}","}<br/>");
 		}
 	else {
 		str = "No data returned!";
@@ -247,12 +189,7 @@ function mboxHtmlShowDataObject(data) {
                	"",280);
         }
 
-//-------------------------------------------------------------
-
 function mboxHtmlShowJson(data) {
 	var text = "<b>" + lang("RELOAD_STARTED") + "</b>";
 	appMsg.alert(text);
 	}
-
-//--------------------------------------
-// EOF

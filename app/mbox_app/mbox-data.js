@@ -3,14 +3,7 @@
 //--------------------------------------
 // Edit data (playlist and web-stream)
 //--------------------------------------
-/* INDEX:
-function mboxDataReturnMsg(data={},success="",error="")
-function mboxDataEdit(data,callback)
-function mboxDataEditExecute(uuid, key_list, type)
-*/
-//--------------------------------------
 
-//-----------------------------
 
 function mboxDataReturnMsg(data={},success="",error="") {
 
@@ -28,8 +21,6 @@ function mboxDataReturnMsg(data={},success="",error="") {
 		console.warn("Unknown data returned.");
 		}
 	}
-
-//--------------------------------------
 
 function mboxDataEdit(data,callback) {
 
@@ -65,8 +56,6 @@ function mboxDataEdit(data,callback) {
         appMsg.confirm(text,"mboxDataEditExecute('"+uuid+"','" + key_list + "','" + type + "');",400);
         }
 
-//--------------------------------------
-
 function mboxDataEditExecute(uuid, key_list, type) {
 	var data     = {};
 	var callback = "";
@@ -88,6 +77,3 @@ function mboxDataEditExecute(uuid, key_list, type) {
 	appFW.requestAPI("PUT", ["data",uuid], data, callback );
 	}
 
-//--------------------------------------
-// EOF
-	

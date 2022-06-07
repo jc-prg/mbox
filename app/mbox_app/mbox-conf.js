@@ -43,6 +43,3 @@ var mbox_playlist       = {};
 var mbox_playlist_queue = {};
 var mbox_device         = "remote";
 var mbox_show_char      = true;
-
-//--------------------------------------
-// EOF

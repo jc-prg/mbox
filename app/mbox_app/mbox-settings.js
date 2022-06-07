@@ -1,22 +1,11 @@
-
 //--------------------------------------
 // jc://music-box/, (c) Christoph Kloth
 //--------------------------------------
 // create settings pages
 //--------------------------------------
-/* INDEX:
-function mboxSettingsToggle()
-function mboxSettingsStatus_load()
-function mboxSettingsStatus (data)
-function mboxSettingsStatusPerformance_load()
-function mboxSettingsStatusPerformance(data)
-*/
-//--------------------------------------
 
 var MusicDir = "/mbox_music/";
 
-// show / hide settings page
-// -----------------------------------------------------
 
 function mboxSettingsToggle() {
 	var div_settings = [ "setting1", "setting2", "setting3", "setting4" ];
@@ -33,10 +22,12 @@ function mboxSettingsToggle() {
 		mbox_settings = false;
 		}
 	}
-// write status information to settings page ...
-// -----------------------------------------------------
 
-function mboxSettingsStatus_load()  { appFW.requestAPI("GET",["status"],"",mboxSettingsStatus, "wait"); }
+function mboxSettingsStatus_load()  {
+
+    appFW.requestAPI("GET",["status"],"",mboxSettingsStatus, "wait");
+    }
+
 function mboxSettingsStatus (data) {
 
 	var text    = "";
@@ -212,14 +203,13 @@ function mboxSettingsStatus (data) {
 	setTextById("setting3",text);
 	}
 
-//----------------------------------------------------------------
+function mboxSettingsStatusPerformance_load() {
 
-function mboxSettingsStatusPerformance_load() { appFW.requestAPI("GET",["db","all","-"],"",mboxSettingsStatusPerformance, "wait"); }
+    appFW.requestAPI("GET",["db","all","-"],"",mboxSettingsStatusPerformance, "wait");
+    }
+
 function mboxSettingsStatusPerformance(data) {
 	setTextById("duration_api_request",		Math.round(data["REQUEST"]["load-time-app"]/1000*10)/10+" s &nbsp; &nbsp; (all data)");
 	setTextById("duration_db_request",		Math.round(data["REQUEST"]["load-time"]*1000)/1000+" s");
 	setTextById("duration_db_request_per_file",	Math.round(data["REQUEST"]["load-time"]/dict_size(data["DATA"]["files"])*1000)/1000+" s &nbsp; &nbsp; ("+dict_size(data["DATA"]["files"])+")");
 	}
-
-//----------------------------------------------------------------
-// EOF

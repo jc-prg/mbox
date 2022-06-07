@@ -3,27 +3,6 @@
 //--------------------------------------
 // views for all media types
 //--------------------------------------
-/* INDEX:
-function mboxViewsCalcRowEntries()
-function mboxViewsList_load(data,type)
-function mboxViewsList(type, data, selected_uuid="", filter_key="", filter_text="", sort_keys=[], callTrackList="", chapter_rows=true)
-function mboxViewsChapter(count, title, last_title)
-function mboxViewsEmpty(count,title)
-function mboxViewsDetail(count,title)
-function mboxViewsEntry(count, uuid, title, description, cover, cmd_open, cmd_play)
-function mboxViewsLoadDetails(pos, i, uuid, callTrackList, type)
-function mboxViewsTrackListHeader(uuid, type, entry, title, description, length)
-function mboxViews_Info(uuid, type)
-function mboxViewsTrackList(data, type)
-function mboxViewsTrackListLine(column=1, color="gray")
-function mboxViewsTrackListRow( data, uuid, type, column, uuid_pl="", count_pl=0, color=0, withtrackinfo=true, withartist=true )
-function mboxViewsShowTriangle(i)
-function mboxViewsHideTriangle(i)
-function mboxViewsEmptyAll()
-function mboxViewsEmptyBelow()
-function mboxViewsWriteBelow(text)
-*/
-//--------------------------------------
 
 var mbox_list_count  = 3;
 var mbox_list_pos    = 0;
@@ -34,9 +13,6 @@ var mbox_list_char   = [];
 var mbox_list_data   = {};
 
 
-// Define Lists per row
-//--------------------------------------
-
 function mboxViewsCalcRowEntries() {
 
 	setTextById("mbox_temp","<div class=\"album_cover\" id=\"album_test_size\">test</div>" );
@@ -46,9 +22,6 @@ function mboxViewsCalcRowEntries() {
 	setTextById("mbox_temp","");
 	return max_albums;
 	}
-
-// List media
-//--------------------------------------
 
 function mboxViewsList_load(data,type) {
 	if (data["LOAD"]["UUID"])	{ var loaded_uuid = data["LOAD"]["UUID"]; }
@@ -244,10 +217,6 @@ function mboxViewsList(type, data, selected_uuid="", filter_key="", filter_text=
 		}
 	}
 
-
-// chapter list entry
-//---------------------------------------------------------
-
 function mboxViewsChapter(count, title, last_title) {
 
 	var text     = "";
@@ -256,7 +225,7 @@ function mboxViewsChapter(count, title, last_title) {
 	last_title += " ";
 	last_char   = last_title.substring(0,1);
 
-      	cover = cover.replace(/'/g, "\\'");
+    cover = cover.replace("'", "\\'");
 	text += "<div class=\"album_cover character\" style=\"background:url('" + cover + "');\">";
 	text += "<div class=\"album_sort\">" + act_char + "</div>";
 	text += "</div>";
@@ -278,10 +247,6 @@ function mboxViewsDetail(count,title) {
 	text += "<div class=\"album_detail\" id=\"album_" + act_char + "_" + count + "\" style=\"display:none\">test " + count + " / " + document.body.clientWidth + "</div>";
 	return text;
 	}
-
-
-// album list entry
-//---------------------------------------------------------
 
 function mboxViewsEntry(count, uuid, title, description, cover, cmd_open, cmd_play) {
 
@@ -308,9 +273,6 @@ function mboxViewsEntry(count, uuid, title, description, cover, cmd_open, cmd_pl
 	return [text, print];
 	}
 
-
-//--------------------------------------
-
 function mboxViewsLoadDetails(pos, i, uuid, callTrackList, type) {
 
 	// define position where to show album details
@@ -332,11 +294,7 @@ function mboxViewsLoadDetails(pos, i, uuid, callTrackList, type) {
 	appFW.requestAPI("GET",["data",uuid,"-"], "", [callTrackList, type] );
 	}
 
-
-// List tracks of an entry - header with cover and description
-//--------------------------------------
-
-function mboxViewsTrackListHeader(uuid, type, entry, title, description, length) {   
+function mboxViewsTrackListHeader(uuid, type, entry, title, description, length) {
 
 	var text          = "";
 	var length        = "";
@@ -353,7 +311,7 @@ function mboxViewsTrackListHeader(uuid, type, entry, title, description, length)
         if (cover == "") { cover = default_cover; onclick = ""; }
 
 	// Write album cover
-      	cover = cover.replace(/'/g, "\\'");
+    cover = cover.replace("'", "\\'");
 	text += "<div id=\"scrollto2_"+uuid.replace(/-/g,"")+"\">";
 	text += "<div class=\"album_cover\" style=\"background:url('"+cover+"');background-size:contain;background-position:center;background-repeat:no-repeat;\" onclick='" + onclick + "'>";
 	text += "</div>";
@@ -377,17 +335,12 @@ function mboxViewsTrackListHeader(uuid, type, entry, title, description, length)
 	
 	return text;
 	}
-	
-// Load info ...
-//--------------------------------------
 
 function mboxViews_Info(uuid, type) {
 	if (type == "album")         { mboxAlbumInfo_load(uuid); }
 	else if (type == "playlist") { mboxPlaylistInfo_load(uuid); }
 	else if (type == "radio")    { mboxStreamInfo_load(uuid); }
 	}
-
-//--------------------------------------
 
 function mboxViews_InfoTable(title, info_data, height) {
 
@@ -408,10 +361,6 @@ function mboxViews_InfoTable(title, info_data, height) {
 
 	appMsg.confirm(text,"",height);
 	}
-
-
-// List tracks of an entry
-//--------------------------------------
 
 function mboxViewsTrackList(data, type) {   
 
@@ -602,17 +551,11 @@ function mboxViewsTrackList(data, type) {
 		window.scrollBy(0,-100);
 		}, 1000);			
 	}
-	
-	
-// create row for track in list
-//----------------------------------------
 
 function mboxViewsTrackListLine(column=1, color="gray") {
 
 	addTextById("album_tracks"+column, "<div class=\"album_tracks_line\"><hr style=\"color:"+mbox_track_color[color]+"\"/></div>");
 	}
-
-//----------------------------------------
 
 function mboxViewsTrackListRow( data, uuid, type, column, uuid_pl="", count_pl=0, color=0, withtrackinfo=true, withartist=true ) {
 
@@ -717,11 +660,6 @@ function mboxViewsTrackListRow( data, uuid, type, column, uuid_pl="", count_pl=0
 	addTextById("album_tracks"+no,text);
         }
 
-
-
-// show / hide triangle of active album
-//----------------------------------------
-
 function mboxViewsShowTriangle(i) {
 	elementVisible("album_tri1_"+i);
 	elementVisible("album_tri2_"+i);
@@ -737,18 +675,10 @@ function mboxViewsHideTriangle(i) {
 	elementHidden("album_tri2_"+i);
 	}
 
-
-// empty and reload
-//--------------------------------------
-
 function mboxViewsEmptyAll() {
+
 	setTextById("frame1","");
 	}
-
-
-
-// Write / delete details info below the album in the list
-//----------------------------------------
 
 function mboxViewsEmptyBelow() {		// delete all infos from last loading
 	var divID = "";
@@ -768,9 +698,6 @@ function mboxViewsEmptyBelow() {		// delete all infos from last loading
 		}
 	}
 
-
-//--------------------------------------
-
 function mboxViewsWriteBelow(text) {		// write details to box below
 	
 	var divID = "";
@@ -786,8 +713,4 @@ function mboxViewsWriteBelow(text) {		// write details to box below
 	mboxControlGroups();
 	if (document.getElementById(divID)) { return divID; }
 	}
-
-
-//--------------------------------------
-// EOF
 

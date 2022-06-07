@@ -559,13 +559,14 @@ class MusicControlThread(threading.Thread):
                 else:
                     old_state = data["music"]["state"] + " " + str(data["music"]["song"])
 
-            data["music"] = self.music_ctrl
+            data["music"] = self.music_ctrl.copy()
             if "album_uuid" in data["music"]["song"] and data["music"]["song"]["album_uuid"].startswith("r_"):
                 podcast_uuid = data["music"]["song"]["album_uuid"]
                 data["music"]["podcast"] = self.podcast.get_podcasts(playlist_uuid=podcast_uuid)
 
             data["_saved"] = time.time()
             self.music_database.write("status", data)
+
             if "file" in data["music"]["song"]:
                 new_state = data["music"]["state"] + " " + str(data["music"]["song"]["file"])
             else:
@@ -573,5 +574,5 @@ class MusicControlThread(threading.Thread):
 
             if old_state != new_state:
                 self.logging.info("Save playing status: ")
-                self.logging.info(" - " + new_state)
+                self.logging.info(" - " + new_state + " (" + self.music_ctrl["volume"] + ")")
 

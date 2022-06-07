@@ -154,6 +154,9 @@ class CouchDB:
             return self.database[db_key]["main"]["data"]
 
     def read_group(self, group_key):
+        """
+        read complete table/group from database (e.g. radio, albums, ...)
+        """
         data = {}
         try:
             for key in self.databases[group_key]:

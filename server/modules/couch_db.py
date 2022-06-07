@@ -135,7 +135,7 @@ class CouchDB:
 
         elif db_key in self.database:
 
-            self.logging.info("CouchDB read: " + db_key + " - " + str(int(start_time - time.time())) + "s")
+            self.logging.debug("CouchDB read: " + db_key + " - " + str(int(start_time - time.time())) + "s")
 
             try:
                 db = self.database[db_key]

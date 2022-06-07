@@ -86,10 +86,10 @@ class SpeakThread(threading.Thread):
         self.vlc_player.set_volume(self.volume)
 
         directory_path = os.getcwd()
-        filename = os.path.join(directory_path, mbox.errormsg_dir + stage.language + "_" + message + ".mp3")
-        filename_EN = os.path.join(directory_path, mbox.errormsg_dir + "EN_" + message + ".mp3")
-        filename_UE = os.path.join(directory_path, mbox.errormsg_dir + stage.language + "_UNKNOWN-ERROR.mp3")
-        filename_UE_EN = os.path.join(directory_path, mbox.errormsg_dir + "EN_UNKNOWN-ERROR.mp3")
+        filename = os.path.join(directory_path, mbox.error_msg_dir + stage.language + "_" + message + ".mp3")
+        filename_EN = os.path.join(directory_path, mbox.error_msg_dir + "EN_" + message + ".mp3")
+        filename_UE = os.path.join(directory_path, mbox.error_msg_dir + stage.language + "_UNKNOWN-ERROR.mp3")
+        filename_UE_EN = os.path.join(directory_path, mbox.error_msg_dir + "EN_UNKNOWN-ERROR.mp3")
 
         if os.path.isfile(filename):
             self.vlc_player.play(filename, True)

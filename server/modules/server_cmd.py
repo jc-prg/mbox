@@ -315,7 +315,9 @@ class ServerApi:
                 data["DATA"]["_selected"] = data["DATA"][database][uuid]
 
         # TEMP ... read podcast ...
-        if databases == "radio":
+        if databases == "radio" and "radio" in data["DATA"]:
+            self.logging.info("Start reading radio/podcast ... ")
+
             for stream_uuid in data["DATA"]["radio"]:
                 stream_url = data["DATA"]["radio"][stream_uuid]["stream_url"]
                 is_podcast = False

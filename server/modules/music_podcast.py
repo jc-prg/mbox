@@ -101,6 +101,7 @@ class PodcastThread(threading.Thread):
         return info from cache
         """
         if playlist_uuid in self.temp_podcasts:
+            self.logging.info(str(self.temp_podcasts[playlist_uuid]))
             return self.temp_podcasts[playlist_uuid].copy()
 
         for end in self.podcast_ending:

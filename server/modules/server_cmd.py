@@ -306,18 +306,18 @@ class ServerApi:
             db_list = [databases]
 
         # read complete databases
-        self.logging.info("READ /" + databases + "/")
+        self.logging.info("READ /" + databases + "/" + db_filter + "/")
         for database in db_list:
             if database in self.couch.database:
                 if "main" in self.couch.database[database]:
                     data["DATA"][database] = self.couch.read_cache(database)
-                    self.logging.info("READ " + database + " (" + str(len(data["DATA"][database])) + ")")
+                    self.logging.debug("READ " + database + " (" + str(len(data["DATA"][database])) + ")")
                 else:
                     data = self.response_error(data, "Database empty: " + database)
-                    self.logging.info("READ error " + database + " - empty")
+                    self.logging.warning("READ error " + database + " - empty")
             else:
                 data = self.response_error(data, "Database not found: " + database)
-                self.logging.info("READ error " + database + " - not found")
+                self.logging.warning("READ error " + database + " - not found")
 
             if uuid != "" and uuid in data["DATA"][database]:
                 data["DATA"]["_selected_uuid"] = entry_uuid
@@ -328,7 +328,7 @@ class ServerApi:
         if test:
             # read podcast ...
             if databases == "radio" and "radio" in data["DATA"]:
-                self.logging.info("Start reading radio/podcast ... ")
+                self.logging.debug("Start reading radio/podcast ... ")
 
                 for stream_uuid in data["DATA"]["radio"]:
                     stream_url = data["DATA"]["radio"][stream_uuid]["stream_url"]

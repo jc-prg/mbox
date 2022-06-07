@@ -347,7 +347,9 @@ class ServerApi:
 
     ###### ERROR KeyError "radio" not found in 336 --> check, if data[] changes
                     elif stream_url.endswith(".m3u") and "radio" in data["DATA"]:
+                        self.logging.info(str(data["DATA"]["radio"]))
                         stream_url2 = self.music_ctrl.player.get_stream_m3u(stream_url)
+                        self.logging.info(str(data["DATA"]["radio"]))
                         data["DATA"]["radio"][stream_uuid]["stream_url2"] = stream_url2
                         if "_selected_uuid" in data and stream_uuid == uuid:
                             data["DATA"]["_selected"]["stream_url2"] = stream_url2

@@ -283,6 +283,11 @@ class ServerApi:
         uuid = ""
         data = self.response_start("readDB", "readDB", "", param, "")
 
+        if not self.couch.cache_filled:
+            data = self.response_error(data, "Database cache not filled yet, retry in a few seconds: " + str(databases))
+            data = self.response_end(data, ["no-statistic", "no-playback", "no-system"])
+            return data
+
         if ">>" in db_filter:
             the_filter = db_filter.split(">>")
         else:

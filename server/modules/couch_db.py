@@ -18,6 +18,7 @@ class CouchDB:
         self.db_url = url
         self.speak = thread_speak
         self.databases = mbox.databases
+        self.cache_filled = False
 
         self.logging = logging.getLogger("couch-db")
         self.logging.setLevel = stage.logging_level
@@ -58,7 +59,9 @@ class CouchDB:
         self.changed_data = False
         self.cache = {}
         self.keys = []
+
         self.fill_cache()
+        self.cache_filled = True
 
     def check_db(self):
         """
@@ -210,8 +213,8 @@ class CouchDB:
         except Exception as e:
             self.logging.warning("CouchDB ERROR save: " + key + " " + str(e))
             return
-        self.cache[key] = self.read(key)
 
+        self.cache[key] = self.read(key)
         self.logging.debug("CouchDB save: " + key + " " + str(time.time()))
         return
 

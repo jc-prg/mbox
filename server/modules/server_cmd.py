@@ -320,47 +320,50 @@ class ServerApi:
                 data["DATA"]["_selected_db"] = database
                 data["DATA"]["_selected"] = data["DATA"][database][uuid]
 
-        # read podcast ...
-        if databases == "radio" and "radio" in data["DATA"]:
-            self.logging.info("Start reading radio/podcast ... ")
+        test = False
 
-            for stream_uuid in data["DATA"]["radio"]:
-                stream_url = data["DATA"]["radio"][stream_uuid]["stream_url"]
-                is_podcast = False
-                for end in self.podcast.podcast_ending:
-                    if stream_url.endswith(end):
-                        is_podcast = True
+        if test:
+            # read podcast ...
+            if databases == "radio" and "radio" in data["DATA"]:
+                self.logging.info("Start reading radio/podcast ... ")
 
-                if is_podcast:
-                    podcast = self.music_ctrl.podcast.get_podcasts(playlist_uuid=stream_uuid)
-                    data["DATA"]["radio"][stream_uuid]["podcast"] = podcast
-                    if "_selected_uuid" in data and stream_uuid == uuid:
-                        data["DATA"]["_selected"]["podcast"] = podcast
-                        if "cover_images" in podcast:
-                            data["DATA"]["_selected"]["cover_images"] = podcast["cover_images"]
+                for stream_uuid in data["DATA"]["radio"]:
+                    stream_url = data["DATA"]["radio"][stream_uuid]["stream_url"]
+                    is_podcast = False
+                    for end in self.podcast.podcast_ending:
+                        if stream_url.endswith(end):
+                            is_podcast = True
 
-###### ERROR KeyError "radio" not found in 336 --> check, if data[] changes
-                elif stream_url.endswith(".m3u"):
-                    data["DATA"]["radio"][stream_uuid]["stream_url2"] = self.music_ctrl.player.get_stream_m3u(stream_url)
-                    if "_selected_uuid" in data and stream_uuid == uuid:
-                        data["DATA"]["_selected"]["stream_url2"] = self.music_ctrl.player.get_stream_m3u(stream_url)
+                    if is_podcast:
+                        podcast = self.music_ctrl.podcast.get_podcasts(playlist_uuid=stream_uuid)
+                        data["DATA"]["radio"][stream_uuid]["podcast"] = podcast
+                        if "_selected_uuid" in data and stream_uuid == uuid:
+                            data["DATA"]["_selected"]["podcast"] = podcast
+                            if "cover_images" in podcast:
+                                data["DATA"]["_selected"]["cover_images"] = podcast["cover_images"]
 
-        # .... check for errors!
-        if databases == "artists":
-            artists = {}
-            for key in data["DATA"]["album_info"]:
-                album_info = data["DATA"]["album_info"][key]
-                artist = album_info["artist"]
-                album = {"album": album_info["albumname"], "uuid": key}
+    ###### ERROR KeyError "radio" not found in 336 --> check, if data[] changes
+                    elif stream_url.endswith(".m3u"):
+                        data["DATA"]["radio"][stream_uuid]["stream_url2"] = self.music_ctrl.player.get_stream_m3u(stream_url)
+                        if "_selected_uuid" in data and stream_uuid == uuid:
+                            data["DATA"]["_selected"]["stream_url2"] = self.music_ctrl.player.get_stream_m3u(stream_url)
 
-                if "#error" not in artist:
-                    if artist not in artists:
-                        artists[artist] = []
-                    artists[artist].append(album)
+            # .... check for errors!
+            if databases == "artists":
+                artists = {}
+                for key in data["DATA"]["album_info"]:
+                    album_info = data["DATA"]["album_info"][key]
+                    artist = album_info["artist"]
+                    album = {"album": album_info["albumname"], "uuid": key}
 
-            data["DATA"]["artists"] = artists
-            del data["DATA"]["album_info"]
-            del data["DATA"]["albums"]
+                    if "#error" not in artist:
+                        if artist not in artists:
+                            artists[artist] = []
+                        artists[artist].append(album)
+
+                data["DATA"]["artists"] = artists
+                del data["DATA"]["album_info"]
+                del data["DATA"]["albums"]
 
         data = self.filter(data, db_filter)
         data = self.response_end(data, ["no-statistic", "no-playback", "no-system"])
@@ -1020,6 +1023,9 @@ class ServerApi:
 
     @staticmethod
     def filter(data, db_filter=""):
+        """
+        add filter to response
+        """
         if "db_filter" in data["REQUEST"] and db_filter:
             data["REQUEST"]["db_filter"] += "||" + db_filter
         elif db_filter:

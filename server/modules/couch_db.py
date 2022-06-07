@@ -130,12 +130,12 @@ class CouchDB:
         read data from database and add to/update in cache
         """
         start_time = time.time()
-        if "global_changes" in db_key:
+        if db_key.startswith("_"):
             return
 
         elif db_key in self.database:
 
-            self.logging.debug("CouchDB read: " + db_key + " - " + str(int(start_time - time.time())) + "s")
+            self.logging.info("CouchDB read: " + db_key + " - " + str(int(start_time - time.time())) + "s")
 
             try:
                 db = self.database[db_key]
@@ -146,8 +146,7 @@ class CouchDB:
                     return db["main"]["data"][entry_key]
 
             except Exception as e:
-                if db_key != "_users" and db_key != "_replicator":
-                    self.logging.error("CouchDB ERROR read: " + db_key + "/" + entry_key + " - " + str(e))
+                self.logging.error("CouchDB ERROR read: " + db_key + "/" + entry_key + " - " + str(e))
 
         else:
             self.logging.warning("CouchDB ERROR read: " + db_key + " - " + str(int(start_time - time.time())) + "s")
@@ -171,10 +170,10 @@ class CouchDB:
         return data from cache
         """
         if entry_key == "" and db_key in self.cache:
-            self.logging.debug("CouchDB read cache: " + db_key + " " + str(time.time()))
+            self.logging.info("CouchDB read cache: " + db_key + " " + str(time.time()))
             return self.cache[db_key]
         elif db_key in self.cache:
-            self.logging.debug("CouchDB read cache: " + db_key + "/" + str(time.time()))
+            self.logging.info("CouchDB read cache: " + db_key + "/" + str(time.time()))
             return self.cache[db_key][entry_key]
         else:
             self.logging.warning("CouchDB read cache: " + db_key + " doesn't exist in DB")

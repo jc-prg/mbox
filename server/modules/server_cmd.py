@@ -347,7 +347,7 @@ class ServerApi:
 
     ###### ERROR KeyError "radio" not found in 336 --> check, if data[] changes
                     elif stream_url.endswith(".m3u") and "radio" in data["DATA"]:
-                        stream_url2 = ""
+                        radio_data = data["DATA"]["radio"]
                         try:
                             stream_url2 = self.music_ctrl.player.get_stream_m3u(stream_url)
                             data["DATA"]["radio"][stream_uuid]["stream_url2"] = stream_url2
@@ -355,6 +355,7 @@ class ServerApi:
                                 data["DATA"]["_selected"]["stream_url2"] = stream_url2
                         except Exception as e:
                             self.logging.warning("Error reading m3u (" + stream_url + ") - "+str(e))
+                            data["DATA"]["radio"] = radio_data
 
                     elif stream_url.endswith(".m3u"):
                         self.logging.warning("Key 'radio' in data['DATA'] is lost ... ")

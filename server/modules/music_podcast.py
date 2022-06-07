@@ -96,7 +96,7 @@ class PodcastThread(threading.Thread):
             self.playing = 0
             self.playing_uuid = ""
 
-    def get_podcasts(self, playlist_uuid, stream_url="", show_load=True):
+    def get_podcasts(self, playlist_uuid, stream_url="", show_load=False):
         """
         return info from cache
         """

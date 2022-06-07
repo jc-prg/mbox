@@ -338,7 +338,8 @@ class ServerApi:
                             is_podcast = True
 
                     if is_podcast:
-                        podcast = self.music_ctrl.podcast.get_podcasts(playlist_uuid=stream_uuid)
+                        podcast = self.music_ctrl.podcast.get_podcasts(playlist_uuid=stream_uuid,
+                                                                       stream_url="", show_load=True)
                         data["DATA"]["radio"][stream_uuid]["podcast"] = podcast
                         if "_selected_uuid" in data and stream_uuid == uuid:
                             data["DATA"]["_selected"]["podcast"] = podcast

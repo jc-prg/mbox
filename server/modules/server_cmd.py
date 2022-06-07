@@ -297,14 +297,15 @@ class ServerApi:
 
         if databases == "all":
             db_list = ["files", "tracks", "albums", "album_info", "cards", "playlists", "radio", "artists"]
-        elif "--" in databases:
-            db_list = databases.split("--")
         elif databases == "artists":
             db_list = ["albums", "album_info", "artists"]
+        elif "--" in databases:
+            db_list = databases.split("--")
         else:
             db_list = [databases]
 
         # read complete databases
+        self.logging.info("READ /" + databases + "/")
         for database in db_list:
             if database in self.couch.database:
                 if "main" in self.couch.database[database]:
@@ -312,8 +313,10 @@ class ServerApi:
                     self.logging.info("READ " + database + " (" + str(len(data["DATA"][database])) + ")")
                 else:
                     data = self.response_error(data, "Database empty: " + database)
+                    self.logging.info("READ error " + database + " - empty")
             else:
                 data = self.response_error(data, "Database not found: " + database)
+                self.logging.info("READ error " + database + " - not found")
 
             if uuid != "" and uuid in data["DATA"][database]:
                 data["DATA"]["_selected_uuid"] = uuid

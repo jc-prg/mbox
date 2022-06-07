@@ -42,6 +42,7 @@ def runCmd(cmd_line):
 
 # NO ACCESS TO MOUNTED DRIVE ... ?! -> docker-compose.yml
 
+
 def check_disk_space(init=False):
     out = mbox.checkdisk
 
@@ -56,10 +57,11 @@ def check_disk_space(init=False):
 
         disk_free, err = runCmd(mbox.diskfree + stage.mount_data)
         try:
-            out[1] = disk_free.split("\n")[1]
-            out[1] = float(filter(str.isdigit, out[1]))
+            out[1] = float(disk_free.split("\n")[1])
+            # out[1] = float(filter(str.isdigit, out[1]))
         except Exception as e:
             run_logging.warning("1 Error in reading disk spaces (data drive) ..." + str(e))
+            run_logging.warning("  - " + disk_free.split("\n")[1])
             run_logging.warning("  - " + mbox.diskfree + stage.mount_data)
 
     if stage.mount_system != "" and os.path.exists(stage.mount_data):

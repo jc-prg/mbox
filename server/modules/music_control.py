@@ -17,6 +17,7 @@ class MusicControlThread(threading.Thread):
         self.player = thread_player
         self.podcast = thread_podcast
         self.start_time = start_time
+        self.wait_for_other_services = True
         self.running = True
 
         self.music_list = []
@@ -79,7 +80,10 @@ class MusicControlThread(threading.Thread):
                 self.logging.info("Load playlist and song from last run ...")
                 self.logging.info("... " + last_music["playlist_uuid"])
 
-        time.sleep(5)
+        time.sleep(1)
+        while self.wait_for_other_services and self.running:
+            time.sleep(1)
+
         count = 0
         while self.running:
 

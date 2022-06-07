@@ -34,4 +34,5 @@ if __name__ == "__main__":
     logging.info("Start WebServer ..." + server_init.time_since_start())
     mbox.start_duration = time.time() - mbox.start_time
     server_init.thread_speak.speak_message("LETS-GO")
+    server_init.thread_music_ctrl.wait_for_other_services = False
     app.run(debug=mbox.DEBUG, port=stage.server_port, use_reloader=False)

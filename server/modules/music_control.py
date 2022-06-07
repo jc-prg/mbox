@@ -580,6 +580,6 @@ class MusicControlThread(threading.Thread):
             if old_state != new_state or show_if_not_changed:
                 position = (self.music_ctrl["position"] / self.music_ctrl["length"]) * 100
                 self.logging.info("Save playing status: ")
-                self.logging.info(" - " + new_state + " (" + str(self.music_ctrl["volume"]) + ", "
+                self.logging.info(" - " + new_state + " (" + str(self.music_ctrl["volume"]) + ", " +
                                   str(position) + "%)")
 

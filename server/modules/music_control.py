@@ -78,14 +78,18 @@ class MusicControlThread(threading.Thread):
             if "playlist_files" in last_music:
                 self.music_list = last_music["playlist_files"]
                 self.music_list_p = last_music["playlist_pos"]
-                self.music_position = self.music_ctrl["position"] / self.music_ctrl["length"] * 100
+                if self.music_ctrl["length"] > 0:
+                    self.music_position = self.music_ctrl["position"] / self.music_ctrl["length"] * 100
+                else:
+                    self.music_position = 0
                 self.music_load_new = True
                 last_load = True
 
                 self.logging.info("Load playlist and song from last run ...")
-                self.logging.info("... " + last_music["playlist_uuid"])
-                self.logging.info("... list=" + str(self.music_list_p) + "/" + str(len(self.music_list)) +
-                                  " . pos=" + str(self.music_position) + "%" + " . vol=" + str(last_music["volume"]))
+                self.logging.info(" - " + last_music["playlist_uuid"])
+                self.logging.info(" - list=" + str(self.music_list_p) + "/" + str(len(self.music_list)) +
+                                  " / pos=" + str(round(self.music_position, 1)) + "%" +
+                                  " / vol=" + str(last_music["volume"]))
 
         time.sleep(1)
         count = 0
@@ -103,8 +107,8 @@ class MusicControlThread(threading.Thread):
             # if new data to be loaded
             self.logging.debug("Active playlist: " + str(self.music_load_new) + "; List: " + str(
                 len(self.music_list)) + "; Position: " + str(self.music_list_p))
-            if self.music_load_new and len(self.music_list) > 0 and int(self.music_list_p) <= len(self.music_list):
 
+            if self.music_load_new and len(self.music_list) > 0 and int(self.music_list_p) <= len(self.music_list):
                 self.music_load_new = False
                 current_path = self.music_list[int(self.music_list_p) - 1]
                 current_list = self.playlist_info()
@@ -145,13 +149,13 @@ class MusicControlThread(threading.Thread):
                         current_info = {"file": current_path, "stream": current_stream}
                         current_info["stream"]["uuid"] = self.music_list_uuid
 
+                self.logging.debug("Current music info: ")
+                self.logging.debug(str(current_info))
+
                 # start playback
                 if current_path.startswith("http"):
                     self.logging.debug(" run // startswith http; play stream or podcast")
                     p = self.music_ctrl["position"]
-                    self.music_ctrl = self.control_data(state="play", song=current_info, playlist=current_list)
-                    self.music_ctrl["length"] = 0
-                    self.music_ctrl["position"] = 0
 
                     speak_title = ""
                     if self.music_list_p == 1 and "title" in current_stream and "title" in current_info:
@@ -177,7 +181,7 @@ class MusicControlThread(threading.Thread):
                     if self.player.play_status == 1:
                         self.music_ctrl = self.control_data(state="play", song=current_info, playlist=current_list)
                     else:
-                        self.music_ctrl = self.control_data(state="error", song={}, playlist=current_list)
+                        self.music_ctrl = self.control_data(state="error")
 
                 # if stopped device while playing, load last music
                 if last_load:
@@ -206,7 +210,7 @@ class MusicControlThread(threading.Thread):
                         self.music_list = []
                         self.music_list_p = 1
                         self.music_type = ""
-                        self.control_data(state="Ended", song={}, playlist={})
+                        self.control_data(state="Ended")
                         message = "Playlist empty, stop playing."
                         self.logging.info(message)
                         self.music_last_msg = "Playlist empty, stop playing."
@@ -486,7 +490,7 @@ class MusicControlThread(threading.Thread):
                 last_card = ""
 
             if "stream" in song:
-                stream = song["stream"]
+                stream = song["stream"].copy()
                 song = {}
             else:
                 stream = {}
@@ -582,7 +586,10 @@ class MusicControlThread(threading.Thread):
 
             show_if_not_changed = False
             if old_state != new_state or show_if_not_changed:
-                position = (self.music_ctrl["position"] / self.music_ctrl["length"]) * 100
+                if self.music_ctrl["length"] > 0:
+                    position = (self.music_ctrl["position"] / self.music_ctrl["length"]) * 100
+                else:
+                    position = 0
                 self.logging.info("Save playing status: ")
                 self.logging.info(" - " + new_state + " (" + str(self.music_ctrl["volume"]) + ", " +
                                   str(round(position, 1)) + "%)")

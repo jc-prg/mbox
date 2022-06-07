@@ -40,7 +40,7 @@ class SpeakThread(threading.Thread):
         """
         self.running = False
 
-    def speak_text(self, text):
+    def speak_text(self, text, volume=None):
         """
         Use Google API to speech from text
         """
@@ -59,7 +59,10 @@ class SpeakThread(threading.Thread):
         try:
             current_volume = self.vlc_player.volume
             self.vlc_player.mute(False)
-            self.vlc_player.set_volume(self.volume)
+            if volume is None:
+                self.vlc_player.set_volume(self.volume)
+            else:
+                self.vlc_player.set_volume(volume)
             self.vlc_player.play(filename, wait=False)
             duration = self.vlc_player.media.get_duration() / 1000
             time.sleep(duration)

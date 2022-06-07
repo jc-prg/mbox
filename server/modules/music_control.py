@@ -158,7 +158,7 @@ class MusicControlThread(threading.Thread):
                         speak_title = current_stream["title"] + "."
                     if "(" in speak_title and "/" in speak_title:
                         speak_title = speak_title.replace("/", " von ")
-                    self.speak.speak_text(speak_title)
+                    self.speak.speak_text(speak_title, self.music_ctrl["volume"])
 
                     self.player.play_stream(current_path)
                     self.music_ctrl["length"] = self.player.get_length()

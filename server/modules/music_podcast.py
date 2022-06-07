@@ -42,10 +42,7 @@ class PodcastThread(threading.Thread):
 
         while self.running:
             streams = self.database.read_cache("radio")
-
-            ######## DOESN'T WORK
             for stream_uuid in streams:
-
                 if stream_uuid != self.playing_uuid:
                     stream = streams[stream_uuid]
                     if "stream_url" in stream:

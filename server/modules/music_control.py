@@ -149,12 +149,16 @@ class MusicControlThread(threading.Thread):
                     self.music_ctrl["length"] = 0
                     self.music_ctrl["position"] = 0
 
+                    speak_title = ""
                     if self.music_list_p == 1 and "title" in current_stream and "title" in current_info:
-                        self.speak.speak_text(current_stream["title"] + ": 1. : " + current_info["title"] + ".")
+                        speak_title = current_stream["title"] + ": 1. : " + current_info["title"] + "."
                     elif "title" in current_info:
-                        self.speak.speak_text(str(self.music_list_p) + ". : " + current_info["title"] + ".")
+                        speak_title = str(self.music_list_p) + ". : " + current_info["title"] + "."
                     elif "title" in current_stream:
-                        self.speak.speak_text(current_stream["title"] + ".")
+                        speak_title = current_stream["title"] + "."
+                    if "(" in speak_title and "/" in speak_title:
+                        speak_title = speak_title.replace("/", " von ")
+                    self.speak.speak_text(speak_title)
 
                     self.player.play_stream(current_path)
                     self.music_ctrl["length"] = self.player.get_length()

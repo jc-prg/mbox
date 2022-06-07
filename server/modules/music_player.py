@@ -166,7 +166,11 @@ class MusicPlayer(threading.Thread):
 
         if url.endswith(".m3u"):
             url = self.get_stream_m3u(url)
-            return self.play_file(url)
+            if url == "":
+                self.speak.speak_message("CANT-OPEN-STREAM")
+                return "error"
+            else:
+                return self.play_file(url)
         else:
             return self.play_file(url)
 
@@ -201,7 +205,6 @@ class MusicPlayer(threading.Thread):
 
         except Exception as e:
             self.logging.warning(" -> Can't open the playlist from m3u: " + str(e))
-            #self.speak.speak_message("CANT-OPEN-STREAM")
             return ""
 
         streams = playlist.replace("\r", "")
@@ -221,7 +224,6 @@ class MusicPlayer(threading.Thread):
 
         if return_url == "":
             self.logging.warning(" -> No URL found in m3u-file:" + url)
-            #self.speak.speak_message("CANT-OPEN-STREAM")
         else:
             self.logging.info(" -> " + return_url)
 

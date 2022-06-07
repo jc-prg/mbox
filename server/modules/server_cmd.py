@@ -155,9 +155,9 @@ class ServerApi:
         data = self.response_start("status", "status", "", "", "")
         try:
             data = self.check_active_card(data)
+            data = self.response_end(data)
         except Exception as e:
             self.logging.error("status: "+str(e))
-        data = self.response_end(data)
         return data
 
     def volume(self, param):

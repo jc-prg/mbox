@@ -170,10 +170,10 @@ class CouchDB:
         return data from cache
         """
         if entry_key == "" and db_key in self.cache:
-            self.logging.info("CouchDB read cache: " + db_key + " " + str(time.time()))
+            self.logging.debug("CouchDB read cache: " + db_key + " " + str(time.time()))
             return self.cache[db_key]
-        elif db_key in self.cache:
-            self.logging.info("CouchDB read cache: " + db_key + "/" + entry_key + "/" + (time.time()))
+        elif db_key in self.cache and entry_key in self.cache[db_key]:
+            self.logging.debug("CouchDB read cache: " + db_key + "/" + entry_key + "/" + (time.time()))
             return self.cache[db_key][entry_key]
         else:
             self.logging.warning("CouchDB read cache: " + db_key + " doesn't exist in cache")

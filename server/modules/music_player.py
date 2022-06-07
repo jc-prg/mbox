@@ -198,7 +198,8 @@ class MusicPlayer(threading.Thread):
         try:
             response = requests.get(url)
             playlist = response.text
-        except requests.exceptions.RequestException as e:
+
+        except Exception as e:
             self.logging.warning(" -> Can't open the playlist from m3u: " + str(e))
             #self.speak.speak_message("CANT-OPEN-STREAM")
             return ""

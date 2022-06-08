@@ -76,6 +76,7 @@ class MusicControlThread(threading.Thread):
             self.volume(self.music_ctrl["volume"])
 
             if "playlist_files" in last_music:
+                self.music_list_uuid = last_music["playlist_uuid"]
                 self.music_list = last_music["playlist_files"]
                 self.music_list_p = last_music["playlist_pos"]
                 if self.music_ctrl["length"] > 0:
@@ -109,9 +110,12 @@ class MusicControlThread(threading.Thread):
                 len(self.music_list)) + "; Position: " + str(self.music_list_p))
 
             if self.music_load_new and len(self.music_list) > 0 and int(self.music_list_p) <= len(self.music_list):
+
                 self.music_load_new = False
                 current_path = self.music_list[int(self.music_list_p) - 1]
                 current_list = self.playlist_info()
+
+                self.logging.info("Current music info: " + self.music_list_uuid)
 
                 # if playlist or album
                 if not self.music_list_uuid.startswith("r_"):
@@ -140,6 +144,7 @@ class MusicControlThread(threading.Thread):
                             current_info = current_info["tracks"][current_uuid]
                             current_info["uuid"] = current_uuid
                             current_info["info"] = "Title loaded"
+
                         else:
                             current_info = {"file": current_path, "stream": current_stream}
                             current_info["stream"]["uuid"] = self.music_list_uuid
@@ -149,8 +154,21 @@ class MusicControlThread(threading.Thread):
                         current_info = {"file": current_path, "stream": current_stream}
                         current_info["stream"]["uuid"] = self.music_list_uuid
 
-                self.logging.debug("Current music info: ")
-                self.logging.debug(str(current_info))
+                # set playback metadata
+                if not last_load:
+                    time.sleep(1)
+                    if self.player.play_status == 1:
+                        self.music_ctrl = self.control_data(state="play", song=current_info, playlist=current_list)
+                    else:
+                        self.music_ctrl = self.control_data(state="error")
+
+                # if stopped device while playing, load last music
+                if last_load:
+                    self.logging.debug("Jump to position in song from last run ...")
+                    if self.music_position is not None:
+                        self.player.set_position(self.music_position)
+                        self.music_position = None
+                    last_load = False
 
                 # start playback
                 if current_path.startswith("http"):
@@ -176,20 +194,6 @@ class MusicControlThread(threading.Thread):
                     self.logging.debug("run // is a file; start playback")
                     self.player.play_file(mbox.music_dir + current_path)
 
-                # set playback metadata
-                if not last_load:
-                    if self.player.play_status == 1:
-                        self.music_ctrl = self.control_data(state="play", song=current_info, playlist=current_list)
-                    else:
-                        self.music_ctrl = self.control_data(state="error")
-
-                # if stopped device while playing, load last music
-                if last_load:
-                    self.logging.debug("Jump to position in song from last run ...")
-                    if self.music_position is not None:
-                        self.player.set_position(self.music_position)
-                        self.music_position = None
-                    last_load = False
 
                 self.volume(self.music_ctrl["volume"])
 
@@ -479,10 +483,13 @@ class MusicControlThread(threading.Thread):
         """
         set and return control data
         """
+        podcast = {}
+        stream = {}
         if song is None:
             song = {}
         if playlist is None:
             playlist = {}
+
         if state != "Started" and playlist != {}:
             if "LastCard" in self.music_ctrl:
                 last_card = self.music_ctrl["LastCard"]
@@ -491,6 +498,9 @@ class MusicControlThread(threading.Thread):
 
             if "stream" in song:
                 stream = song["stream"].copy()
+                song = {}
+            elif "podcast" in song:
+                podcast = song["podcast"].copy()
                 song = {}
             else:
                 stream = {}
@@ -506,6 +516,7 @@ class MusicControlThread(threading.Thread):
                 "file": self.player.play_url,
                 "song": song,
                 "stream": stream,
+                "podcast": podcast,
                 "playlist": playlist["list"],
                 "playlist_pos": playlist["position"],
                 "playlist_len": playlist["length"],

@@ -67,3 +67,5 @@ app-v2/cache.manifest
 server/trail/
 
 app-v2/mbox_img/upload_test/
+
+.idea/

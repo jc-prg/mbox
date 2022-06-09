@@ -36,8 +36,6 @@ class PodcastThread(threading.Thread):
         run thread (nothing special at the moment)
         """
         self.logging.info("Start PodCasts ... ")
-
-        count_error = 0
         time.sleep(2)
 
         while self.running:
@@ -50,20 +48,19 @@ class PodcastThread(threading.Thread):
 
                         for end in self.podcast_ending:
                             if stream_url.endswith(end):
-                                if stream_uuid not in self.temp_podcasts:
-                                    podcast = self.get_tracks_rss(rss_url=stream_url, playlist_uuid=stream_uuid)
-                                    self.temp_podcasts[stream_uuid] = podcast
+                                get_tracks = False
+                                if stream_uuid not in self.temp_podcasts or \
+                                        len(self.temp_podcasts[stream_uuid]) == 0 or \
+                                        ("update" in self.temp_podcasts[stream_uuid] and
+                                         self.temp_podcasts[stream_uuid]["update"] + self.update_interval < time.time()):
+                                    get_tracks = True
 
-                                elif self.temp_podcasts[stream_uuid] == "":
-                                    count_error += 1
-                                    if count_error == 15:
-                                        count_error = 0
-                                        podcast = self.get_tracks_rss(rss_url=stream_url, playlist_uuid=stream_uuid)
-                                        self.temp_podcasts[stream_uuid] = podcast
+                                if get_tracks:
+                                    podcast_tracks = self.get_tracks_rss(rss_url=stream_url, playlist_uuid=stream_uuid)
+                                    self.temp_podcasts[stream_uuid] = podcast_tracks
 
-                                elif self.temp_podcasts[stream_uuid]["update"] + self.update_interval < time.time():
-                                    podcast = self.get_tracks_rss(rss_url=stream_url, playlist_uuid=stream_uuid)
-                                    self.temp_podcasts[stream_uuid] = podcast
+                                if self.temp_podcasts[stream_uuid] == "" or self.temp_podcasts[stream_uuid] == {}:
+                                    self.logging.warning("Could not get track information for podcast " + stream_uuid)
 
                     else:
                         self.logging.warning("No Stream_URL for " + stream_uuid)
@@ -78,34 +75,19 @@ class PodcastThread(threading.Thread):
         """
         self.running = False
 
-    def check_playing_podcast(self, playing, playing_data):
-        """
-        check if a podcast is playing
-        """
-        playing_song = playing_data["song"]
-        if "album_uuid" in playing_song and playing_song["album_uuid"].startswith("r_"):
-            self.playing = playing
-            self.playing_uuid = playing_song["album_uuid"]
-            if "podcast" in playing_data:
-                playing_podcast = playing_data["podcast"]
-                self.temp_podcasts[self.playing_uuid] = playing_podcast
-        else:
-            self.playing = 0
-            self.playing_uuid = ""
-
-    def get_podcasts(self, playlist_uuid, stream_url="", show_load=False):
+    def get_podcasts(self, playlist_uuid, stream_url="", show_load=True):
         """
         return info from cache
         """
         if playlist_uuid in self.temp_podcasts:
             if "title" in self.temp_podcasts[playlist_uuid] and show_load:
-                self.logging.info("Load Podcast '" + self.temp_podcasts[playlist_uuid]["title"] + "'")
+                self.logging.debug("Load Podcast '" + self.temp_podcasts[playlist_uuid]["title"] + "'")
             elif show_load:
-                self.logging.info("Load Podcast " + playlist_uuid + " / " + str(len(self.temp_podcasts[playlist_uuid])))
+                self.logging.debug("Load Podcast " + playlist_uuid + " / " + str(len(self.temp_podcasts[playlist_uuid])))
             return self.temp_podcasts[playlist_uuid].copy()
 
         elif stream_url != "":
-            self.logging.info("Load Podcast " + playlist_uuid + "/" + stream_url)
+            self.logging.debug("Load Podcast " + playlist_uuid + "/" + stream_url)
             for end in self.podcast_ending:
                 if stream_url.endswith(end):
                     get_rss = self.get_tracks_rss(stream_url, playlist_uuid)
@@ -113,6 +95,8 @@ class PodcastThread(threading.Thread):
                         return get_rss
                     else:
                         return {}
+        else:
+            self.logging.warning("Podcast information not yet loaded and nor URL given: "+playlist_uuid)
         return {}
 
     def get_tracks_rss(self, rss_url, playlist_uuid):
@@ -123,7 +107,7 @@ class PodcastThread(threading.Thread):
             return
 
         try:
-            self.logging.info("Read podcast:" + rss_url)
+            self.logging.info("Read podcast: " + rss_url)
             response = requests.get(rss_url)
             response.encoding = response.apparent_encoding
             # self.logging.info(response.encoding)
@@ -234,7 +218,8 @@ class PodcastThread(threading.Thread):
         podcast["track_list"] = podcast["track_list"][::-1]
 
         self.logging.debug(str(podcast))
-        return podcast
+        self.logging.info(" - " + podcast["title"])
+        return podcast.copy()
 
     def internet_connection(self):
         """

@@ -5,7 +5,6 @@
 # by jc://design/
 # ------------------------------------
 
-# from socket import *
 import RPi.GPIO as GPIO
 import time
 import requests
@@ -58,12 +57,10 @@ else:
 # -----------------------------------
 
 cmd = {"status": url + "status/"}
-
 wait = 0.5
-
 ProcessRunning = True
 ServerRunning = False
-
+other = ""
 
 # ----------------------
 
@@ -82,14 +79,15 @@ def call_api(command):
 
 
 def loop():
-    '''read volume and switch on LED to show level'''
-
+    """
+    read volume and switch on LED to show level
+    """
     global light, ProcessRunning, other
 
-    i = 0  # blinking error
-    j = 0  # blinking wifi info
-    k = 0  # blinking stage info
-    m = 0  # no playback for a while ...
+    blink_status_error = 0  # blinking error
+    blink_status_wifi = 0  # blinking wifi info
+    blink_status_stage = 0  # blinking stage info
+    volume_steps = 0  # no playback for a while ...
 
     first_run = 1
     act_active = ""
@@ -114,9 +112,9 @@ def loop():
         act_active = get_active_stage()
         # logging.info("STAGE..."+act_active+"/"+last_active+"//"+this_stage)
 
-        if (act_active == "" or act_active != last_active):
+        if act_active == "" or act_active != last_active:
             logging.info("STAGE...DIFFERENT (" + act_active + ")")
-            if (act_active == this_stage):
+            if act_active == this_stage:
                 light.start_gpio()
             else:
                 light.stop_gpio()
@@ -139,28 +137,29 @@ def loop():
 
         else:
             # set status lights | RED - N/A - YELLOW - GREEN - WHITE - BLUE
-            light.other = str(light_error) + "1" + str(light_wifi) + str(light_play) + str(light_stage) + str(
-                light_rfid)
+            light.other = str(light_error) + "1" + str(light_wifi) + str(light_play) + \
+                          str(light_stage) + str(light_rfid)
 
             # reduce requests
             time.sleep(wait)
 
-            # check if ative stage
-            if (act_active == this_stage):
+            # check if active stage
+            if act_active == this_stage:
 
                 # if active check volume and show
                 light_error = "0"
                 data = call_api("status")
 
-                if "API" in data: logging.debug(str(data["API"]))
+                if "API" in data:
+                    logging.debug(str(data["API"]))
 
                 # check stage
                 if this_stage == "test":  # blinking LED
-                    if k == 0:
-                        k = 1
+                    if blink_status_stage == 0:
+                        blink_status_stage = 1
                     else:
-                        k = 0
-                    if k == 1:
+                        blink_status_stage = 0
+                    if blink_status_stage == 1:
                         light_stage = "1"
                     else:
                         light_stage = "0"
@@ -177,30 +176,30 @@ def loop():
 
                     elif "HOTSPOT" in check_data["TYPE"]:
                         logging.debug(check_data["TYPE"])
-                        if j < 3:
+                        if blink_status_wifi < 3:
                             light_wifi = "1"
                         else:
                             light_wifi = "0"
 
                     else:
                         logging.debug(check_data["TYPE"])
-                        if j == 0:
+                        if blink_status_wifi == 0:
                             light_wifi = "1"
-                        elif j == 1:
+                        elif blink_status_wifi == 1:
                             light_wifi = "0"
-                        elif j == 2:
+                        elif blink_status_wifi == 2:
                             light_wifi = "1"
-                        elif j == 3:
+                        elif blink_status_wifi == 3:
                             light_wifi = "0"
-                        elif j == 4:
+                        elif blink_status_wifi == 4:
                             light_wifi = "1"
                         else:
                             light_wifi = "0"
 
-                if j < 6:
-                    j += 1
+                if blink_status_wifi < 6:
+                    blink_status_wifi += 1
                 else:
-                    j = 0
+                    blink_status_wifi = 0
 
                 # check playing status
                 if "STATUS" in data and "playback" in data["STATUS"] and "playing" in data["STATUS"]["playback"]:
@@ -218,11 +217,11 @@ def loop():
                     last_play_act = False
 
                 if last_play_act:
-                    if m > 9 and i == 0:
-                        m = 0
-                    elif i == 0:
-                        m += 1
-                    light.volume = m + 11
+                    if volume_steps > 9 and blink_status_error == 0:
+                        volume_steps = 0
+                    elif blink_status_error == 0:
+                        volume_steps += 1
+                    light.volume = volume_steps + 11
 
                 # if card is detected ...
                 if "LOAD" in data:
@@ -237,22 +236,23 @@ def loop():
 
                 # if not mute show volume level
                 if "STATUS" in data:
-                    if (data["STATUS"]["playback"]["mute"] == 0) and last_play_act == False:
+                    light_error = "0"
+                    if (data["STATUS"]["playback"]["mute"] == 0) and last_play_act is False:
                         light.volume = round(data["STATUS"]["playback"]["volume"] * 10)
                         logging.debug("Volume: " + str(light.volume))
                         # logging.info(this_stage+":Volume: "+str(light.volume))
 
                     # else blink with 1 LED
-                    elif last_play_act == False:
-                        if i == 0:
+                    elif last_play_act is False:
+                        if blink_status_error == 0:
                             light.volume = 0
                         else:
                             light.volume = 1
                         logging.debug("Volume: MUTE")
 
-                # else blink with 1 LED - red (not connected)
+                # else blink with 1. LED - red (not connected)
                 else:
-                    if i == 0:
+                    if blink_status_error == 0:
                         light_error = "0"
                         light.volume = 0
                     else:
@@ -260,10 +260,10 @@ def loop():
                         light.volume = 0
                     logging.debug("Volume: ERROR")
 
-                if i == 0:
-                    i = 1
+                if blink_status_error == 0:
+                    blink_status_error = 1
                 else:
-                    i = 0
+                    blink_status_error = 0
 
 
 def end_all(end1, end2):
@@ -273,7 +273,7 @@ def end_all(end1, end2):
     light.stop()
 
 
-def checkRunning():
+def check_running():
     psAx1 = subprocess.check_output(["ps", "ax"])
     if "server.py" in str(psAx1):
         return True
@@ -287,7 +287,7 @@ def checkRunning():
 # Hook the SIGINT
 signal.signal(signal.SIGINT, end_all)
 
-# init loggin
+# init logging
 logging.basicConfig(level=logging.INFO)
 logging.info("Start LED control ...")
 

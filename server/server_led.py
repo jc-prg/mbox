@@ -234,7 +234,7 @@ def loop():
                         light_rfid = "1"
                         logging.info(data["LOAD"]["RFID"])
 
-                    if not data["LOAD"]["RFID"]["card_known"]:
+                    if "card_known" in data["LOAD"]["RFID"] and not data["LOAD"]["RFID"]["card_known"]:
                         logging.info("Card not known!")
 
                 # if not mute show volume level

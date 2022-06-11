@@ -337,13 +337,12 @@ class MusicControlThread(threading.Thread):
 
                     if "LastCard" in self.music_ctrl \
                             and self.music_ctrl["LastCard"] == database[mbox.rfid_ctrl["cardUID"]][0]:
-                        self.logging.info("Card already started (" + self.music_ctrl["LastCard"] + "/" +
+                        self.logging.info("Card already started (" + mbox.rfid_ctrl["cardUID"] + " / " +
                                           database[mbox.rfid_ctrl["cardUID"]][0] + ")...")
 
                     else:
                         self.logging.info("Start Playlist: " + database[mbox.rfid_ctrl["cardUID"]][0] + " / " +
-                                          self.music_ctrl["LastCard"] + " / " +
-                                          "CardUID: " + mbox.rfid_ctrl["cardUID"])
+                                          "CardUID: " + mbox.rfid_ctrl["cardUID"] + " / " + self.music_ctrl["LastCard"])
                         self.playlist_load_uuid(database[mbox.rfid_ctrl["cardUID"]][0])
                         self.music_ctrl["LastCard"] = database[mbox.rfid_ctrl["cardUID"]][0]
 

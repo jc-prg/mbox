@@ -360,6 +360,7 @@ class MusicControlThread(threading.Thread):
                         if mbox.rfid_ctrl["cardUID"] not in database:
                             self.speak.speak_message("NO-MUSIC-CONNECTED-TO-CARD")
                             self.music_load_new = False
+                            self.music_list_uuid = ""
                             self.music_ctrl["LastCard"] = "error"
                             time.sleep(2)
 

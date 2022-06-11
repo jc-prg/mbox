@@ -104,7 +104,9 @@ class MusicControlThread(threading.Thread):
                                self.music_list_uuid + "; Play: " + str(self.music_plays))
 
             # if new data to be loaded
-            if self.music_load_new and len(self.music_list) > 0 and int(self.music_list_p) <= len(self.music_list):
+            if self.music_load_new and len(self.music_list) > 0 and int(self.music_list_p) <= len(self.music_list) \
+                    and self.music_ctrl["LastCard"] != "error":
+
                 self.music_load_new = False
                 current_path = self.music_list[int(self.music_list_p) - 1]
                 current_list = self.playlist_info()
@@ -357,6 +359,7 @@ class MusicControlThread(threading.Thread):
 
                         if mbox.rfid_ctrl["cardUID"] not in database:
                             self.speak.speak_message("NO-MUSIC-CONNECTED-TO-CARD")
+                            self.music_ctrl["LastCard"] = "error"
                             time.sleep(2)
 
     def playlist_next(self, step):

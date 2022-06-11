@@ -330,7 +330,7 @@ class MusicControlThread(threading.Thread):
             database = self.music_database.read_cache("cards")
 
             if mbox.rfid_ctrl["cardUID"] != "":
-                self.logging.info("CardUID: " + mbox.rfid_ctrl["cardUID"])
+                self.logging.debug("CardUID: " + mbox.rfid_ctrl["cardUID"])
                 if mbox.rfid_ctrl["cardUID"] in database:
 
                     if "LastCard" in self.music_ctrl \
@@ -340,7 +340,8 @@ class MusicControlThread(threading.Thread):
 
                     else:
                         self.logging.info("Start Playlist: " + database[mbox.rfid_ctrl["cardUID"]][0] + " / " +
-                                          self.music_ctrl["LastCard"])
+                                          self.music_ctrl["LastCard"] + " / " +
+                                          "CardUID: " + mbox.rfid_ctrl["cardUID"])
                         self.playlist_load_uuid(database[mbox.rfid_ctrl["cardUID"]][0])
                         self.music_ctrl["LastCard"] = database[mbox.rfid_ctrl["cardUID"]][0]
 

@@ -23,7 +23,7 @@ import modules_gpio.config as gpio
 # ----------------------------------------------
 
 mbox.start_time = time.time()
-blink_LED = {"error": 0, "wifi": 0, "rfid": 0, "stage": 0, "sleep": 0, "main": 0}
+blink_LED = {"error": 0, "wifi": 0, "rfid": 0, "stage": 0, "sleep": 0, "main": 0, "pause": 0}
 
 # start and configure logging
 # ----------------------------------------------
@@ -201,6 +201,8 @@ def loop():
                     if data["STATUS"]["playback"]["playing"] == 1:
                         light_play = "1"
                         last_play = time.time()
+                    elif "Pause" in data["STATUS"]["playback"]["player_status"]:
+                        light_play = blink("pause")
                     else:
                         light_play = "0"
 

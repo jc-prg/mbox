@@ -23,6 +23,7 @@ import modules_gpio.config as gpio
 # ----------------------------------------------
 
 mbox.start_time = time.time()
+blink_LED = {"error": 0, "wifi": 0, "rfid": 0, "stage": 0, "sleep": 0, "main": 0}
 
 # start and configure logging
 # ----------------------------------------------
@@ -87,7 +88,6 @@ def loop():
 
     blink_status_error = 0  # blinking error
     blink_status_wifi = 0  # blinking wifi info
-    blink_status_stage = 0  # blinking stage info
     volume_steps = 0  # no playback for a while ...
 
     first_run = 1
@@ -155,17 +155,10 @@ def loop():
                     logging.debug(str(data["API"]))
 
                 # check stage
-                if this_stage == "test":  # blinking LED
-                    if blink_status_stage == 0:
-                        blink_status_stage = 1
-                    else:
-                        blink_status_stage = 0
-                    if blink_status_stage == 1:
-                        light_stage = "1"
-                    else:
-                        light_stage = "0"
+                if this_stage == "test":
+                    light_stage = blink("stage")
                 else:
-                    light_stage = "1"  # constant LED
+                    light_stage = "1"
 
                 # check wifi status
                 if "STATUS" in data and "system" in data["STATUS"] and "server_connection" in data["STATUS"]["system"]:
@@ -218,9 +211,9 @@ def loop():
                     last_play_act = False
 
                 if last_play_act:
-                    if volume_steps > 9 and blink_status_error == 0:
+                    if volume_steps > 9 and blink_LED["main"] == 0:
                         volume_steps = 0
-                    elif blink_status_error == 0:
+                    elif blink_LED["main"] == 0:
                         volume_steps += 1
                     light.volume = volume_steps + 11
 
@@ -250,26 +243,31 @@ def loop():
 
                     # else blink with 1 LED
                     elif last_play_act is False:
-                        if blink_status_error == 0:
-                            light.volume = 0
-                        else:
-                            light.volume = 1
+                        light.volume = blink("sleep")
                         logging.debug("Volume: MUTE")
 
                 # else blink with 1. LED - red (not connected)
                 else:
-                    if blink_status_error == 0:
-                        light_error = "0"
-                        light.volume = 0
-                    else:
-                        light_error = "1"
-                        light.volume = 0
+                    light_error = blink("error")
+                    light.volume = 0
                     logging.debug("Volume: ERROR")
 
-                if blink_status_error == 0:
-                    blink_status_error = 1
-                else:
-                    blink_status_error = 0
+        blink("main")
+
+
+
+def blink(type):
+    """
+    decide when to switch on / off an LED
+    """
+    global blink_LED
+    if type not in blink_LED:
+        logging.warning("Type '"+type+"' doesn't exist!")
+    elif blink_LED[type] == 0:
+        blink_LED[type] = 1
+    else:
+        blink_LED[type] = 0
+    return blink_LED[type]
 
 
 def end_all(end1, end2):

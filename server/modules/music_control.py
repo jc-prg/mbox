@@ -330,7 +330,7 @@ class MusicControlThread(threading.Thread):
             database = self.music_database.read_cache("cards")
 
             if mbox.rfid_ctrl["cardUID"] != "":
-
+                mbox.rfid_ctrl["card_known"] = True
                 self.logging.info("CardUID: " + mbox.rfid_ctrl["cardUID"])
                 if mbox.rfid_ctrl["cardUID"] in database:
 
@@ -356,6 +356,7 @@ class MusicControlThread(threading.Thread):
                         self.last_card_identified = mbox.rfid_ctrl["cardUID"]
 
                         if mbox.rfid_ctrl["cardUID"] not in database:
+                            mbox.rfid_ctrl["card_known"] = False
                             self.speak.speak_message("NO-MUSIC-CONNECTED-TO-CARD")
 
     def playlist_next(self, step):

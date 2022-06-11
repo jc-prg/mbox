@@ -225,15 +225,17 @@ def loop():
                     light.volume = volume_steps + 11
 
                 # if card is detected ...
-                if "LOAD" in data:
-                    if "RFID" in data["LOAD"]:
-                        light_rfid = "0"
-                        if data["LOAD"]["RFID"] == stage.demo_card:
-                            first_run = 1
+                if "LOAD" in data and "RFID" in data["LOAD"]:
+                    light_rfid = "0"
+                    if data["LOAD"]["RFID"] == stage.demo_card:
+                        first_run = 1
 
-                        elif data["LOAD"]["RFID"] != "":
-                            light_rfid = "1"
-                            logging.info(data["LOAD"]["RFID"])
+                    elif data["LOAD"]["RFID"] != "":
+                        light_rfid = "1"
+                        logging.info(data["LOAD"]["RFID"])
+
+                    if not data["LOAD"]["RFID"]["card_known"]:
+                        logging.info("Card not known!")
 
                 # if not mute show volume level
                 if "STATUS" in data:

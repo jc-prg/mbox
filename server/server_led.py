@@ -234,13 +234,16 @@ def loop():
                         light_rfid = "1"
                         logging.info(data["LOAD"]["RFID"])
 
-                    if "card_known" in data["LOAD"]["RFID"] and not data["LOAD"]["RFID"]["card_known"]:
-                        logging.info("Card not known!")
+                    if "CARD" in data["LOAD"] and data["LOAD"]["CARD"] == "unknown":
+                        logging.info("-> Card not known!")
 
                 # if not mute show volume level
                 if "STATUS" in data:
                     light_error = "0"
-                    if (data["STATUS"]["playback"]["mute"] == 0) and last_play_act is False:
+                    if "playback" in data["STATUS"] and \
+                            data["STATUS"]["playback"]["mute"] == 0 and \
+                            last_play_act is False:
+
                         light.volume = round(data["STATUS"]["playback"]["volume"] * 10)
                         logging.debug("Volume: " + str(light.volume))
                         # logging.info(this_stage+":Volume: "+str(light.volume))

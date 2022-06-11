@@ -21,7 +21,6 @@ demo_card = "125,232,21,163"
 
 rfid_ctrl = {
     "CardUID": "",
-    "card_known": False,
     "ButtonID": ""
 }
 

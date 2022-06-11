@@ -28,9 +28,9 @@ class MusicPlayer(threading.Thread):
 
         self.connected = False
         self.internet = False
+        self.is_playing = 0
         self.play_uuid = ""
         self.play_url = ""
-        self.play_status = 0
         self.play_position = 0
         self.player_status = ""
         self.volume_factor = 1  # default factor to limit audio level (max = 1.0)
@@ -49,7 +49,7 @@ class MusicPlayer(threading.Thread):
         self.logging.info("Start Player ... " + self.start_time)
         while self.running:
             time.sleep(0.5)
-            self.play_status = self.playing()
+            self.is_playing = self.playing()
 
         self.logging.info("Stopped Player.")
         return
@@ -84,11 +84,9 @@ class MusicPlayer(threading.Thread):
         """
         if self.player_status == "State.Playing":
             self.player.pause()
-            self.play_status = 0
 
         if self.player_status == "State.Paused":
             self.player.play()
-            self.play_status = 1
 
     def set_position(self, percentage):
         """
@@ -123,7 +121,6 @@ class MusicPlayer(threading.Thread):
         stop playback
         """
         self.player.stop()
-        self.play_status = 0
 
     def mute(self, value=False):
         """
@@ -137,7 +134,7 @@ class MusicPlayer(threading.Thread):
             self.volume_mute = False
             self.set_volume(self.volume)
 
-    def play_file(self, path):
+    def play_file(self, path, wait=True):
         """
         play audio file, react on position var
         """
@@ -147,17 +144,17 @@ class MusicPlayer(threading.Thread):
             self.speak.speak_message("FILE-NOT-FOUND")
             return "Error"
 
-        msg = self.vlc.play(path, True)
+        self.vlc.set_volume(self.volume)
+        msg = self.vlc.play(path, wait)
         if msg != "error":
-            self.vlc.set_volume(self.volume)
             self.play_url = path
+            return "Play"
+
         else:
             self.speak.speak_message("COULD-NOT-START-PLAYBACK")
             return "Error"
 
-        return "Play"
-
-    def play_stream(self, url):
+    def play_stream(self, url, wait=True):
         """
         play audio stream, react on position var
         """
@@ -170,9 +167,9 @@ class MusicPlayer(threading.Thread):
                 self.speak.speak_message("CANT-OPEN-STREAM")
                 return "error"
             else:
-                return self.play_file(url)
+                return self.play_file(url, wait)
         else:
-            return self.play_file(url)
+            return self.play_file(url, wait)
 
     def playing(self):
         """
@@ -184,14 +181,15 @@ class MusicPlayer(threading.Thread):
 
         if self.player_status == "State.Stopped" or \
                 self.player_status == "State.NothingSpecial" or \
+                self.player_status == "State.Paused" or \
                 self.player_status == "State.Ended":
-            self.play_status = 0
-            self.logging.debug("Playing:" + self.play_url + "..." + str(self.play_status))
+            is_playing = 0
+            self.logging.debug("Playing:" + self.play_url + "..." + str(self.is_playing))
         else:
-            self.play_status = 1
+            is_playing = 1
 
-        self.logging.debug("Playing:" + old_state + " -> " + self.player_status + " (" + str(self.play_status) + ")")
-        return self.play_status
+        self.logging.debug("Playing:" + old_state + " -> " + self.player_status + " (" + str(self.is_playing) + ")")
+        return is_playing
 
     def get_stream_m3u(self, url):
         """
@@ -247,7 +245,6 @@ class MusicPlayer(threading.Thread):
             time.sleep(0.5)
             self.speak.speak_message("TRY-AGAIN-IN-A-MINUTE")
             time.sleep(20)
-            self.music_ctrl["LastCard"] = ""
             return False
 
         return True

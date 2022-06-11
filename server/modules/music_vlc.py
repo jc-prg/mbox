@@ -4,6 +4,7 @@ import threading
 import vlc
 import time
 import modules.config_stage as stage
+import modules.config_mbox as mbox
 
 
 class VlcThread(threading.Thread):
@@ -57,9 +58,8 @@ class VlcThread(threading.Thread):
         """
         play file using VLC
         """
-        state = ""
-        length = 0
-        self.logging.info("Load file '" + filename + "' (wait="+str(wait)+",vol="+str(self.volume)+") ...")
+        short_filename = filename.replace(mbox.music_dir, "./")
+        self.logging.info("Load file '" + short_filename + "' (wait="+str(wait)+",vol="+str(self.volume)+") ...")
         if "http" not in filename and not os.path.isfile(filename):
             self.logging.error("Didn't find file  " + filename)
             return "error"
@@ -89,7 +89,6 @@ class VlcThread(threading.Thread):
         self.play_status = 1
 
         try:
-            state = self.player_status
             self.logging.debug(" ... Parsed: " + str(parsed))
             self.logging.debug(" ... Length: " + str(length / 1000))
             self.logging.debug(" ... State:  " + str(self.player.get_state()))

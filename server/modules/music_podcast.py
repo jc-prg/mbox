@@ -24,7 +24,6 @@ class PodcastThread(threading.Thread):
         self.running = True
         self.temp_podcasts = {}
         self.update_interval = 60 * 60
-        self.playing = 0
         self.playing_uuid = ""
         self.podcast_ending = [".xml", ".podcast", ".rss", "feed/mp3"]
 

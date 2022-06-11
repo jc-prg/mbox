@@ -166,7 +166,7 @@ class ServerApi:
         data = self.response_start("volume", "volume", "", param, "")
 
         if param == "mute":
-            self.music_ctrl.mute()
+            self.music_ctrl.volume_mute()
         elif param == "up":
             self.music_ctrl.volume_up("up")
         elif param == "down":
@@ -241,7 +241,7 @@ class ServerApi:
         stop playback via API call (see server_api.yml)
         """
         data = self.response_start("stop", "stop", "", "", "")
-        self.music_ctrl.control_data(state="Ended", song={}, playlist={})
+        self.music_ctrl.control_data_create(state="Ended", song={}, playlist={})
         self.music_ctrl.player.stop()
         data = self.response_end(data, ["no-statistic", "no-system"])
         return data

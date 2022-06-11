@@ -137,8 +137,8 @@ def loop():
             first_run = 0
 
         else:
-            # set status lights | N/A - RED  - YELLOW - GREEN - WHITE - BLUE
-            light.other = "1" + str(light_error)  + str(light_wifi) + str(light_play) + \
+            # set status lights | N/A - Error=RED - Wifi=YELLOW - Playing=GREEN - Stage=WHITE - RFID=BLUE
+            light.other = "1" + str(light_error) + str(light_wifi) + str(light_play) + \
                           str(light_stage) + str(light_rfid)
 
             # reduce requests

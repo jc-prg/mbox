@@ -64,6 +64,7 @@ other = ""
 
 # ----------------------
 
+
 def call_api(command):
     data1 = {}
     logging.debug("Read API: " + command)
@@ -136,8 +137,8 @@ def loop():
             first_run = 0
 
         else:
-            # set status lights | RED - N/A - YELLOW - GREEN - WHITE - BLUE
-            light.other = str(light_error) + "1" + str(light_wifi) + str(light_play) + \
+            # set status lights | N/A - RED  - YELLOW - GREEN - WHITE - BLUE
+            light.other = "1" + str(light_error)  + str(light_wifi) + str(light_play) + \
                           str(light_stage) + str(light_rfid)
 
             # reduce requests

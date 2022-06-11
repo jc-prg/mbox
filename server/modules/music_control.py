@@ -245,7 +245,7 @@ class MusicControlThread(threading.Thread):
         """
         player mute
         """
-        self.player.volume_mute(value)
+        self.player.mute(value)
         self.music_ctrl["mute"] = self.player.volume_mute
         self.logging.debug("Mute: " + str(self.music_ctrl["mute"]))
 
@@ -357,6 +357,7 @@ class MusicControlThread(threading.Thread):
 
                         if mbox.rfid_ctrl["cardUID"] not in database:
                             self.speak.speak_message("NO-MUSIC-CONNECTED-TO-CARD")
+                            time.sleep(2)
 
     def playlist_next(self, step):
         """

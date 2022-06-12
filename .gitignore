@@ -69,3 +69,4 @@ server/trail/
 app-v2/mbox_img/upload_test/
 
 .idea/
+/docker-compose-test.yml

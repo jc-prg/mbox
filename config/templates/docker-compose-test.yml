@@ -1,0 +1,86 @@
+#--------------------------------------------
+# MBOX Client and Database
+#----------------------------------------
+# ${THIS_IS_THE_PROJECT_TEMPLATE}
+#----------------------------------------
+
+version: "3"
+
+services:       
+  ${MBOX_DOCKER_CLIENT}:
+    image: ${MBOX_DOCKERIMAGE_CLIENT}
+    container_name: ${MBOX_DOCKER_CLIENT}_test
+    ports:
+      - ${MBOX_CLIENT_PORT}:5006
+    volumes:
+      - ./config/apache2/php.ini:/usr/local/etc/php/conf.d/php.ini
+      - ./config/apache2/www-app.conf:/etc/apache2/sites-enabled/www-app.conf
+
+      - ${MBOX_DIR_CLIENT}:/var/www/html/app
+      - ./test_data/music:/var/www/html/app/mbox_music
+      - ./test_data/cover:/var/www/html/app/mbox_img/cover
+      - ./test_data/cover_upload:/var/www/html/app/mbox_img/cover_upload
+#      - ${MBOX_DIR_DATA}/data:/var/www/html/app/server/data
+    depends_on:
+      - ${MBOX_DOCKER_DATABASE}
+      - ${MBOX_DOCKER_SERVER}
+    networks:
+      mynet:
+        ipv4_address: ${MBOX_NETWORK}.3
+
+
+
+# CouchDB 
+#--------------------
+
+  ${MBOX_DOCKER_DATABASE}:
+    image: ${MBOX_DOCKERIMAGE_COUCHDB}
+    container_name: ${MBOX_DOCKER_DATABASE}_test
+    ports:
+      - ${MBOX_DATABASE_PORT}:5984
+    volumes:
+      - ./test_data/couchdb:/opt/couchdb/data
+      - ./config/couchdb/default.ini:/opt/couchdb/etc/default.ini
+    environment:
+      - 'COUCHDB_USER=${MBOX_DB_USER}'
+      - 'COUCHDB_PASSWORD=${MBOX_DB_PASSWORD}'
+    networks:
+      mynet:
+        ipv4_address: ${MBOX_NETWORK}.4
+
+
+# main server component (tested with docker-compose under Ubuntu)
+#----------------------------------------
+
+  ${MBOX_DOCKER_SERVER}:
+    build: ./config/container/srv
+    container_name: ${MBOX_DOCKER_SERVER}_test
+    privileged: true
+    volumes:
+      - ${MBOX_DIR_SERVER}:/usr/src/app/server
+      - ${MBOX_DIR_SERVER}/audio:/usr/src/app/audio
+      - ./test_data:${MBOX_DIR_DATA}
+      - ./test_data/music:${MBOX_DIR_DATA}/music
+      - ./test_data/cover:${MBOX_DIR_DATA}/cover
+      - ./log:/log
+    dns:
+      - ${DNS01}
+      - ${DNS02}
+      - ${DNS03}
+    ports:
+      - ${MBOX_SERVER_PORT}:${MBOX_SERVER_PORT}
+    depends_on:
+      - ${MBOX_DOCKER_DATABASE}
+    networks:
+      mynet:
+        ipv4_address: ${MBOX_NETWORK}.5
+
+
+networks:
+  mynet:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: ${MBOX_NETWORK}.0/24
+       
+

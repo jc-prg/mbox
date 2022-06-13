@@ -39,12 +39,12 @@ class VlcThread(threading.Thread):
         """
         self.logging.info("Start VLC control ... "+self.start_time)
         while self.running:
-            self.player_status = self.player.get_state()
+            self.player_status = str(self.player.get_state())
             if self.player_status == "State.Playing":
                 self.play_status = 1
             else:
                 self.play_status = 0
-            time.sleep(0.5)
+            time.sleep(0.1)
         self.player.stop()
         self.logging.info("Stopped VLC control.")
 
@@ -102,19 +102,10 @@ class VlcThread(threading.Thread):
         start_time = time.time()
         self.logging.debug(" ... " + str(start_time) + "-" + str(length))
         if wait:
-            while True:
-                state = str(self.play_status) + "-" + str(self.player.get_state())
-                if self.play_status == 0:
-                    break
-                elif "Ended" in state:
-                    break
-                elif "Stopped" in state:
-                    self.logging.info(" ... Stopped for some reason?!")
-                    break
-                elif time.time() > start_time + (length/1000):
-                    break
+            time.sleep(0.5)
+            while self.play_status == 1 or str(self.player.get_state()) == "State.Playing":
                 time.sleep(0.5)
-                self.logging.debug(" ... "+state+"-"+str(start_time+length)+"/"+str(time.time()))
+                self.logging.debug(" ... "+str(self.player.get_state())+"-"+str(start_time+length)+"/"+str(time.time()))
             return "ended"
         else:
             return "play"
@@ -134,6 +125,7 @@ class VlcThread(threading.Thread):
             self.player.pause()
         if self.player_status == "State.Paused":
             self.player.play()
+        time.sleep(0.1)
 
     @staticmethod
     def normalize_volume(volume):

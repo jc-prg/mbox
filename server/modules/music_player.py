@@ -54,29 +54,44 @@ class MusicPlayer(threading.Thread):
         self.logging.info("Stopped Player.")
         return
 
+    def stop(self):
+        """
+        stop playback
+        """
+        self.running = False
+
     def set_volume(self, vol):
         """
         set volume
         """
         self.logging.debug("Set volume to " + str(vol))
         self.vlc.set_volume(vol)
+        self.volume = vol
         self.volume_mute = False
+
+    def get_volume(self):
+        """ get volume level"""
+        return self.vlc.get_volume()
 
     def volume_up(self, up):
         """
          set volume - step up or down
         """
-        vol = float(self.volume)
-        if up == "up" and vol < 1:
-            vol = vol + 0.05
-        elif up == "down" and vol > 0:
-            vol = vol - 0.05
-        elif isinstance(up, int) and 0 <= up <= 100:
-            vol = up / 100
+        vol = self.vlc.normalize_volume(self.volume)
 
-        self.vlc.set_volume(vol)
+        if up == "up" and vol < 95:
+            vol = vol + 5
+        elif up == "up" and vol < 100:
+            vol = 100
+        elif up == "down" and vol > 5:
+            vol = vol - 5
+        elif up == "down" and vol > 0:
+            vol = 0
+        elif isinstance(up, int):
+            vol = self.vlc.normalize_volume(up)
+
         self.volume_mute = False
-        self.volume = vol
+        self.set_volume(vol)
 
     def pause(self):
         """
@@ -88,51 +103,18 @@ class MusicPlayer(threading.Thread):
         if self.player_status == "State.Paused":
             self.player.play()
 
-    def set_position(self, percentage):
-        """
-        set position in current stream or file
-        """
-        percentage = float(percentage)
-        if 0 <= percentage <= 100:
-            self.player.set_position(percentage / 100)
-
-    def get_position(self):
-        """
-        get position in current playing or pause file -> 1000 / seconds
-        """
-        if self.player_status == "State.Playing" or self.player_status == "State.Paused":
-            position = float(self.player.get_time())
-        else:
-            position = 0
-        return position
-
-    def get_length(self):
-        """
-        get length of current playing or pause file ->  1000 / seconds
-        """
-        if self.player_status == "State.Playing" or self.player_status == "State.Paused":
-            length = float(self.player.get_length())
-        else:
-            length = 0
-        return length
-
-    def stop(self):
-        """
-        stop playback
-        """
-        self.player.stop()
-
     def mute(self, value=False):
         """
         mute / un-mute player
         """
         self.logging.debug("Mute ... " + str(value) + " / " + str(self.volume_mute) + " / " + str(self.volume))
         if self.volume_mute is False or value is True:
+            self.volume = self.get_volume()
             self.vlc.set_volume(0)
             self.volume_mute = True
         else:
             self.volume_mute = False
-            self.set_volume(self.volume)
+            self.vlc.set_volume(self.volume)
 
     def play_file(self, path, wait=True):
         """
@@ -154,11 +136,11 @@ class MusicPlayer(threading.Thread):
             self.speak.speak_message("COULD-NOT-START-PLAYBACK")
             return "Error"
 
-    def play_stream(self, url, wait=True):
+    def play_stream(self, url, wait=True, check_internet=True):
         """
         play audio stream, react on position var
         """
-        if not self.internet_connection():
+        if check_internet and not self.internet_connection():
             return "Error"
 
         if url.endswith(".m3u"):
@@ -190,6 +172,42 @@ class MusicPlayer(threading.Thread):
 
         self.logging.debug("Playing:" + old_state + " -> " + self.player_status + " (" + str(self.is_playing) + ")")
         return is_playing
+
+    def set_position(self, percentage):
+        """
+        set position in current stream or file
+        """
+        percentage = float(percentage)
+        if 0 <= percentage <= 100:
+            self.player.set_position(percentage / 100)
+
+    def get_position(self):
+        """
+        get position in current playing or pause file -> 1000 / seconds
+        """
+        if self.player_status == "State.Playing" or self.player_status == "State.Paused":
+            position = float(self.player.get_time())
+        else:
+            position = 0
+        if position == -1:
+            position = 0
+        return position
+
+    def get_length(self):
+        """
+        get length of current playing or pause file ->  1000 / seconds
+        """
+        if self.player_status == "State.Playing" or self.player_status == "State.Paused":
+            length = float(self.player.get_length())
+        else:
+            length = 0
+        return length
+
+    def stop_playback(self):
+        """
+        stop playback
+        """
+        self.player.stop()
 
     def get_stream_m3u(self, url):
         """

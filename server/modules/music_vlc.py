@@ -103,7 +103,9 @@ class VlcThread(threading.Thread):
         self.logging.debug(" ... " + str(start_time) + "-" + str(length))
         if wait:
             time.sleep(0.5)
-            while self.play_status == 1 or str(self.player.get_state()) == "State.Playing":
+            while str(self.player.get_state()) == "State.Opening" \
+                    or str(self.player.get_state()) == "State.Playing" \
+                    or str(self.player.get_state()) == "State.NothingSpecial":
                 time.sleep(0.5)
                 self.logging.debug(" ... "+str(self.player.get_state())+"-"+str(start_time+length)+"/"+str(time.time()))
             return "ended"
@@ -149,6 +151,14 @@ class VlcThread(threading.Thread):
         self.volume = volume
         volume = volume * self.volume_factor
         self.player.audio_set_volume(int(volume))
+
+    def get_volume(self):
+        """
+        get volume
+        """
+        volume = self.player.audio_get_volume()
+        volume = volume / self.volume_factor
+        return volume
 
     def mute(self, set_mute=True):
         """

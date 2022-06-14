@@ -225,7 +225,7 @@ class MusicControlThread(threading.Thread):
         Stop music control
         """
         self.logging.info(" ... stop")
-        self.player.stop()
+        self.player.stop_playback()
         self.player.running = False
         self.running = False
 
@@ -348,7 +348,7 @@ class MusicControlThread(threading.Thread):
 
                 else:
                     self.logging.debug("playlist_load_rfid // no card ID given -> stopping playback")
-                    self.player.stop()
+                    self.player.stop_playback()
                     self.music_ctrl["LastCard"] = ""
                     self.control_data_create(state="error")
 

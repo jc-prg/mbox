@@ -15,11 +15,14 @@ envsubst < "templates/docker-compose-v2.yml" > "../docker-compose.yml"
 rm -rf ../docker-compose-rpi.yml
 envsubst < "templates/docker-compose-rpi.yml" > "../docker-compose-rpi.yml"
 
-rm -rf ../docker-compose-rpi.yml
+rm -rf ../docker-compose-test.yml
 envsubst < "templates/docker-compose-test.yml" > "../docker-compose-test.yml"
 
 rm -rf ../server/modules/config_stage.py
 envsubst < "templates/config_stage.py" > "../server/modules/config_stage.py"
+
+rm -rf ../test_data/clean-test-data
+envsubst < "templates/clean-test-data" > "../test_data/clean-test-data"
 
 rm -rf $MBOX_DIR_DATA_ROOT/active.json
 envsubst < "templates/active.json" > "$MBOX_DIR_DATA_ROOT/active.json"

@@ -240,7 +240,7 @@ class MusicLoadMetadata:
         run_cmd.file_logging("Read files: " + command)
         self.logging.info("Read files: " + command)
 
-        file_list, error = run_cmd.runCmd(command)
+        file_list, error = run_cmd.run_cmd(command)
         files = file_list.splitlines()
 
         no_scan = []

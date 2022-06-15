@@ -4,6 +4,7 @@ import os
 import modules.music_vlc as music_vlc
 import modules.music_speak as music_speak
 import modules.music_player as music_player
+import modules.config_mbox as mbox
 
 working_dir = os.getcwd()
 test_audio_local1 = os.path.join(working_dir, "audio/EN_READY-HAVE-FUN.mp3")
@@ -12,6 +13,7 @@ test_audio_https = "https://github.com/jc-prg/mbox/raw/master/server/audio/EN_RE
 test_audio_m3u = "https://raw.githubusercontent.com/jc-prg/mbox/dev/test_data/test_m3u/test.m3u"
 test_audio_error = os.path.join(working_dir, "audio/EN_XYXYXYXYXY.mp3")
 test_audio_m3u_error = "https://domain.does.not.exist.com/test.m3u"
+mbox.log_connection = os.path.join(working_dir, "../test_data/log/internet_connection")
 
 
 class TestMusicPlayer(TestCase):
@@ -268,7 +270,7 @@ class TestMusicPlayer(TestCase):
 
     def test_internet_connection(self):
         """
-        important: this function uses pythonping and pythonping need root access at the moment.
+        important: requires root access at the moment
         """
         self.vlc_start()
         self.player = music_player.MusicPlayer(self.vlc, self.speak, "test")

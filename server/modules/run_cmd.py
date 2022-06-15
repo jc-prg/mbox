@@ -200,7 +200,7 @@ def ping(host, source=""):
         return False
 
 
-def check_internet_connect():
+def check_internet_connect(log_file=True):
     """
     check if connection to internet exists
     """
@@ -237,9 +237,10 @@ def check_internet_connect():
     else:
         run_logging.warning("No internet connection (" + error_msg + ")")
 
-    f = open("/log/internet_connect", "w+")
-    f.write(error_msg)
-    f.close()
+    if log_file:
+        f = open(mbox.log_connection, "w+")
+        f.write(error_msg)
+        f.close()
 
     return error_msg
 

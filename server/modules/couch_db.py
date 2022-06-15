@@ -19,6 +19,7 @@ class CouchDB:
         self.speak = thread_speak
         self.databases = mbox.databases
         self.cache_filled = False
+        self.connected = False
 
         self.logging = logging.getLogger("couch-db")
         self.logging.setLevel = stage.logging_level
@@ -50,8 +51,9 @@ class CouchDB:
                     self.speak.speak_message(stage.speak_ask_whom)
 
                 self.logging.warning("Error connecting to CouchDB, give up.")
-                sys.exit(1)
+                return
 
+        self.connected = True
         self.database = couchdb.Server(self.db_url)
         self.check_db()
 
@@ -218,17 +220,35 @@ class CouchDB:
         self.logging.debug("CouchDB save: " + key + " " + str(time.time()))
         return
 
-    def backup_to_json(self):
+    def backup_to_json(self, keys=None):
         """
         write all databases to JSON files as backup
         """
         self.logging.info("BACKUP to JSON")
-        for db_key in self.databases:
-            for key in self.databases[db_key]:
-                db = self.database[key]
-                doc = db.get("main")
-                json_db.write(key, doc["data"])
-                self.logging.info(" -> " + key)
+        if keys is None:
+            for db_key in self.databases:
+                for key in self.databases[db_key]:
+                    if key in self.database:
+                        db = self.database[key]
+                        doc = db.get("main")
+                        json_db.write(key, doc["data"])
+                        self.logging.info(" -> " + key)
+                    else:
+                        self.logging.warning(" -> " + key + " not found in db")
+                        return "error"
+
+        else:
+            for key in keys:
+                if key in self.database:
+                    db = self.database[key]
+                    doc = db.get("main")
+                    json_db.write(key, doc["data"])
+                    self.logging.info(" -> " + key)
+                else:
+                    self.logging.warning(" -> " + key + " not found in db")
+                    return "error"
+
+        return "ok"
 
     def restore_from_json(self):
         """

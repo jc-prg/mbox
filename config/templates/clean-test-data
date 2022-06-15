@@ -6,20 +6,23 @@
 echo "Clean up test data in directory '$MBOX_DIR/test_data/' ..."
 
 cd $MBOX_DIR/test_data/couchdb
-sudo rm -r *
+rm -r *
+
+cd $MBOX_DIR/test_data/couchdb_backup
+rm -r *
 
 cd $MBOX_DIR/test_data/music
-sudo rm -r *
+rm -r *
 
 cd $MBOX_DIR/test_data/cover
-sudo rm -r *
+rm -r *
 
 cd $MBOX_DIR/test_data/cover_upload
-sudo rm -r *
+rm -r *
 
 cd $MBOX_DIR/test_data/test_music
 cp -r * ../music/
 
-sudo rm /tmp/music-box-speech.mp3
+rm /tmp/music-box-speech.mp3
 
 echo "Done."

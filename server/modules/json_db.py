@@ -28,6 +28,7 @@ def read(file):
             d = json.load(json_data)
     except Exception as e:
         logging.error("Error reading JSON file (" + file2 + "): " + str(e))
+        d = {"error": str(e)}
 
     return d
 
@@ -44,6 +45,8 @@ def write(file, data):
             json.dump(data, codecs.getwriter('utf-8')(outfile), ensure_ascii=False, sort_keys=True, indent=4)
             # json.dump(data, outfile, ensure_ascii=False, sort_keys=True, indent=4)
         logging.debug("Wrote JSON file (" + file2 + ")")
+        return "ok"
 
     except Exception as e:
         logging.error("Error writing JSON file (" + file2 + "): " + str(e))
+        return "error"

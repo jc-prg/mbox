@@ -16,13 +16,17 @@ test_data = {
     "dict": {"key1": "value1", "key2": "value2"}
 }
 
-json_db.jsonPath = "../test_data/couchdb_backup/"
-json_db.jsonAppDir = os.getcwd()
+
+def set_vars_couch():
+    json_db.jsonPath = "../test_data/couchdb_backup/"
+    json_db.jsonAppDir = os.getcwd()
+    json_db.init()
 
 
 class TestCouchDB(TestCase):
 
     def start_vlc(self):
+        set_vars_couch()
         self.vlc = music_vlc.VlcThread("test")
         self.vlc.start()
         self.speak = music_speak.SpeakThread(self.vlc, "test")
@@ -81,22 +85,38 @@ class TestCouchDB(TestCase):
         self.start_vlc()
         self.couch = couch_db.CouchDB(stage.data_db, self.speak, "test")
         self.assertEqual(self.couch.connected, True)
-
-        self.fail()
+        for group in mbox.databases:
+            data = self.couch.read_group(group)
+            for key in data:
+                self.assertTrue(key in mbox.databases[group])
+                self.assertEqual(data[key], self.couch.read(key))
 
     def test_fill_cache(self):
         self.start_vlc()
         self.couch = couch_db.CouchDB(stage.data_db, self.speak, "test")
         self.assertEqual(self.couch.connected, True)
-
-        self.fail()
+        self.couch.create(test_key)
+        test_data["time"] = time.time()
+        self.couch.write(test_key, test_data)
+        self.couch.cache = {}
+        self.assertEqual(self.couch.cache, {})
+        self.couch.fill_cache()
+        self.assertEqual(self.couch.cache[test_key], test_data)
+        del self.couch.database[test_key]
+        self.assertTrue(test_key not in self.couch.database)
 
     def test_read_cache(self):
         self.start_vlc()
         self.couch = couch_db.CouchDB(stage.data_db, self.speak, "test")
         self.assertEqual(self.couch.connected, True)
-
-        self.fail()
+        self.couch.create(test_key)
+        test_data["time"] = time.time()
+        self.couch.write(test_key, test_data)
+        self.assertEqual(self.couch.read_cache(test_key), test_data)
+        self.couch.cache = {}
+        self.assertEqual(self.couch.cache, {})
+        self.assertEqual(self.couch.read_cache(test_key), test_data)
+        self.assertEqual(self.couch.read_cache("does not exist"), "")
 
     def test_backup_and_restore_json(self):
         self.start_vlc()
@@ -105,6 +125,7 @@ class TestCouchDB(TestCase):
 
         self.assertEqual(self.couch.backup_to_json(), "ok")
         file_list = os.listdir(json_db.jsonSettingsPath)
+        print(json_db.jsonSettingsPath)
         for file in file_list:
             db_key = file.split(".")[0]
             print(db_key)
@@ -122,4 +143,3 @@ class TestCouchDB(TestCase):
         filename = os.path.join(json_db.jsonSettingsPath, test_key + ".json")
         self.assertTrue(os.path.isfile(filename))
         self.assertEqual(json_db.read(test_key), test_data)
-

@@ -180,13 +180,23 @@ class CouchDB:
             self.logging.debug("CouchDB read cache: " + db_key + " " + str(time.time()))
             return self.cache[db_key]
 
+        elif entry_key == "" and db_key in self.database:
+            self.logging.debug("CouchDB read db: " + db_key + " " + str(time.time()))
+            self.cache[db_key] = self.read(db_key)
+            return self.cache[db_key]
+
         elif db_key in self.cache and entry_key in self.cache[db_key]:
             self.logging.debug("CouchDB read cache: " + db_key + "/" + entry_key + "/" + (time.time()))
             return self.cache[db_key][entry_key]
 
+        elif db_key in self.database and entry_key in self.read(db_key):
+            self.logging.debug("CouchDB read db: " + db_key + "/" + entry_key + "/" + (time.time()))
+            self.cache[db_key] = self.read(db_key)
+            return self.cache[db_key][entry_key]
+
         else:
             self.logging.warning("CouchDB read cache: " + db_key + " doesn't exist in cache")
-            return
+            return ""
 
     def write(self, key, data):
         """

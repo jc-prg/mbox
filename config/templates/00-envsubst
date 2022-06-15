@@ -23,6 +23,7 @@ envsubst < "templates/config_stage.py" > "../server/modules/config_stage.py"
 
 rm -rf ../test_data/clean-test-data
 envsubst < "templates/clean-test-data" > "../test_data/clean-test-data"
+chmod 755 ../test_data/clean-test-data
 
 rm -rf $MBOX_DIR_DATA_ROOT/active.json
 envsubst < "templates/active.json" > "$MBOX_DIR_DATA_ROOT/active.json"

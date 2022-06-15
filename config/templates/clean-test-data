@@ -3,7 +3,23 @@
 # ${THIS_IS_THE_PROJECT_TEMPLATE}
 #----------------------------------------
 
-# ---> under construction
-# del couch-db data
-# clean music directory
-# copy fresh music files to directory
+echo "Clean up test data in directory '$MBOX_DIR/test_data/' ..."
+
+cd $MBOX_DIR/test_data/couchdb
+sudo rm -r *
+
+cd $MBOX_DIR/test_data/music
+sudo rm -r *
+
+cd $MBOX_DIR/test_data/cover
+sudo rm -r *
+
+cd $MBOX_DIR/test_data/cover_upload
+sudo rm -r *
+
+cd $MBOX_DIR/test_data/test_music
+cp -r * ../music/
+
+sudo rm /tmp/music-box-speech.mp3
+
+echo "Done."

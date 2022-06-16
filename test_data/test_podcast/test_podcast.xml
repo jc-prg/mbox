@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd">
+  <channel>
+    <title>Test Podcast jc://music-box/</title>
+    <link>https://github.com/jc-prg/mbox/</link>
+    <description>This is a test podcast XML File</description>
+    <lastBuildDate>Fri, 16 June 2022 04:00:18 +0200</lastBuildDate>
+    <image>
+      <url>https://raw.githubusercontent.com/jc-prg/mbox/master/app/favicon.png</url>
+      <title>Test Podcast jc://music-box/</title>
+      <link>https://github.com/jc-prg/mbox/</link>
+    </image>
+    <category>Kids &amp; Family</category>
+    <language>de-DE</language>
+    <generator>jc://mbox/</generator>
+    <copyright>© 2022 jc-prg</copyright>
+    <itunes:author>jc-prg</itunes:author>
+    <itunes:summary>Test Podcast jc://music-box/</itunes:summary>
+    <itunes:image href="https://raw.githubusercontent.com/jc-prg/mbox/master/app/favicon.png"/>
+    <itunes:explicit>clean</itunes:explicit>
+    <itunes:keywords>593784</itunes:keywords>
+    <itunes:type>episodic</itunes:type>
+    <itunes:category text="Kids &amp; Family">
+      <itunes:category text="Education for Kids"/>
+    </itunes:category>
+    <itunes:owner>
+      <itunes:name>jc-prg</itunes:name>
+      <itunes:email></itunes:email>
+    </itunes:owner>
+    <atom:link href="https://raw.githubusercontent.com/jc-prg/mbox/dev/test_data/test_podcast/test_podcast.xml" rel="self" title="Test Podcast jc://music-box/" type="application/rss+xml"/>
+    <item>
+      <title>Test Podcast 01</title>
+      <link>https://github.com/jc-prg/mbox/raw/master/server/audio/DE_READY-HAVE-FUN.mp3</link>
+      <pubDate>Fri, 20 May 2022 06:00:00 +0200</pubDate>
+      <guid isPermaLink="false">139c3c1f-43c7-418d-b053-d5c3a3e2ef28</guid>
+      <description>Test Podcast Item 01.</description>
+      <enclosure length="420525" type="audio/mpeg" url="https://github.com/jc-prg/mbox/raw/master/server/audio/DE_READY-HAVE-FUN.mp3"/>
+      <itunes:duration>00:00:26</itunes:duration>
+      <itunes:author>jc-prg</itunes:author>
+      <itunes:summary>Test Podcast Item 01.</itunes:summary>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:image href="https://raw.githubusercontent.com/jc-prg/mbox/master/app/favicon.png"/>
+      <content:encoded><![CDATA[<p>Description of an Item</p>]]></content:encoded>
+    </item>
+     <item>
+      <title>Test Podcast 02</title>
+      <link>https://github.com/jc-prg/mbox/raw/master/server/audio/EN_READY-HAVE-FUN.mp3</link>
+      <pubDate>Fri, 20 May 2022 06:00:00 +0200</pubDate>
+      <guid isPermaLink="false">139c3c1f-43c7-418d-b053-d5c3a3e2ef28</guid>
+      <description>Test Podcast Item 02.</description>
+      <enclosure length="420525" type="audio/mpeg" url="https://github.com/jc-prg/mbox/raw/master/server/audio/EN_READY-HAVE-FUN.mp3"/>
+      <itunes:duration>00:00:26</itunes:duration>
+      <itunes:author>jc-prg</itunes:author>
+      <itunes:summary>Test Podcast Item 02.</itunes:summary>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:image href="https://raw.githubusercontent.com/jc-prg/mbox/master/app/favicon.png"/>
+      <content:encoded><![CDATA[<p>Description of an Item</p>]]></content:encoded>
+    </item>
+     <item>
+      <title>Test Podcast 03</title>
+      <link>https://github.com/jc-prg/mbox/raw/master/server/audio/DE_STARTING.mp3</link>
+      <pubDate>Fri, 20 May 2022 06:00:00 +0200</pubDate>
+      <guid isPermaLink="false">139c3c1f-43c7-418d-b053-d5c3a3e2ef28</guid>
+      <description>Test Podcast Item 03.</description>
+      <enclosure length="420525" type="audio/mpeg" url="https://github.com/jc-prg/mbox/raw/master/server/audio/DE_STARTING.mp3"/>
+      <itunes:duration>00:00:26</itunes:duration>
+      <itunes:author>jc-prg</itunes:author>
+      <itunes:summary>Test Podcast Item 03.</itunes:summary>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:image href="https://raw.githubusercontent.com/jc-prg/mbox/master/app/favicon.png"/>
+      <content:encoded><![CDATA[<p>Description of an Item</p>]]></content:encoded>
+    </item>
+     <item>
+      <title>Test Podcast 04</title>
+      <link>https://github.com/jc-prg/mbox/raw/master/server/audio/EN_STARTING.mp3</link>
+      <pubDate>Fri, 20 May 2022 06:00:00 +0200</pubDate>
+      <guid isPermaLink="false">139c3c1f-43c7-418d-b053-d5c3a3e2ef28</guid>
+      <description>Test Podcast Item 04.</description>
+      <enclosure length="420525" type="audio/mpeg" url="https://github.com/jc-prg/mbox/raw/master/server/audio/EN_STARTING.mp3"/>
+      <itunes:duration>00:00:26</itunes:duration>
+      <itunes:author>jc-prg</itunes:author>
+      <itunes:summary>Test Podcast Item 04.</itunes:summary>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:image href="https://raw.githubusercontent.com/jc-prg/mbox/master/app/favicon.png"/>
+      <content:encoded><![CDATA[<p>Description of an Item</p>]]></content:encoded>
+    </item>
+  </channel>
+</rss>

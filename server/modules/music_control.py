@@ -17,7 +17,7 @@ class MusicControlThread(threading.Thread):
         self.podcast = thread_podcast
         self.start_time = start_time
         self.wait_for_other_services = True
-        self.running = True
+        self.running = None
 
         self.logging = logging.getLogger("control")
         self.logging.setLevel = stage.logging_level
@@ -48,6 +48,7 @@ class MusicControlThread(threading.Thread):
         loop: check if track in playlist, stream ... and play status
         """
         self.logging.info("Start Music Control ..." + self.start_time)
+        self.running = True
 
         current_stream = {}
         wait_time = 0.5

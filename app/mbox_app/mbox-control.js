@@ -236,11 +236,11 @@ function mboxControlVolumeShow(volume,mute) {
 
 	// check volume and show in navigation bar
 	if (volume > 1) { volume = volume / 100; }
-        var volume  = Math.round( volume * 20 / 1 );
-        var vol_str = "<font color='" + vol_color + "'>";
-        for (var i=0; i<volume; i++) { vol_str += "I"; }
-        vol_str += "</font>";
-        for (var i=0; i<20-volume; i++) { vol_str += "I"; }
+    var volume  = Math.round( volume * 20 / 1 );
+    var vol_str = "<font color='" + vol_color + "'>";
+    for (var i=0; i<volume; i++) { vol_str += "I"; }
+    vol_str += "</font>";
+    for (var i=0; i<20-volume; i++) { vol_str += "I"; }
 
 	setTextById("audio3", vol_str);
 	}

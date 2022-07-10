@@ -34,7 +34,7 @@ class MusicPlayer(threading.Thread):
         self.play_position = 0
         self.player_status = ""
         self.volume_factor = 1  # default factor to limit audio level (max = 1.0)
-        self.volume_start = 0.4  # initial volume
+        self.volume_start = 40  # initial volume
         self.volume = self.volume_start
         self.volume_mute = False
         self.media = None
@@ -164,7 +164,8 @@ class MusicPlayer(threading.Thread):
         if self.player_status == "State.Stopped" or \
                 self.player_status == "State.NothingSpecial" or \
                 self.player_status == "State.Paused" or \
-                self.player_status == "State.Ended":
+                self.player_status == "State.Ended" or \
+                self.player_status == "":
             is_playing = 0
             self.logging.debug("Playing:" + self.play_url + "..." + str(self.is_playing))
         else:

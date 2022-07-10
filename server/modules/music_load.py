@@ -117,6 +117,11 @@ class MusicLoadMetadata:
         for album_uuid in data_reload["album_info"]:
             album_data = data_reload["album_info"][album_uuid]
 
+            if album_data["artist"] == "":
+                album_data["artist"] = "Unknown Artist"
+            if album_data["albumname"] == "":
+                album_data["albumname"] = "Unknown Album"
+
             if album_data["artist"] not in data_reload["albums"]:
                 data_reload["albums"][album_data["artist"]] = {}
             if album_data["albumname"] not in data_reload["albums"][album_data["artist"]]:
@@ -540,7 +545,6 @@ class MusicLoadingThread(threading.Thread):
         """
         set initial values to vars and start pygame.mixer
         """
-
         threading.Thread.__init__(self)
         self.stopProcess = False
         self.start_time = start_time
@@ -548,6 +552,7 @@ class MusicLoadingThread(threading.Thread):
         self.reload_all = False
         self.reload_new = False
         self.reload_img = False
+
         self.reload_progress = 0
         self.reload_time_start = 0
         self.reload_time_left = 0

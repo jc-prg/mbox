@@ -2,12 +2,18 @@
 
 ## Summary v1.0.x (in progress)
 
-* Add podcasts as streams -> URL .xml / .rss / .podcast in stream_url (itunes-format, instead of m3u)
 * Fix & optimize list view for albums, playlists and streams / podcasts
-* Create dark theme
+* Introduced automated unit testing for server
+
+## Summary v0.9.x
+
+* Add podcasts as streams -> URL .xml / .rss / .podcast in stream_url (itunes-format, instead of m3u)
 * Optimized playback status display
 * Optimized wiring for LED to create stable connectors
-* Introduced automated unit testing
+
+## Summary v0.8.x
+
+* Create dark theme
 * Integrate [jc://modules/](https://github.com/jc-prg/modules) as sub-module
 * Move app functionality to the repository [jc://app-framework/](https://github.com/jc-prg/app-framework) and integrate as submodule
 * Several bugfixes
@@ -15,8 +21,8 @@
 ## Summary v0.7.x
 
 * restart playlist where switched off
-* additional LED for Wifi and playback status
-* optimized autohotspot installation incl. encrypted wifi password
+* additional LED for Wi-Fi and playback status
+* optimized autohotspot installation incl. encrypted Wi-Fi password
 * Stabilized API calls
 * Playlist editing optimized
 * New volume slider
@@ -61,7 +67,7 @@ The following list summarizes the main functionality of the jc://music-box/:
 ### Other Client
 
 * List RFID cards, remove connection
-* List cover images, to create sceenshots for foto print out (9x13cm)
+* List cover images, to create screenshots for foto print out (9x13cm)
 
 ### Server
 
@@ -69,7 +75,7 @@ The following list summarizes the main functionality of the jc://music-box/:
 * Detect RFID cards
 * Show volume and system status with LEDs
 * Control playback via push buttons
-* Connect to your wifi for internet connection and app control
-* Create hotspot if your wifi is not available
+* Connect to your Wi-Fi for internet connection and app control
+* Create hotspot if your Wi-Fi is not available
 * Support main errors with spoken messages 
 

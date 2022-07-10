@@ -13,6 +13,7 @@ rm -r *
 
 cd $MBOX_DIR/test_data/music
 rm -r *
+mkdir 01_Music
 
 cd $MBOX_DIR/test_data/cover
 rm -r *
@@ -21,7 +22,10 @@ cd $MBOX_DIR/test_data/cover_upload
 rm -r *
 
 cd $MBOX_DIR/test_data/test_music
-cp -r * ../music/
+cp -r * ../music/01_Music/
+
+cd $MBOX_DIR/test_data/test_backup
+cp -r * ../couchdb_backup/
 
 rm /tmp/music-box-speech.mp3
 

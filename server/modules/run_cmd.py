@@ -28,9 +28,6 @@ def run_cmd(cmd_line):
     """
     execute command without "&"
     """
-    r = ""
-    a = []
-
     a = shlex.split(cmd_line)
     p = subprocess.Popen(a, stdout=subprocess.PIPE, shell=False)
     out, err = p.communicate()
@@ -137,8 +134,6 @@ def init_logging(log_string, logfilename=""):
     Initialize logging and print software title
     Log-level: DEBUG, INFO, WARNING, ERROR, CRITICAL
     """
-
-    level_data = stage.logging_level_data
     level = stage.logging_level
 
     if stage.log_to_file == "yes":
@@ -174,9 +169,6 @@ def init_logging(log_string, logfilename=""):
     log = logging.getLogger("charset_normalizer")
     log.setLevel(logging.WARNING)
 
-    logging_level = level
-    logging_level_data = level_data
-
 
 def ping(host, source=""):
     """
@@ -184,9 +176,12 @@ def ping(host, source=""):
     Returns True if host (str) responds to a ping request.
     Remember that a host may not respond to a ping (ICMP) request even if the host name is valid.
     """
-
-    response_list = pythonping.ping(host, size=40, count=1)
-    run_logging.debug("PING " + host + ": " + str(response_list).split("\n")[0] + " (" + source + ")")
+    try:
+        response_list = pythonping.ping(host, size=40, count=1)
+        run_logging.debug("PING '" + host + "': " + str(response_list).split("\n")[0] + " (" + source + ")")
+    except Exception as e:
+        run_logging.warning("PING ERROR '" + host + "': " + str(e))
+        return False
 
     if "Reply from " + host in str(response_list):
         return True
@@ -226,7 +221,7 @@ def check_internet_connect(log_file=True):
             else:
                 error_msg = "NO-CONNECTION"
 
-        except requests.exceptions.RequestException as e:
+        except Exception as e:
             error_msg = "NO-CONNECTION"
             logging.warning("Error connecting to INTERNET (" + host[count] + "): " + str(e))
 
@@ -271,5 +266,3 @@ def connection_status():
         content3 = connectionStatusLast
 
     return {"CONNECT": content1[0], "TYPE": content2[0], "INTERNET": content3}
-
-

@@ -131,8 +131,10 @@ def read_metadata(path_to_file):
     elif tags["title"] is None:
         tags["title"] = filename
 
-    if tags["album"] == "Unbekanntes Album":          tags["album"] = "Unknown Album"
-    if tags["artist"] == "Unbekannte Künstler":       tags["album"] = "Unknown Artist"
+    if tags["album"] == "Unbekanntes Album":
+        tags["album"] = "Unknown Album"
+    if tags["artist"] == "Unbekannte Künstler":
+        tags["album"] = "Unknown Artist"
 
     tags["MD5"] = md5_hash(path_to_file)
 

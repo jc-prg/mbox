@@ -1,6 +1,6 @@
 # jc://music-box/
 
-A friend has built a similar box based on an existing free software (which I've never seen myself). As my children where faszinated by this box I decided to build such a box for my children, but to write the software on my own from the scratch. My intention is to try out different development practices. So it's not my idea but my individual implementation of this idea ...
+A friend has built a similar box based on an existing free software (which I've never seen myself). As my children where fascinated by this box I decided to build such a box for my children, but to write the software on my own from the scratch. My intention is to try out different development practices. So it's not my idea but my individual implementation of this idea ...
 
 ![mbox image](docs/images/mbox.jpg)
 
@@ -17,7 +17,7 @@ The software for client and server runs on two boxes and runs relatively stable.
   - [Building the Hardware](docs/INSTRUCTION_BUILD_HARDWARE.md#building-the-hardware)
   - [Integrate IT Components](docs/INSTRUCTION_BUILD_HARDWARE.md#integrate-it-components)
   - [Overview Wiring](docs/INSTRUCTION_BUILD_HARDWARE.md#overview-wiring)
-- [How to setup the software](#how-to-setup-the-software)
+- [How to set up the software](#how-to-set-up-the-software)
   - [Initial Raspberry Pi setup](#initial-raspberry-pi-setup)
   - [Prerequisites](#prerequisites)
   - [How to install, configure and run the software](#how-to-install-configure-and-run-the-software)
@@ -43,7 +43,7 @@ The jc://music-box/ uses VLC and several other [sources](#sources).
 
 Find here some [instructions including pictures and wiring diagrams](docs/INSTRUCTION_BUILD_HARDWARE.md).
 
-## How to setup the software
+## How to set up the software
 
 ### Initial Raspberry Pi setup
 
@@ -123,7 +123,7 @@ $ ./create_prod
   * *exclude directories from scanning:*
     * create a file ".dont-scan" in the directories you want to exclude
 
-  To create this structure, use the install script:
+  To create this structure, use the install-script:
 
 ```bash
 $ cd install
@@ -142,7 +142,7 @@ $ amixer set Headphone -- 100%
 **7. Copy music files** 
 
   Copy files to the directory *./music/* (see suggested structure above) or to the USB device. 
-  Using an USB device makes it easier to add or change the music files ...
+  Using a USB device makes it easier to add or change the music files ...
 
 
 **8. Start server and client**
@@ -198,10 +198,10 @@ If you update from version v0.7.x to *version v1.x* there are changes in the wir
 
 ## Autohotspot
 
-Experimental feature: Usually the box is used in our home wifi. But as my kids like the box we take it with us when we travel.
+Experimental feature: Usually the box is used in our home Wi-Fi. But as my kids like the box we take it with us when we travel.
 Without remote access to the box it's not possible to use the app or to change some configurations on the box.
 To solve this, the script found on https://www.raspberryconnect.com/ automatically creates a wifi-hotspot, 
-when the box cannot connect to the home-wifi. So you it's possible to get access to the app even in the car.
+when the box cannot connect to the home-wifi. So it's possible to get access to the app even in the car.
 
 Follow the instructions to install the [Autohotspot](docs/INSTRUCTION_AUTOHOTSPOT.md).
 

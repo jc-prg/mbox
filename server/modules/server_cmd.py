@@ -7,7 +7,6 @@ import modules.config_stage as stage
 import modules.config_mbox as mbox
 import modules.run_cmd as run_cmd
 import modules.server_init as server_init
-from modules.run_cmd import *
 from modules.server_init import *
 
 
@@ -105,6 +104,8 @@ class ServerApi:
 
         if "no-playback" not in reduce_data:
             data["STATUS"]["playback"] = self.music_ctrl.music_ctrl
+            if data["STATUS"]["playback"]["volume"] > 1:
+                data["STATUS"]["playback"]["volume"] = data["STATUS"]["playback"]["volume"] / 100
 
         if "no-system" not in reduce_data:
             out = self.disc_space
@@ -202,6 +203,7 @@ class ServerApi:
 
         if database != {}:
             if uuid in database:
+                self.logging.debug("Load UUID: "+uuid)
                 if "playlist_uuid" in self.music_ctrl.music_ctrl:
                     uuid_current = self.music_ctrl.music_ctrl["playlist_uuid"]
                     if uuid == uuid_current and "Paused" in self.music_ctrl.music_ctrl["status"]:
@@ -209,6 +211,7 @@ class ServerApi:
                     else:
                         self.music_ctrl.playlist_load_uuid(uuid)
             else:
+                self.logging.warning(" UUID not in DB: "+uuid)
                 data = self.response_error(data, "UUID not found: " + uuid)
         else:
             data = self.response_error(data, "UUID format not supported: " + uuid)
@@ -243,6 +246,7 @@ class ServerApi:
         data = self.response_start("stop", "stop", "", "", "")
         self.music_ctrl.control_data_create(state="Ended", song={}, playlist={})
         self.music_ctrl.player.stop()
+        time.sleep(0.5)
         data = self.response_end(data, ["no-statistic", "no-system"])
         return data
 
@@ -331,7 +335,11 @@ class ServerApi:
                 self.logging.debug("Start reading radio/podcast ... ")
 
                 for stream_uuid in data["DATA"]["radio"]:
-                    stream_url = data["DATA"]["radio"][stream_uuid]["stream_url"]
+                    if "stream_url" in data["DATA"]["radio"][stream_uuid]:
+                        stream_url = data["DATA"]["radio"][stream_uuid]["stream_url"]
+                    else:
+                        self.logging.error("Error in podcast data: "+str(data["DATA"]["radio"][stream_uuid]))
+                        stream_url = ""
                     is_podcast = False
                     for end in self.podcast.podcast_ending:
                         if stream_url.endswith(end):
@@ -454,7 +462,8 @@ class ServerApi:
                         temp[uuid]["podcast"] = self.music_ctrl.podcast.get_podcasts(playlist_uuid=uuid)
                         if "cover_images" in temp[uuid]["podcast"]:
                             data["DATA"]["_selected"]["cover_images"] = temp[uuid]["podcast"]["cover_images"]
-                        if data["DATA"]["_selected"]["stream_url"].endswith(".m3u"):
+                        if "stream_url" in data["DATA"]["_selected"] and \
+                                data["DATA"]["_selected"]["stream_url"].endswith(".m3u"):
                             data["DATA"]["_selected"]["stream_url2"] = self.music_ctrl.player.get_stream_m3u(
                                 data["DATA"]["_selected"]["stream_url"])
 
@@ -911,7 +920,11 @@ class ServerApi:
         set card UID by microservice to central var
         """
         data = self.response_start("speak", "speak", "", message, "")
-        self.speak.speak_message(message)
+        answer = self.speak.speak_message(message)
+        if answer == "error":
+            data = self.response_error(data, "Could not speak message: "+message)
+        elif "UNKNOWN-ERROR" in answer and "UNKNOWN-ERROR" not in message:
+            data = self.response_error(data, "Could not find message: " + message)
         data = self.response_end(data)
         return data
 
@@ -969,14 +982,19 @@ class ServerApi:
         """
         data = self.response_start("load", "load", "", param, "")
 
-        if param == "new":
-            self.music_load.reload_new = True
-        elif param == "all":
-            self.music_load.reload_all = True
-        elif param == "images":
-            self.music_load.reload_img = True
+        if self.music_load.reload_new is False \
+                and self.music_load.reload_all is False \
+                and self.music_load.reload_img is False:
+            if param == "new":
+                self.music_load.reload_new = True
+            elif param == "all":
+                self.music_load.reload_all = True
+            elif param == "images":
+                self.music_load.reload_img = True
+            else:
+                data = self.response_error(data, "Parameter is not supported.")
         else:
-            data = self.response_error(data, "Parameter is not supported.")
+            data = self.response_error(data, "Reload is already in progress.")
 
         data = self.response_end(data)
         return data

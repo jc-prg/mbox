@@ -31,7 +31,7 @@ def time_since_start():
     return "  (" + str(time_info) + "s)"
 
 
-def start_modules():
+def start_modules(speak_msg=True):
     """
     load modules as threads
     """
@@ -43,7 +43,8 @@ def start_modules():
 
     thread_speak = music_speak.SpeakThread(thread_vlc, time_since_start())
     thread_speak.start()
-    thread_speak.speak_message("STARTING")
+    if speak_msg:
+        thread_speak.speak_message("STARTING")
 
     thread_player = music_player.MusicPlayer(thread_vlc, thread_speak, time_since_start())
     thread_player.start()
@@ -61,7 +62,7 @@ def start_modules():
     thread_music_ctrl.start()
 
 
-def end_modules():
+def end_modules(raise_error=True):
     """
     Stop all threads (if pressed Ctrl+C)
     """
@@ -76,4 +77,5 @@ def end_modules():
     thread_music_ctrl.stop()
     thread_podcast.stop()
 
-    raise RuntimeError("Server going down")
+    if raise_error:
+        raise RuntimeError("Server going down")

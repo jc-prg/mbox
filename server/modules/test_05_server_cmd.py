@@ -1,6 +1,7 @@
 import time
 import os
 import logging
+import shutil
 from unittest import TestCase
 
 import modules.config_mbox as mbox
@@ -11,6 +12,7 @@ import modules.run_cmd as run_cmd
 
 working_dir = os.getcwd()
 podcast_test_url = "https://raw.githubusercontent.com/jc-prg/mbox/dev/test_data/test_podcast/test_podcast.xml"
+podcast_test_img = "https://raw.githubusercontent.com/jc-prg/mbox/master/app/favicon.png"
 podcast_test_uuid = "r_1234-abcd"
 podcast_test_data = {podcast_test_uuid: {
             "title": "test-radio",
@@ -18,6 +20,7 @@ podcast_test_data = {podcast_test_uuid: {
             "stream_url2": "",
             "description": "test radio description"
         }}
+music_test_cover = "../test_data/test_cover/cover.png"
 
 
 class TestServerApi(TestCase):
@@ -77,7 +80,15 @@ class TestServerApi(TestCase):
         print("-> radio: " + str(len(self.couch.read("radio"))))
 
     def test_response_error(self):
-        self.fail()
+        self.start_threads()
+        data = {"REQUEST": {"status": "success", "c-name": "test"}}
+        data = self.api_calls.response_error(data=data, error="1")
+        self.assertEqual(data["REQUEST"]["status"], "error")
+        self.assertEqual(data["REQUEST"]["error"], "1")
+        data = self.api_calls.response_error(data=data, error="2")
+        self.assertEqual(data["REQUEST"]["status"], "error")
+        self.assertEqual(data["REQUEST"]["error"], "1, 2")
+        self.end_threads()
 
     def test_response_start(self):
         self.fail()
@@ -211,20 +222,130 @@ class TestServerApi(TestCase):
 
         self.end_threads()
 
-    def test_next(self):
-        self.fail()
+    def test_next_and_last(self):
+        self.start_threads()
+        self.load_data()
+        data = self.couch.read("album_info")
+        test_key = ""
+        for key in data:
+            if "Unknown" not in data[key]["artist"] and "error" not in key:
+                test_key = key
+        test_uuid = test_key
+        self.api_calls.play(uuid=test_uuid)
+        time.sleep(2)
+        data = self.api_calls.status()
+        print(data["STATUS"]["playback"])
+        pl_length = data["STATUS"]["playback"]["playlist_len"]
+        pl_position = data["STATUS"]["playback"]["playlist_pos"]
+        self.assertEqual(data["STATUS"]["playback"]["playlist_pos"], 1)
+        self.assertEqual(len(data["STATUS"]["playback"]["playlist"]), pl_length)
 
-    def test_last(self):
-        self.fail()
+        self.api_calls.next(step=1)
+        time.sleep(2)
+        data = self.api_calls.status()
+        self.assertEqual(data["STATUS"]["playback"]["playlist_pos"], 2)
+
+        self.api_calls.next(step=2)
+        time.sleep(2)
+        data = self.api_calls.status()
+        self.assertEqual(data["STATUS"]["playback"]["playlist_pos"], 4)
+
+        self.api_calls.next(step=-1)
+        time.sleep(2)
+        data = self.api_calls.status()
+        self.assertEqual(data["STATUS"]["playback"]["playlist_pos"], 3)
+
+        self.api_calls.last(step=1)
+        time.sleep(2)
+        data = self.api_calls.status()
+        self.assertEqual(data["STATUS"]["playback"]["playlist_pos"], 2)
+
+        self.api_calls.next(step=-4)
+        time.sleep(2)
+        data = self.api_calls.status()
+        self.assertEqual(data["STATUS"]["playback"]["playlist_pos"], 2)
+
+        self.api_calls.next(step=15)
+        time.sleep(2)
+        data = self.api_calls.status()
+        self.assertEqual(data["STATUS"]["playback"]["playlist_pos"], 2)
+
+        self.end_threads()
 
     def test_jump(self):
         self.fail()
 
     def test_read_db(self):
-        self.fail()
+        self.start_threads()
+        self.load_data()
+
+        data = self.api_calls.read_db("all")
+        db_list = ["files", "tracks", "albums", "album_info", "cards", "playlists", "radio", "artists"]
+        count = 0
+        for db in db_list:
+            if db in data["DATA"]:
+                count += 1
+        self.assertEqual(len(db_list), count)
+        for db in db_list:
+            self.assertEqual(self.couch.read(db), data["DATA"][db])
+
+        data = self.api_calls.read_db("artists")
+        db_list = ["albums", "album_info", "artists"]
+        count = 0
+        for db in db_list:
+            print(db)
+            print(db in data["DATA"])
+            if db in data["DATA"]:
+                count += 1
+        self.assertEqual(len(db_list), count)
+        for db in db_list:
+            self.assertEqual(self.couch.read(db), data["DATA"][db])
+
+        data = self.api_calls.read_db("radio--cards")
+        db_list = ["radio", "cards"]
+        count = 0
+        for db in db_list:
+            if db in data["DATA"]:
+                count += 1
+        self.assertEqual(len(db_list), count)
+        for db in db_list:
+            self.assertEqual(self.couch.read(db), data["DATA"][db])
+
+        db_list = ["files", "tracks", "albums", "album_info", "cards", "playlists", "radio"]
+        for db in db_list:
+            data = self.api_calls.read_db(db)
+            self.assertEqual(self.couch.read(db), data["DATA"][db])
+
+        self.end_threads()
 
     def test_read_entry(self):
-        self.fail()
+        self.start_threads()
+        self.load_data()
+
+        db_list = ["radio", "album_info", "tracks", "playlists", "cards"]
+        for db in db_list:
+            data = self.couch.read(db)
+            for key in data:
+                result = self.api_calls.read_entry(uuid=key)
+                print(key)
+                self.assertEqual(result["DATA"]["_selected_uuid"], key)
+                self.assertEqual(result["DATA"]["_selected_db"], db)
+                for entry_key in data[key]:
+                    self.assertEqual(data[key][entry_key], result["DATA"]["_selected"][entry_key])
+
+        result = self.api_calls.read_entry("a_does-not-exist")
+        print(result["REQUEST"])
+        self.assertEqual(result["DATA"], {})
+        self.assertEqual(result["REQUEST"]["status"], "error")
+        self.assertTrue(result["REQUEST"]["error"] != "")
+
+        result = self.api_calls.read_entry("k_does-not-exist")
+        print(result["REQUEST"])
+        self.assertEqual(result["DATA"], {})
+        self.assertEqual(result["REQUEST"]["status"], "error")
+        self.assertTrue(result["REQUEST"]["error"] != "")
+
+        self.end_threads()
 
     def test_edit(self):
         self.fail()
@@ -233,7 +354,34 @@ class TestServerApi(TestCase):
         self.fail()
 
     def test_add(self):
-        self.fail()
+        self.start_threads()
+        self.api_calls.add(database="radio",
+                           param="Test Podcast||Test Podcast Description||https://github.com/jc-prg/mbox||" +
+                                 podcast_test_url + "||" + podcast_test_img)
+        test_key = "XXX"
+        data = self.couch.read("radio")
+        for key in data:
+            if data[key]["title"] == "Test Podcast":
+                test_key = key
+        self.assertTrue(test_key in data)
+        self.assertEqual(data[test_key]["description"], "Test Podcast Description")
+        self.assertEqual(data[test_key]["stream_info"], "https://github.com/jc-prg/mbox")
+        self.assertEqual(data[test_key]["stream_url"], podcast_test_url)
+        self.assertEqual(data[test_key]["cover_images"]["url"][0], podcast_test_img)
+        self.assertEqual(data[test_key]["cover_images"]["active"], "url")
+
+        self.api_calls.add(database="playlists",
+                           param="Test Playlist||Test Playlist Description")
+        test_key = "XXX"
+        data = self.couch.read("playlists")
+        for key in data:
+            if data[key]["title"] == "Test Playlist":
+                test_key = key
+        self.assertTrue(test_key in data)
+        self.assertEqual(data[test_key]["description"], "Test Playlist Description")
+        self.assertEqual(data[test_key]["cover_images"]["url"], [])
+        self.assertEqual(data[test_key]["cover_images"]["active"], "none")
+        self.end_threads()
 
     def test_images(self):
         self.fail()
@@ -261,29 +409,69 @@ class TestServerApi(TestCase):
         self.end_threads()
 
     def test_set_button(self):
-        self.fail()
+        self.start_threads()
+        self.load_data()
+
+        self.api_calls.set_button(buttonID="no_button")
+        self.assertEqual(mbox.rfid_ctrl["buttonID"], "")
+        self.api_calls.set_button(buttonID="next")
+        self.assertEqual(mbox.rfid_ctrl["buttonID"], "next")
+        self.api_calls.set_button(buttonID="last")
+        self.assertEqual(mbox.rfid_ctrl["buttonID"], "last")
+        self.api_calls.set_button(buttonID="mute")
+        self.assertEqual(mbox.rfid_ctrl["buttonID"], "mute")
+        self.api_calls.set_button(buttonID="pause")
+        self.assertEqual(mbox.rfid_ctrl["buttonID"], "pause")
+
+        data = self.couch.read("album_info")
+        test_key = ""
+        for key in data:
+            if "Unknown" not in data[key]["artist"] and "error" not in key:
+                test_key = key
+        test_uuid = test_key
+        self.api_calls.play(uuid=test_uuid)
+        time.sleep(2)
+        data = self.api_calls.status()
+        self.assertEqual(data["STATUS"]["playback"]["playing"], 1)
+        self.assertEqual(data["STATUS"]["playback"]["song"]["album_uuid"], test_uuid)
+
+        self.api_calls.set_button(buttonID="pause")
+        time.sleep(2)
+        data = self.api_calls.status()
+        self.assertEqual(data["STATUS"]["playback"]["playing"], 0)
+
+        self.api_calls.set_button(buttonID="pause")
+        time.sleep(2)
+        data = self.api_calls.status()
+        self.assertEqual(data["STATUS"]["playback"]["playing"], 1)
+
+        self.api_calls.set_button(buttonID="next")
+        time.sleep(2)
+        data = self.api_calls.status()
+        self.assertEqual(data["STATUS"]["playback"]["playlist_pos"], 2)
+
+        self.api_calls.set_button(buttonID="back")
+        time.sleep(2)
+        data = self.api_calls.status()
+        self.assertEqual(data["STATUS"]["playback"]["playlist_pos"], 1)
+
+        self.end_threads()
 
     def test_button_error(self):
-        self.fail()
+        self.start_threads()
+        result = self.api_calls.button_error("back", 5)
+        self.assertEqual(result["REQUEST"]["status"], "error")
+        self.assertTrue("is pressed for" in result["REQUEST"]["error"] and "back" in result["REQUEST"]["error"])
+        self.end_threads()
 
     def test_backup(self):
         self.fail()
 
     def test_load(self):
-        """
-        in progress
-        ??? Maybe move check if data are correct to -> test_16_load!
-        -> bugfix load of info, e.g album != "" (use directory name instead)
-        -> bugfix load of artists, should include relevant albums
-        -> check if image of 'Erlkönig' is added (seems not to be)
-        -> add another album for reload or empty db and reload?
-        -> ensure card-data are still valid after reload
-        -> add images and check reload of images
-        -< NOT HERE: check several file types and metadata extraction -> for test_15_music_metadata
-        """
         self.start_threads()
-        self.clean_db()
 
+        # cleanup database and additional image file
+        self.clean_db()
         self.assertEqual(self.couch.read("album_info"), {})
         self.assertEqual(self.couch.read("albums"), {})
         self.assertEqual(self.couch.read("tracks"), {})
@@ -292,7 +480,11 @@ class TestServerApi(TestCase):
         self.assertEqual(self.couch.read("radio"), {})
         self.assertEqual(self.couch.read("cards"), {})
         self.assertEqual(self.couch.read("playlists"), {})
+        destination = os.path.join(os.getcwd(), "../test_data/music/01_Music/Goethe, Der Zauberlehrling/cover.png")
+        if os.path.isfile(destination):
+            os.remove(destination)
 
+        # reload all data
         print("--- ALL")
         data = self.api_calls.load("all")
         self.assertTrue(self.api_calls.music_load.reload_all)
@@ -325,6 +517,14 @@ class TestServerApi(TestCase):
         print("artists: " + str(len(self.couch.read("artists"))))
         self.assertTrue(len(self.couch.read("artists")) >= 1)
 
+        data_albums = self.couch.read("album_info")
+        for album_uuid in data_albums:
+            if "Goethe, Der Erlkoenig" in data_albums[album_uuid]["albumpath"]:
+                print(data_albums[album_uuid]["album"])
+                print(data_albums[album_uuid]["cover_images"])
+                self.assertTrue(data_albums[album_uuid]["cover_images"]["dir"] != [])
+
+        # check for new data only (at the moment complete reload also)
         print("--- NEW")
         self.clean_db()
         self.assertTrue(len(self.couch.read("albums")) == 0)
@@ -343,16 +543,34 @@ class TestServerApi(TestCase):
         print("files: " + str(len(self.couch.read("files"))))
         self.assertTrue(len(self.couch.read("files")) >= 20)
 
-        print("--- IMAGES")
         # add a cover image to a folder and check result
-        data = self.api_calls.load("images")
+        print("--- IMAGES")
+        source = os.path.join(os.getcwd(), music_test_cover)
+        destination = os.path.join(os.getcwd(), "../test_data/music/01_Music/Goethe, Der Zauberlehrling/cover.png")
+        shutil.copy(source, destination)
+
+        data_albums = self.couch.read("album_info")
+        for album_uuid in data_albums:
+            if "Goethe, Der Zauberlehrling" in data_albums[album_uuid]["albumpath"]:
+                print(data_albums[album_uuid]["album"])
+                print(data_albums[album_uuid]["cover_images"])
+                self.assertEqual(data_albums[album_uuid]["cover_images"]["dir"], [])
+
+        self.api_calls.load("images")
         self.assertTrue(self.api_calls.music_load.reload_img)
         while self.api_calls.music_load.reload_img:
             print(".")
             time.sleep(1)
 
+        data_albums = self.couch.read("album_info")
+        for album_uuid in data_albums:
+            if "Goethe, Der Zauberlehrling" in data_albums[album_uuid]["albumpath"]:
+                print(data_albums[album_uuid]["album"])
+                print(data_albums[album_uuid]["cover_images"])
+                self.assertEqual(data_albums[album_uuid]["cover_images"]["active"], "dir")
+                self.assertEqual(data_albums[album_uuid]["cover_images"]["dir"][0], "/01_Music/Goethe, Der Zauberlehrling/cover.png")
+
         self.end_threads()
-        self.fail()
 
     def test_check_version(self):
         self.start_threads()

@@ -55,8 +55,10 @@ class ServerApi:
         collect and log errors
         """
         if "error" in data["REQUEST"]:
+            data["REQUEST"]["status"] = "error"
             data["REQUEST"]["error"] += ", " + error
         else:
+            data["REQUEST"]["status"] = "error"
             data["REQUEST"]["error"] = error
         self.logging.warning(data["REQUEST"]["c-name"] + " ERROR:" + error)
         return data
@@ -328,12 +330,11 @@ class ServerApi:
                 data["DATA"]["_selected_db"] = database
                 data["DATA"]["_selected"] = data["DATA"][database][uuid]
 
-        test = True
+        test = False
         if test:
             # read podcast ...
             if databases == "radio" and "radio" in data["DATA"]:
                 self.logging.debug("Start reading radio/podcast ... ")
-
                 for stream_uuid in data["DATA"]["radio"]:
                     if "stream_url" in data["DATA"]["radio"][stream_uuid]:
                         stream_url = data["DATA"]["radio"][stream_uuid]["stream_url"]
@@ -416,7 +417,7 @@ class ServerApi:
         data = self.response_start("readEntry", "readEntry", "", param, param2)
 
         # read entry from database
-        if database in self.couch.database:
+        if database in self.couch.database and database != "":
             temp_tracks = self.couch.read_cache("tracks")
             temp_albums = self.couch.read_cache("album_info")
 
@@ -469,10 +470,18 @@ class ServerApi:
 
                 else:
                     data = self.response_error(data, "Entry not in database: " + uuid)
+                    data["DATA"] = {}
             else:
                 data = self.response_error(data, "Database empty: " + database)
+                data["DATA"] = {}
+
+        elif database == "":
+            data = self.response_error(data, "Wrong type of key, no database found.")
+            data["DATA"] = {}
+
         else:
             data = self.response_error(data, "Database not found: " + database)
+            data["DATA"] = {}
 
         data = self.filter(data, db_filter)
         data = self.response_end(data, ["no-statistic", "no-playback", "no-system"])
@@ -673,7 +682,7 @@ class ServerApi:
                 "stream_url": "",
                 "stream_url2": "",
                 "cover_images": {
-                    "active": "none",
+                    "active": "url",
                     "upload": [],
                     "url": [parameter[4]]
                 }
@@ -956,7 +965,9 @@ class ServerApi:
         """
         data = self.response_start("button_error", "button_error", "", duration, "")
         if float(duration) > 0:
-            self.logging.warning("Button '" + button + "' is pressed for " + str(round(duration, 1)) + "s!")
+            msg = "Button '" + button + "' is pressed for " + str(round(duration, 1)) + "s!"
+            self.logging.warning(msg)
+            self.response_error(data=data, error=msg)
         data = self.response_end(data)
         return data
 

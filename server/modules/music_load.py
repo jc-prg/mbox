@@ -32,6 +32,7 @@ class MusicLoadMetadata:
         self.album_image_structure = {"active": "dir", "active_pos": 0, "upload": [], "dir": [], "track": []}
         self.album_data_structure["cover_images"] = self.album_image_structure.copy()
         self.data_keys = ["albums", "album_info", "artists", "files", "tracks"]
+        self.parent = None
 
         self.logging = logging.getLogger("load-md")
         self.logging.setLevel(stage.logging_level)
@@ -167,6 +168,9 @@ class MusicLoadMetadata:
                         data["playlists"][playlist_uuid]["tracks"][position] = check_uuid
                     position += 1
             data_reload["playlists"] = data["playlists"]
+
+        # reload images
+        data_reload["album_info"] = self.reload_covers(data_reload["album_info"], self.parent)
 
         # delete old cover files, if all entries should be reloaded (and reload was successful)
         if load_all:
@@ -506,7 +510,7 @@ class MusicLoadMetadata:
     @staticmethod
     def check_if_card_exists(data_cards, album, artist, uuid):
         """
-        Check for JPG files in the folder again without reloading the music
+        Check for card exists in database
         """
         update_time = time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
         for card_id in data_cards:
@@ -560,11 +564,12 @@ class MusicLoadingThread(threading.Thread):
 
         self.supported_img = [".jpg", ".jpeg", ".JPG", ".png", ".PNG"]
         self.supported_mp3 = [".mp3", ".MP3"]
-        self.supported_mp4 = [".mp4", ".m4a", ".MP4",
-                              ".M4A"]  # .M4P metadata can be read but music is DRM protected -> convert to use this file format
+        self.supported_mp4 = [".mp4", ".m4a", ".MP4", ".M4A"]
+        # .M4P metadata can be read but music is DRM protected -> convert to use this file format
         self.supported_mpX = [".mp3", ".MP3", ".mp4", ".m4a", ".MP4", ".M4A"]
 
         self.load = MusicLoadMetadata()
+        self.load.parent = self
 
         self.store_data = None
         self.logging = logging.getLogger("load")
@@ -610,9 +615,7 @@ class MusicLoadingThread(threading.Thread):
 
                 self.store_data = self.music_database.read("album_info")
                 self.store_data = self.load.reload_covers(self.store_data, self)
-
-                for key in self.store_data:
-                    self.music_database.write("album_info", self.store_data)
+                self.music_database.write("album_info", self.store_data)
 
             # clean progress and reload request
             if self.reload_all or self.reload_new or self.reload_img:

@@ -69,13 +69,9 @@ def rfidRead(thread):
 
         # Wait a few seconds
         time.sleep(0.5)
-        count += 1
 
-        if count/5 == int(count/5):
-            logging.info("RFID active")
-
-        # check if ative stage
-        if (get_active_stage() == this_stage):
+        # check if active stage
+        if get_active_stage() == this_stage:
 
             # Scan for card
             (status, TagType) = MIFAREReader.MFRC522_Request(MIFAREReader.PICC_REQIDL)

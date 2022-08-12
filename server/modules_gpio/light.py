@@ -30,7 +30,7 @@ SRCLK = led.led_pins["SRCLK"]
 class lightThread(threading.Thread):
 
     def __init__(self, threadID, name, counter, stage):
-        '''set initial values to vars'''
+        """set initial values to vars"""
 
         # init thread
         threading.Thread.__init__(self)
@@ -60,17 +60,17 @@ class lightThread(threading.Thread):
         logging.info(self.stage + ":Exiting " + self.name)
 
     def stop(self):
-        '''stop led loop'''
+        """stop led loop"""
 
         self.stopProcess = True
         self.destroy()
 
     # ---------------------------------
     def setup(self):
-        '''start GPIO'''
+        """start GPIO"""
 
         # global GPIO, SDI, RCLK, SRCLK
-        self.start_gpio
+        self.start_gpio()
 
     def start_gpio(self):
 
@@ -98,7 +98,7 @@ class lightThread(threading.Thread):
         self.on = False
 
     def destroy(self):
-        '''stop GPIO to avoid error for next start'''
+        """stop GPIO to avoid error for next start"""
 
         if not self.on: return
         logging.info(self.stage + ":Clean GPIO")
@@ -106,7 +106,7 @@ class lightThread(threading.Thread):
         self.on = False
 
     def hc595_in(self, dat):
-        '''send data to a single register'''
+        """send data to a single register"""
 
         global GPIO, SDI, RCLK, SRCLK
         if self.on != True: return
@@ -118,7 +118,7 @@ class lightThread(threading.Thread):
             GPIO.output(SRCLK, GPIO.LOW)
 
     def hc595_in_multi(self, dat):
-        '''send data to two or more register'''
+        """send data to two or more register"""
 
         global GPIO, SDI, RCLK, SRCLK
         if self.on != True: return
@@ -136,7 +136,7 @@ class lightThread(threading.Thread):
             i = i + 1
 
     def hc595_out(self):
-        '''send data out'''
+        """send data out"""
 
         global GPIO, SDI, RCLK, SRCLK
         if self.on != True: return
@@ -148,7 +148,7 @@ class lightThread(threading.Thread):
     # ---------------------------------
 
     def init(self):
-        '''Test all LEDs'''
+        """Test all LEDs"""
 
         logging.debug(self.stage + ":Init LEDs")
         LEDtest = self.led_init["INIT"]
@@ -164,7 +164,7 @@ class lightThread(threading.Thread):
     # ---------------------------------
 
     def write_string(self, string):
-        '''write byte string'''
+        """write byte string"""
 
         self.hc595_in_multi([int(string[0], 2), int(string[1], 2)])
         self.hc595_out()
@@ -175,7 +175,9 @@ other = "111111"
 
 
 def write_volume(thread):
-    '''write volume'''
+    """
+    write volume
+    """
 
     vol = [
         ["00", "00000000"],
@@ -205,12 +207,15 @@ def write_volume(thread):
     running = True
     while running and not thread.stopProcess:
 
-        index = int(thread.volume)
+        if thread.volume > 100:
+            index = int(thread.volume / 100)
+        else:
+            index = int(thread.volume)
 
         try:
             a = vol[index]
         except Exception as e:
-            logging.error("Error Volume Index: "+str(index))
+            logging.error("Error Volume Index: " + str(index))
 
         b = [thread.other + a[0], a[1]]
         logging.info(thread.stage + ":Volume: " + str(thread.volume) + "/" + b[0] + " " + b[1])

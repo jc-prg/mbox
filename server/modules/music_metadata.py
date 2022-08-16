@@ -60,8 +60,8 @@ def set_metadata_error(error, filename, error_msg="", decoder=""):
         "artist": "#error: " + directory,
         "album": error,
         "albumsize": 0,
-        "title": filename + " (error: " + error + ")",
-        "error": error,
+        "title": filename + " (error: " + error + "," + decoder + ")",
+        "error": error_msg,
         "sort": "00000" + filename
     }
 
@@ -165,7 +165,7 @@ def read_metadata_mutagen(filename, file_type="mp4"):
             "title": "\xa9nam",
             "genre": "\xa9gen",
             "artist": "\xa9ART",
-            "album artist": "aART",
+            "album_artist": "aART",
             "composer": "\xa9wrt",
             "disk_no": "disk",
             "track_no": "trkn"
@@ -184,7 +184,7 @@ def read_metadata_mutagen(filename, file_type="mp4"):
             "title": "TIT2",
             "genre": "TCON",
             "artist": "TPE1",
-            "album artist": "TPE2",
+            "album_artist": "TPE2",
             "composer": "TCOM",
             "length": "TLEN",
             "track_no": "TRCK",
@@ -204,6 +204,8 @@ def read_metadata_mutagen(filename, file_type="mp4"):
             if relevant_tags[r_tag] in f_tag:
                 value = tags[f_tag]
                 data[r_tag] = value[0]
+#            else:
+#                data[r_tag] = None
 
     if file_type == "mp3":
         try:
@@ -227,7 +229,7 @@ def read_metadata_mutagen(filename, file_type="mp4"):
         track_no = track_no.replace(")", "")
         data["track_num"] = track_no.split(",")
 
-    if file_type == "mp3" and "track_no" in data:
+    if file_type == "mp3" and "track_no" in data and data["track_no"] is not None:
         if "/" in data["track_no"]:
             data["track_num"] = data["track_no"].split("/")
         elif "," in data["track_no"]:
@@ -247,20 +249,33 @@ def read_metadata_mutagen(filename, file_type="mp4"):
     data["cover_images"]["track"] = []
 
     data["sort"] = 0
-    if "track_num" in data and int(data["track_num"][0]) > 0: data["sort"] += int(data["track_num"][0])
-    if "disc_num" in data and int(data["disc_num"]) > 0:      data["sort"] += int(data["disc_num"]) * 1000
+    if "track_num" in data and int(data["track_num"][0]) > 0:
+        data["sort"] += int(data["track_num"][0])
+    else:
+        data["track_num"] = 0
+    if "disc_num" in data and int(data["disc_num"]) > 0:
+        data["sort"] += int(data["disc_num"]) * 1000
+    else:
+        data["disc_num"] = 0
     data["sort"] = str(data["sort"]).zfill(5) + data["file"]
 
     for tag in tags:
         if "covr" in tag:
             data["cover_images"]["track"] = [save_image_as_file(data["uuid"] + "_0", tags[tag]).replace(mbox.music_cover, "")]
             data["cover_images"]["active"] = "track"
+            data["cover_image"] = len(data["cover_images"]["track"])
 
         if "APIC" in tag:
             data["cover_images"]["track"] = [save_image_as_file(data["uuid"] + "_0", tags[tag]).replace(mbox.music_cover, "")]
             data["cover_images"]["active"] = "track"
+            data["cover_image"] = len(data["cover_images"]["track"])
 
     data["decoder"] = "mutagen::" + file_type
+
+    for r_tag in relevant_tags:
+        if r_tag not in data:
+            data[r_tag] = None
+
     return data.copy()
 
 
@@ -423,7 +438,7 @@ def save_image_as_file(name, idata):
     else:  # byte object in array
         data = idata[0]
 
-    filename = mbox.music_cover + name + ".jpg"
+    filename = os.path.join(mbox.music_cover, name + ".jpg")
     file = open(filename, "wb")
     file.write(data)
     file.close()

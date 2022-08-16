@@ -320,7 +320,7 @@ class MusicControlThread(threading.Thread):
         for track in track_list:
             if track in track_db and "file" in track_db[track]:
                 self.music_list.append(track_db[track]["file"])
-            if track.startswith("http"):
+            elif track.startswith("http"):
                 self.music_list.append(track)
 
     def playlist_load_rfid(self):
@@ -335,7 +335,6 @@ class MusicControlThread(threading.Thread):
             if mbox.rfid_ctrl["cardUID"] != "":
                 self.logging.debug("CardUID: " + mbox.rfid_ctrl["cardUID"])
                 if mbox.rfid_ctrl["cardUID"] in database:
-
                     if "LastCard" in self.music_ctrl \
                             and self.music_ctrl["LastCard"] == database[mbox.rfid_ctrl["cardUID"]][0]:
                         self.logging.info("Card already started (" + mbox.rfid_ctrl["cardUID"] + " / " +
@@ -445,6 +444,7 @@ class MusicControlThread(threading.Thread):
 
         else:
             self.logging.error("Unknown ID Type!")
+            track_list = []
 
         return track_list
 
@@ -562,14 +562,17 @@ class MusicControlThread(threading.Thread):
             }
         return self.music_ctrl
 
-    def playback_status_save(self):
+    def playback_status_save(self, test=False):
         """
         write current playlist, track and position to config
         """
         data = self.music_database.read("status")
         old_state = ""
 
-        if "_saved" not in data or data["_saved"] + 3 < time.time():
+        if "_test-active" in data and data["_test-active"] and not test:
+            return
+
+        if "_saved" not in data or data["_saved"] == "" or int(data["_saved"]) + 3 < time.time():
             # get old state
             if "music" in data:
                 if "file" in data["music"]["song"]:

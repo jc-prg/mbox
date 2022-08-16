@@ -54,14 +54,15 @@ class ServerApi:
         """
         collect and log errors
         """
-        if "error" in data["REQUEST"]:
-            data["REQUEST"]["status"] = "error"
-            data["REQUEST"]["error"] += ", " + error
+        data_error = data.copy()
+        if "error" in data_error["REQUEST"]:
+            data_error["REQUEST"]["status"] = "error"
+            data_error["REQUEST"]["error"] += ", " + error
         else:
-            data["REQUEST"]["status"] = "error"
-            data["REQUEST"]["error"] = error
+            data_error["REQUEST"]["status"] = "error"
+            data_error["REQUEST"]["error"] = error
         self.logging.warning(data["REQUEST"]["c-name"] + " ERROR:" + error)
-        return data
+        return data_error
 
     def response_start(self, call_name, cmd1, cmd2, param1, param2):
         """
@@ -101,17 +102,20 @@ class ServerApi:
         if reduce_data is None:
             reduce_data = []
 
-        data["REQUEST"]["load-time"] = time.time() - data["REQUEST"]["start-time"]
-        data["STATUS"]["active_device"] = mbox.active_device
+        data_end = data.copy()
+        data_end["REQUEST"]["load-time"] = time.time() - data_end["REQUEST"]["start-time"]
+        data_end["STATUS"]["active_device"] = mbox.active_device
 
         if "no-playback" not in reduce_data:
-            data["STATUS"]["playback"] = self.music_ctrl.music_ctrl
-            if data["STATUS"]["playback"]["volume"] > 1:
-                data["STATUS"]["playback"]["volume"] = data["STATUS"]["playback"]["volume"] / 100
+            data_end["STATUS"]["playback"] = self.music_ctrl.music_ctrl
+            if data_end["STATUS"]["playback"]["volume"] > 1:
+                data_end["STATUS"]["playback"]["volume"] = data_end["STATUS"]["playback"]["volume"] / 100
+        elif "playback" in data_end["STATUS"]:
+            del data_end["STATUS"]["playback"]
 
         if "no-system" not in reduce_data:
             out = self.disc_space
-            data["STATUS"]["system"] = {
+            data_end["STATUS"]["system"] = {
                 "space_usb_used": out[0],
                 "space_usb_available": out[1],
                 "space_usb_mount": stage.mount_data,
@@ -123,7 +127,10 @@ class ServerApi:
                 "server_running": time.time() - mbox.start_time,
                 "server_connection": run_cmd.connection_status()
             }
-        data["STATUS"]["load_data"] = {
+        elif "system" in data_end["STATUS"]:
+            del data_end["STATUS"]["system"]
+
+        data_end["STATUS"]["load_data"] = {
             "reload_new": self.music_load.reload_new,
             "reload_all": self.music_load.reload_all,
             "reload_progress": self.music_load.reload_progress,
@@ -133,22 +140,23 @@ class ServerApi:
         if "no-statistic" not in reduce_data:
             for database in self.couch.database:
                 temp = self.couch.read_cache(database)
-                if "statistic" not in data["STATUS"]:
-                    data["STATUS"]["statistic"] = {}
+                if "statistic" not in data_end["STATUS"]:
+                    data_end["STATUS"]["statistic"] = {}
                 try:
-                    data["STATUS"]["statistic"][database] = len(temp.keys())
+                    data_end["STATUS"]["statistic"][database] = len(temp.keys())
                 except:
-                    data["STATUS"]["statistic"][database] = "error"
+                    data_end["STATUS"]["statistic"][database] = "error"
 
+        c_name = data_end["REQUEST"]["c-name"]
         if "no-request" in reduce_data:
-            del data["REQUEST"]
+            del data_end["REQUEST"]
         if "no-load" in reduce_data:
-            del data["LOAD"]
+            del data_end["LOAD"]
         if "no-api" in reduce_data:
-            del data["API"]
+            del data_end["API"]
 
-        self.logging.debug(data["REQUEST"]["c-name"] + " END")
-        return data
+        self.logging.debug(c_name + " END")
+        return data_end
 
     def status(self):
         """
@@ -311,81 +319,86 @@ class ServerApi:
         else:
             db_list = [databases]
 
-        # read complete databases
-        self.logging.info("READ /" + databases + "/" + db_filter + "/")
-        for database in db_list:
-            if database in self.couch.database:
-                if "main" in self.couch.database[database]:
-                    data["DATA"][database] = self.couch.read_cache(database)
-                    self.logging.debug("READ " + database + " (" + str(len(data["DATA"][database])) + ")")
-                else:
-                    data = self.response_error(data, "Database empty: " + database)
-                    self.logging.warning("READ error " + database + " - empty")
-            else:
-                data = self.response_error(data, "Database not found: " + database)
-                self.logging.warning("READ error " + database + " - not found")
+        for db in db_list:
+            if db not in self.couch.database:
+                data = self.response_error(data, "Requested database " + db + " not available.")
 
-            if uuid != "" and uuid in data["DATA"][database]:
-                data["DATA"]["_selected_uuid"] = entry_uuid
-                data["DATA"]["_selected_db"] = database
-                data["DATA"]["_selected"] = data["DATA"][database][uuid]
-
-        test = False
-        if test:
-            # read podcast ...
-            if databases == "radio" and "radio" in data["DATA"]:
-                self.logging.debug("Start reading radio/podcast ... ")
-                for stream_uuid in data["DATA"]["radio"]:
-                    if "stream_url" in data["DATA"]["radio"][stream_uuid]:
-                        stream_url = data["DATA"]["radio"][stream_uuid]["stream_url"]
+        if data["REQUEST"]["status"] != "error":
+            # read complete databases
+            self.logging.info("READ /" + databases + "/" + db_filter + "/")
+            for database in db_list:
+                if database in self.couch.database:
+                    if "main" in self.couch.database[database]:
+                        data["DATA"][database] = self.couch.read_cache(database)
+                        self.logging.debug("READ " + database + " (" + str(len(data["DATA"][database])) + ")")
                     else:
-                        self.logging.error("Error in podcast data: "+str(data["DATA"]["radio"][stream_uuid]))
-                        stream_url = ""
-                    is_podcast = False
-                    for end in self.podcast.podcast_ending:
-                        if stream_url.endswith(end):
-                            is_podcast = True
+                        data = self.response_error(data, "Database empty: " + database)
+                        self.logging.warning("READ error " + database + " - empty")
+                else:
+                    data = self.response_error(data, "Database not found: " + database)
+                    self.logging.warning("READ error " + database + " - not found")
 
-                    if is_podcast:
-                        podcast = self.music_ctrl.podcast.get_podcasts(playlist_uuid=stream_uuid,
-                                                                       stream_url="", show_load=True)
-                        data["DATA"]["radio"][stream_uuid]["podcast"] = podcast
-                        if "_selected_uuid" in data and stream_uuid == uuid:
-                            data["DATA"]["_selected"]["podcast"] = podcast
-                            if "cover_images" in podcast:
-                                data["DATA"]["_selected"]["cover_images"] = podcast["cover_images"]
+                if uuid != "" and uuid in data["DATA"][database]:
+                    data["DATA"]["_selected_uuid"] = entry_uuid
+                    data["DATA"]["_selected_db"] = database
+                    data["DATA"]["_selected"] = data["DATA"][database][uuid]
 
-                    elif stream_url.endswith(".m3u"):
-                        radio_data = data["DATA"]["radio"]
-                        try:
-                            stream_url2 = self.music_ctrl.player.get_stream_m3u(stream_url)
-                            data["DATA"]["radio"][stream_uuid]["stream_url2"] = stream_url2
+            test = False
+            if test:
+                # read podcast ...
+                if databases == "radio" and "radio" in data["DATA"]:
+                    self.logging.debug("Start reading radio/podcast ... ")
+                    for stream_uuid in data["DATA"]["radio"]:
+                        if "stream_url" in data["DATA"]["radio"][stream_uuid]:
+                            stream_url = data["DATA"]["radio"][stream_uuid]["stream_url"]
+                        else:
+                            self.logging.error("Error in podcast data: "+str(data["DATA"]["radio"][stream_uuid]))
+                            stream_url = ""
+                        is_podcast = False
+                        for end in self.podcast.podcast_ending:
+                            if stream_url.endswith(end):
+                                is_podcast = True
+
+                        if is_podcast:
+                            podcast = self.music_ctrl.podcast.get_podcasts(playlist_uuid=stream_uuid,
+                                                                           stream_url="", show_load=True)
+                            data["DATA"]["radio"][stream_uuid]["podcast"] = podcast
                             if "_selected_uuid" in data and stream_uuid == uuid:
-                                data["DATA"]["_selected"]["stream_url2"] = stream_url2
-                        except Exception as e:
-                            self.logging.warning("Error reading m3u (" + stream_url + ") - "+str(e))
-                            data["DATA"]["radio"] = radio_data
+                                data["DATA"]["_selected"]["podcast"] = podcast
+                                if "cover_images" in podcast:
+                                    data["DATA"]["_selected"]["cover_images"] = podcast["cover_images"]
 
-                    elif stream_url.endswith(".m3u"):
-                        self.logging.warning("Key 'radio' in data['DATA'] is lost ... ")
-                        self.logging.warning(str(data["DATA"]))
+                        elif stream_url.endswith(".m3u"):
+                            radio_data = data["DATA"]["radio"]
+                            try:
+                                stream_url2 = self.music_ctrl.player.get_stream_m3u(stream_url)
+                                data["DATA"]["radio"][stream_uuid]["stream_url2"] = stream_url2
+                                if "_selected_uuid" in data and stream_uuid == uuid:
+                                    data["DATA"]["_selected"]["stream_url2"] = stream_url2
+                            except Exception as e:
+                                self.logging.warning("Error reading m3u (" + stream_url + ") - "+str(e))
+                                data["DATA"]["radio"] = radio_data
 
-            # .... check for errors!
-            if databases == "artists":
-                artists = {}
-                for key in data["DATA"]["album_info"]:
-                    album_info = data["DATA"]["album_info"][key]
-                    artist = album_info["artist"]
-                    album = {"album": album_info["albumname"], "uuid": key}
+                        elif stream_url.endswith(".m3u"):
+                            self.logging.warning("Key 'radio' in data['DATA'] is lost ... ")
+                            self.logging.warning(str(data["DATA"]))
 
-                    if "#error" not in artist:
-                        if artist not in artists:
-                            artists[artist] = []
-                        artists[artist].append(album)
+                # .... check for errors!
+                if databases == "artists":
+                    artists = {}
+                    for key in data["DATA"]["album_info"]:
+                        album_info = data["DATA"]["album_info"][key]
+                        artist = album_info["artist"]
+                        album = {"album": album_info["albumname"], "uuid": key}
 
-                data["DATA"]["artists"] = artists
-                del data["DATA"]["album_info"]
-                del data["DATA"]["albums"]
+                        if "#error" not in artist:
+                            if artist not in artists:
+                                artists[artist] = []
+                            artists[artist].append(album)
+
+                    data["DATA"]["artists"] = artists
+                    del data["DATA"]["album_info"]
+                    del data["DATA"]["albums"]
 
         data = self.filter(data, db_filter)
         data = self.response_end(data, ["no-statistic", "no-playback", "no-system"])
@@ -731,25 +744,29 @@ class ServerApi:
 
         # add image from download
         if cmd == "upload" and len(key) > 0:
-
-            playlist = db_entries[key][uuid]
-            if param == "-":
-                playlist["cover_images"]["active"] = "none"
-                playlist["cover_images"]["upload"] = []
+            if uuid in db_entries[key]:
+                playlist = db_entries[key][uuid]
+                if param == "-":
+                    playlist["cover_images"]["active"] = "none"
+                    playlist["cover_images"]["upload"] = []
+                else:
+                    playlist["cover_images"]["active"] = "upload"
+                    playlist["cover_images"]["upload"] = [param]
             else:
-                playlist["cover_images"]["active"] = "upload"
-                playlist["cover_images"]["upload"] = [param]
+                data = self.response_error(data, "Entry not found: " + param + "/" + uuid)
 
         # set active image
         elif cmd == "set_active" and len(key) > 0:
+            if uuid in db_entries[key]:
+                playlist = db_entries[key][uuid]
+                allowed = ["upload", "dir", "track", "url"]
 
-            playlist = db_entries[key][uuid]
-            allowed = ["upload", "dir", "track", "url"]
-
-            if param in allowed:
-                playlist["cover_images"]["active"] = param
+                if param in allowed:
+                    playlist["cover_images"]["active"] = param
+                else:
+                    data = self.response_error(data, "Image type not supported: " + param)
             else:
-                data = self.response_error(data, "Image type not supported: " + param)
+                data = self.response_error(data, "Entry not found: " + param + "/" + uuid)
 
         # command not implemented
         else:
@@ -815,6 +832,9 @@ class ServerApi:
             else:
                 data = self.response_error(data, "Playlist not found: " + uuid + "/" + param)
 
+        else:
+            data = self.response_error(data, "Command not found.")
+
         # write change data to DB
         for name in databases:
             self.couch.write(name, db_entries[name])
@@ -837,7 +857,7 @@ class ServerApi:
             if db_entries["cards"][param][0] is not param and db_entries["cards"][param][0] != "":
                 data = self.response_error(data, "Card already in use for other entry: " + uuid + "/" + param)
                 self.logging.warning(
-                    "Card alread in use for other entry (old: " + db_entries["cards"][param][
+                    "Card already in use for other entry (old: " + db_entries["cards"][param][
                         0] + "/ new: " + uuid + ")")
 
         # if uuid of album
@@ -867,6 +887,9 @@ class ServerApi:
             else:
                 data = self.response_error(data, "Stream to connect not found: " + uuid + "/" + param)
                 self.logging.warning("Stream to connect not found (" + uuid + ")")
+
+        else:
+            data = self.response_error(data, "Card can't be connected to " + uuid + "/" + param)
 
         # write change data to DB
         for name in databases:

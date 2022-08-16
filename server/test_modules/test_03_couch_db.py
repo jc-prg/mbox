@@ -25,14 +25,15 @@ def set_vars_couch():
 
 class TestCouchDB(TestCase):
 
-    def start_vlc(self):
+    def start_threads(self):
         set_vars_couch()
         self.vlc = music_vlc.VlcThread("test")
         self.vlc.start()
         self.speak = music_speak.SpeakThread(self.vlc, "test")
         self.speak.start()
+        self.couch = couch_db.CouchDB(stage.data_db, self.speak, "test")
 
-    def end_vlc(self):
+    def end_threads(self):
         self.vlc.stop()
         self.speak.stop()
         if test_key in self.couch.database:
@@ -40,15 +41,12 @@ class TestCouchDB(TestCase):
         self.couch = None
 
     def test_init(self):
-        self.start_vlc()
-        self.couch = couch_db.CouchDB(stage.data_db, self.speak, "test")
+        self.start_threads()
         self.assertEqual(self.couch.connected, True)
-        self.end_vlc()
+        self.end_threads()
 
     def test_check_db(self):
-        self.start_vlc()
-        self.couch = couch_db.CouchDB(stage.data_db, self.speak, "test")
-        self.assertEqual(self.couch.connected, True)
+        self.start_threads()
         for category in mbox.databases:
             for key in mbox.databases[category]:
                 self.assertTrue(key in self.couch.database)
@@ -59,12 +57,10 @@ class TestCouchDB(TestCase):
             for key in mbox.databases[category]:
                 print(key)
                 self.assertTrue(key in self.couch.database)
-        self.end_vlc()
+        self.end_threads()
 
     def test_create(self):
-        self.start_vlc()
-        self.couch = couch_db.CouchDB(stage.data_db, self.speak, "test")
-        self.assertEqual(self.couch.connected, True)
+        self.start_threads()
         if test_key in self.couch.database:
             del self.couch.database[test_key]
         self.assertTrue(test_key not in self.couch.database)
@@ -74,12 +70,10 @@ class TestCouchDB(TestCase):
         self.assertTrue("data" in self.couch.database[test_key]["main"])
         del self.couch.database[test_key]
         self.assertTrue(test_key not in self.couch.database)
-        self.end_vlc()
+        self.end_threads()
 
     def test_read_and_write(self):
-        self.start_vlc()
-        self.couch = couch_db.CouchDB(stage.data_db, self.speak, "test")
-        self.assertEqual(self.couch.connected, True)
+        self.start_threads()
         self.couch.create(test_key)
         test_data["time"] = time.time()
         self.couch.write(test_key, test_data)
@@ -89,23 +83,19 @@ class TestCouchDB(TestCase):
         self.assertEqual(read_data["array"], self.couch.database[test_key]["main"]["data"]["array"])
         del self.couch.database[test_key]
         self.assertTrue(test_key not in self.couch.database)
-        self.end_vlc()
+        self.end_threads()
 
     def test_read_group(self):
-        self.start_vlc()
-        self.couch = couch_db.CouchDB(stage.data_db, self.speak, "test")
-        self.assertEqual(self.couch.connected, True)
+        self.start_threads()
         for group in mbox.databases:
             data = self.couch.read_group(group)
             for key in data:
                 self.assertTrue(key in mbox.databases[group])
                 self.assertEqual(data[key], self.couch.read(key))
-        self.end_vlc()
+        self.end_threads()
 
     def test_fill_cache(self):
-        self.start_vlc()
-        self.couch = couch_db.CouchDB(stage.data_db, self.speak, "test")
-        self.assertEqual(self.couch.connected, True)
+        self.start_threads()
         self.couch.create(test_key)
         test_data["time"] = time.time()
         self.couch.write(test_key, test_data)
@@ -115,11 +105,10 @@ class TestCouchDB(TestCase):
         self.assertEqual(self.couch.cache[test_key], test_data)
         del self.couch.database[test_key]
         self.assertTrue(test_key not in self.couch.database)
-        self.end_vlc()
+        self.end_threads()
 
     def test_read_cache(self):
-        self.start_vlc()
-        self.couch = couch_db.CouchDB(stage.data_db, self.speak, "test")
+        self.start_threads()
         self.assertEqual(self.couch.connected, True)
         self.couch.create(test_key)
         test_data["time"] = time.time()
@@ -129,12 +118,10 @@ class TestCouchDB(TestCase):
         self.assertEqual(self.couch.cache, {})
         self.assertEqual(self.couch.read_cache(test_key), test_data)
         self.assertEqual(self.couch.read_cache("does not exist"), "")
-        self.end_vlc()
+        self.end_threads()
 
     def test_backup_and_restore_json(self):
-        self.start_vlc()
-        self.couch = couch_db.CouchDB(stage.data_db, self.speak, "test")
-        self.assertEqual(self.couch.connected, True)
+        self.start_threads()
         self.assertEqual(self.couch.backup_to_json(), "ok")
         file_list = os.listdir(json_db.jsonSettingsPath)
         print(json_db.jsonSettingsPath)
@@ -159,4 +146,4 @@ class TestCouchDB(TestCase):
         filename = os.path.join(json_db.jsonSettingsPath, test_key + ".json")
         self.assertTrue(os.path.isfile(filename))
         self.assertEqual(json_db.read(test_key), test_data)
-        self.end_vlc()
+        self.end_threads()

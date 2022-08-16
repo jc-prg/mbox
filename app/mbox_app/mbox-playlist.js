@@ -89,7 +89,7 @@ function mboxPlaylistEditAlbums(data) {
 		uuid         = temp[0];
 		selected     = temp[1];
 		}
-	else {	uuid         = data["REQUEST"]["db_filter"];
+	else {	uuid     = data["REQUEST"]["db_filter"];
 		}
 
 	// drop down "artists"
@@ -114,6 +114,7 @@ function mboxPlaylistEditAlbums(data) {
 	
 	if (selected) {
 		for (var i=0;i<artists[selected].length;i++) {
+    	    console.log(artists[selected][i]);
 			key   = artists[selected][i]["uuid"];
 			album = artists[selected][i]["album"];
 			text += "<option value='"+key+sep+uuid+"'>" + album + "</option>";
@@ -164,8 +165,10 @@ function mboxPlaylistEditTracks(data) {
 				// text_album += " <b class=\"album_delete_pl\" onclick=\""+onclick_delete+"\">(-)</b> &nbsp;";
 				text_album += " <b class=\"album_edit_pl\"   onclick=\""+onclick_add+"\">(+)</b> &nbsp;"; 
 
-				if (tracklist[i] in trackinfo) 		{ text_album += trackinfo[tracklist[i]]["title"]; }
-				else 					{ text_album += "<i>"+lang("NOT_FOUND")+": " + tracklist[i] + "</i>"; }
+				if (tracklist[i] in trackinfo)
+				    { text_album += trackinfo[tracklist[i]]["title"]; }
+				else
+				    { text_album += "<i>"+lang("NOT_FOUND")+": " + tracklist[i] + "</i>"; }
 
 				text_album += "<br/>";
 				}

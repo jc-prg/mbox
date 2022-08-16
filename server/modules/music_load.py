@@ -134,13 +134,12 @@ class MusicLoadMetadata:
 
         # recreate list of artists
         self.logging.info("reloadMusic: recreate list of artists")
-        for track_uuid in data_reload["tracks"]:
-            artist_name = data_reload["tracks"][track_uuid]["artist"]
+        for album_uuid in data_reload["album_info"]:
+            artist_name = data_reload["album_info"][album_uuid]["artist"]
             if "#error" not in artist_name:
                 if artist_name not in data_reload["artists"]:
-                    data_reload["artists"][artist_name] = {}
-                if track_uuid not in data_reload["artists"][artist_name]:
-                    data_reload["artists"][artist_name][track_uuid] = data_reload["tracks"][track_uuid]
+                    data_reload["artists"][artist_name] = []
+                data_reload["artists"][artist_name].append(data_reload["album_info"][album_uuid])
 
         # reconnect cards information
         if "cards" in data:

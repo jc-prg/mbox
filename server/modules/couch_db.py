@@ -142,15 +142,19 @@ class CouchDB:
 
             self.logging.debug("CouchDB read: " + db_key + " - " + str(int(start_time - time.time())) + "s")
 
-            try:
+            if db_key in self.database:
                 db = self.database[db_key]
-                if entry_key == "":
+                if "main" in db and "data" in db["main"] and entry_key == "":
                     return db["main"]["data"].copy()
-                elif entry_key in db["main"]["data"]:
+                elif "main" in db and "data" in db["main"] and entry_key in db["main"]["data"]:
                     return db["main"]["data"][entry_key].copy()
+                elif entry_key == "":
+                    self.logging.error("CouchDB ERROR read: " + db_key + " not found in database.")
+                else:
+                    self.logging.error("CouchDB ERROR read: " + db_key + "/" + entry_key +" not found in database.")
 
-            except Exception as e:
-                self.logging.error("CouchDB ERROR read: " + db_key + "/" + entry_key + " - " + str(e))
+            else:
+                self.logging.error("CouchDB ERROR read: " + db_key + " not found in database.")
 
         else:
             self.logging.warning("CouchDB ERROR read: " + db_key + " - " + str(int(start_time - time.time())) + "s")

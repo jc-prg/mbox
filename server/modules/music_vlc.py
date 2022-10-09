@@ -31,6 +31,7 @@ class VlcThread(threading.Thread):
 
         self.player_status = None
         self.play_status = None
+        self.play_timeout = 10
         self.media = None
 
     def run(self):
@@ -76,8 +77,8 @@ class VlcThread(threading.Thread):
             parsed = str(self.media.get_parsed_status())
             if "done" in parsed:
                 break  # Might be a good idea to add a failsafe in here.
-            elif time.time() > start_time + 5:
-                self.logging.error("Could not read media file: "+filename)
+            elif time.time() > start_time + self.play_timeout:
+                self.logging.error("Could not read media file; timeout (" + str(self.play_timeout) + "): "+filename)
                 return "error"
 
             self.logging.debug(" ... " + parsed)

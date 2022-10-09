@@ -262,14 +262,13 @@ def loop():
         blink("main")
 
 
-
 def blink(type):
     """
     decide when to switch on / off an LED
     """
     global blink_LED
     if type not in blink_LED:
-        logging.warning("Type '"+type+"' doesn't exist!")
+        logging.warning("Type '" + type + "' doesn't exist!")
     elif blink_LED[type] == 0:
         blink_LED[type] = 1
     else:
@@ -307,7 +306,7 @@ logging.info("Start LED control ...")
 if __name__ == '__main__':
     light = led.lightThread(3, "Thread LED Control", 1, this_stage)
     light.start()
-    light.destroy
+    light.destroy()
 
     loop()
 

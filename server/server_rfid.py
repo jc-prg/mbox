@@ -46,7 +46,7 @@ def get_active_stage():
     return settings["active_stage"]
 
 
-if stage.test == True:
+if stage.test is True:
     logging.info("Start RFID module: TEST STAGE (" + get_active_stage() + ")")
     url = "http://" + stage.server_ip + ":" + str(stage.server_port) + "/api/"
     this_stage = "test"
@@ -57,12 +57,8 @@ else:
 
 # -----------------------------------
 
-cmd = {}
-cmd["status"] = url + "status/"
-cmd["setcard"] = url + "set-card/"  # + card_id
-
+cmd = {"status": url + "status/", "setcard": url + "set-card/"}
 wait = 0.5
-
 ProcessRunning = True
 ServerRunning = False
 
@@ -87,7 +83,7 @@ def call_api(command, card_id):
 # ----------------------
 
 def loop_rfid_read():
-    global ProcessRunning, other, MIFAREReader, this_stage
+    global ProcessRunning, MIFAREReader, this_stage
 
     i = 0
     first_run = 1
@@ -103,7 +99,7 @@ def loop_rfid_read():
         act_active = get_active_stage()
 
         # logging.info("STAGE..."+act_active+"/"+last_active+"//"+this_stage)
-        if (act_active == "" or act_active != last_active):
+        if act_active == "" or act_active != last_active:
             logging.info("STAGE...DIFFERENT (" + act_active + "/" + this_stage + ")")
             last_active = act_active
 

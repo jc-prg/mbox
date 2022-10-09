@@ -24,13 +24,13 @@ function mboxViewsCalcRowEntries() {
 	}
 
 function mboxViewsList_load(data,type) {
-	if (data["LOAD"]["UUID"])	{ var loaded_uuid = data["LOAD"]["UUID"]; }
-	else				{ var loaded_uuid = ""; }
+	if (data["LOAD"]["UUID"]) { var loaded_uuid = data["LOAD"]["UUID"]; }
+	else                      { var loaded_uuid = ""; }
 	
-	if (type == "album") 		{ mboxAlbumAll_load(filter="",uuid=loaded_uuid); }
-	else if (type == "playlist") 	{ mboxPlaylists_load(filter="",playlist_uuid=loaded_uuid) ; }
-	else if (type == "radio") 	{ mboxStreams_load(stream_uuid=loaded_uuid); }
-	else 				{ }
+	if (type == "album")         { mboxAlbumAll_load(filter="",uuid=loaded_uuid); }
+	else if (type == "playlist") { mboxPlaylists_load(filter="",playlist_uuid=loaded_uuid) ; }
+	else if (type == "radio")    { mboxStreams_load(stream_uuid=loaded_uuid); }
+	else                         { }
 	
 	//console.log(data);
 	}
@@ -111,7 +111,7 @@ function mboxViewsList(type, data, selected_uuid="", filter_key="", filter_text=
 		var entry_line          = false;
 		var entry_detail        = false;
 		var entry_empty         = false;
-		var entry_character	 = false;
+		var entry_character	    = false;
 		var entry_detail_last   = false;
 		var entry_detail_number = 0;
 		
@@ -122,7 +122,7 @@ function mboxViewsList(type, data, selected_uuid="", filter_key="", filter_text=
 			// check if new row without chapters
 			if (mbox_show_char == false) {}
 
-			// print cover with charakter and empty album, if new line per chapter
+			// print cover with character and empty album, if new line per chapter
 			else {
 				if (last_chapter != chapter) { // && isvalidfilter == false) {
 					i++;
@@ -155,15 +155,15 @@ function mboxViewsList(type, data, selected_uuid="", filter_key="", filter_text=
 				}
 			if (entry_detail_number > entries_total)	{ entry_detail_number = entries_total; }
 			
-			if (entry_detail)		{ text += mboxViewsDetail( chapter_number-1, last_chapter ); }
-			if (entry_empty)	 	{ text += mboxViewsEmpty(  chapter_number, chapter ); }
-			if (entry_line)		{ text += "<hr style='float:left;width:99%;border:#aaa solid 0.5px;'/>"; }
-			if (entry_character)		{ text += mboxViewsChapter( chapter_number, chapter, last_chapter ); text += mboxHtmlEntryDetail( i-1 ); }
+			if (entry_detail)    { text += mboxViewsDetail( chapter_number-1, last_chapter ); }
+			if (entry_empty)     { text += mboxViewsEmpty(  chapter_number, chapter ); }
+			if (entry_line)      { text += "<hr style='float:left;width:99%;border:#aaa solid 0.5px;'/>"; }
+			if (entry_character) { text += mboxViewsChapter( chapter_number, chapter, last_chapter ); text += mboxHtmlEntryDetail( i-1 ); }
 			
 			// define commands	
 			var cmd_play = "appFW.requestAPI('GET',['play', '" + uuid + "'],'',mboxControl);";
-			if (row_per_chapter)	{ var cmd_open = "mboxViewsLoadDetails('" + chapter + "_" + chapter_number + "','" + i + "','" + uuid + "',"+callTrackList+",'"+type+"');"; }
-			else			{ var cmd_open = "mboxViewsLoadDetails('" + entry_detail_number + "',"+i+",'" + uuid + "',"+callTrackList+",'"+type+"');"; }
+			if (row_per_chapter) { var cmd_open = "mboxViewsLoadDetails('" + chapter + "_" + chapter_number + "','" + i + "','" + uuid + "',"+callTrackList+",'"+type+"');"; }
+			else                 { var cmd_open = "mboxViewsLoadDetails('" + entry_detail_number + "',"+i+",'" + uuid + "',"+callTrackList+",'"+type+"');"; }
 			
 			// check if podcast (images loaded from URL if internet is available)
         		if (entry_info[uuid] && entry_info[uuid]["podcast"] && entry_info[uuid]["podcast"]["title"]) { entry_info[uuid]["cover_images"] = entry_info[uuid]["podcast"]["cover_images"]; }

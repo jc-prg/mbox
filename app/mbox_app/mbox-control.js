@@ -266,20 +266,21 @@ function mboxControlVolumeControl(volume, mute) {
         if (Math.round(volume*20/1) < 1 || mute == 1 || mute == true) { // CHECK !!! 1 -> true ???
                 document.getElementById("audio1").style.display = "none";
                 document.getElementById("audio2").style.display = "block";
-                if (mbox_device != "local") 	    { vol_color = "gray"; }
-		else				    { vol_color = "green"; }
+                if (mbox_device != "local") { vol_color = "gray"; }
+		        else { vol_color = "green"; }
                 }
-        else {	// mute
-                document.getElementById("audio1").style.display = "block";
-                document.getElementById("audio2").style.display = "none";
-                }
+    else {	// mute
+            document.getElementById("audio1").style.display = "block";
+            document.getElementById("audio2").style.display = "none";
+            }
 
 	// check volume and show in navigation bar
-        var volume  = Math.round( volume * 20 / 1 );
-        var vol_str = "<font color='" + vol_color + "'>";
-        for (var i=0; i<volume; i++) { vol_str += "I"; }
-        vol_str += "</font>";
-        for (var i=0; i<20-volume; i++) { vol_str += "I"; }
+    if (volume > 1) { console.warning(volume); volume = volume / 100; }
+    volume  = Math.round( volume * 20 );
+    var vol_str = "<font color='" + vol_color + "'>";
+    for (var i=0; i<volume; i++) { vol_str += "I"; }
+    vol_str += "</font>";
+    for (var i=0; i<20-volume; i++) { vol_str += "I"; }
 
 	setTextById("audio3", vol_str);
 

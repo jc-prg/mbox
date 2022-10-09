@@ -1,7 +1,7 @@
 //--------------------------------
 // Configure stage details
 //---------------------------------
-// Please edit not here, but the orginial configuration file. This files is created using a template.
+// Please edit not here, but the original configuration file. This file is created using a template.
 
 var test		= false;
 var rollout	 	= 'test';

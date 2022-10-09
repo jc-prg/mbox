@@ -365,13 +365,14 @@ function mboxViews_InfoTable(title, info_data, height) {
 function mboxViewsTrackList(data, type) {   
 
 
-	var text		 = "";
-	var entry		 = data["DATA"]["_selected"];				// albums -> entry
-	var entry_uuid		 = data["DATA"]["_selected_uuid"];
-	var track_data          = data["DATA"]["tracks"];
-	var track_list		 = entry["tracks"];
+	var text         = "";
+	var entry        = data["DATA"]["_selected"];				// albums -> entry
+	var entry_uuid   = data["DATA"]["_selected_uuid"];
+	var track_data   = data["DATA"]["tracks"];
+	var track_list   = entry["tracks"];
 	var track_list_complete = [];
 	var track_list_album    = {};
+	var track_info          = "";
 
 	console.log("mboxViewsTrackList: "+type+"/"+entry_uuid);
 	if (type == undefined) {
@@ -463,12 +464,13 @@ function mboxViewsTrackList(data, type) {
 		var withartist    = false;
 		var withtrackinfo = false;
 		if (title == "Compilation") { withartist = true; }
-		for (var i=0;i<track_list.length;i++) {
-			if (track_data[track_list[i]] && "disc_num" in track_data[track_list[i]]) {
-				if (last_cd == "") { last_cd = track_data[track_list[i]]["disc_num"]; }
-				if (last_cd != track_data[track_list[i]]["disc_num"]) { withtrackinfo = true; }
-				}
-			}
+		if (entry["sort_by_filename"] != true) { withtrackinfo = true; }
+        for (var i=0;i<track_list.length;i++) {
+            if (track_data[track_list[i]] && "disc_num" in track_data[track_list[i]]) {
+                if (last_cd == "") { last_cd = track_data[track_list[i]]["disc_num"]; }
+                if (last_cd != track_data[track_list[i]]["disc_num"]) { withtrackinfo = true; }
+                }
+            }
 		}
 	else {
 		var withartist    = true;

@@ -90,10 +90,7 @@ class PodcastThread(threading.Thread):
             for end in self.podcast_ending:
                 if stream_url.endswith(end):
                     get_rss = self.get_tracks_rss(stream_url, playlist_uuid)
-                    if get_rss != "":
-                        return get_rss
-                    else:
-                        return {}
+                    return get_rss
         else:
             self.logging.warning("Podcast information not yet loaded and nor URL given: "+playlist_uuid)
         return {}
@@ -102,6 +99,26 @@ class PodcastThread(threading.Thread):
         """
         get tracks from rrs feed (itunes-format)
         """
+        update_date = datetime.datetime.now()
+        error_msg = ""
+        error_data = {
+            "title": "Error loading podcast",
+            "album": "",
+            "uuid": playlist_uuid,
+            "artist": "",
+            "cover_images": {"active": "track", "active_pos": 0, "url": [], "track": [], "dir": [], "upload": []},
+            "stream_info": "",
+            "stream_link": rss_url,
+            "tracks": {},
+            "track_count": 0,
+            "track_list": [],
+            "track_url": {},
+            "publication": "",
+            "description": "",
+            "update": time.time(),
+            "update_date": update_date.strftime('%d.%m.%Y %H:%M')
+        }
+
         if not self.internet_connection():
             return
 
@@ -114,13 +131,26 @@ class PodcastThread(threading.Thread):
             playlist = playlist.encode('utf-8')
 
         except requests.exceptions.RequestException as e:
-            self.logging.error("Can't open the podcast info from RSS/XML: " + str(e))
+            error_msg = "Can't open the podcast information from RSS/XML: " + rss_url + "\n " + \
+                        "Error message: " + str(e)
+            self.logging.error(error_msg)
             self.speak.speak_message("CANT-OPEN-STREAM")
-            return ""
+            error_data["error"] = error_msg
+            error_data["description"] = error_msg
+            return error_data
 
-        e = ET.XML(playlist)
-        data_all = etree_to_dict(e)["rss"]["channel"]
-        data_items = data_all["item"]
+        try:
+            e = ET.XML(playlist)
+            data_all = etree_to_dict(e)["rss"]["channel"]
+            data_items = data_all["item"]
+
+        except Exception as e:
+            error_msg = "Can't extract podcast information from RSS/XML: " + rss_url + "\n " + \
+                        "Error message: " + str(e)
+            self.logging.error(error_msg)
+            error_data["error"] = error_msg
+            error_data["description"] = error_msg
+            return error_data
 
         itunes_sub = "{http://www.itunes.com/dtds/podcast-1.0.dtd}"
 
@@ -146,8 +176,10 @@ class PodcastThread(threading.Thread):
             "update_date": update_date.strftime('%d.%m.%Y %H:%M')
         }
 
-        if "pubDate" in data_all: podcast["publication"] = data_all["pubDate"]
-        if "description" in data_all: podcast["description"] = data_all["description"]
+        if "pubDate" in data_all:
+            podcast["publication"] = data_all["pubDate"]
+        if "description" in data_all:
+            podcast["description"] = data_all["description"]
 
         if itunes_sub + "image" in data_all and "@href" in data_all[itunes_sub + "image"]:
             data_all["image"] = {}

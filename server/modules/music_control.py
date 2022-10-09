@@ -104,6 +104,22 @@ class MusicControlThread(threading.Thread):
                                str(len(self.music_list)) + "; Position: " + str(self.music_list_p) + "; ID:" +
                                self.music_list_uuid + "; Play: " + str(self.music_plays))
 
+            # if new data and list is empty, speak an error message
+            if self.music_load_new and len(self.music_list) == 0:
+                if self.music_list_uuid.startswith("r_"):
+                    database = self.music_database.read_cache("radio")
+                    if self.music_list_uuid in database:
+                        current_stream = database[self.music_list_uuid]
+                        self.speak.speak_text(current_stream["title"], self.music_ctrl["volume"])
+                elif self.music_list_uuid.startswith("p_"):
+                    database = self.music_database.read_cache("playlists")
+                    if self.music_list_uuid in database:
+                        current_list = database[self.music_list_uuid]
+                        self.speak.speak_text(current_list["title"], self.music_ctrl["volume"])
+
+                self.speak.speak_message("NO-ENTRY-IN-PLAYLIST")
+                self.music_load_new = False
+
             # if new data to be loaded
             if self.music_load_new and len(self.music_list) > 0 and int(self.music_list_p) <= len(self.music_list) \
                     and self.music_ctrl["LastCard"] != "error":
@@ -274,6 +290,8 @@ class MusicControlThread(threading.Thread):
         load list from album, playlist or stream -> put to playlist array
         """
         self.logging.info("Load Playlist " + playlist_uuid + "/" + str(position) + " ...")
+        track_list = []
+        track_db = {}
 
         if playlist_uuid == self.music_list_uuid:
             self.music_list_p = int(position)
@@ -307,15 +325,10 @@ class MusicControlThread(threading.Thread):
             track_db = self.music_database.read_cache("tracks")
 
         else:
+            track_list = self.playlist_by_uuid(playlist_uuid)
             podcast = self.podcast.get_podcasts(playlist_uuid)
-            if "track_list" in podcast:
-                track_list = podcast["track_list"]
+            if "tracks" in podcast:
                 track_db = podcast["tracks"]
-                if len(track_list) > 0:
-                    self.music_type = "Podcast"
-            else:
-                track_list = self.playlist_by_uuid(playlist_uuid)
-                track_db = {}
 
         for track in track_list:
             if track in track_db and "file" in track_db[track]:
@@ -435,9 +448,19 @@ class MusicControlThread(threading.Thread):
                             is_podcast = True
 
                     if is_podcast:
-                        self.podcast.get_tracks_rss(rss_url=stream_url, playlist_uuid=get_uuid)
-                        self.logging.warning("RSS Feed / Podcast-List not implemented yet!")
-                        track_list = []
+                        podcast = self.podcast.get_podcasts(get_uuid)
+                        if "track_list" in podcast:
+                            track_list = podcast["track_list"]
+                            track_db = podcast["tracks"]
+                            if len(track_list) > 0:
+                                self.music_type = "Podcast"
+                        else:
+                            track_list = [stream_url]
+
+                        # ----------------
+                        #self.podcast.get_tracks_rss(rss_url=stream_url, playlist_uuid=get_uuid)
+                        #self.logging.warning("RSS Feed / Podcast-List not implemented yet!")
+                        #track_list = []
                     else:
                         self.logging.warning("Unknown URL format. Try out ...")
                         track_list = [stream_url]
@@ -584,7 +607,8 @@ class MusicControlThread(threading.Thread):
             data["music"] = self.control_data_update()
             if "album_uuid" in data["music"]["song"] and data["music"]["song"]["album_uuid"].startswith("r_"):
                 podcast_uuid = data["music"]["song"]["album_uuid"]
-                data["music"]["podcast"] = self.podcast.get_podcasts(playlist_uuid=podcast_uuid)
+                podcast_data = self.podcast.get_podcasts(playlist_uuid=podcast_uuid)
+                data["music"]["podcast"] = podcast_data
 
             data["_saved"] = time.time()
             self.music_database.write("status", data)

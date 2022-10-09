@@ -343,45 +343,43 @@ class ServerApi:
                     data["DATA"]["_selected_db"] = database
                     data["DATA"]["_selected"] = data["DATA"][database][uuid]
 
-            test = False
-            if test:
-                # read podcast ...
-                if databases == "radio" and "radio" in data["DATA"]:
-                    self.logging.debug("Start reading radio/podcast ... ")
-                    for stream_uuid in data["DATA"]["radio"]:
-                        if "stream_url" in data["DATA"]["radio"][stream_uuid]:
-                            stream_url = data["DATA"]["radio"][stream_uuid]["stream_url"]
-                        else:
-                            self.logging.error("Error in podcast data: "+str(data["DATA"]["radio"][stream_uuid]))
-                            stream_url = ""
-                        is_podcast = False
-                        for end in self.podcast.podcast_ending:
-                            if stream_url.endswith(end):
-                                is_podcast = True
+            # read fresh podcast information, enrich config data
+            if databases == "radio" and "radio" in data["DATA"]:
+                self.logging.debug("Start reading radio/podcast ... ")
+                for stream_uuid in data["DATA"]["radio"]:
+                    if "stream_url" in data["DATA"]["radio"][stream_uuid]:
+                        stream_url = data["DATA"]["radio"][stream_uuid]["stream_url"]
+                    else:
+                        self.logging.error("Error in podcast data: "+str(data["DATA"]["radio"][stream_uuid]))
+                        stream_url = ""
+                    is_podcast = False
+                    for end in self.podcast.podcast_ending:
+                        if stream_url.endswith(end):
+                            is_podcast = True
 
-                        if is_podcast:
-                            podcast = self.music_ctrl.podcast.get_podcasts(playlist_uuid=stream_uuid,
-                                                                           stream_url="", show_load=True)
-                            data["DATA"]["radio"][stream_uuid]["podcast"] = podcast
+                    if is_podcast:
+                        podcast = self.music_ctrl.podcast.get_podcasts(playlist_uuid=stream_uuid,
+                                                                       stream_url="", show_load=True)
+                        data["DATA"]["radio"][stream_uuid]["podcast"] = podcast
+                        if "_selected_uuid" in data and stream_uuid == uuid:
+                            data["DATA"]["_selected"]["podcast"] = podcast
+                            if "cover_images" in podcast:
+                                data["DATA"]["_selected"]["cover_images"] = podcast["cover_images"]
+
+                    elif stream_url.endswith(".m3u"):
+                        radio_data = data["DATA"]["radio"]
+                        try:
+                            stream_url2 = self.music_ctrl.player.get_stream_m3u(stream_url)
+                            data["DATA"]["radio"][stream_uuid]["stream_url2"] = stream_url2
                             if "_selected_uuid" in data and stream_uuid == uuid:
-                                data["DATA"]["_selected"]["podcast"] = podcast
-                                if "cover_images" in podcast:
-                                    data["DATA"]["_selected"]["cover_images"] = podcast["cover_images"]
+                                data["DATA"]["_selected"]["stream_url2"] = stream_url2
+                        except Exception as e:
+                            self.logging.warning("Error reading m3u (" + stream_url + ") - "+str(e))
+                            data["DATA"]["radio"] = radio_data
 
-                        elif stream_url.endswith(".m3u"):
-                            radio_data = data["DATA"]["radio"]
-                            try:
-                                stream_url2 = self.music_ctrl.player.get_stream_m3u(stream_url)
-                                data["DATA"]["radio"][stream_uuid]["stream_url2"] = stream_url2
-                                if "_selected_uuid" in data and stream_uuid == uuid:
-                                    data["DATA"]["_selected"]["stream_url2"] = stream_url2
-                            except Exception as e:
-                                self.logging.warning("Error reading m3u (" + stream_url + ") - "+str(e))
-                                data["DATA"]["radio"] = radio_data
-
-                        elif stream_url.endswith(".m3u"):
-                            self.logging.warning("Key 'radio' in data['DATA'] is lost ... ")
-                            self.logging.warning(str(data["DATA"]))
+                    elif stream_url.endswith(".m3u"):
+                        self.logging.warning("Key 'radio' in data['DATA'] is lost ... ")
+                        self.logging.warning(str(data["DATA"]))
 
                 # .... check for errors!
                 if databases == "artists":

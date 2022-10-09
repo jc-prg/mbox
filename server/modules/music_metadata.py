@@ -257,7 +257,7 @@ def read_metadata_mutagen(filename, file_type="mp4"):
         data["sort"] += int(data["disc_num"]) * 1000
     else:
         data["disc_num"] = 0
-    data["sort"] = str(data["sort"]).zfill(5) + data["file"]
+    data["sort"] = str(data["sort"]).zfill(5) #+ data["file"]
 
     for tag in tags:
         if "covr" in tag:
@@ -328,7 +328,7 @@ def read_metadata_id3(filename, album_id="", album_nr=""):
             run_cmd.file_logging(" ... Error in 'track_total': " + str(e))
 
         try:
-            if "," in tags["track_num"]:
+            if "," in tags["track_num"] and tags["track_total"] == "":
                 tags["track_num"] = tags["track_num"].replace("(", "")
                 tags["track_num"] = tags["track_num"].replace(")", "")
                 temp = tags["track_num"].split(",")
@@ -340,13 +340,25 @@ def read_metadata_id3(filename, album_id="", album_nr=""):
             run_cmd.file_logging(" ... Error decoding 'track_num': " + str(e))
 
         try:
-            tags["disc_num"] = audiofile.tag.disc  # disc number
-            tags["disc_total"] = audiofile.tag.disc_total  # the total number of discs
+            tags["disc_num"] = str(audiofile.tag.disc_num)  # disc number
+            if "," in tags["disc_num"]:
+                tags["disc_num"] = tags["disc_num"].replace("(", "")
+                tags["disc_num"] = tags["disc_num"].replace(")", "")
+                temp = tags["disc_num"].split(",")
+                tags["disc_num"] = temp[0]
+                tags["disc_total"] = temp[1]
         except Exception as e:
             tags["disc_num"] = "0"
-            tags["disc_total"] = "0"
-            md_logging.debug(" ... Error in 'disc_num' or 'disc_total': " + str(e))
-            run_cmd.file_logging(" ... Error in 'disc_num' or 'disc_total': " + str(e))
+            md_logging.debug(" ... Error in 'disc_num': " + str(e))
+            run_cmd.file_logging(" ... Error in 'disc_num': " + str(e))
+
+        if "disc_total" not in tags or "None" in tags["disc_total"]:
+            try:
+                tags["disc_total"] = audiofile.tag.disc_total  # the total number of discs
+            except Exception as e:
+                tags["disc_total"] = "0"
+                md_logging.debug(" ... Error in 'disc_total': " + str(e))
+                run_cmd.file_logging(" ... Error in 'disc_total': " + str(e))
 
         try:
             tags["genre"] = str(audiofile.tag.genre)
@@ -376,7 +388,7 @@ def read_metadata_id3(filename, album_id="", album_nr=""):
             md_logging.debug(" ... Error in 'disc_num' (" + str(tags["disc_num"]) + "): " + str(e))
             run_cmd.file_logging(" ... Error in 'disc_num' (" + str(tags["disc_num"]) + "): " + str(e))
 
-        tags["sort"] = str(tags["sort"]).zfill(5) + tags["file"]
+        tags["sort"] = str(tags["sort"]).zfill(5) #+ tags["file"]
 
         # check for images and write to file
         tags["cover_images"] = {}

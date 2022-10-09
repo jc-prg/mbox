@@ -199,7 +199,7 @@ class MusicLoadMetadata:
         files_percentage = 0
 
         self.logging.info("reload_covers: Start to scan for new cover images ...")
-        run_cmd.file_logging_init()
+        # run_cmd.file_logging_init()
         run_cmd.file_logging("----------------------------------------------")
         run_cmd.file_logging("reload_covers: Start to scan for new cover images ...")
 
@@ -456,14 +456,34 @@ class MusicLoadMetadata:
             # sort tracks in album by key "sort"
             sorted_tracks = {}
             album_data = album_info[album_uuid]
+            track_count = len(album_data["tracks"])
+            sort_by_filename = False
+
+            # check if complete sort information for all tracks
             for track_uuid in album_data["tracks"]:
+                check_tracks = []
                 if track_uuid in track_data:
                     track = track_data[track_uuid]
                     if "sort" not in track:
-                        track["sort"] = "00000"
+                        sort_by_filename = True
+                    elif track["sort"] not in check_tracks:
+                        check_tracks.append(track["sort"])
+                    elif track["sort"] in check_tracks:
+                        sort_by_filename = True
+
+            for track_uuid in album_data["tracks"]:
+                if track_uuid in track_data:
+                    track = track_data[track_uuid]
                     if track["sort"] not in sorted_tracks:
                         sorted_tracks[track["sort"]] = []
+                    else:
+                        sort_by_filename = True
                     sorted_tracks[track["sort"]].append(track_uuid)
+
+            # if not complete ort "sort" exists more than once use filename to sort
+            if sort_by_filename:
+                for track_uuid in album_data["tracks"]:
+                    track_data[track_uuid]["sort"] = track_data[track_uuid]["file"]
 
             # add position of track to track data as "sort_pos"
             track_list_sorted = []
@@ -475,6 +495,8 @@ class MusicLoadMetadata:
                     track_data[track]["sort_pos"] = track_list_pos
 
             album_info[album_uuid]["tracks"] = track_list_sorted.copy()
+            album_info[album_uuid]["sort_by_filename"] = sort_by_filename
+            album_info[album_uuid]["sort_by_filename2"] = sorted_tracks
 
         return album_info.copy(), track_data.copy()
 

@@ -600,7 +600,7 @@ class MusicControlThread(threading.Thread):
 
         if "_saved" not in data or data["_saved"] == "" or int(data["_saved"]) + 3 < time.time():
             # get old state
-            if "music" in data:
+            if "music" in data and "song" in data["music"]:
                 if "file" in data["music"]["song"]:
                     old_state = data["music"]["state"] + "; " + str(data["music"]["song"]["file"])
                 else:

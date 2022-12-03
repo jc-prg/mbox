@@ -100,7 +100,7 @@ class MusicControlThread(threading.Thread):
             count = self.playback_status_logging(wait_time, count)
 
             self.music_plays = self.player.playing()
-            self.logging.debug("Active playlist: " + str(self.music_load_new) + "; List: " +
+            self.logging.info("Active playlist: " + str(self.music_load_new) + "; List: " +
                                str(len(self.music_list)) + "; Position: " + str(self.music_list_p) + "; ID:" +
                                self.music_list_uuid + "; Play: " + str(self.music_plays))
 
@@ -143,13 +143,15 @@ class MusicControlThread(threading.Thread):
                         current_stream = database[self.music_list_uuid]
                         current_stream["podcast"] = self.podcast.get_podcasts(self.music_list_uuid,
                                                                               current_stream["stream_url"], False)
-                        if current_stream["podcast"] != {}:
+                        if current_stream["podcast"] != {} and current_path in current_stream["podcast"]["track_url"]:
                             current_info = current_stream["podcast"]
                             current_list["list"] = []
                             for filename in current_list["files"]:
-                                track_uuid = current_info["track_url"][filename]
-                                track_info = current_info["tracks"][track_uuid]
-                                current_list["list"].append(track_info)
+                                if filename in current_info["track_url"]:
+                                    # ERROR ...
+                                    track_uuid = current_info["track_url"][filename]
+                                    track_info = current_info["tracks"][track_uuid]
+                                    current_list["list"].append(track_info)
                             current_uuid = current_info["track_url"][current_path]
                             current_info = current_info["tracks"][current_uuid]
                             current_info["uuid"] = current_uuid

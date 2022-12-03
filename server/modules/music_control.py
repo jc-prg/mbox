@@ -102,7 +102,7 @@ class MusicControlThread(threading.Thread):
             count = self.playback_status_logging(wait_time, count)
 
             self.music_plays = self.player.playing()
-            self.logging.info("Active playlist: " + str(self.music_load_new) + "; List: " +
+            self.logging.debug("Active playlist: " + str(self.music_load_new) + "; List: " +
                                str(len(self.music_list)) + "; Position: " + str(self.music_list_p) + "; ID:" +
                                self.music_list_uuid + "; Play: " + str(self.music_plays))
 

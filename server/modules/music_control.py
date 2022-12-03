@@ -61,9 +61,11 @@ class MusicControlThread(threading.Thread):
 
         if "music" not in last_run:
             last_run["music"] = {"playing": 0, "playlist_uuid": "no_uuid"}
+        elif "playing" not in last_run["music"]:
+            last_run["music"] = {"playing": 0, "playlist_uuid": "no_uuid"}
         last_music = last_run["music"]
 
-        if "playing" in last_run["music"] and last_run["music"]["playing"] != 1 and "playlist_uuid" in last_music:
+        if last_run["music"]["playing"] != 1 and "playlist_uuid" in last_music:
             self.logging.debug("Don't load playlist and song from last run (" + last_music["playlist_uuid"] + ")...")
 
         elif last_run["music"]["playing"] != 1:

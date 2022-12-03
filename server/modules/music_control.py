@@ -148,7 +148,6 @@ class MusicControlThread(threading.Thread):
                             current_list["list"] = []
                             for filename in current_list["files"]:
                                 if filename in current_info["track_url"]:
-                                    # ERROR ...
                                     track_uuid = current_info["track_url"][filename]
                                     track_info = current_info["tracks"][track_uuid]
                                     current_list["list"].append(track_info)

@@ -210,6 +210,14 @@ function mboxPlayerProgressTime() {
 	var progress    = (hundred - seconds_left) / hundred * 100;
 
 	document.getElementById("mboxPlayer_progress").style.width = progress + "%";
+
+	if (status == "State.Paused") {
+	    document.getElementById("mboxPlayer_progress").style.background = "#444444";
+	    }
+	else {
+	    //document.getElementById("mboxPlayer_progress").classList.remove("mboxPlayer_progressPause");
+	    //console.error("0 "+seconds_left);
+	    }
 	//console.log(hundred + " - " + progress+"%");
 	}
 

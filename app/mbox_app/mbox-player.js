@@ -135,7 +135,7 @@ function mboxPlayerControlEntry(uuid) {
 
 	if (mbox_device != "local") {
       		text += mboxHtmlButton("play",  "appFW.requestAPI('GET',['play', '" + uuid + "'],'',mboxControl);", "blue");
-		text += mboxHtmlButton("pause", "appFW.requestAPI('GET',['pause'],'',mboxControl);",		"blue");
+		    text += mboxHtmlButton("pause", "appFW.requestAPI('GET',['pause'],'',mboxControl);",		"blue");
         	text += mboxHtmlButton("stop",  "appFW.requestAPI('GET',['stop'],'',mboxControl);", "blue");
         	text += mboxHtmlButton("empty");
 		}
@@ -196,7 +196,7 @@ function mboxPlayerProgressPrint() {
 	}
 
 function mboxPlayerProgressTime() {
-	var status	 	= document.getElementById("mbox_status").innerHTML;
+	var status	 	    = document.getElementById("mbox_status").innerHTML;
 	var seconds_left 	= document.getElementById("mbox_progresstime").innerHTML;
 	var time_left		= convert_second2time(seconds_left);
 
@@ -219,9 +219,9 @@ function mboxPlayerProgressSet( status, song_length, song_left, song_left_s ) {
 	if (document.getElementById("mbox_progresstime")) {
 		if (song_left) { setTextById("mboxPlayer_progresstime", 	"[ -" + song_left + " ]" ); }
 		mboxPlayerProgress();
-		setTextById("mbox_progresstime", 	song_left_s );
+		setTextById("mbox_progresstime",        song_left_s );
 		setTextById("mbox_progresspercentage", 	song_length );
-		setTextById("mbox_status",	 	status );
+		setTextById("mbox_status",	 	        status );
 		
 		progressbar = document.getElementById("mboxPlayer_progressbar");
 		progressbar.addEventListener("click", mboxPlayerJumpToPosition, false);

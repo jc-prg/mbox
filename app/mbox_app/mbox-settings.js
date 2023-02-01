@@ -1,4 +1,5 @@
 //--------------------------------------
+//--------------------------------------
 // jc://music-box/, (c) Christoph Kloth
 //--------------------------------------
 // create settings pages
@@ -50,8 +51,8 @@ function mboxSettingsStatus (data) {
 
 	text += table.row_one("<hr/>");
 	text += table.row( ["<b>jcApp:",		appFW.appVersion ] );
-	text += table.row( ["<b>jcAppFramework:",	appFwVersion ] );
-	text += table.row( ["<b>jcMessage:",		message.appVersion ] );
+	text += table.row( ["<b>jcAppFramework:", appFwVersion ] );
+	text += table.row( ["<b>jcMessage:",    message.appVersion ] );
 	text += table.row( ["<b>jcPlayer:",		player.appVersion ] );
 	text += table.row( ["<b>jcSlider:",		slider.appVersion ] );
 	text += table.row( ["<b>jcUpload:",		mbox_upload.appVersion ] );
@@ -59,7 +60,7 @@ function mboxSettingsStatus (data) {
 	text += table.row_one("<hr/>");	
 	text += table.row( ["<b>Modus:", 		mbox_mode ] );
 	text += table.row( ["<b>Playing:", 		data["STATUS"]["playback"]["playing"] ] );
-	text += table.row( ["<b>Active Device:", 	data["STATUS"]["active_device"] ] );
+	text += table.row( ["<b>Active Device:", data["STATUS"]["active_device"] ] );
 	text += table.row( ["<b>Window:", 		document.body.clientWidth + "x" + document.body.clientHeight ] );
 	text += table.row( ["<b>Internet:",		internetConnect ] );
 	text += table.row_one("<hr/>");
@@ -68,7 +69,16 @@ function mboxSettingsStatus (data) {
 		text += table.row( ["<b>Status:",	 "idle" ] );
 		}
 	else {
-		text += table.row( ["<b>Status:",	 data["STATUS"]["playback"]["status"] + " (<a href='' onclick='alert(\"" + data["STATUS"]["playback"]["file"] + "\")'>filename</a>)" ] );
+		//text += table.row( ["<b>Status:",	 data["STATUS"]["playback"]["status"] + " (<a href='' onclick='alert(\"" + data["STATUS"]["playback"]["file"] + "\")'>filename</a>)" ] );
+        var player_status = data["STATUS"]["playback"]["player_status"];
+        var playlist_pos  = data["STATUS"]["playback"]["playlist_pos"];
+        var playlist_len  = data["STATUS"]["playback"]["playlist_len"];
+        var filename = "..none..";
+        if (playlist_pos >= 0 && playlist_pos <= playlist_len) {
+            filename = data["STATUS"]["playback"]["playlist_files"][playlist_pos-1];
+            }
+		text += table.row( ["<b>Status:",   data["STATUS"]["playback"]["player_status"] +
+		                                    " (<a href='' onclick='alert(\"" + filename + "\")'>file " + playlist_pos + "/" + playlist_len + "</a>)" ] );
 		}
 	
 	text += table.row_one("<hr/>");
@@ -76,8 +86,8 @@ function mboxSettingsStatus (data) {
 	text += table.row( ["<b>Tracks:", 		data["STATUS"]["statistic"]["tracks"] ] );
 	text += table.row( ["<b>Artists:", 		data["STATUS"]["statistic"]["albums"] ] );
 	text += table.row( ["<b>Albums:", 		data["STATUS"]["statistic"]["album_info"] ] );
-	text += table.row( ["<b>Playlists:",		data["STATUS"]["statistic"]["playlists"] ] );
-	text += table.row( ["<b>Web-Radio:",		data["STATUS"]["statistic"]["radio"] ] );
+	text += table.row( ["<b>Playlists:",    data["STATUS"]["statistic"]["playlists"] ] );
+	text += table.row( ["<b>Web-Radio:",    data["STATUS"]["statistic"]["radio"] ] );
 	text += table.row_one("<hr/>");
 	text += table.end();
 

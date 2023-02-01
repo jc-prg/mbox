@@ -48,11 +48,17 @@ function mboxControl(data) {
 	var type_sub    = d["type"];
 	var volume      = d["volume"];
 	var mute        = d["mute"];
-	var status      = d["status"];
+	var status      = d["player_status"]; // d["player_status"] vs. d["status"]
 	var playing     = d["playing"];
 	var playing_pos = d["position"] / d["length"] * 100;
 	var playing_title = "";
 	var playing_album = "";
+	var pause_status  = "";
+
+	if (status == "State.Paused") {
+	    playing = 1;
+	    pause_status = " ... <i>pause</i>";
+	    }
 
 	var load_new    = l["reload_new"];
 	var load_all    = l["reload_all"];
@@ -119,11 +125,11 @@ function mboxControl(data) {
 			if (song) { if (song["info"] == "Title loaded" && playing != 0) {
 				if (song["artist"] != undefined) {
 					text += "&nbsp;<b>" + song["artist"] + "</b><br/>";
-					text += "&nbsp;" + song["title"] + " (" + p_position + "/" + p_length + ")<br/>"; //+uuid;
+					text += "&nbsp;" + song["title"] + " (" + p_position + "/" + p_length + ") " + pause_status + "<br/>"; //+uuid;
 					}
 				else {
 					text += "&nbsp;<b>" + song["album"] + "</b><br/>";
-					text += "&nbsp;" + song["title"] + " (" + p_position + "/" + p_length + ")<br/>"; //+uuid;
+					text += "&nbsp;" + song["title"] + " (" + p_position + "/" + p_length + ") " + pause_status + "<br/>"; //+uuid;
 					}
 				}
 

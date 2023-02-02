@@ -163,7 +163,6 @@ class MusicPlayer(threading.Thread):
 
         if self.player_status == "State.Stopped" or \
                 self.player_status == "State.NothingSpecial" or \
-                self.player_status == "State.Paused" or \
                 self.player_status == "State.Ended" or \
                 self.player_status == "":
             is_playing = 0
@@ -178,9 +177,12 @@ class MusicPlayer(threading.Thread):
         """
         set position in current stream or file
         """
+        self.logging.info(" ...... " + str(percentage))
         percentage = float(percentage)
-        if 0 <= percentage <= 100:
+        if 1 <= percentage <= 100:
             self.player.set_position(percentage / 100)
+        elif 0 <= percentage < 1:
+            self.player.set_position(percentage)
 
     def get_position(self):
         """

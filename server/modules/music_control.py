@@ -170,14 +170,6 @@ class MusicControlThread(threading.Thread):
                 # set playback metadata
                 self.music_ctrl = self.control_data_create(state="play", song=current_info, playlist=current_list)
 
-                # if stopped device while playing, load last music
-                if last_load:
-                    self.logging.debug("Jump to position in song from last run ...")
-                    if self.music_position is not None:
-                        self.player.set_position(self.music_position)
-                        self.music_position = None
-                    last_load = False
-
                 # start playback; create and speak title
                 if current_path.startswith("http"):
                     self.logging.debug(" run // startswith http; play stream or podcast")
@@ -204,6 +196,15 @@ class MusicControlThread(threading.Thread):
                     self.logging.debug("run // is a file; start playback")
                     self.player.play_file(mbox.music_dir + current_path, wait=False)
                     just_started = True
+
+            # if stopped device while playing, load last music
+            if last_load:
+                self.logging.info("Jump to position in song from last run (" +
+                                  str(round(self.music_position, 1)) + "%) ...")
+                if self.music_position is not None:
+                    self.player.set_position(self.music_position)
+                    self.music_position = None
+                last_load = False
 
             # if no new data, check if ended
             self.logging.debug("... load=" + str(self.music_load_new) +

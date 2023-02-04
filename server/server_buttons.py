@@ -13,7 +13,7 @@ import requests
 import modules.config_stage as stage
 import modules.config_mbox as mbox
 import modules_gpio.config as gpio
-import modules.json_db as jcJSON
+import modules.json_db as json_db
 import modules.run_cmd as jcCmd
 
 # set start time and write title/version/stage

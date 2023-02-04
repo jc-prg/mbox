@@ -5,16 +5,18 @@
 # by jc://design/
 # ------------------------------------
 
-print("TEST")
 
 import logging
 import signal
 import time
-
 import modules.config_mbox as mbox
 import modules.config_stage as stage
 import modules.run_cmd as run_cmd
 import modules_rfid.MFRC522 as MFRC522
+
+
+print("TEST")
+
 
 # set start time and write title/version/stage
 # ----------------------------------------------

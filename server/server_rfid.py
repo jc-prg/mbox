@@ -42,9 +42,12 @@ if stage.log_level != "error":
 
 # read from file, which stage should be use ... to switch between stages during runtime
 def get_active_stage():
-    settings = json_db.read("../../active")
-    return settings["active_stage"]
-
+    settings = json_db.read(mbox.system_active_stage)
+    if "active_stage" in settings:
+        return settings["active_stage"]
+    else:
+        print("Check, if 'active.json' exists in the data directory.")
+        return ""
 
 if stage.test is True:
     logging.info("Start RFID module: TEST STAGE (" + get_active_stage() + ")")

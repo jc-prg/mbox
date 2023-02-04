@@ -23,10 +23,15 @@ def read(file):
     file1 = file + ".json"
     file2 = path.join(jsonAppDir, jsonPath, file1)
     logging.debug("Reading JSON file (" + file2 + ")")
-    try:
-        with open(file2) as json_data:
-            d = json.load(json_data)
-    except Exception as e:
+
+    if path.exists(file2):
+        try:
+            with open(file2) as json_data:
+                d = json.load(json_data)
+        except Exception as e:
+            logging.error("Error reading JSON file (" + file2 + "): " + str(e))
+            d = {"error": str(e)}
+    else:
         logging.error("Error reading JSON file (" + file2 + "): " + str(e))
         d = {"error": str(e)}
 

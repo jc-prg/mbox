@@ -33,6 +33,7 @@ start_duration = 0
 
 system_drive = "/"
 system_data_drive = ""  # "/mnt/usb"
+system_active_stage = "../../../active.json"
 
 music_data = stage.data_dir + "/data/"
 music_dir = stage.data_dir + "/music/"

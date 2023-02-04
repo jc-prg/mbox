@@ -93,10 +93,12 @@ if [ $MBOX_DATA_USB == "yes" ]; then
   export MBOX_MOUNT_SYSTEM="/"
   export MBOX_MOUNT_DATA="/media/usb"
   export MBOX_MOUNT_USB="/dev/sda1"
+  export MBOX_MOUNT_MUSIC_SUBDIR="/Music/"
 else
   export MBOX_MOUNT_SYSTEM="/"
   export MBOX_MOUNT_DATA="/"
   export MBOX_MOUNT_USB=""
+  export MBOX_MOUNT_MUSIC_SUBDIR=""
 fi
 
 # Docker Images

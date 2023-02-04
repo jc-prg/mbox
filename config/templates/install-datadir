@@ -4,6 +4,7 @@ dir="${MBOX_DIR_DATA_ROOT}"
 dir_data="${MBOX_DIR_DATA}"
 usb_dev="${MBOX_MOUNT_USB}"
 usb_mount="${MBOX_MOUNT_DATA}"
+usb_mount_subdir="${MBOX_MOUNT_MUSIC_SUBDIR}"
 
 mkdir -p ${DOLLAR}dir_data
 cd ${DOLLAR}dir_data
@@ -19,5 +20,5 @@ if [ ${DOLLAR}usb_dev == "" ]; then
    mkdir music
 else
    mkdir -p ${DOLLAR}usb_dev
-   ln -s ${DOLLAR}usb_mount music
+   ln -s ${DOLLAR}usb_mount${DOLLAR}usb_mount_subdir music
 fi

@@ -1,4 +1,4 @@
-#!/usr/bin/python2
+#!/usr/bin/python3
 # ------------------------------------
 # get events via REST API from mbox
 # and control LED ...

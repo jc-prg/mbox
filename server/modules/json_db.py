@@ -32,8 +32,8 @@ def read(file):
             logging.error("Error reading JSON file (" + file2 + "): " + str(e))
             d = {"error": str(e)}
     else:
-        logging.error("Error reading JSON file (" + file2 + "): " + str(e))
-        d = {"error": str(e)}
+        logging.error("JSON file doesn't exist (" + file2 + ") ")
+        d = {"error": "File doesn't exist (" + file2 + ")!"}
 
     return d
 

@@ -80,7 +80,7 @@ export MBOX_RFID_DEMOCARD="125,232,21,163"
 export MBOX_BUTTON_ACTIVE="true"
 
 # Directories
-export MBOX_DIR_DATA_ROOT="/projects_data"
+export MBOX_DIR_DATA_ROOT="/projects/data"
 export MBOX_DIR_DATA="$MBOX_DIR_DATA_ROOT/$MBOX_CURRENT_STAGE/mbox"
 export MBOX_DIR="/projects/$MBOX_CURRENT_STAGE/mbox"
 export MBOX_DIR_CLIENT="$MBOX_DIR/$MBOX_APP_VERSION"

@@ -19,5 +19,5 @@ if [ ${DOLLAR}usb_dev == "" ]; then
    mkdir music
 else
    mkdir -p ${DOLLAR}usb_dev
-   ln -s ${DOLLAR}usb_dev music
+   ln -s ${DOLLAR}usb_mount music
 fi

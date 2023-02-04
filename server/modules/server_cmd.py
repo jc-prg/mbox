@@ -1075,11 +1075,18 @@ class ServerApi:
                 temp_db = self.couch.read_cache(db)
                 data["DATA"]["SHORT"][db] = {}
                 for entry in temp_db:
-                    if "title" in temp_db[entry]:
-                        data["DATA"]["SHORT"][db][entry] = temp_db[entry]["title"]
-                    elif "album" in temp_db[entry]:
+                    if "album" in temp_db[entry]:
                         data["DATA"]["SHORT"][db][entry] = temp_db[entry]["album"] + \
                                                            " (" + temp_db[entry]["artist"] + ")"
+                    elif "title" in temp_db[entry]:
+                        data["DATA"]["SHORT"][db][entry] = temp_db[entry]["title"]
+
+                if db == "album_info":
+                    data["DATA"]["SHORT"][db+"_2"] = {}
+                    for entry in temp_db:
+                        if "#error" not in temp_db[entry]["artist"]:
+                            data["DATA"]["SHORT"][db+"_2"][entry] = temp_db[entry]["artist"] + \
+                                                               " (" + temp_db[entry]["album"] + ")"
         else:
             data["LOAD"]["CARD"] = "known"
         return data

@@ -51,12 +51,13 @@ function mboxCardConnect(card,list={}) {
 
 	var select = {};
 	console.error(list);
-	for (var key in list) { select = { "album_info" : lang("ALBUMS"), "radio" : lang("STREAMS"), "playlists" : lang("PLAYLISTS") }; }
-	dialog += mboxCardConnect_select("mbox_select_type", select, "block", onchange);	
-	
-	dialog += mboxCardConnect_select("mbox_select_album_info",    list["album_info"],	"block");
-	dialog += mboxCardConnect_select("mbox_select_playlists",     list["playlists"],	"none");	
-	dialog += mboxCardConnect_select("mbox_select_radio",         list["radio"],		"none");	
+	for (var key in list) { select = { "album_info" : lang("ALBUMS")+" (Album)", "album_info_2" : lang("ALBUMS")+" (Artist)",
+	                        "radio" : lang("STREAMS"), "playlists" : lang("PLAYLISTS") }; }
+	dialog += mboxCardConnect_select("mbox_select_type",         select,               "block", onchange);
+	dialog += mboxCardConnect_select("mbox_select_album_info",   list["album_info"],   "block");
+	dialog += mboxCardConnect_select("mbox_select_album_info_2", list["album_info_2"], "none");
+	dialog += mboxCardConnect_select("mbox_select_playlists",    list["playlists"],	   "none");
+	dialog += mboxCardConnect_select("mbox_select_radio",        list["radio"],		   "none");
 	
 	appMsg.confirm(dialog,cmd,250);
 	}
@@ -76,10 +77,14 @@ function mboxCardConnect_select(id, select, visible="block", onchange="") {
 	}
 	
 function mboxCardConnect_selectVisible(change) {
-	var lists = ["album_info","playlists","radio"];
+	var lists = ["album_info","album_info_2","playlists","radio"];
 	for (var i=0;i<lists.length;i++) {
-		if (lists[i] == change) { elementVisible("mbox_select_"+change+"_div");  setValueById('mbox_select_connect',change); }
-		else			{ elementHidden("mbox_select_"+lists[i]+"_div"); }
+		if (lists[i] == change) {
+		    elementVisible("mbox_select_"+change+"_div");  setValueById('mbox_select_connect',change);
+		    }
+		else {
+		    elementHidden("mbox_select_"+lists[i]+"_div");
+		    }
 		}
 	}
 

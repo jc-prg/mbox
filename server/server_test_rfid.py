@@ -27,12 +27,6 @@ print("--------------------------------")
 
 stage.test = True
 
-# start and configure logging
-# ----------------------------------------------
-
-run_cmd.init_logging(mbox.api_name_RFID + mbox.api_version + "   (test-script/" + str(stage.log_level) + ")",
-                   '/log/server_RFID.log')
-
 # -----------------------------------
 # init
 # -----------------------------------

@@ -3,7 +3,8 @@
 
 import RPi.GPIO as GPIO
 import modules_rfid.MFRC522 as MFRC522
-import modules.jcJson as jcJSON
+import modules.json_db as json_db
+import modules.config_mbox as mbox
 import modules.config_stage as stage
 import signal
 import threading
@@ -22,7 +23,7 @@ logging.basicConfig(level=logging.INFO)
 
 # read from file, which stage should be use ... to switch between stages during runtime
 def get_active_stage():
-    settings = jcJSON.read("../../active")
+    settings = json_db.read(mbox.system_active_stage)
     return settings["active_stage"]
 
 

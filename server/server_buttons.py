@@ -137,8 +137,8 @@ def call_api(button, param=None):
                 response = requests.get(url + "rpi-status/button/")
             else:
                 response = requests.put(url + "set-button/" + button + "/")
-            if "volume" in cmd[button]:
-                response = requests.get(cmd[button])
+                if "volume" in cmd[button]:
+                    response = requests.get(cmd[button])
         else:
             response = requests.put(url + "set-button/no_button/")
 

@@ -60,7 +60,7 @@ else:
 
 # -----------------------------------
 
-cmd = {"status": url + "status/", "rpi-status": "rpi-status/led/"}
+cmd = {"status": url + "status/", "rpi-status": url + "rpi-status/led/"}
 wait = 0.5
 ProcessRunning = True
 ServerRunning = False

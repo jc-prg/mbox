@@ -121,9 +121,9 @@ function mboxSettingsStatus (data) {
 
     var cmd_speed = "mboxSettingsStatusPerformance_load();";
 	text += table.row_one("<hr/>");
-	text += table.row( ["<b>API request:",         "<div id=\"duration_api_request\">"+button(cmd_speed, "measure speed")+"</div>" ] );
-	text += table.row( ["<b>DB request:",          "<div id=\"duration_db_request\">"+button(cmd_speed, "measure speed")+"</div>" ] );
-	text += table.row( ["<b>DB request per file:", "<div id=\"duration_db_request_per_file\">"+button(cmd_speed, "measure speed")+"</div>" ] );
+	text += table.row( ["<b>API request:",         "<div id=\"duration_api_request\">"+button(cmd_speed, "check performance")+"</div>" ] );
+	text += table.row( ["<b>DB request:",          "<div id=\"duration_db_request\">"+button(cmd_speed, "check performance")+"</div>" ] );
+	text += table.row( ["<b>DB request per file:", "<div id=\"duration_db_request_per_file\">"+button(cmd_speed, "check performance")+"</div>" ] );
 
 	text += table.row_one("<hr/>");
 	text += table.row_one("<center><b>"+lang("DISC_SPACE")+"</b></center>");

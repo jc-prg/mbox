@@ -39,8 +39,8 @@ function mboxControl(data) {
 	var d            = data["STATUS"]["playback"];
 	var l            = data["STATUS"]["load_data"];
 	if (!d)	{
-	    console.warning("mboxControl: Status data not correct ...");
-	    console.warning(data["STATUS"]);
+	    console.warn("mboxControl: Status data not correct ...");
+	    console.warn(data["STATUS"]);
 	    return;
 	    }
 	
@@ -247,7 +247,7 @@ function mboxControlVolumeShow(volume,mute) {
                 }
 
 	// check volume and show in navigation bar
-	if (volume > 1) { console.warning(volume); volume = volume / 100; }
+	if (volume > 1) { console.warn(volume); volume = volume / 100; }
     var volume  = Math.round( volume * 20 );
     var vol_str = "<font color='" + vol_color + "'>";
     for (var i=0; i<volume; i++) { vol_str += "I"; }

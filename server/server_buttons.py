@@ -86,6 +86,7 @@ def loop():
     same_key = 0
 
     while True:
+        call_api("rpi-status")
         time.sleep(wait)
         # check if active stage
         if get_active_stage() == this_stage:
@@ -132,7 +133,10 @@ def call_api(button, param=None):
             logging.info(request_url)
 
         elif button != "":
-            response = requests.put(url + "set-button/" + button + "/")
+            if button == "rpi-status":
+                response = requests.get(url + "rpi-status/button/")
+            else:
+                response = requests.put(url + "set-button/" + button + "/")
             if "volume" in cmd[button]:
                 response = requests.get(cmd[button])
         else:

@@ -60,7 +60,7 @@ else:
 
 # -----------------------------------
 
-cmd = {"status": url + "status/"}
+cmd = {"status": url + "status/", "rpi-status": "rpi-status/led/"}
 wait = 0.5
 ProcessRunning = True
 ServerRunning = False
@@ -111,6 +111,8 @@ def loop():
     light.volume = 0
 
     while ProcessRunning:
+
+        call_api("rpi-status")
 
         # switch on/off
         act_active = get_active_stage()

@@ -108,6 +108,8 @@ def loop_rfid_read():
 
         if this_stage == act_active:
 
+            call_api("rpi-status", "rfid")
+
             # Scan for card
             (status, TagType) = MIFAREReader.MFRC522_Request(MIFAREReader.PICC_REQIDL)
 
@@ -141,7 +143,6 @@ def loop_rfid_read():
                         i = -1
 
             time.sleep(wait)
-            call_api("rpi-status", "rfid")
 
 
 def end_all(end1, end2):

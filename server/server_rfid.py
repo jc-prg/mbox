@@ -135,16 +135,8 @@ def loop_rfid_read():
                     i = 1
 
             else:
-                if card_id == "":
-                    logging.info("waiting ...")
-
-                else:
-                    card_id = ""
-                    if i > 0:
-                        i = 0
-                    elif i != -1:
-                        call_api("setcard", "no_card")
-                        i = -1
+                card_id = ""
+                call_api("setcard", "no_card")
 
             time.sleep(wait)
 

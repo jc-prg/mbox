@@ -122,7 +122,8 @@ def destroy():
 
 
 def call_api(button, param=None):
-    logging.info("... pressed: " + button)
+    if button != "rpi-status":
+        logging.info("... pressed: " + button)
     if button == "mute":
         time.sleep(1)
 

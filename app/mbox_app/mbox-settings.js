@@ -119,18 +119,19 @@ function mboxSettingsStatus (data) {
 	text += table.row( ["<b>Initial load:",		Math.round(data["STATUS"]["system"]["server_start_duration"]*10)/10+" s" ] );
 	text += table.row( ["<b>Running for:",		Math.round(data["STATUS"]["system"]["server_running"]) +" s" ] );
 
+    var cmd_speed = "mboxSettingsStatusPerformance_load();";
 	text += table.row_one("<hr/>");
-	text += table.row( ["<b>API request:", 		"<div id=\"duration_api_request\">Please Wait</div>" ] );
-	text += table.row( ["<b>DB request:",			"<div id=\"duration_db_request\">Please Wait</div>" ] );
-	text += table.row( ["<b>DB request per file:",	"<div id=\"duration_db_request_per_file\">Please Wait</div>" ] );
+	text += table.row( ["<b>API request:",         "<div id=\"duration_api_request\">"+button(cmd_speed, "measure speed")+"</div>" ] );
+	text += table.row( ["<b>DB request:",          "<div id=\"duration_db_request\">"+button(cmd_speed, "measure speed")+"</div>" ] );
+	text += table.row( ["<b>DB request per file:", "<div id=\"duration_db_request_per_file\">"+button(cmd_speed, "measure speed")+"</div>" ] );
 
 	text += table.row_one("<hr/>");
 	text += table.row_one("<center><b>"+lang("DISC_SPACE")+"</b></center>");
 	text += table.row_one("<hr/>");
-	text += table.row( ["<b>System Used:",		Math.round(data["STATUS"]["system"]["space_main_used"]/1024/1024*10)/10+" GByte" ] );
-	text += table.row( ["<b>System Total:",		Math.round(data["STATUS"]["system"]["space_main_available"]/1024/1024*10)/10+" GByte" ] );
-	text += table.row( ["<b>Data Used:",			Math.round(data["STATUS"]["system"]["space_usb_used"]/1024/1024*10)/10+" GByte" ] );
-	text += table.row( ["<b>Data Total:",			Math.round(data["STATUS"]["system"]["space_usb_available"]/1024/1024*10)/10+" GByte" ] );
+	text += table.row( ["<b>System Used:",    Math.round(data["STATUS"]["system"]["space_main_used"]/1024/1024*10)/10+" GByte" ] );
+	text += table.row( ["<b>System Total:",   Math.round(data["STATUS"]["system"]["space_main_available"]/1024/1024*10)/10+" GByte" ] );
+	text += table.row( ["<b>Data Used:",      Math.round(data["STATUS"]["system"]["space_usb_used"]/1024/1024*10)/10+" GByte" ] );
+	text += table.row( ["<b>Data Total:",     Math.round(data["STATUS"]["system"]["space_usb_available"]/1024/1024*10)/10+" GByte" ] );
 
 	text += table.row_one("<hr/>");
 	text += table.row_one("<center><b>" + lang("SIMULATE_CMD") + "</b></center>");
@@ -157,7 +158,6 @@ function mboxSettingsStatus (data) {
 	text += table.end();
 
 	setTextById("setting2",text);
-	mboxSettingsStatusPerformance_load();
 
 	//---------------------------------
 

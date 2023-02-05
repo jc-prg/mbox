@@ -68,12 +68,15 @@ ServerRunning = False
 
 # ----------------------
 
-def call_api(command, card_id):
+def call_api(command, card_id, method="put"):
     data1 = {}
     logging.info("Read API: " + command + ":" + card_id)
 
     try:
-        response = requests.put(cmd[command] + card_id + "/")
+        if method == "put":
+            response = requests.put(cmd[command] + card_id + "/")
+        elif method == "get":
+            response = requests.get(cmd[command] + card_id + "/")
         data1 = response.json()
 
     except requests.exceptions.RequestException as e:
@@ -109,7 +112,7 @@ def loop_rfid_read():
 
         if this_stage == act_active:
 
-            call_api("rpi-status", "rfid")
+            call_api("rpi-status", "rfid", "get")
 
             # Scan for card
             (status, TagType) = MIFAREReader.MFRC522_Request(MIFAREReader.PICC_REQIDL)

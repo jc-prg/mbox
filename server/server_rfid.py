@@ -95,6 +95,7 @@ def loop_rfid_read():
     card_id = ""
 
     logging.info("Start RFID detection ...")
+    call_api("setcard", "no_card")
 
     while ProcessRunning:
 

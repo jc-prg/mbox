@@ -60,7 +60,7 @@ else:
 
 # -----------------------------------
 
-cmd = {"status": url + "status/", "setcard": url + "set-card/"}
+cmd = {"status": url + "status/", "setcard": url + "set-card/", "rpi-status": url + "rpi-status/"}
 wait = 0.5
 ProcessRunning = True
 ServerRunning = False
@@ -141,7 +141,7 @@ def loop_rfid_read():
                         i = -1
 
             time.sleep(wait)
-            call_api("rpi-status","rfid")
+            call_api("rpi-status", "rfid")
 
 
 def end_all(end1, end2):

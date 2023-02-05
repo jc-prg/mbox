@@ -76,6 +76,8 @@ def call_api(command):
     try:
         response = requests.get(cmd[command])
         data1 = response.json()
+        logging.debug(str(data1))
+
     except requests.exceptions.RequestException as e:
         logging.info("Error connecting to API: " + str(e))
         data1 = {}
@@ -111,8 +113,6 @@ def loop():
     light.volume = 0
 
     while ProcessRunning:
-
-        call_api("rpi-status")
 
         # switch on/off
         act_active = get_active_stage()
@@ -265,6 +265,7 @@ def loop():
                     logging.debug("Volume: ERROR")
 
         blink("main")
+        call_api("rpi-status")
 
 
 def blink(type):

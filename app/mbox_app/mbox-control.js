@@ -281,7 +281,7 @@ function mboxControlVolumeControl(volume, mute) {
             }
 
 	// check volume and show in navigation bar
-    if (volume > 1) { console.warning(volume); volume = volume / 100; }
+    if (volume > 1) { console.warn(volume); volume = volume / 100; }
     volume  = Math.round( volume * 20 );
     var vol_str = "<font color='" + vol_color + "'>";
     for (var i=0; i<volume; i++) { vol_str += "I"; }

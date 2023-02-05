@@ -7,6 +7,7 @@
 mboxCardUUID     = "";
 mboxCardCID      = "";
 mboxCardDetected = "";
+mboxCardConnect_lists = {};
 
 
 function mboxCardSimulate(card_uuid) {
@@ -44,23 +45,44 @@ function mboxCardWriteRFID(data,known="",list={}) {
 
 function mboxCardConnect(card,list={}) {
 	var dialog   = "<b>"+lang("RFID_NEW_CARD") +":</b> " + card + "<br/>";
-	dialog	    += lang("CARD_SELECT_TO_CONNECT") + "<br/>&nbsp;<br/>.";
+	dialog	    += lang("CARD_SELECT_TO_CONNECT") + "<br/>&nbsp;";
 	dialog      += "<input id='mbox_select_connect' style='display:none' value='album_info'>";
-	var cmd      = "mboxCardConnect_exe('"+card+"');";
-	var onchange = "select_x=document.getElementById(\"mbox_select_type\").value;mboxCardConnect_selectVisible(select_x);";
 
+	var cmd      = "mboxCardConnect_exe('"+card+"');";
 	var select = {};
-	console.error(list);
 	for (var key in list) { select = { "album_info" : lang("ALBUMS")+" (Album)", "album_info_2" : lang("ALBUMS")+" (Artist)",
 	                        "radio" : lang("STREAMS"), "playlists" : lang("PLAYLISTS") }; }
-	dialog += mboxCardConnect_select("mbox_select_type",         select,               "block", onchange);
-	dialog += mboxCardConnect_select("mbox_select_album_info",   list["album_info"],   "block");
-	dialog += mboxCardConnect_select("mbox_select_album_info_2", list["album_info_2"], "none");
-	dialog += mboxCardConnect_select("mbox_select_playlists",    list["playlists"],	   "none");
-	dialog += mboxCardConnect_select("mbox_select_radio",        list["radio"],		   "none");
-	
+
+	list["select"] = select;
+	mboxCardConnect_lists  = list;
+
+    dialog += mboxCardConnect_fields();
 	appMsg.confirm(dialog,cmd,250);
 	}
+
+function mboxCardConnect_fields(filter="", update="") {
+    console.log("mboxCardConnect_fields: '"+filter+"', '"+update+"'");
+    var dialog = "";
+    if (filter == "") {
+        var onchange   = "select_x=document.getElementById(\"mbox_select_type\").value;";
+        onchange      += "mboxCardConnect_selectVisible(select_x);";
+        onchange      += "document.getElementById(\"mbox_select_filter\").value = \"\";";
+        onchange      += "mboxCardConnect_fields(\"-------\");";
+        var onchange_2 = "select_x=document.getElementById(\"mbox_select_type\").value;";
+        onchange_2    += "select_y=document.getElementById(\"mbox_select_filter\").value;";
+        onchange_2    += "mboxCardConnect_fields(select_y, select_x);";
+	    dialog += mboxCardConnect_select("mbox_select_type",     "select",       "block", onchange);
+	    dialog += mboxCardConnect_filter("mbox_select_filter",   "block",        onchange_2);
+	    }
+	if (filter == "-------") { filter = ""; }
+    dialog += mboxCardConnect_select("mbox_select_album_info",   "album_info",   "block", "", filter);
+    dialog += mboxCardConnect_select("mbox_select_album_info_2", "album_info_2", "none",  "", filter);
+    dialog += mboxCardConnect_select("mbox_select_playlists",    "playlists",	 "none",  "", filter);
+    dialog += mboxCardConnect_select("mbox_select_radio",        "radio",		 "none",  "", filter);
+    if (filter == "") {
+    	return dialog;
+    	}
+    }
 	
 function mboxCardConnect_exe(rfid) {
 	type = getValueById('mbox_select_connect');
@@ -68,12 +90,39 @@ function mboxCardConnect_exe(rfid) {
 	appFW.requestAPI('PUT', ['cards', uuid, rfid ],'', mboxDataReturnMsg )
 	}
 
-function mboxCardConnect_select(id, select, visible="block", onchange="") {
-	var text  = "<div id='"+id+"_div' style='display:"+visible+"'><select id='"+id+"' style='width:200px;' onchange='"+onchange+"'>";
+function mboxCardConnect_filter(id, visible, onchange) {
+	var text = "<input id='"+id+"' style='width:200px;margin:5px;' onKeyUp='"+onchange+"'></br>";
+    var container = "<div id='"+id+"_div' style='display:"+visible+"'>";
+    container += text;
+    container += "</div>";
+    return container;
+    }
+
+function mboxCardConnect_select(id, select, visible="block", onchange="", filter="") {
+    var select = mboxCardConnect_lists[select];
 	var order = sortDictByValue(select);
-	for (var i=0;i<order.length;i++) { text += "<option value='"+order[i]+"'>"+select[order[i]]+"</option>"; }	
-	text += "</select><br/>&nbsp;</div>";
-	return text;
+	var text = "<select id='"+id+"' style='width:200px;margin:5px;' onchange='"+onchange+"'>";
+	for (var i=0;i<order.length;i++) {
+	    var value = select[order[i]];
+	    if (filter == "") {
+	        text += "<option value='"+order[i]+"'>"+value+"</option>";
+	        }
+	    else if (value.toLowerCase().includes(filter.toLowerCase())) {
+	        text += "<option value='"+order[i]+"'>"+value+"</option>";
+	        }
+	    }
+	text += "</select><br/>";
+
+    if (document.getElementById(id+"_div")) {
+        document.getElementById(id+"_div").innerHTML = text;
+//        document.getElementById(id+"_div").style.display = visible;
+        }
+    else {
+        var container = "<div id='"+id+"_div' style='display:"+visible+"'>";
+        container += text;
+        container += "</div>";
+        return container;
+        }
 	}
 	
 function mboxCardConnect_selectVisible(change) {

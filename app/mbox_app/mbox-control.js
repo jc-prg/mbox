@@ -55,6 +55,8 @@ function mboxControl(data) {
 	var playing_album = "";
 	var pause_status  = "";
 
+	mboxControlRpiStatus(data);
+
 	if (status == "State.Paused") {
 	    playing = 1;
 	    pause_status = " ... <i>pause</i>";
@@ -320,6 +322,17 @@ function mboxControlShowUUID(uuid="") {
 		console.warn("mboxControlShowUUID ... uuid missing");
 		}
 	}
+
+function mboxControlRpiStatus(data) {
+	for (var key in data["STATUS"]["rpi-server"]) {
+	    var status = data["STATUS"]["rpi-server"][key]["status"];
+	    var duration = "";
+	    if (data["STATUS"]["rpi-server"][key]["status"] != "NOT-STARTED") {
+            status += " (" +  Math.round(data["STATUS"]["rpi-server"][key]["last_diff"]*10)/10 + "s)";
+	        }
+	    setTextById("rpi_status_"+key, status);
+	    }
+    }
 	
 function mboxControlReloadView() {
 	if (mbox_mode == "album")		{ mboxAlbumAll_load("",mbox_last_uuid); }

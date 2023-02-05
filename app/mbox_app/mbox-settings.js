@@ -83,12 +83,7 @@ function mboxSettingsStatus (data) {
 
 	text += table.row_one("<hr/>");
 	for (var key in data["STATUS"]["rpi-server"]) {
-	    var rpi_duration = "";
-	    if (data["STATUS"]["rpi-server"][key]["status"] != "NOT-STARTED") {
-	        rpi_duration = " (" + Math.round(data["STATUS"]["rpi-server"][key]["last_diff"], 1) + "s)";
-	        }
-		text += table.row( ["<b>RPi "+key+":",
-		    "<div id='rpi_status_"+key+"'>" + data["STATUS"]["rpi-server"][key]["status"] + rpi_duration + "</div>" ] );
+		text += table.row( ["<b>RPi "+key+":", "<div id='rpi_status_"+key+"'>please wait ...</div>" ] );
 	    }
 	
 	text += table.row_one("<hr/>");

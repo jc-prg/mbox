@@ -35,7 +35,7 @@ function mboxViewsList_load(data,type) {
 	//console.log(data);
 	}
 
-function mboxViewsList(type, data, selected_uuid="", filter_key="", filter_text="", sort_keys=[], callTrackList="", chapter_rows=true) {
+function mboxViewsList(type, data, selected_uuid="", filter_key="", filter_html="", sort_keys=[], callTrackList="", chapter_rows=true) {
 
 	var text             = "";
 	var print            = mboxCoverListStart();
@@ -76,15 +76,29 @@ function mboxViewsList(type, data, selected_uuid="", filter_key="", filter_text=
 	
 	// filter entries
 	var filtered_entries = [];
-	for (var a=0;a<sorted_entries.length;a++) {
-		var keys           = sorted_entries[a].split("||");
-		var uuid           = keys[sort_keys.length+1];		
-		var isvalidfilter  = false;
-		if (entry_info[uuid] && filter_key[0] in entry_info[uuid] && entry_info[uuid][filter_key[0]].indexOf(filter_key[1]) > -1) { isvalidfilter = true; }
-		if (filter_key == "" || isvalidfilter) {
-			filtered_entries.push( sorted_entries[a] );
-			}
-		}
+    for (var a=0;a<sorted_entries.length;a++) {
+        var keys           = sorted_entries[a].split("||");
+        var uuid           = keys[sort_keys.length+1];
+        var isvalidfilter  = false;
+        if (filter_key[0] != "search") {
+
+            if (entry_info[uuid] && filter_key[0] in entry_info[uuid] && entry_info[uuid][filter_key[0]].indexOf(filter_key[1]) > -1)
+                { isvalidfilter = true; }
+            }
+        else {
+            var search_text = filter_key[1].toLowerCase();
+            if (entry_info[uuid] && entry_info[uuid]["title"] && entry_info[uuid]["title"].toLowerCase().includes(search_text))
+                { isvalidfilter = true; }
+            if (entry_info[uuid] && entry_info[uuid]["album"] && entry_info[uuid]["album"].toLowerCase().includes(search_text))
+                { isvalidfilter = true; }
+            if (entry_info[uuid] && entry_info[uuid]["artist"] && entry_info[uuid]["artist"].toLowerCase().includes(search_text))
+                { isvalidfilter = true; }
+            }
+
+        if (filter_key == "" || isvalidfilter) {
+            filtered_entries.push( sorted_entries[a] );
+            }
+        }
 	if (filtered_entries != sorted_entries) { isvalidfilter = true; }
 	
 	// count chapters based on first character
@@ -201,9 +215,9 @@ function mboxViewsList(type, data, selected_uuid="", filter_key="", filter_text=
 	setTextById("ontop",  print);
 
 	// set and show filter if defined
-	setTextById("frame2", filter_text);
-	if (filter_text != "")	{ mboxControlToggleFilter(true); }
-	else			{ mboxControlToggleFilter(false); }
+	if (filter_html != "RELOAD") { setTextById("frame2", filter_html); }
+	if (filter_html == "")	     { mboxControlToggleFilter(false); }
+	else                         { mboxControlToggleFilter(true); }
 
 	// load track list, if uuid is defined
 	if (entry_active && entry_active != "" && entry_active != "-") {	

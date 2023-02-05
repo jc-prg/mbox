@@ -7,35 +7,48 @@
 var reloadInterval = app_reload_interval;
 
 function mboxAlbumAll_load(filter="",uuid="") {
-	if (filter["UUID"]) 	{ filter = ">>"+filter["UUID"]; } 	// load after API call
-	else 			{ filter = filter+">>"+uuid; }		// load by filter function
-	appFW.requestAPI("GET",["db","album_info",filter], "", [mboxAlbumAll, uuid],"","mboxAlbumAll_New");
+    // load after API call
+	if (filter["UUID"]) {
+	    filter = ">>"+filter["UUID"];
+	    }
+	// load by filter function
+	else {
+	    filter = filter+">>"+uuid;
+	    }
+	appFW.requestAPI("GET",["db","album_info",filter], "", [mboxAlbumAll, uuid],"","mboxAlbumAll");
 	scrollToTop();
 	}
 	
-function mboxAlbumAll_reload() { mboxAlbumAll(data=mbox_list_data); }
+function mboxAlbumAll_reload(filter="") { mboxAlbumAll(data=mbox_list_data, "", filter); }
 
-function mboxAlbumAll(data, uuid) {
+function mboxAlbumAll(data, uuid="", filter="") {
 
 	mbox_list_data   = data;
 	var entries_info = data["DATA"]["album_info"];
 	var the_filter   = [""];
+	var filter_html  = "";
 
-	// create filter
-	if ("db_filter" in data["REQUEST"]) {
-	        var filter_uuid     = data["REQUEST"]["db_filter"].split(">>");
-		var filters         = filter_uuid[0];
-		entry_active        = filter_uuid[1];
-		the_filter          = filters.split(":");
-		}
-	else {	filters = ""; }
-	var filter = mboxAlbumAll_filter(entries_info,filters);
+    // create filter
+    if (filter == "") {
+        if ("db_filter" in data["REQUEST"]) {
+                var filter_uuid     = data["REQUEST"]["db_filter"].split(">>");
+            var filters         = filter_uuid[0];
+            entry_active        = filter_uuid[1];
+            the_filter          = filters.split(":");
+            }
+        else {	filters = ""; }
+        var filter_html = mboxAlbumAll_filter(entries_info, filters);
+        }
+    else {
+        the_filter          = filter.split(":");
+        filter_html         = "RELOAD";
+        }
 	
 	// create sort keys
 	var sort_keys = ["artist","album"];
 
 	// create list view
-	mboxViewsList(type="album", data=entries_info, selected_uuid=uuid, filter_key=the_filter, filter_text=filter, sort_keys=sort_keys, callTrackList="mboxViewsTrackList");
+	mboxViewsList(type="album", data=entries_info, selected_uuid=uuid, filter_key=the_filter, filter_html=filter_html, sort_keys=sort_keys, callTrackList="mboxViewsTrackList");
 	}
 
 function mboxAlbumAll_filter(album_info,filters) {
@@ -48,11 +61,15 @@ function mboxAlbumAll_filter(album_info,filters) {
 	
 	filter += "<div class='album_filter'>";
 	filter += table.start();
-	filter += table.row(["<i>"+lang("CATEGORY")+":", 	mboxAlbumFilterPath(album_info,filters) ]);
+	filter += table.row(["<i>"+lang("CATEGORY")+":",    mboxAlbumFilterPath(album_info,filters) ]);
 	filter += table.end();
 	filter += "</div><div class='album_filter'>";
 	filter += table.start();
-	filter += table.row(["<i>"+lang("BAND_ARTIST")+":", 	mboxAlbumFilterArtist(album_info,filters) ]);
+	filter += table.row(["<i>"+lang("BAND_ARTIST")+":", mboxAlbumFilterArtist(album_info,filters) ]);
+	filter += table.end();
+	filter += "</div><div class='album_filter'>";
+	filter += table.start();
+	filter += table.row(["<i>"+lang("SEARCH")+":",      mboxAlbumFilterSearch(album_info,filters) ]);
 	filter += table.end();
 	filter += "</div>";
 	
@@ -61,7 +78,7 @@ function mboxAlbumAll_filter(album_info,filters) {
 
 function mboxAlbumFilterPath(data,selected) {
 
-	var command  = "mboxAlbumAll_load(document.getElementById('filter_album').value);";
+	var command  = "mboxAlbumAll_reload(document.getElementById('filter_album').value);";
 	var filter   = "<select id='filter_album' onchange=\""+command+"\"  class=\"album_filter_dropdown\">"; 
 	var criteria = "albumpath:";
 	var list     = [];
@@ -93,7 +110,7 @@ function mboxAlbumFilterPath(data,selected) {
 
 function mboxAlbumFilterArtist(data,selected) {
 
-	var command = "mboxAlbumAll_load(document.getElementById('filter_artist').value);";
+	var command = "mboxAlbumAll_reload(document.getElementById('filter_artist').value);";
 	var filter   = "<select id='filter_artist' onchange=\""+command+"\" class=\"album_filter_dropdown\">"; 
 	var criteria = "artist:";
 	var list     = [];
@@ -108,14 +125,26 @@ function mboxAlbumFilterArtist(data,selected) {
 	list.sort();
 	filter += "<option></option>";
 	for (var i=0;i<list.length;i++) {
-		if (criteria+list[i] == selected) 	{ sel = " selected"; }
-		else					{ sel = ""; }
+		if (criteria+list[i] == selected) { sel = " selected"; }
+		else                              { sel = ""; }
 		filter += "<option"+sel+" value='"+ criteria + list[i] + "'>" + list[i] + "</option>";
 		}
 	filter += "<select>";
 	filter += "<button onclick=\""+command+"\" class=\"album_filter_button\">&gt;</button>";
 	return filter;
 	}
+
+function mboxAlbumFilterSearch(data,selected) {
+	var criteria = "search:";
+	var value = selected.split(":")[1];
+	if (value == undefined) { value = ""; }
+    var command = "select_x='"+criteria+"'+document.getElementById('filter_search').value;";
+    //command += "mboxAlbumAll_load(select_x);";
+    command += "mboxAlbumAll_reload(select_x);";
+    var filter = "<input id=\"filter_search\" onKeyUp=\""+command+"\" class=\"album_filter_dropdown\" value=\""+value+"\">";
+	filter += "<button onclick=\""+command+"\" class=\"album_filter_button\">&gt;</button>";
+    return filter;
+    }
 
 function mboxAlbumList(data) { mboxViewsTrackList(data, "album"); }
 

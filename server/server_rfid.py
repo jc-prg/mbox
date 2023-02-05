@@ -141,6 +141,7 @@ def loop_rfid_read():
                         i = -1
 
             time.sleep(wait)
+            call_api("rpi-status","rfid")
 
 
 def end_all(end1, end2):

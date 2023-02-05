@@ -24,6 +24,12 @@ rfid_ctrl = {
     "ButtonID": ""
 }
 
+rpi_ctrl = {
+    "led": {"status": "OFF", "last_call": 0},
+    "rfid": {"status": "OFF", "last_call": 0},
+    "button": {"status": "OFF", "last_call": 0}
+}
+
 disk_usage_output = [-1, -1, -1, -1]
 disk_use_cmd = "du -c -d 0 "
 disk_free_cmd = "df --output=size "

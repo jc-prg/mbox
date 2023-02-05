@@ -80,6 +80,8 @@ class ServerApi:
         data["REQUEST"]["start-time"] = time.time()
 
         data["STATUS"] = {}
+        data["STATUS"]["rpi-server"] = mbox.rpi_ctrl
+
         data["DATA"] = {}
         data["DATA"]["SHORT"] = {}
 
@@ -105,6 +107,16 @@ class ServerApi:
         data_end = data.copy()
         data_end["REQUEST"]["load-time"] = time.time() - data_end["REQUEST"]["start-time"]
         data_end["STATUS"]["active_device"] = mbox.active_device
+
+        for key in data_end["STATUS"]["rpi-server"]:
+            data_end["STATUS"]["rpi-server"][key]["last_diff"] = \
+                time.time() - data_end["STATUS"]["rpi-server"][key]["last_call"]
+            if data_end["STATUS"]["rpi-server"][key]["last_diff"] > 1500000000:
+                data_end["STATUS"]["rpi-server"][key]["status"] = "NOT-STARTED"
+            elif data_end["STATUS"]["rpi-server"][key]["last_diff"] > 10:
+                data_end["STATUS"]["rpi-server"][key]["status"] = "ERROR"
+            elif data_end["STATUS"]["rpi-server"][key]["last_diff"] > 5:
+                data_end["STATUS"]["rpi-server"][key]["status"] = "WARNING"
 
         if "no-playback" not in reduce_data:
             data_end["STATUS"]["playback"] = self.music_ctrl.music_ctrl
@@ -168,6 +180,20 @@ class ServerApi:
             data = self.response_end(data)
         except Exception as e:
             self.logging.error("status: "+str(e))
+        return data
+
+    def rpi_status(self, module):
+        """
+        get life signals from rpi modules LED, BUTTON, RFID
+        """
+        module_values = ["rfid","button","led"]
+        data = self.response_start("rpi-status", "rpi-status", "", "", "")
+        if module in module_values:
+            mbox.rpi_ctrl[module]["status"] = "ON"
+            mbox.rpi_ctrl[module]["last_call"] = time.time()
+        else:
+            data = self.response_error(data, "rpi_status: module '"+str(module)+"' not defined.")
+        data = self.response_end(data, ["no-statistic", "no-system", "no-load"])
         return data
 
     def volume(self, param):

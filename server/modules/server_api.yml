@@ -170,6 +170,33 @@ paths:
               STATUS:
                 $ref: "#/definitions/STATUS"
 
+  /rpi-status/{module}/:
+    get:
+      operationId: modules.server_cmd.api_calls.rpi_status
+      tags:
+        - maintain
+      summary: get life signal from rpi modules (RFID, LED, BUTTON)
+      description: get life signal from rpi modules (RFID, LED, BUTTON)
+      parameters:
+        - name: module
+          in: path
+          type: string
+          required: true
+          enum: ["rfid","button","led"]
+      responses:
+        200:
+          description: Successfully got answer
+          schema:
+            properties:
+              API:
+                $ref: "#/definitions/API"
+              REQUEST:
+                $ref: "#/definitions/REQUEST"
+              LOAD:
+                $ref: "#/definitions/LOAD"
+              STATUS:
+                $ref: "#/definitions/STATUS"
+
 #------------------------ READ DATA ------------------------
 
   /db/{databases}/{db_filter}/:
@@ -586,7 +613,6 @@ paths:
                 $ref: "#/definitions/LOAD"
               STATUS:
                 $ref: "#/definitions/STATUS"
-
 
   /speak/{message}/:
     get:

@@ -80,6 +80,16 @@ function mboxSettingsStatus (data) {
 		text += table.row( ["<b>Status:",   data["STATUS"]["playback"]["player_status"] +
 		                                    " (<a href='' onclick='alert(\"" + filename + "\")'>file " + playlist_pos + "/" + playlist_len + "</a>)" ] );
 		}
+
+	text += table.row_one("<hr/>");
+	for (var key in data["STATUS"]["rpi-server"]) {
+	    var rpi_duration = "";
+	    if (data["STATUS"]["rpi-server"][key]["status"] != "NOT-STARTED") {
+	        rpi_duration = " (" + Math.round(data["STATUS"]["rpi-server"][key]["last_diff"], 1) + "s)";
+	        }
+		text += table.row( ["<b>RPi "+key+":",
+		    "<div id='rpi_status_"+key+"'>" + data["STATUS"]["rpi-server"][key]["status"] + rpi_duration + "</div>" ] );
+	    }
 	
 	text += table.row_one("<hr/>");
 	text += table.row( ["<b>Files:", 		data["STATUS"]["statistic"]["files"] ] );

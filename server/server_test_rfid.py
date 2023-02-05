@@ -15,9 +15,6 @@ import modules.run_cmd as run_cmd
 import modules_rfid.MFRC522 as MFRC522
 
 
-print("TEST")
-
-
 # set start time and write title/version/stage
 # ----------------------------------------------
 mbox.start_time = time.time()
@@ -25,21 +22,12 @@ print("--------------------------------")
 print(mbox.api_name_RFID + mbox.api_version + "   (" + str(stage.rollout) + ")")
 print("--------------------------------")
 
-# ---------------------------------------------
 
 stage.test = True
-
-# -----------------------------------
-# init
-# -----------------------------------
-
 wait = 0.5
-
 ProcessRunning = True
 ServerRunning = False
 
-
-# ----------------------
 
 def loop_rfid_read():
     global ProcessRunning, other, MIFAREReader, this_stage

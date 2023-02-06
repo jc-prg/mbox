@@ -45,6 +45,10 @@ def run_cmd(cmd_line):
 def check_disk_space(init=False):
     # initial load
     out = mbox.disk_usage_output
+    # "space_usb_used": out[0],
+    # "space_usb_available": out[1],
+    # "space_main_used": out[2],
+    # "space_main_available": out[3],
 
     # get data
     hdd = psutil.disk_usage(stage.mount_main_sys)
@@ -52,60 +56,15 @@ def check_disk_space(init=False):
     out[2] = hdd.used / 1024
     out[3] = hdd.total / 1024
 
-    if stage.mount_data != "" and stage.mount_system != stage.mount_data and os.path.exists(stage.mount_data):
-
-        usb = psutil.disk_usage(stage.mount_data)
-        out[0] = usb.used  / (2**30)
-        out[1] = usb.total  / (2**30)
-
-    return out
-
-    #"space_usb_used": out[0],
-    #"space_usb_available": out[1],
-    #"space_main_used": out[2],
-    #"space_main_available": out[3],
-
-    logging.info("............... " +str(hdd))
+#    partitions = psutil.disk_partitions()
+#    for p in partitions: logging.info(str(p.mountpoint))
 
     if stage.mount_data != "" and stage.mount_system != stage.mount_data and os.path.exists(stage.mount_data):
 
-        disk_use, err = run_cmd(mbox.disk_use_cmd + stage.mount_data)
-        try:
-            out[0] = float(disk_use.split("\t")[0])
-        except Exception as e:
-            run_logging.warning("0 Error in reading disk spaces (data drive) ..." + str(e))
-            run_logging.warning("  - " + mbox.disk_use_cmd + stage.mount_data)
+        usb = psutil.disk_usage(stage.mount_main_sys + stage.mount_data)
+        out[0] = usb.used  / 1024
+        out[1] = usb.total  / 1024
 
-        disk_free, err = run_cmd(mbox.disk_free_cmd + stage.mount_data)
-        try:
-            out[1] = float(disk_free.split("\n")[1])
-            # out[1] = float(filter(str.isdigit, out[1]))
-        except Exception as e:
-            run_logging.warning("1 Error in reading disk spaces (data drive) ..." + str(e))
-            run_logging.warning("  - " + disk_free.split("\n")[1])
-            run_logging.warning("  - " + mbox.disk_free_cmd + stage.mount_data)
-
-    if stage.mount_system != "" and os.path.exists(stage.mount_data):
-
-        if init:
-            disk_use_mount, err = run_cmd(mbox.disk_use_cmd + stage.mount_system)
-            try:
-                out[2] = float(disk_use_mount.split("\t")[0])
-            except Exception as e:
-                run_logging.warning("2 Error in reading disk spaces (system drive) ..." + str(e))
-                run_logging.warning("  - " + mbox.disk_use_cmd + stage.mount_system)
-
-        disk_free_mount, err = run_cmd(mbox.disk_free_cmd + stage.mount_system)
-        try:
-            out[3] = float(disk_free_mount.split("\n")[1])
-        except Exception as e:
-            run_logging.warning("3 Error in reading disk spaces (system drive) ..." + str(e))
-            run_logging.warning("  - " + mbox.disk_free_cmd + stage.mount_system)
-
-    if init:
-        mbox.disk_usage_output = out
-
-    run_logging.debug("check_disk_space: "+str(out))
     return out
 
 

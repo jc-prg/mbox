@@ -2,7 +2,9 @@
 
 ## Summary v1.0.x (in progress)
 
+* Free text search in albums and when connecting a fresh RFID card
 * Fix & optimize list view for albums, playlists and streams / podcasts
+* Check RPi server status and show in app settings
 * Introduced automated unit testing for server
 
 ## Summary v0.9.x

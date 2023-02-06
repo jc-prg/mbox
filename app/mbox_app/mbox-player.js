@@ -56,7 +56,7 @@ function mboxPlayerLocal(position=0, play=true) {
 		}
 	}
 
-function mboxPlayerRemote(song,uuid,playing) {
+function mboxPlayerRemote(song,uuid,playing,paused) {
 
 	var text = "";
 
@@ -82,7 +82,7 @@ function mboxPlayerRemote(song,uuid,playing) {
 			text += "<hr/>";
 			text += mboxPlayerProgressPrint();
 			text += "</div>";
-			mboxControlPlaying_show(uuid,uuid_song,playing);
+			mboxControlPlaying_show(uuid,uuid_song,playing,paused);
 			}
 		else		  { mboxControlPlaying_delete(); }
 		text += "</div>";
@@ -107,7 +107,7 @@ function mboxPlayerControlPlaylist_advanced(uuid) {
 	text += mboxPlayerButton("pause","appFW.requestAPI('GET', ['pause'], 	'', mboxControl);",                    		"blue");
 	text += mboxPlayerButton("stop", "appFW.requestAPI('GET', ['stop'],  	'', mboxControl); mboxControlPanel_hide(true);",	"blue");
 	text += mboxPlayerButton("empty");
-	text += mbofxPlayerButton("goto", "mboxControlShowUUID('"+uuid+"');", "blue");
+	text += mboxPlayerButton("goto", "mboxControlShowUUID('"+uuid+"');", "blue");
 
 	appMsg.confirm( text, "", 260);
 	}

@@ -16,14 +16,15 @@ var mbox_lastshow_song = "";
 var mbox_cover_list    = [];
 var mbox_icon_dir	= "mbox_img/icon/";		// -> see "function app_theme_changed(theme)" in config_main.js
 var mbox_icons     = {
-	"album"	: "cd.png",
-	"playlist"	: "list.png",
-	"stream"	: "stream.png",
-    "playing"	: "playing_25x25.gif",
-    "radio"	: "radio.jpg",
-    "album_bw"	: "album.png",
-    "radio_bw"	: "stream.png",
-    "playlist_bw"	: "list.png",
+	"album"         : "cd.png",
+	"playlist"      : "list.png",
+	"stream"        : "stream.png",
+    "playing"       : "playing_25x25.gif",
+    "playing_paused" : "playing_25x25_paused.gif",
+    "radio"	        : "radio.jpg",
+    "album_bw"      : "album.png",
+    "radio_bw"      : "stream.png",
+    "playlist_bw"   : "list.png",
 	}
 var mbox_track_color = [ "",
 	"lightseagreen","turquoise",

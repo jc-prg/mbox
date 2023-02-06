@@ -54,11 +54,13 @@ function mboxControl(data) {
 	var playing_title = "";
 	var playing_album = "";
 	var pause_status  = "";
+	var paused        = 0;
 
 	mboxControlRpiStatus(data);
 
 	if (status == "State.Paused") {
 	    playing = 1;
+        paused = 1;
 	    pause_status = " ... <i>pause</i>";
 	    }
 
@@ -165,8 +167,8 @@ function mboxControl(data) {
 	text += "</div>";
 	
 	var color ="";
-	if (mbox_device == "local")	{ color = "green" }
-	else				{ color = "blue"; }
+	if (mbox_device == "local") { color = "green" }
+	else                        { color = "blue"; }
 
 	if (playing != 0 || mbox_device == "local") {
 	
@@ -180,11 +182,11 @@ function mboxControl(data) {
 		else			     { on_off = " off1"; }
 
 		text += "<div class='mbox_ctrl_open' id='ctrl_open' style='display:"+display_open+";'>";
-		text += mboxHtmlButton("open", "mboxControlPanel_toggle();",   color, "right");
+		text += mboxHtmlButton("open", "mboxControlPanel_toggle();",   color, "right-distance");
 		text += "</div>";
 
 		text += "<div class='mbox_ctrl_open' id='ctrl_close' style='display:"+display_close+";'>";
-		text += mboxHtmlButton("close", "mboxControlPanel_toggle();",   "red", "right");
+		text += mboxHtmlButton("close", "mboxControlPanel_toggle();",   "red", "right-distance");
 		text += "</div>";
 		}
 	else {
@@ -194,7 +196,7 @@ function mboxControl(data) {
 	// volume control
 	text += mboxControlVolumeControl(volume,mute);
 	if (playing == 0 || playing == 1) {
-		text += mboxPlayerRemote(song,uuid,playing);
+		text += mboxPlayerRemote(song,uuid,playing,paused);
 		}
     setTextById("mbox_control", text);
     mboxPlayerProgressSet( status, song_length, song_left, song_left_s );
@@ -340,22 +342,31 @@ function mboxControlReloadView() {
 	else if (mbox_mode == "playlists")	{ mboxPlaylists_load("",mbox_last_uuid); }
 	}
 
-function mboxControlPlaying_show(uuid="",uuid_song="",playing=0) {
+function mboxControlPlaying_show(uuid="",uuid_song="",playing=0, paused=0) {
 
 	activeElements = document.getElementsByClassName("player_active");
 
 	for (var i=0;i<activeElements.length;i++) {
 		element = activeElements[i];
-		if (playing == 1) {
-			if (element.id == "playing_"+uuid)			{ element.style.display = "block"; }
-			else if (element.id == "playing2_"+uuid) 		{ element.style.display = "block"; }
-			else if (element.id == "playing3_"+uuid) 		{ element.style.display = "block"; }
-			else if (element.id == "playing_"+uuid_song)		{ element.style.display = "block"; }
-			else if (element.id == "playing2_"+uuid_song) 	{ element.style.display = "block"; }
-			else if (element.id == "playing3_"+uuid_song) 	{ element.style.display = "block"; }
-			else 							{ element.style.display = "none"; }
+		if (playing == 1 && paused == 0) {
+			if (element.id == "playing_"+uuid)              { element.style.display = "block"; }
+			else if (element.id == "playing2_"+uuid)        { element.style.display = "block"; }
+			else if (element.id == "playing3_"+uuid)        { element.style.display = "block"; }
+			else if (element.id == "playing_"+uuid_song)    { element.style.display = "block"; }
+			else if (element.id == "playing2_"+uuid_song)   { element.style.display = "block"; }
+			else if (element.id == "playing3_"+uuid_song)   { element.style.display = "block"; }
+			else                                            { element.style.display = "none"; }
 			}
-		else 								{ element.style.display = "none"; }
+		else if (playing == 1) {
+			if (element.id == "playing_paused_"+uuid)              { element.style.display = "block"; }
+			else if (element.id == "playing2_paused_"+uuid)        { element.style.display = "block"; }
+			else if (element.id == "playing3_paused_"+uuid)        { element.style.display = "block"; }
+			else if (element.id == "playing_paused_"+uuid_song)    { element.style.display = "block"; }
+			else if (element.id == "playing2_paused_"+uuid_song)   { element.style.display = "block"; }
+			else if (element.id == "playing3_paused_"+uuid_song)   { element.style.display = "block"; }
+			else                                                   { element.style.display = "none"; }
+			}
+		else                                                       { element.style.display = "none"; }
 		}
 
 	return;

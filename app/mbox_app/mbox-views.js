@@ -341,6 +341,7 @@ function mboxViewsTrackListHeader(uuid, type, entry, title, description, length)
         // player control (in box)
 	text += "<div class=\"album_control new\">";
 	text += "<div class=\"player_active big\" id=\"playing_"+uuid+"\" style=\"display:none;\"><img src=\""+mbox_icon_dir+mbox_icons["playing"]+"\" style=\"height:20px;width:20px;margin:2px;\"></div>";
+	text += "<div class=\"player_active big\" id=\"playing_paused_"+uuid+"\" style=\"display:none;\"><img src=\""+mbox_icon_dir+mbox_icons["playing_paused"]+"\" style=\"height:20px;width:20px;margin:2px;\"></div>";
 	text += mboxPlayerControlEntry(uuid);
 	text += mboxHtmlButton("info", "mboxViews_Info('"+uuid+"','"+type+"');", "red");
 	text += mboxCardInfoIcon(entry, uuid);
@@ -599,6 +600,7 @@ function mboxViewsTrackListRow( data, uuid, type, column, uuid_pl="", count_pl=0
 		if (mbox_device == "local")	{ cmd += mboxHtmlButton("play",  "mboxPlayerLocal(" + position + ");", "green",   "small right"); }		 
 		else 				{ cmd += mboxHtmlButton("play",  "appFW.requestAPI('GET',['play_position', '"+uuid_pl+"','"+position+"'],'',mboxControl);", "blue", "small right"); }
 		cmd += "<div class=\"player_active right\" id=\"playing3_"+uuid+"\" style=\"display:none;\"><img src=\""+mbox_icon_dir+mbox_icons["playing"]+"\" style=\"width:10px;height:10px;margin:2px;\"></div>";
+		cmd += "<div class=\"player_active right\" id=\"playing3_paused_"+uuid+"\" style=\"display:none;\"><img src=\""+mbox_icon_dir+mbox_icons["playing_paused"]+"\" style=\"width:10px;height:10px;margin:2px;\"></div>";
 		cmd += "</div>";
 		
 		

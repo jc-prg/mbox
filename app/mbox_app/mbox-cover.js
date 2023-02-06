@@ -116,6 +116,7 @@ function mboxCoverList( uuid, cover="", description="", cmd_open="", cmd_play=""
 	var button_play   = "";
 	var default_cover = mbox_icon_dir + mbox_icons[type];
 	var icon_playing  = mbox_icon_dir + mbox_icons["playing"];
+	var icon_paused   = mbox_icon_dir + mbox_icons["playing_paused"];
 
     if (mbox_device == "remote") {
         button_play = "<div class=\"player_button small white\" onclick=\"" + cmd_play + "\"><img src=\"" + mbox_icon_dir + "play.png\" style=\"width:9px;height:9px;margin:2px;\"></div>";
@@ -126,6 +127,7 @@ function mboxCoverList( uuid, cover="", description="", cmd_open="", cmd_play=""
                 text += "<div class=\"album_cover\" style=\"background:url('" + cover + "');\" onclick=\"" + cmd_open + "\">";
 		text += button_play;
                 text += "<div class=\"player_active\" id=\"playing2_" + uuid + "\" style=\"display:none;\"><img src=\"" + icon_playing + "\" style=\"width:10px;height:10px;margin:2px;\"></div>";
+                text += "<div class=\"player_active\" id=\"playing2_paused_" + uuid + "\" style=\"display:none;\"><img src=\"" + icon_paused + "\" style=\"width:10px;height:10px;margin:2px;\"></div>";
                 text += "<br/><br/>";
                 text += description + "<br/>";
                 text += "</div>";
@@ -135,6 +137,7 @@ function mboxCoverList( uuid, cover="", description="", cmd_open="", cmd_play=""
             text += "<div class=\"album_cover\" style=\"background:url('" + cover + "');background-size:cover;background-repeat:no-repeat;vertical-align:botton;\" onclick=\"" + cmd_open + "\">";
             text += button_play;
             text += "<div class=\"player_active\" id=\"playing2_" + uuid + "\" style=\"display:none;\"><img src=\"" + icon_playing + "\" style=\"width:10px;height:10px;margin:2px;\"></div>";
+            text += "<div class=\"player_active\" id=\"playing2_paused_" + uuid + "\" style=\"display:none;\"><img src=\"" + icon_paused + "\" style=\"width:10px;height:10px;margin:2px;\"></div>";
             text += "</div>";
 		}
 

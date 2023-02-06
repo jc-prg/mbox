@@ -204,10 +204,10 @@ function mboxControl(data) {
 	if (audio == "" && mbox_device == "local") { mboxPlayerLocal(0,false); }
 
     console.info("-----> mboxControl: play=" + playing + " / mute="+mute + " / volume=" + volume + " / type=" + type +
-                                      " / pos=" + playing_pos.toFixed(1) + "%");
-    console.info("                    title=" + playing_title + " / album=" + playing_album);
-    console.info("                    load_new=" + load_new + " / load_all=" + load_all);
-    console.info("                    reloadInterval=" + appFW.appUpdateCurrent + " / internet_connect=" + internetConnect)
+                                      " / pos=" + playing_pos.toFixed(1) + "% " +
+                                      " || title=" + playing_title + " / album=" + playing_album +
+                                      " / load_new=" + load_new + " / load_all=" + load_all +
+                                      " / reloadInterval=" + appFW.appUpdateCurrent + " / internet_connect=" + internetConnect)
 	}
 
 function mboxControlVolumeSet(volume) {

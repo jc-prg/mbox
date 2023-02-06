@@ -63,23 +63,9 @@ function mboxSettingsStatus (data) {
 	text += table.row( ["<b>Active Device:", data["STATUS"]["active_device"] ] );
 	text += table.row( ["<b>Window:", 		document.body.clientWidth + "x" + document.body.clientHeight ] );
 	text += table.row( ["<b>Internet:",		internetConnect ] );
+
 	text += table.row_one("<hr/>");
-	
-	if (data["STATUS"]["playback"]["status"] == "") {
-		text += table.row( ["<b>Status:",	 "idle" ] );
-		}
-	else {
-		//text += table.row( ["<b>Status:",	 data["STATUS"]["playback"]["status"] + " (<a href='' onclick='alert(\"" + data["STATUS"]["playback"]["file"] + "\")'>filename</a>)" ] );
-        var player_status = data["STATUS"]["playback"]["player_status"];
-        var playlist_pos  = data["STATUS"]["playback"]["playlist_pos"];
-        var playlist_len  = data["STATUS"]["playback"]["playlist_len"];
-        var filename = "..none..";
-        if (playlist_pos >= 0 && playlist_pos <= playlist_len) {
-            filename = data["STATUS"]["playback"]["playlist_files"][playlist_pos-1];
-            }
-		text += table.row( ["<b>Status:",   data["STATUS"]["playback"]["player_status"] +
-		                                    " (<a href='' onclick='alert(\"" + filename + "\")'>file " + playlist_pos + "/" + playlist_len + "</a>)" ] );
-		}
+	text += table.row( ["<b>Status:", "<div id='playing_status'>please wait ...</div>" ] );
 
 	text += table.row_one("<hr/>");
 	for (var key in data["STATUS"]["rpi-server"]) {

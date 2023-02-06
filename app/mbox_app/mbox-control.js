@@ -326,8 +326,25 @@ function mboxControlShowUUID(uuid="") {
 	}
 
 function mboxControlRpiStatus(data) {
+
+    var status = "idle";
+	if (data["STATUS"]["playback"]["status"] != "") {
+		//text += table.row( ["<b>Status:",	 data["STATUS"]["playback"]["status"] + " (<a href='' onclick='alert(\"" + data["STATUS"]["playback"]["file"] + "\")'>filename</a>)" ] );
+        var player_status = data["STATUS"]["playback"]["player_status"];
+        var playlist_pos  = data["STATUS"]["playback"]["playlist_pos"];
+        var playlist_len  = data["STATUS"]["playback"]["playlist_len"];
+        var filename = "..none..";
+        if (playlist_pos >= 0 && playlist_pos <= playlist_len) {
+            filename = data["STATUS"]["playback"]["playlist_files"][playlist_pos-1];
+            }
+		status = data["STATUS"]["playback"]["player_status"] +
+		         " (<a href='' onclick='alert(\"" + filename + "\")'>file " + playlist_pos + "/" + playlist_len + "</a>)";
+		}
+	setTextById("playing_status", status)
+
+    status = "";
 	for (var key in data["STATUS"]["rpi-server"]) {
-	    var status = data["STATUS"]["rpi-server"][key]["status"];
+	    status = data["STATUS"]["rpi-server"][key]["status"];
 	    var duration = "";
 	    if (data["STATUS"]["rpi-server"][key]["status"] != "NOT-STARTED") {
             status += " (" +  Math.round(data["STATUS"]["rpi-server"][key]["last_diff"]*10)/10 + "s)";

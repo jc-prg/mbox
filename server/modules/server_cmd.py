@@ -425,7 +425,7 @@ class ServerApi:
                     del data["DATA"]["albums"]
 
         data = self.filter(data, db_filter)
-        data = self.response_end(data, ["no-statistic", "no-playback", "no-system"])
+        data = self.response_end(data, ["no-playback", "no-system"])
         return data
 
     def read_entry(self, uuid, db_filter=""):

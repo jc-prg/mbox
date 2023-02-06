@@ -106,7 +106,7 @@ function mboxSettingsStatus (data) {
 	text += table.row_one("<hr/>");
 	text += table.row_one("<center><b>Test Settings</b></center>");
 	text += table.row_one("<hr/>");
-	text += table.row_one( button( "uploadImage();", "Upload Image" ) + button( "mboxCoverTogglePrint();", "Cover Images" ) );
+	text += table.row_one( button( "mboxUploadImage();", "Upload Image" ) + button( "mboxCoverTogglePrint();", "Cover Images" ) );
 
 	text += table.row_one("<hr/>");
 	text += table.row_one("<center><b>"+lang("LOADING_TIME")+"</b></center>");
@@ -123,6 +123,7 @@ function mboxSettingsStatus (data) {
 	text += table.row_one("<hr/>");
 	text += table.row_one("<center><b>"+lang("DISC_SPACE")+"</b></center>");
 	text += table.row_one("<hr/>");
+
 	text += table.row( ["<b>System Used:",    Math.round(data["STATUS"]["system"]["space_main_used"]/1024/1024*10)/10+" GByte" ] );
 	text += table.row( ["<b>System Total:",   Math.round(data["STATUS"]["system"]["space_main_available"]/1024/1024*10)/10+" GByte" ] );
 	text += table.row( ["<b>Data Used:",      Math.round(data["STATUS"]["system"]["space_usb_used"]/1024/1024*10)/10+" GByte" ] );
@@ -224,7 +225,8 @@ function mboxSettingsStatusPerformance_load() {
     }
 
 function mboxSettingsStatusPerformance(data) {
+    var files = data["STATUS"]["statistic"]["files"];
 	setTextById("duration_api_request",		Math.round(data["REQUEST"]["load-time-app"]/1000*10)/10+" s &nbsp; &nbsp; (all data)");
 	setTextById("duration_db_request",		Math.round(data["REQUEST"]["load-time"]*1000)/1000+" s");
-	setTextById("duration_db_request_per_file",	Math.round(data["REQUEST"]["load-time"]/dict_size(data["DATA"]["files"])*1000)/1000+" s &nbsp; &nbsp; ("+dict_size(data["DATA"]["files"])+")");
+	setTextById("duration_db_request_per_file",	Math.round(data["REQUEST"]["load-time"]/files*1000)/1000+" s &nbsp; &nbsp; ("+files+" files)");
 	}

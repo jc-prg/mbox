@@ -280,8 +280,8 @@ class ServerApi:
         stop playback via API call (see server_api.yml)
         """
         data = self.response_start("stop", "stop", "", "", "")
+        self.music_ctrl.player.stop_playback()
         self.music_ctrl.control_data_create(state="Ended", song={}, playlist={})
-        self.music_ctrl.player.stop()
         time.sleep(0.5)
         data = self.response_end(data, ["no-statistic", "no-system"])
         return data

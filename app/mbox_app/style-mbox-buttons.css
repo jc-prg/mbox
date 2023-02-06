@@ -31,6 +31,10 @@
 
 .player_button.right 	{ 
 	float:right;
+	}
+
+.player_button.right-distance 	{
+	float:right;
 	margin-right:10px;
 	}
 

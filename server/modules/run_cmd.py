@@ -4,6 +4,7 @@ import subprocess
 import logging
 import pythonping
 import time
+import psutil
 
 import modules.config_stage as stage
 import modules.config_mbox as mbox
@@ -37,11 +38,34 @@ def run_cmd(cmd_line):
         err = err.decode('utf-8')
     return out, err
 
+
 # NO ACCESS TO MOUNTED DRIVE ... ?! -> docker-compose.yml
 
 
 def check_disk_space(init=False):
+    # initial load
     out = mbox.disk_usage_output
+
+    # get data
+    hdd = psutil.disk_usage(stage.mount_main_sys)
+
+    out[2] = hdd.used / 1024
+    out[3] = hdd.total / 1024
+
+    if stage.mount_data != "" and stage.mount_system != stage.mount_data and os.path.exists(stage.mount_data):
+
+        usb = psutil.disk_usage(stage.mount_data)
+        out[0] = usb.used  / (2**30)
+        out[1] = usb.total  / (2**30)
+
+    return out
+
+    #"space_usb_used": out[0],
+    #"space_usb_available": out[1],
+    #"space_main_used": out[2],
+    #"space_main_available": out[3],
+
+    logging.info("............... " +str(hdd))
 
     if stage.mount_data != "" and stage.mount_system != stage.mount_data and os.path.exists(stage.mount_data):
 

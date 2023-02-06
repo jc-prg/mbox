@@ -17,3 +17,4 @@ setuptools
 uuid
 eyed3
 pythonping
+psutil

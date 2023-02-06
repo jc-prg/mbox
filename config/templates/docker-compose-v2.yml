@@ -62,6 +62,7 @@ services:
       - ${MBOX_DIR_DATA}:${MBOX_DIR_DATA}
       - ${MBOX_DIR_DATA}/music:${MBOX_DIR_DATA}/music
       - ${MBOX_DIR_DATA}/cover:${MBOX_DIR_DATA}/cover
+      - /:/media/hdd
       - ./log:/log
     dns:
       - ${DNS01}

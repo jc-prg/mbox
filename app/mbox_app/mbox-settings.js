@@ -112,6 +112,7 @@ function mboxSettingsStatus (data) {
 
 	text += table.row( ["<b>System Used:",    Math.round(data["STATUS"]["system"]["space_main_used"]/1024/1024*10)/10+" GByte" ] );
 	text += table.row( ["<b>System Total:",   Math.round(data["STATUS"]["system"]["space_main_available"]/1024/1024*10)/10+" GByte" ] );
+	text += table.row( ["<b>Data Mount USB:", data["STATUS"]["system"]["space_usb_mount"]] );
 	text += table.row( ["<b>Data Used:",      Math.round(data["STATUS"]["system"]["space_usb_used"]/1024/1024*10)/10+" GByte" ] );
 	text += table.row( ["<b>Data Total:",     Math.round(data["STATUS"]["system"]["space_usb_available"]/1024/1024*10)/10+" GByte" ] );
 

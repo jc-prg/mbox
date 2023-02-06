@@ -18,6 +18,7 @@ data_db        = "http://${MBOX_DB_USER}:${MBOX_DB_PASSWORD}@"+data_db_ip+":${MB
 
 mount_system   = "${MBOX_MOUNT_SYSTEM}"
 mount_data     = "${MBOX_MOUNT_DATA}"
+mount_main_sys = "/media/hdd"
 
 demo_card      = "${MBOX_RFID_DEMOCARD}"
 

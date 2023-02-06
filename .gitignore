@@ -71,3 +71,8 @@ app-v2/mbox_img/upload_test/
 .idea/
 /docker-compose-test.yml
 /test_data/clean-test-data
+/test_data/couchdb/
+/test_data/couchdb_backup/
+/test_data/cover/
+/test_data/cover_upload/
+/test_data/cover_uploadt_2b4ff98a-06de-11ed-8074-7964e3f0c4bd_1.jpg

@@ -108,18 +108,26 @@ class MusicControlThread(threading.Thread):
 
             # if new data and list is empty, speak an error message
             if self.music_load_new and len(self.music_list) == 0:
+                tracks = 1
                 if self.music_list_uuid.startswith("r_"):
                     database = self.music_database.read_cache("radio")
                     if self.music_list_uuid in database:
                         current_stream = database[self.music_list_uuid]
                         self.speak.speak_text(current_stream["title"], self.music_ctrl["volume"])
+                        if "tracks" in current_stream:
+                            tracks = len(current_stream["tracks"])
+
                 elif self.music_list_uuid.startswith("p_"):
                     database = self.music_database.read_cache("playlists")
                     if self.music_list_uuid in database:
                         current_list = database[self.music_list_uuid]
                         self.speak.speak_text(current_list["title"], self.music_ctrl["volume"])
+                        if "tracks" in current_list:
+                            tracks = len(current_list["tracks"])
 
-                self.speak.speak_message("NO-ENTRY-IN-PLAYLIST")
+                if tracks <= 0:
+                    self.speak.speak_message("NO-ENTRY-IN-PLAYLIST")
+
                 self.music_load_new = False
 
             # if new data to be loaded

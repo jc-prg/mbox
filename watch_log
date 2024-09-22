@@ -1,8 +1,8 @@
 #!/usr/bin/bash
 
-source .env
+#source .env
 
-LOGFILE=$REMOTE_LOG_FILENAME
+LOGFILE=log/server.log
 LOGFILE_LINES=60
 PARAM=$1
 

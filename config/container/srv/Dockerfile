@@ -22,7 +22,8 @@ RUN rm -rf /var/lib/apt/lists/*
 
 # RUN apt -y update && apt -y install iputils-ping
 RUN python3 -m pip install -U iputils
-RUN apt-get -y install locales
+RUN apt-get -y update && apt-get -y upgrade && apt-get -y install locales
+RUN locale-gen en_US.UTF-8
 
 ENV PYTHONIOENCODING=utf-8
 ENV LANG=en_US.UTF-8

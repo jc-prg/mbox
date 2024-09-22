@@ -201,9 +201,13 @@ class MusicControlThread(threading.Thread):
                     self.music_ctrl["position"] = p
 
                 else:
-                    self.logging.debug("run // is a file; start playback")
-                    self.player.play_file(mbox.music_dir + current_path, wait=False)
-                    just_started = True
+                    try:
+                        self.player.play_file(mbox.music_dir + current_path, wait=False)
+                        self.logging.debug("run // is a file; start playback")
+                        just_started = True
+                    except Exception as e:
+                        self.logging.error("Could not play file: " + mbox.music_dir + current_path)
+                        self.logging.error("                   : " + str(e))
 
             # if stopped device while playing, load last music
             if last_load:

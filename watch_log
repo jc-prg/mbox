@@ -18,9 +18,9 @@ NC='\x1b[0m' # No Color
 
 TEXT_GREEN='\(INFO\|TRUE\)'
 TEXT_YELLOW='\(WARNING\)'
-TEXT_RED='\(ERROR\|CRITICAL\|FAILED\|FALSE\|EXCEPTION\:\)'
-TEXT_MAGENTA='\(---\|-->\|\.\.\.\.\|CHECK ACTIVITY\|CHECK CONNECTION\|1st CONNECT OF INTERFACES\|jc\:\/\/remote\/\)'
-TEXT_CYAN='\(\_\_BUTTON\|\_\_SEND-DATA\|\_\_SEND API\|\_\_SEND\|\_\_QUERY\|\_\_RECORD\|-> CONNECTION\ OK\:\|-> ACTIVITY\:\|-> NO\ CONNECTION\:\|-> INACTIVE\:\|\_\_EXEC\ TIME\:\|\_\_EXECUTE TIMER\:\)'
+TEXT_RED='\(ERROR\|error\|CRITICAL\|FAILED\|FALSE\|EXCEPTION\:\)'
+TEXT_MAGENTA='\(---\|-->\|speak_message\|READ \/playlists--cards\/\|1st CONNECT OF INTERFACES\|jc\:\/\/remote\/\)'
+TEXT_CYAN='\(Load file\|Next song\|Read podcast\|Jump to position\|Load Playlist\|\.\.\.\)'
 TEXT_DEBUG='\(DEBUG\)'
 
 

@@ -132,12 +132,12 @@ def init_logging(log_string, logfilename=""):
                             datefmt='%d.%m.%y %H:%M:%S',
                             level=level)
 
-        if level == "DEBUG" or level == "INFO":
+        if "DEBUG" in level or "INFO" in level:
             run_logging.info("Start - Log-Level " + level + " ...")
             run_logging.info("--------------------------------")
             run_logging.info(log_string)
             run_logging.info("--------------------------------")
-        elif level == "WARNING":
+        elif "WARNING" in level:
             run_logging.warning("Start: " + str(log_string) + " (" + str(level) + ") ...")
         else:
             run_logging.error("Start: " + str(log_string) + " (" + str(level) + ") ...")

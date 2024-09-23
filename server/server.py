@@ -26,13 +26,7 @@ def on_exit(signum, handler):
     All shutdown functions are defined in the "finally:" section in the end of this script
     """
     print('\nSTRG+C pressed! (Signal: %s)' % (signum,))
-    #config.pause(True)
-    #for key in camera:
-    #    camera[key].pause(True)
-    #for key in sensor:
-    #    sensor[key].pause(True)
-    #time.sleep(1)
-    #confirm = "yes"
+    # ... add here things to be paused
 
     while True:
         if confirm == "":
@@ -40,20 +34,11 @@ def on_exit(signum, handler):
 
         if confirm == 'yes':
             print("Cancel!\n")
-            #config.pause(False)
-            #for key in camera:
-            #    camera[key].pause(False)
-            #for key in sensor:
-            #    sensor[key].pause(False)
-            #config.force_shutdown()
+            # ... add here things to be stopped correctly
             time.sleep(5)
             sys.exit()
         elif confirm == 'no':
-            #config.pause(False)
-            #for key in camera:
-            #    camera[key].pause(False)
-            #for key in sensor:
-            #    sensor[key].pause(False)
+            # ... add her things to be unpaused
             print("Keep running!\n")
             break
         else:
@@ -69,12 +54,12 @@ def on_kill(signum, handler):
     """
     print('\nKILL command detected! (Signal: %s)' % (signum,))
     logging.warning('KILL command detected! (Signal: %s)' % (signum,))
-    logging.info("------------------------------------")
+    logging.info("---------------------------------------")
     logging.info("Starting shutdown ...")
-    #config.pause(True)
-    #config.force_shutdown()
+    # ... insert here things to be stopped correctly
     time.sleep(3)
     logging.info("Stopped.")
+    logging.info("---------------------------------------")
     sys.exit()
 
 

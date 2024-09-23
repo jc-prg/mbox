@@ -123,7 +123,7 @@ class PodcastThread(threading.Thread):
             return
 
         try:
-            self.logging.info("Read podcast: " + rss_url)
+            self.logging.info("Get podcast information: " + rss_url)
             response = requests.get(rss_url)
             response.encoding = response.apparent_encoding
             # self.logging.info(response.encoding)

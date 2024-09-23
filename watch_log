@@ -19,8 +19,8 @@ NC='\x1b[0m' # No Color
 TEXT_GREEN='\(INFO\|TRUE\)'
 TEXT_YELLOW='\(WARNING\)'
 TEXT_RED='\(ERROR\|error\|CRITICAL\|FAILED\|FALSE\|EXCEPTION\:\)'
-TEXT_MAGENTA='\(---\|-->\|speak_message\|speak_text\|READ \/playlists--cards\/\|READ \/album_info\/\|1st CONNECT OF INTERFACES\|jc\:\/\/remote\/\)'
-TEXT_CYAN='\(Load file\|Next song\|Read podcast\|Jump to position\|Load Playlist\|\.\.\.\)'
+TEXT_MAGENTA='\(---\|-->\|speak_message\|speak_text\|READ \/playlists--cards\/\|READ \/album_info\/\)'
+TEXT_CYAN='\(Load file\|Load playlist\|Load card\|Next song\|Get podcast information\|Jump to position\|\.\.\.\)'
 TEXT_DEBUG='\(DEBUG\)'
 
 

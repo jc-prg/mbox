@@ -305,7 +305,7 @@ class MusicControlThread(threading.Thread):
         """
         load list from album, playlist or stream -> put to playlist array
         """
-        self.logging.info("Load Playlist " + playlist_uuid + "/" + str(position) + " ...")
+        self.logging.info("Load playlist " + playlist_uuid + "/" + str(position) + " ...")
         track_list = []
         track_db = {}
 
@@ -366,12 +366,12 @@ class MusicControlThread(threading.Thread):
                 if mbox.rfid_ctrl["cardUID"] in database:
                     if "LastCard" in self.music_ctrl \
                             and self.music_ctrl["LastCard"] == database[mbox.rfid_ctrl["cardUID"]][0]:
-                        self.logging.info("Card already started (" + mbox.rfid_ctrl["cardUID"] + " / " +
-                                          database[mbox.rfid_ctrl["cardUID"]][0] + ")...")
+                        self.logging.debug("Card already started (" + mbox.rfid_ctrl["cardUID"] + " / " +
+                                           database[mbox.rfid_ctrl["cardUID"]][0] + ")...")
 
                     else:
-                        self.logging.info("Start Playlist: " + database[mbox.rfid_ctrl["cardUID"]][0] + " / " +
-                                          "CardUID: " + mbox.rfid_ctrl["cardUID"] + " / " + self.music_ctrl["LastCard"])
+                        self.logging.info("Load card " + mbox.rfid_ctrl["cardUID"] + " (last=" + self.music_ctrl["LastCard"] + "; " +
+                                          "playlist=" + database[mbox.rfid_ctrl["cardUID"]][0] + ")")
                         self.playlist_load_uuid(database[mbox.rfid_ctrl["cardUID"]][0])
                         self.music_ctrl["LastCard"] = database[mbox.rfid_ctrl["cardUID"]][0]
 

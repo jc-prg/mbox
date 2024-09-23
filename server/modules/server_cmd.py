@@ -191,12 +191,13 @@ class ServerApi:
         module_values = ["rfid","button","led"]
         data = self.response_start("rpi-status", "rpi-status", "", "", "")
         if module in module_values:
-            if mbox.rpi_ctrl[module]["last_call"] + self.show_life_signal < time.time():
+            if "last_log" not in mbox.rpi_ctrl[module] or mbox.rpi_ctrl[module]["last_log"] + self.show_life_signal < time.time():
                 log_now = True
             mbox.rpi_ctrl[module]["status"] = "ON"
             mbox.rpi_ctrl[module]["last_call"] = time.time()
             if log_now:
-                self.logging.info("API " + module + " is available.")
+                mbox.rpi_ctrl[module]["last_log"] = time.time()
+                self.logging.info("API " + module.upper() + " connected.")
         else:
             data = self.response_error(data, "rpi_status: module '"+str(module)+"' not defined.")
         data = self.response_end(data, ["no-statistic", "no-system", "no-load"])

@@ -10,7 +10,7 @@ Here you'll find a history of features implemented into hardware and software as
 
 ### KNOWN BUGS
 
-- State Stopped -> not resetted?
+- State Stopped -> not reseted?
 - On the box the type in some cases isn't set correctly which leads to errors
 - 
 - ....

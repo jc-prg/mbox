@@ -49,6 +49,7 @@ class ServerApi:
         self.logging = logging.getLogger("api")
         self.logging.setLevel = stage.logging_level
         self.disc_space = run_cmd.check_disk_space()
+        self.show_life_signal = 60 * 2
 
     def response_error(self, data, error):
         """
@@ -186,11 +187,16 @@ class ServerApi:
         """
         get life signals from rpi modules LED, BUTTON, RFID
         """
+        log_now = False
         module_values = ["rfid","button","led"]
         data = self.response_start("rpi-status", "rpi-status", "", "", "")
         if module in module_values:
+            if mbox.rpi_ctrl[module]["last_call"] + self.show_life_signal < time.time():
+                log_now = True
             mbox.rpi_ctrl[module]["status"] = "ON"
             mbox.rpi_ctrl[module]["last_call"] = time.time()
+            if log_now:
+                self.logging.info("API " + module + " is available.")
         else:
             data = self.response_error(data, "rpi_status: module '"+str(module)+"' not defined.")
         data = self.response_end(data, ["no-statistic", "no-system", "no-load"])

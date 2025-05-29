@@ -116,7 +116,10 @@ if [ ${DOLLAR}option == "docker" ]; then
 
   echo "... mount usb if available and not done already."
 
-  if [ ${DOLLAR}usb_mount_code != "" ]; then
+  if [ ${DOLLAR}usb_mount_type == "" ]; then
+     echo "mount ${DOLLAR}usb_dev ${DOLLAR}usb_mount"
+     mount -t ${DOLLAR}usb_mount_type -o ${DOLLAR}usb_mount_code ${DOLLAR}usb_dev ${DOLLAR}usb_mount
+  elif [ ${DOLLAR}usb_mount_code != "" ]; then
      echo "mount -t ${DOLLAR}usb_mount_type -o ${DOLLAR}usb_mount_code ${DOLLAR}usb_dev ${DOLLAR}usb_mount"
      mount -t ${DOLLAR}usb_mount_type -o ${DOLLAR}usb_mount_code ${DOLLAR}usb_dev ${DOLLAR}usb_mount
   else
@@ -127,12 +130,12 @@ if [ ${DOLLAR}option == "docker" ]; then
   if [ ${DOLLAR}is_rpi == "yes" ]; then
     if [ ${DOLLAR}hardware == "yes" ]; then
       echo "... start rpi components:"
-      ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose-rpi.yml up -d & #--remove-orphans
+      ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose-rpi.yml up -d #--remove-orphans
     fi
   fi
 
   echo "... start main modules:"
-  ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose.yml up -d & #--remove-orphans
+  ${MBOX_DIR_DOCKERCOMPOSE}/docker-compose -f ${MBOX_DIR}/docker-compose.yml up -d #--remove-orphans
 
   echo ""
   echo "RESET" > ${MBOX_DIR}/log/internet_connect

@@ -10,6 +10,15 @@ Here you'll find a history of features implemented into hardware and software as
 
 ### KNOWN BUGS
 
+#### new
+
+- after fresh installation
+  - RPI scripts don't work -> uses a link for a directory, that doesn't exist (subdirectory "data" in the data directory)
+  - /projects/data/prod/mbox/data/../../../active.json
+- start script seems not to work correctly
+
+#### old
+
 - State Stopped -> not reseted?
 - On the box the type in some cases isn't set correctly which leads to errors
 - 
